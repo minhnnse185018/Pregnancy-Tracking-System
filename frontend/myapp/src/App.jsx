@@ -2,13 +2,14 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
+import AboutUs from "./components/Customer/AboutUs/AboutUs";
+import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import LoginPage from "./components/Customer/Login/LoginPage"; // Ensure the correct path
 import MembershipPage from "./components/Customer/Member/MembershipPage";
-import Footer from "./components/Dashboard/Footer"; // Ensure the correct path
-import Navbarr from "./components/Dashboard/Navbarr";
+import Footer from "./components/HomePage/Footer";
 import Header from "./components/HomePage/Header/Header";
 import MainContent from "./components/HomePage/Maincontent/Maincontent";
-import BlogPage from "./components/Customer/BlogPage/BlogPage";
+import Navbarr from "./components/HomePage/Navbarr";
 function App() {
   return (
     <div>
@@ -43,6 +44,16 @@ function App() {
             <>
               <Navbarr />
               <MembershipPage />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <>
+              <Navbarr />
+              <AboutUs />
               <Footer />
             </>
           }

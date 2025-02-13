@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import BlogPage from '../Customer/BlogPage/BlogPage';
 
 const FooterWrapper = styled.footer`
   background: var(--background);
