@@ -7,13 +7,14 @@ import styled from "styled-components";
 import * as Components from "./Components";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import Header from "../../HomePage/Header/Header";
+import Navbarr from "../../HomePage/Navbarr";
 
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background:rgb(255, 223, 251);
+  background: rgb(255, 223, 251);
 `;
 
 const GoogleButtonContainer = styled.div`
@@ -58,83 +59,86 @@ function LoginPage({ setIsLoggedIn }) {
   };
 
   return (
-     
-    <GoogleOAuthProvider clientId={clientId}>
-      <PageContainer>
-        <ToastContainer />
-        <Components.Container>
-          <Components.SignUpContainer signinIn={signIn}>
-            <Components.Form>
-              <Components.Title>Create Account</Components.Title>
-              <GoogleButtonContainer>
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => toast.error("Google login failed")}
-                  text="signup_with"
+    <div>
+      <Navbarr />
+      <GoogleOAuthProvider clientId={clientId}>
+        <PageContainer>
+          <ToastContainer />
+          <Components.Container>
+            <Components.SignUpContainer signinIn={signIn}>
+              <Components.Form>
+                <Components.Title>Create Account</Components.Title>
+                <GoogleButtonContainer>
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => toast.error("Google login failed")}
+                    text="signup_with"
+                  />
+                </GoogleButtonContainer>
+                <Components.Input type="text" placeholder="Name" />
+                <Components.Input type="email" placeholder="Email" />
+                <Components.Input type="password" placeholder="Password" />
+                <Components.Button>Sign Up</Components.Button>
+              </Components.Form>
+            </Components.SignUpContainer>
+
+            <Components.SignInContainer signinIn={signIn}>
+              <Components.Form onSubmit={handleLogin}>
+                <Components.Title>Sign in</Components.Title>
+                <GoogleButtonContainer>
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => toast.error("Google login failed")}
+                    text="signin_with"
+                  />
+                </GoogleButtonContainer>
+                <Components.Input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
-              </GoogleButtonContainer>
-              <Components.Input type="text" placeholder="Name" />
-              <Components.Input type="email" placeholder="Email" />
-              <Components.Input type="password" placeholder="Password" />
-              <Components.Button>Sign Up</Components.Button>
-            </Components.Form>
-          </Components.SignUpContainer>
-
-          <Components.SignInContainer signinIn={signIn}>
-            <Components.Form onSubmit={handleLogin}>
-              <Components.Title>Sign in</Components.Title>
-              <GoogleButtonContainer>
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => toast.error("Google login failed")}
-                  text="signin_with"
+                <Components.Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
-              </GoogleButtonContainer>
-              <Components.Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Components.Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <Components.Anchor href="#">
-                Forgot your password?
-              </Components.Anchor>
-              <Components.Button type="submit">Sign In</Components.Button>
-            </Components.Form>
-          </Components.SignInContainer>
+                <Components.Anchor href="#">
+                  Forgot your password?
+                </Components.Anchor>
+                <Components.Button type="submit">Sign In</Components.Button>
+              </Components.Form>
+            </Components.SignInContainer>
 
-          <Components.OverlayContainer signinIn={signIn}>
-            <Components.Overlay signinIn={signIn}>
-              <Components.LeftOverlayPanel signinIn={signIn}>
-                <Components.Title>Welcome Back!</Components.Title>
-                <Components.Paragraph>
-                  To keep connected with us please login with your personal info
-                </Components.Paragraph>
-                <Components.GhostButton onClick={() => toggle(true)}>
-                  Sign In
-                </Components.GhostButton>
-              </Components.LeftOverlayPanel>
+            <Components.OverlayContainer signinIn={signIn}>
+              <Components.Overlay signinIn={signIn}>
+                <Components.LeftOverlayPanel signinIn={signIn}>
+                  <Components.Title>Welcome Back!</Components.Title>
+                  <Components.Paragraph>
+                    To keep connected with us please login with your personal
+                    info
+                  </Components.Paragraph>
+                  <Components.GhostButton onClick={() => toggle(true)}>
+                    Sign In
+                  </Components.GhostButton>
+                </Components.LeftOverlayPanel>
 
-              <Components.RightOverlayPanel signinIn={signIn}>
-                <Components.Title>Hello, Friend!</Components.Title>
-                <Components.Paragraph>
-                  Enter Your personal details and start journey with us
-                </Components.Paragraph>
-                <Components.GhostButton onClick={() => toggle(false)}>
-                  Sign Up
-                </Components.GhostButton>
-              </Components.RightOverlayPanel>
-            </Components.Overlay>
-          </Components.OverlayContainer>
-        </Components.Container>
-      </PageContainer>
-    </GoogleOAuthProvider>
+                <Components.RightOverlayPanel signinIn={signIn}>
+                  <Components.Title>Hello, Friend!</Components.Title>
+                  <Components.Paragraph>
+                    Enter Your personal details and start journey with us
+                  </Components.Paragraph>
+                  <Components.GhostButton onClick={() => toggle(false)}>
+                    Sign Up
+                  </Components.GhostButton>
+                </Components.RightOverlayPanel>
+              </Components.Overlay>
+            </Components.OverlayContainer>
+          </Components.Container>
+        </PageContainer>
+      </GoogleOAuthProvider>
+    </div>
   );
 }
 
