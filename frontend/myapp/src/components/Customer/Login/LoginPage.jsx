@@ -1,13 +1,12 @@
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
-import * as Components from "./Components";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import Header from "../../HomePage/Header/Header";
 import Navbarr from "../../HomePage/Navbarr";
+import * as Components from "./Components";
 
 const PageContainer = styled.div`
   display: flex;
@@ -41,7 +40,9 @@ function LoginPage({ setIsLoggedIn }) {
       toast.success("Login successful!");
       setIsLoggedIn(true);
       navigate("/");
+      
     } catch (error) {
+     
       toast.error("Login failed. Please check your credentials.");
     }
   };

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 function Navbarr() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -18,6 +18,7 @@ function Navbarr() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
+    navigate("/");
     toast.error('Logged out successfully!');
   };
 
