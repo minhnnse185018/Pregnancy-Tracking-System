@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 function Navbarr() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-   const navigate = useNavigate();
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -18,7 +18,6 @@ function Navbarr() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    navigate("/");
     toast.error('Logged out successfully!');
   };
 
@@ -39,7 +38,7 @@ function Navbarr() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mx-auto">
             <Nav.Link as={Link} to="/">Trang chủ</Nav.Link>
-            <Nav.Link href="#features">Tính Năng</Nav.Link>
+            <Nav.Link href="#features">Cộng Đồng</Nav.Link>
             <Nav.Link href="about">About Us</Nav.Link>
             <Nav.Link href="#tracking">Theo dõi</Nav.Link>
             <Nav.Link href="membership">Member</Nav.Link>

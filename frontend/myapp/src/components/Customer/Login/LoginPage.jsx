@@ -1,11 +1,10 @@
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
-import Navbarr from "../../HomePage/Navbarr";
 import * as Components from "./Components";
 
 const PageContainer = styled.div`
@@ -26,42 +25,106 @@ function LoginPage({ setIsLoggedIn }) {
   const [signIn, toggle] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.post("https://reqres.in/api/login", {
         email,
         password,
       });
+
       const { token } = response.data;
-      localStorage.setItem("token", token);
-      toast.success("Login successful!");
-      setIsLoggedIn(true);
-      navigate("/");
-      
+      if (token) {
+        localStorage.setItem("token", token);
+        setIsLoggedIn(true);
+        toast.success("Login successful!");
+        
+      } else {
+        setError("Email or Password Incorrect. Please try again.");
+      }
     } catch (error) {
-     
-      toast.error("Login failed. Please check your credentials.");
+      setError("Email or Password Incorrect.");
+    } finally {
+      setLoading(false);
+      navigate("/");
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError("");
+
     try {
       // Handle Google login success
       console.log(credentialResponse);
-      toast.success("Google login successful!");
       setIsLoggedIn(true);
+      toast.success("Google login successful!");
       navigate("/");
     } catch (error) {
-      toast.error("Google login failed");
+      setError("Google login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    const handleGoogleCallback = async () => {
+      setLoading(true);
+      setError("");
+
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get("token");
+
+      if (email) {
+        try {
+          const response = await axios.post("https://reqres.in/api/login", {
+            email,
+          });
+
+          const { token } = response.data;
+          if (token) {
+            localStorage.setItem("token", token);
+            setIsLoggedIn(true);
+            toast.success("Login successful!");
+            navigate("/");
+          } else {
+            setError("Google login failed. Please try again.");
+          }
+        } catch (error) {
+          console.error("Error logging in with Google:", error);
+        }
+      }
+      setLoading(false);
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("token");
+
+    if (email) {
+      handleGoogleCallback(email);
+    }
+  }, [navigate]);
+
   return (
     <div>
-      <Navbarr />
       <GoogleOAuthProvider clientId={clientId}>
         <PageContainer>
           <ToastContainer />
@@ -108,7 +171,10 @@ function LoginPage({ setIsLoggedIn }) {
                 <Components.Anchor href="#">
                   Forgot your password?
                 </Components.Anchor>
-                <Components.Button type="submit">Sign In</Components.Button>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <Components.Button type="submit" disabled={loading}>
+                  {loading ? "Signing In..." : "Sign In"}
+                </Components.Button>
               </Components.Form>
             </Components.SignInContainer>
 
