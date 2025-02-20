@@ -4,6 +4,8 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import LoginButton from '../Customer/LoginButton';
+import './Navbarr.css';
 
 function Navbarr() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -50,14 +52,9 @@ function Navbarr() {
                 Đăng xuất
               </Nav.Link>
             ) : (
-              <Nav.Link as={Link} to="/login" className="text-primary">
-                Đăng nhập
-              </Nav.Link>
-            )}
-            {!isLoggedIn && (
-              <Nav.Link as={Link} to="/login" className="btn btn-success text-primary ms-2">
-                Đăng ký
-              </Nav.Link>
+              <>
+                <LoginButton />
+              </>
             )}
           </Nav>
         </Navbar.Collapse>

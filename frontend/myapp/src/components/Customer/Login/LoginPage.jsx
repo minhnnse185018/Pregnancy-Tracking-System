@@ -56,7 +56,7 @@ function LoginPage({ setIsLoggedIn }) {
         localStorage.setItem("token", token);
         setIsLoggedIn(true);
         toast.success("Login successful!");
-        
+        navigate("/");
       } else {
         setError("Email or Password Incorrect. Please try again.");
       }
@@ -64,7 +64,7 @@ function LoginPage({ setIsLoggedIn }) {
       setError("Email or Password Incorrect.");
     } finally {
       setLoading(false);
-      navigate("/");
+      
     }
   };
 
