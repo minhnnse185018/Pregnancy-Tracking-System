@@ -25,6 +25,7 @@ function LoginPage({ setIsLoggedIn }) {
   const [signIn, toggle] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -64,6 +65,43 @@ function LoginPage({ setIsLoggedIn }) {
       setError("Email or Password Incorrect.");
     } finally {
       setLoading(false);
+<<<<<<< Updated upstream
+=======
+    }
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post("https://reqres.in/api/register", {
+        email,
+        password,
+        name,
+      });
+
+      const { token } = response.data;
+      if (token) {
+        localStorage.setItem("token", token);
+        setIsLoggedIn(true);
+        toast.success("Sign-up successful!");
+        navigate("/");
+      } else {
+        setError("Sign-up failed. Please try again.");
+      }
+    } catch (error) {
+      setError("Sign-up failed. Please try again.");
+    } finally {
+      setLoading(false);
+>>>>>>> Stashed changes
     }
   };
 
@@ -91,7 +129,7 @@ function LoginPage({ setIsLoggedIn }) {
           <ToastContainer />
           <Components.Container>
             <Components.SignUpContainer signinIn={signIn}>
-              <Components.Form>
+              <Components.Form onSubmit={handleSignUp}>
                 <Components.Title>Create Account</Components.Title>
                 <GoogleButtonContainer>
                   <GoogleLogin
@@ -100,10 +138,28 @@ function LoginPage({ setIsLoggedIn }) {
                     text="signup_with"
                   />
                 </GoogleButtonContainer>
-                <Components.Input type="text" placeholder="Name" />
-                <Components.Input type="email" placeholder="Email" />
-                <Components.Input type="password" placeholder="Password" />
-                <Components.Button>Sign Up</Components.Button>
+                <Components.Input
+                  type="text"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <Components.Input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <Components.Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <Components.Button type="submit" disabled={loading}>
+                  {loading ? "Signing Up..." : "Sign Up"}
+                </Components.Button>
               </Components.Form>
             </Components.SignUpContainer>
 
