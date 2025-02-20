@@ -49,3 +49,44 @@
   .nav-links a:hover {
     color: var(--deep-pink);
   }
+
+
+
+  
+  .hero-image {
+    margin-right: 50px !important;
+    /* Swiper container */
+.swiper-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Swiper slide */
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Swiper slide image */
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Swiper navigation buttons */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #000;
+}
+
+/* Swiper pagination bullets */
+.swiper-pagination-bullet {
+  background: #000;
+}
+  }

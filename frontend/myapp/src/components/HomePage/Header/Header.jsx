@@ -1,5 +1,13 @@
 import React from 'react';
+import 'swiper/css';
+import 'swiper/css/autoplay';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import { A11y, Autoplay, Navigation, Pagination, Scrollbar } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import './Header.css';
+
 const Header = () => {
   return (
     <section className="hero">
@@ -14,7 +22,19 @@ const Header = () => {
           </div>
         </div>
         <div className="hero-image">
-          <img src="images/hero-pregnancy.png" alt="Pregnancy Journey" />
+          <Swiper
+            modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
+            spaceBetween={50}
+            slidesPerView={1}
+            navigation
+            pagination={{ clickable: true }}
+            scrollbar={{ draggable: true }}
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
+          >
+            <SwiperSlide><img src='/images/hero-pregnancy.png' alt="Pregnancy Journey 1" /></SwiperSlide>
+            <SwiperSlide><img src='/images/hero-pregnancy-2.png' alt="Pregnancy Journey 2" /></SwiperSlide>
+            <SwiperSlide><img src='/images/hero-pregnancy-3.png' alt="Pregnancy Journey 3" /></SwiperSlide>
+          </Swiper>
         </div>
       </div>
     </section>
