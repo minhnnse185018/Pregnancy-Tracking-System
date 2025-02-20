@@ -32,8 +32,8 @@ const Header = () => {
             autoplay={{ delay: 3000, disableOnInteraction: false }}
           >
             <SwiperSlide><img src='/images/hero-pregnancy.png' alt="Pregnancy Journey 1" /></SwiperSlide>
-            <SwiperSlide><img src='/images/hero-pregnancy-2.png' alt="Pregnancy Journey 2" /></SwiperSlide>
-            <SwiperSlide><img src='/images/hero-pregnancy-3.png' alt="Pregnancy Journey 3" /></SwiperSlide>
+            <SwiperSlide><img src='/images/about-mainpicture.png' alt="Pregnancy Journey 2" /></SwiperSlide>
+            <SwiperSlide><img src='/images/tracking-demo.png' alt="Pregnancy Journey 3" /></SwiperSlide>
           </Swiper>
         </div>
       </div>
