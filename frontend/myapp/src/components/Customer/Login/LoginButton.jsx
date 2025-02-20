@@ -7,7 +7,6 @@ const LoginButton = () => {
       <style>
         {`
           .login-button {
-            background-color:rgb(226, 32, 200);
             border: none;
             color: #fff;
             font-weight: 500;
@@ -19,7 +18,6 @@ const LoginButton = () => {
           }
 
           .login-button:hover {
-            background-color: rgb(230, 70, 208);
             color: #fff;
           }
         `}

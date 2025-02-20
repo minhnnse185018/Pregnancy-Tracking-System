@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import LoginButton from '../Customer/LoginButton';
+import LoginButton from '../Customer/Login/LoginButton';
 import './Navbarr.css';
 
 function Navbarr() {
@@ -45,6 +45,7 @@ function Navbarr() {
             <Nav.Link href="#tracking">Theo dõi</Nav.Link>
             <Nav.Link href="membership">Member</Nav.Link>
             <Nav.Link href="blog">Blog</Nav.Link>
+            <Nav.Link href="contact">Contact</Nav.Link>
           </Nav>
           <Nav className="ms-auto">
             {isLoggedIn ? (

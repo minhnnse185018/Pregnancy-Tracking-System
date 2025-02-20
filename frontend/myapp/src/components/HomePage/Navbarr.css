@@ -31,7 +31,7 @@
 }
 
 .navbar-nav .login-button {
-  background-color: #6dbe45;
+  background-color: #fc63d0;
   border: none;
   color: #fff;
   font-weight: 500;
@@ -39,5 +39,5 @@
 }
 
 .navbar-nav .login-button:hover {
-  background-color: #5aa73a;
+  background-color: #f382d3;
 }

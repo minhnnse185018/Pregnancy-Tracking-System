@@ -1,9 +1,11 @@
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import AboutUs from "./components/Customer/AboutUs/AboutUs";
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
+import Contact from './components/Customer/Contact/Contact';
 import LoginPage from "./components/Customer/Login/LoginPage"; // Ensure the correct path
 import MembershipPage from "./components/Customer/Member/MembershipPage";
 import Footer from "./components/HomePage/Footer";
@@ -64,6 +66,16 @@ function App() {
             <>
               <Navbarr />
               <BlogPage />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <>
+              <Navbarr />
+              <Contact />
               <Footer />
             </>
           }

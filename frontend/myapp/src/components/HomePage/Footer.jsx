@@ -1,94 +1,84 @@
 import React from 'react';
-import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import './Footer.css';
 
-const FooterWrapper = styled.footer`
-  background: var(--background);
-  padding: 64px 0 32px;
-`;
-
-const FooterContent = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 64px;
-  margin-bottom: 32px;
-`;
-
-const FooterLinks = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
-`;
-
-const FooterSection = styled.div`
-  h4 {
-    font-size: 18px;
-    margin-bottom: 24px;
-    color: var(--text-primary);
-  }
-
-  ul {
-    list-style: none;
-  }
-
-  ul li {
-    margin-bottom: 12px;
-  }
-
-  a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-
-  a:hover {
-    color: var(--deep-pink);
-  }
-`;
-
-const FooterBottom = styled.div`
-  text-align: center;
-  padding-top: 32px;
-  border-top: 1px solid var(--secondary-pink);
-  color: var(--text-secondary);
-`;
-
-function Footer() {
+const Footer = () => {
   return (
-    <FooterWrapper>
+    <footer className="footer">
       <div className="container">
-        <FooterContent>
-          <div className="footer-info">
-            <div className="logo">
-              <img src="images/logo.png" alt="MomCare Logo" />
-              <span>Mom & Baby</span>
-            </div>
-            <p>Đồng hành cùng mẹ bầu trên hành trình thai kỳ</p>
+        <div className="row">
+          <div className="col-md-6 col-lg-4 mb-4 mb-md-0">
+            <h2 className="footer-heading">Mom & Baby</h2>
+            <p>Đồng hành cùng mẹ bầu trên hành trình thai kỳ.</p>
           </div>
-          <FooterLinks>
-            <FooterSection>
-              <h4>Thông Tin</h4>
+
+          <div className="col-md-6 col-lg-4 mb-4 mb-md-0">
+            <h2 className="footer-heading">Quick Links</h2>
+            <ul className="list-unstyled">
+              <li>
+                <Link to="/" className="py-2 d-block">
+                  Trang chủ
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="py-2 d-block">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/services" className="py-2 d-block">
+                  Services
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="py-2 d-block">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="py-2 d-block">
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="col-md-6 col-lg-4 mb-4 mb-md-0">
+            <h2 className="footer-heading">Have a Questions?</h2>
+            <div className="block-23 mb-3">
               <ul>
-                <li><a href="about">Về chúng tôi</a></li>
-                <li><a href="#contact">Liên hệ</a></li>
-                <li><a href="blog">Blog</a></li>
+                <li>
+                  <span className="icon fas fa-map-marker-alt"></span>
+                  <span className="text">
+                    E2a-7, D1 Street, Long Thanh My, Thu Duc City, Ho Chi Minh City 700000
+                  </span>
+                </li>
+                <li>
+                  <Link to="#">
+                    <span className="icon fas fa-phone"></span>
+                    <span className="text">+84 702 290 548</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="#">
+                    <span className="icon fas fa-paper-plane"></span>
+                    <span className="text">babycenter8386@gmail.com</span>
+                  </Link>
+                </li>
               </ul>
-            </FooterSection>
-            <FooterSection>
-              <h4>Hỗ Trợ</h4>
-              <ul>
-                <li><a href="#faq">FAQ</a></li>
-                <li><a href="#terms">Điều khoản</a></li>
-                <li><a href="#privacy">Bảo mật</a></li>
-              </ul>
-            </FooterSection>
-          </FooterLinks>
-        </FooterContent>
-        <FooterBottom>
-          <p>&copy; 2024 Mom & Baby. Tất cả quyền được bảo lưu.</p>
-        </FooterBottom>
+            </div>
+          </div>
+        </div>
+        <div className="row mt-5">
+          <div className="col-md-12 text-center">
+            <p className="copyright">
+              Copyright &copy; {new Date().getFullYear()} Mom & Baby. Tất cả quyền được bảo lưu.
+            </p>
+          </div>
+        </div>
       </div>
-    </FooterWrapper>
+    </footer>
   );
-}
+};
 
 export default Footer;
