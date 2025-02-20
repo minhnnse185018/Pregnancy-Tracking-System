@@ -68,7 +68,7 @@ function Footer() {
             <FooterSection>
               <h4>Thông Tin</h4>
               <ul>
-                <li><a href="#about">Về chúng tôi</a></li>
+                <li><a href="about">Về chúng tôi</a></li>
                 <li><a href="#contact">Liên hệ</a></li>
                 <li><a href="blog">Blog</a></li>
               </ul>
