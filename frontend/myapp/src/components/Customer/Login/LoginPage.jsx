@@ -1,6 +1,6 @@
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -64,7 +64,6 @@ function LoginPage({ setIsLoggedIn }) {
       setError("Email or Password Incorrect.");
     } finally {
       setLoading(false);
-      
     }
   };
 
@@ -84,44 +83,6 @@ function LoginPage({ setIsLoggedIn }) {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const handleGoogleCallback = async () => {
-      setLoading(true);
-      setError("");
-
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get("token");
-
-      if (email) {
-        try {
-          const response = await axios.post("https://reqres.in/api/login", {
-            email,
-          });
-
-          const { token } = response.data;
-          if (token) {
-            localStorage.setItem("token", token);
-            setIsLoggedIn(true);
-            toast.success("Login successful!");
-            navigate("/");
-          } else {
-            setError("Google login failed. Please try again.");
-          }
-        } catch (error) {
-          console.error("Error logging in with Google:", error);
-        }
-      }
-      setLoading(false);
-    };
-
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get("token");
-
-    if (email) {
-      handleGoogleCallback(email);
-    }
-  }, [navigate]);
 
   return (
     <div>
