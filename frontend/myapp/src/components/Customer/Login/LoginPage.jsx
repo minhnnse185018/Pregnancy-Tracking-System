@@ -65,8 +65,6 @@ function LoginPage({ setIsLoggedIn }) {
       setError("Email or Password Incorrect.");
     } finally {
       setLoading(false);
-<<<<<<< Updated upstream
-=======
     }
   };
 
@@ -101,7 +99,6 @@ function LoginPage({ setIsLoggedIn }) {
       setError("Sign-up failed. Please try again.");
     } finally {
       setLoading(false);
->>>>>>> Stashed changes
     }
   };
 
