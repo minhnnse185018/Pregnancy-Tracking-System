@@ -80,15 +80,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Add CORS
+// Add CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddPolicy("AllowReactApp",
         builder =>
         {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
+            builder
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
         });
 });
 
@@ -109,8 +111,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Add CORS middleware
-app.UseCors();
+// Enable CORS - add this before other middleware
+app.UseCors("AllowReactApp");
 
 // Add Authentication & Authorization
 app.UseAuthentication();

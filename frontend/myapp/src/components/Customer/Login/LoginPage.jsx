@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 import * as Components from "./Components";
+import Navbarr from "../../HomePage/Navbarr";
 
 const PageContainer = styled.div`
   display: flex;
@@ -37,96 +38,49 @@ function LoginPage({ setIsLoggedIn }) {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await axios.post("https://reqres.in/api/login", {
-        email,
-        password,
-      });
-
+      const response = await axios.post("http://localhost:5254/api/Login/login", 
+        {
+          email: email,
+          password: password
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
       const { token } = response.data;
-      if (token) {
-        localStorage.setItem("token", token);
-        setIsLoggedIn(true);
-        toast.success("Login successful!");
-        navigate("/");
-      } else {
-        setError("Email or Password Incorrect. Please try again.");
-      }
+      localStorage.setItem("token", token);
+      toast.success("Login successful!");
+      setIsLoggedIn(true);
     } catch (error) {
-      setError("Email or Password Incorrect.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await axios.post("https://reqres.in/api/register", {
-        email,
-        password,
-        name,
-      });
-
-      const { token } = response.data;
-      if (token) {
-        localStorage.setItem("token", token);
-        setIsLoggedIn(true);
-        toast.success("Sign-up successful!");
-        navigate("/");
-      } else {
-        setError("Sign-up failed. Please try again.");
-      }
-    } catch (error) {
-      setError("Sign-up failed. Please try again.");
-    } finally {
-      setLoading(false);
+      navigate("/");
+      toast.error("Login failed. Please check your credentials.");
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
-    setLoading(true);
-    setError("");
-
     try {
       // Handle Google login success
       console.log(credentialResponse);
-      setIsLoggedIn(true);
       toast.success("Google login successful!");
+      setIsLoggedIn(true);
       navigate("/");
     } catch (error) {
-      setError("Google login failed. Please try again.");
-    } finally {
-      setLoading(false);
+      toast.error("Google login failed");
     }
   };
 
   return (
     <div>
+      <Navbarr />
       <GoogleOAuthProvider clientId={clientId}>
         <PageContainer>
           <ToastContainer />
           <Components.Container>
             <Components.SignUpContainer signinIn={signIn}>
-              <Components.Form onSubmit={handleSignUp}>
+              <Components.Form>
                 <Components.Title>Create Account</Components.Title>
                 <GoogleButtonContainer>
                   <GoogleLogin
@@ -135,28 +89,10 @@ function LoginPage({ setIsLoggedIn }) {
                     text="signup_with"
                   />
                 </GoogleButtonContainer>
-                <Components.Input
-                  type="text"
-                  placeholder="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <Components.Input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <Components.Input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <Components.Button type="submit" disabled={loading}>
-                  {loading ? "Signing Up..." : "Sign Up"}
-                </Components.Button>
+                <Components.Input type="text" placeholder="Name" />
+                <Components.Input type="email" placeholder="Email" />
+                <Components.Input type="password" placeholder="Password" />
+                <Components.Button>Sign Up</Components.Button>
               </Components.Form>
             </Components.SignUpContainer>
 
@@ -185,10 +121,7 @@ function LoginPage({ setIsLoggedIn }) {
                 <Components.Anchor href="#">
                   Forgot your password?
                 </Components.Anchor>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <Components.Button type="submit" disabled={loading}>
-                  {loading ? "Signing In..." : "Sign In"}
-                </Components.Button>
+                <Components.Button type="submit">Sign In</Components.Button>
               </Components.Form>
             </Components.SignInContainer>
 
@@ -199,7 +132,7 @@ function LoginPage({ setIsLoggedIn }) {
                   <Components.Paragraph>
                     To keep connected with us please login with your personal
                     info
-                  </Components.Paragraph>
+</Components.Paragraph>
                   <Components.GhostButton onClick={() => toggle(true)}>
                     Sign In
                   </Components.GhostButton>

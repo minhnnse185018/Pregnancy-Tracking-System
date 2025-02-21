@@ -56,16 +56,7 @@ namespace backend.Controllers
                 
                 var token = _jwtService.GenerateToken(userDto);
 
-                return Ok(new
-                {
-                    success = true,
-                    message = "Login successful",
-                    data = new
-                    {
-                        token
-                        
-                    }
-                });
+                return Ok(token);
             }
             catch (Exception ex)
             {
