@@ -10,67 +10,131 @@ using backend.Repository.Implementation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using backend.Models;
+using backend.Services;
+using backend.Repository.Interface;
+using backend.Dtos;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController:ControllerBase
+    public class LoginController : ControllerBase
     {
-        private readonly UserRepository _userRepo;
-        private readonly ApplicationDBContext _context;
-        public LoginController(UserRepository userRepo,ApplicationDBContext context)
+        private readonly IUserRepository _userRepository;
+        private readonly JwtService _jwtService;
+        private readonly IMapper _mapper;
+
+        public LoginController(IUserRepository userRepository, JwtService jwtService, IMapper mapper)
         {
-            _context=context;
-            _userRepo=userRepo;
+            _userRepository = userRepository;
+            _jwtService = jwtService;
+            _mapper = mapper;
         }
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login(string email,string Password)
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var user= await _userRepo.GetUser(email,Password);
-            if(user==null){
-                return BadRequest("Invalid user or password!");
-            }
-            var claims= new List<Claim>
+            try
             {
-                new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),
-                new Claim(ClaimTypes.Name,user.Username),
-                new Claim("RoleId",user.RoleId),
-            };
-            if(user.RoleId=="MANAGER")
-            {
-                var manager = await _context.Managers.FirstOrDefaultAsync(x=>x.UserId==user.UserId);
-                if(manager!=null)
+                
+
+                var userDto = await _userRepository.Login(loginDto);
+
+                if (userDto == null)
                 {
-                    claims.Add(new Claim("ManagerId",manager.ManagerId.ToString()));
-                    claims.Add(new Claim("ManagerFirstName",manager.FirstName));
-                    claims.Add(new Claim("ManagerLastName",manager.LastName));
+                    return Unauthorized(new
+                    {
+                        success = false,
+                        message = "Invalid email or password"
+                    });
                 }
-            }
-            else if(user.RoleId=="MEMBER")
-            {
-                var member = await _context.Members.FirstOrDefaultAsync(x=>x.UserId==user.UserId);
-                if(member!=null)
-                {
-                    claims.Add(new Claim("MemberId",member.MemberId.ToString()));
-                    claims.Add(new Claim("MemberFirstName",member.FirstName));
-                    claims.Add(new Claim("MemberLastName",member.LastName));
-                }
-            }
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key_here"));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                var token = new JwtSecurityToken(
-                    issuer: "your_issuer_here",
-                    audience: "your_audience_here",
-                    claims: claims,
-                    expires: DateTime.Now.AddDays(1),
-                    signingCredentials: creds
-                );
+
+                // Map UserDto back to User for token generation
+                
+                var token = _jwtService.GenerateToken(userDto);
+
                 return Ok(new
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token)
+                    success = true,
+                    message = "Login successful",
+                    data = new
+                    {
+                        token
+                        
+                    }
                 });
-
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while processing your request",
+                    error = ex.Message
+                });
+            }
         }
+
+        
+
+        [HttpPost("validate-token")]
+        public IActionResult ValidateToken()
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                if (identity == null || !identity.Claims.Any())
+                {
+                    return Unauthorized(new
+                    {
+                        success = false,
+                        message = "Invalid token"
+                    });
+                }
+
+                var userClaims = identity.Claims;
+                var userId = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                var email = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                var userType = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Token is valid",
+                    data = new
+                    {
+                        userId,
+                        email,
+                        userType
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while validating the token",
+                    error = ex.Message
+                });
+            }
+        }
+    }
+
+    public class LoginRequest
+    {
+        public string Email { get; set; } = null!;
+        public string Password { get; set; } = null!;
+    }
+
+    public class RegisterRequest
+    {
+        public string Email { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
     }
 }
