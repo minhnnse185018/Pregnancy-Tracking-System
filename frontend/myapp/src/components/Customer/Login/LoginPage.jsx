@@ -1,3 +1,4 @@
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -5,9 +6,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 import * as Components from "./Components";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import Header from "../../HomePage/Header/Header";
-import Navbarr from "../../HomePage/Navbarr";
 
 const PageContainer = styled.div`
   display: flex;
@@ -27,46 +25,111 @@ function LoginPage({ setIsLoggedIn }) {
   const [signIn, toggle] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.post("https://reqres.in/api/login", {
         email,
         password,
       });
+
       const { token } = response.data;
-      localStorage.setItem("token", token);
-      toast.success("Login successful!");
-      setIsLoggedIn(true);
-      navigate("/");
+      if (token) {
+        localStorage.setItem("token", token);
+        setIsLoggedIn(true);
+        toast.success("Login successful!");
+        navigate("/");
+      } else {
+        setError("Email or Password Incorrect. Please try again.");
+      }
     } catch (error) {
-      toast.error("Login failed. Please check your credentials.");
+      setError("Email or Password Incorrect.");
+    } finally {
+      setLoading(false);
+<<<<<<< Updated upstream
+=======
+    }
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post("https://reqres.in/api/register", {
+        email,
+        password,
+        name,
+      });
+
+      const { token } = response.data;
+      if (token) {
+        localStorage.setItem("token", token);
+        setIsLoggedIn(true);
+        toast.success("Sign-up successful!");
+        navigate("/");
+      } else {
+        setError("Sign-up failed. Please try again.");
+      }
+    } catch (error) {
+      setError("Sign-up failed. Please try again.");
+    } finally {
+      setLoading(false);
+>>>>>>> Stashed changes
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError("");
+
     try {
       // Handle Google login success
       console.log(credentialResponse);
-      toast.success("Google login successful!");
       setIsLoggedIn(true);
+      toast.success("Google login successful!");
       navigate("/");
     } catch (error) {
-      toast.error("Google login failed");
+      setError("Google login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div>
-      <Navbarr />
       <GoogleOAuthProvider clientId={clientId}>
         <PageContainer>
           <ToastContainer />
           <Components.Container>
             <Components.SignUpContainer signinIn={signIn}>
-              <Components.Form>
+              <Components.Form onSubmit={handleSignUp}>
                 <Components.Title>Create Account</Components.Title>
                 <GoogleButtonContainer>
                   <GoogleLogin
@@ -75,10 +138,28 @@ function LoginPage({ setIsLoggedIn }) {
                     text="signup_with"
                   />
                 </GoogleButtonContainer>
-                <Components.Input type="text" placeholder="Name" />
-                <Components.Input type="email" placeholder="Email" />
-                <Components.Input type="password" placeholder="Password" />
-                <Components.Button>Sign Up</Components.Button>
+                <Components.Input
+                  type="text"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <Components.Input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <Components.Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <Components.Button type="submit" disabled={loading}>
+                  {loading ? "Signing Up..." : "Sign Up"}
+                </Components.Button>
               </Components.Form>
             </Components.SignUpContainer>
 
@@ -107,7 +188,10 @@ function LoginPage({ setIsLoggedIn }) {
                 <Components.Anchor href="#">
                   Forgot your password?
                 </Components.Anchor>
-                <Components.Button type="submit">Sign In</Components.Button>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <Components.Button type="submit" disabled={loading}>
+                  {loading ? "Signing In..." : "Sign In"}
+                </Components.Button>
               </Components.Form>
             </Components.SignInContainer>
 
