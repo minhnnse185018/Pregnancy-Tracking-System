@@ -24,6 +24,9 @@ function Navbarr() {
   };
 
   return (
+    <div>
+      
+    
     <Navbar expand="lg" className="bg-light shadow-sm">
       <Container>
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
@@ -61,6 +64,7 @@ function Navbarr() {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+    </div>
   );
 }
 

@@ -15,18 +15,7 @@ import Navbarr from "./components/HomePage/Navbarr";
 function App() {
   return (
     <div>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      <ToastContainer autoClose={1300} />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route

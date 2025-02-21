@@ -2,7 +2,7 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 import * as Components from "./Components";
@@ -19,7 +19,7 @@ const GoogleButtonContainer = styled.div`
   margin: 10px 0;
 `;
 
-function LoginPage({ setIsLoggedIn }) {
+function LoginPage() {
   const clientId =
     "157843865023-45o3ncemhfk5n348ee0kdrmn9cq02u9b.apps.googleusercontent.com";
   const [signIn, toggle] = useState(true);
@@ -54,18 +54,15 @@ function LoginPage({ setIsLoggedIn }) {
       const { token } = response.data;
       if (token) {
         localStorage.setItem("token", token);
-        setIsLoggedIn(true);
-        toast.success("Login successful!");
         navigate("/");
+        toast.success("Login successful!");
+
       } else {
         setError("Email or Password Incorrect. Please try again.");
       }
     } catch (error) {
       setError("Email or Password Incorrect.");
-    } finally {
-      setLoading(false);
-      
-    }
+    } 
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
@@ -75,7 +72,6 @@ function LoginPage({ setIsLoggedIn }) {
     try {
       // Handle Google login success
       console.log(credentialResponse);
-      setIsLoggedIn(true);
       toast.success("Google login successful!");
       navigate("/");
     } catch (error) {
@@ -102,7 +98,6 @@ function LoginPage({ setIsLoggedIn }) {
           const { token } = response.data;
           if (token) {
             localStorage.setItem("token", token);
-            setIsLoggedIn(true);
             toast.success("Login successful!");
             navigate("/");
           } else {
@@ -121,13 +116,12 @@ function LoginPage({ setIsLoggedIn }) {
     if (email) {
       handleGoogleCallback(email);
     }
-  }, [navigate, setIsLoggedIn]);
+  }, [navigate]);
 
   return (
     <div>
       <GoogleOAuthProvider clientId={clientId}>
         <PageContainer>
-          <ToastContainer />
           <Components.Container>
             <Components.SignUpContainer signisnIn={signIn}>
               <Components.Form>
