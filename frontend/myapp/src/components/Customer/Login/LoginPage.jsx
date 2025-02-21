@@ -121,7 +121,7 @@ function LoginPage({ setIsLoggedIn }) {
     if (email) {
       handleGoogleCallback(email);
     }
-  }, [navigate]);
+  }, [navigate, setIsLoggedIn]);
 
   return (
     <div>
