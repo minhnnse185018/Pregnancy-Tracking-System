@@ -25,45 +25,45 @@ function Navbarr() {
 
   return (
     <div>
-      
-    
-    <Navbar expand="lg" className="bg-light shadow-sm">
-      <Container>
-        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
-          <img
-            src="images/logo.png"
-            alt="MomCare Logo"
-            width="40"
-            height="40"
-            className="me-2"
-          />
-          <span className="fw-bold">Mom & Baby</span>
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mx-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link href="#features">Community</Nav.Link>
-            <Nav.Link href="about">About Us</Nav.Link>
-            <Nav.Link href="#tracking">Follow</Nav.Link>
-            <Nav.Link href="membership">Member</Nav.Link>
-            <Nav.Link href="blog">Blog</Nav.Link>
-            <Nav.Link href="contact">Contact</Nav.Link>
-          </Nav>
-          <Nav className="ms-auto">
-            {isLoggedIn ? (
-              <Nav.Link onClick={handleLogout} className="text-danger">
-                Logout
-              </Nav.Link>
-            ) : (
-              <>
+      <Navbar expand="lg" className="ftco_navbar ftco-navbar-light shadow-sm" id="ftco-navbar">
+        <Container className="d-flex justify-content-between align-items-center">
+          <div className="brand-container">
+            <img
+              src="/images/logo.png"
+              alt="MomCare Logo"
+              className="navbar-logo"
+            />
+            <Link to="/" className="brand-text-link">
+              <span className="brand-text">Mom & Baby</span>
+            </Link>
+          </div>
+          
+          <Navbar.Toggle aria-controls="basic-navbar-nav">
+            <span className="fa fa-bars"></span> Menu
+          </Navbar.Toggle>
+          
+          <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
+            <Nav className="nav-center">
+              <Nav.Link as={Link} to="/" className="nav-link">Home</Nav.Link>
+              <Nav.Link as={Link} to="/community" className="nav-link">Community</Nav.Link>
+              <Nav.Link as={Link} to="/about" className="nav-link">About Us</Nav.Link>
+              <Nav.Link as={Link} to="/tracking" className="nav-link">Follow</Nav.Link>
+              <Nav.Link as={Link} to="/membership" className="nav-link">Member</Nav.Link>
+              <Nav.Link as={Link} to="/blog" className="nav-link">Blog</Nav.Link>
+              <Nav.Link as={Link} to="/contact" className="nav-link">Contact</Nav.Link>
+            </Nav>
+            <Nav className="nav-auth">
+              {isLoggedIn ? (
+                <Nav.Link onClick={handleLogout} className="nav-link logout-link">
+                  Logout
+                </Nav.Link>
+              ) : (
                 <LoginButton />
-              </>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+              )}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
     </div>
   );
 }
