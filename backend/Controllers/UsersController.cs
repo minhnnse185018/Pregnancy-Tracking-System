@@ -13,7 +13,7 @@ namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController:ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
@@ -23,25 +23,25 @@ namespace backend.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync ()
+        public async Task<IActionResult> GetAllAsync()
         { 
             var users = await _userRepository.GetAllUsersAsync();
             return Ok(users);
         }
-        [HttpGet("{email}")]
+        [HttpGet("email/{email}")]
         public async Task<IActionResult> GetUserByEmailAsync(string email)
         {
             var user = await _userRepository.GetUserByEmailAsync(email);
             return user==null? NotFound():Ok(user);
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
             return user==null? NotFound():Ok(user);
         }
-        [HttpGet]
-        public async Task<IActionResult> GetUserByFilter(string? role,string? status)
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetUserByFilter([FromQuery] string? role, [FromQuery] string? status)
         {
             var users = await _userRepository.GetFilteredUsersAsync(role,status);
             return users==null? NotFound():Ok(users);
@@ -54,7 +54,7 @@ namespace backend.Controllers
             return  Ok();
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpsateUserAsync(int id,UserDto userDto)
+        public async Task<IActionResult> UpdateUserAsync(int id, UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
             var result = await _userRepository.UpdateUser(id,user);
