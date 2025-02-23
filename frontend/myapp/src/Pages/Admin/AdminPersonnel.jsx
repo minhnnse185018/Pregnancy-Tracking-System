@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   Box,
-  Typography,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Pagination,
+  Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Pagination,
   TextField,
-  Modal,
-  Paper,
-  Grid,
+  Typography,
 } from "@mui/material";
+import axios from "axios";
 import { useFormik } from "formik";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -250,7 +250,7 @@ const AdminPersonnel = () => {
               <TableCell sx={{ color: "#fff" }}>Email</TableCell>
               <TableCell sx={{ color: "#fff" }}>Role</TableCell>
               <TableCell sx={{ color: "#fff" }}>Status</TableCell>
-              <TableCell sx={{ color: "#fff" }}>Salon</TableCell>
+              {/* <TableCell sx={{ color: "#fff" }}>Salon</TableCell> */}
               <TableCell sx={{ color: "#fff" }}>Action</TableCell>
             </TableRow>
           </TableHead>
