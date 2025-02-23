@@ -1,4 +1,4 @@
-namespace backend.Dtos.FetalGrowth
+namespace backend.Dtos.FetalStandard
 {
     public class FetalGrowthStandardDto
     {

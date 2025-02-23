@@ -39,18 +39,17 @@ namespace backend.Repository.Implementation
             return comment == null ? null : _mapper.Map<CommentDto>(comment);
         }
 
-        public async Task<CommentDto> CreateCommentAsync(int userId, int postId, CreateCommentDto commentDto)
+        public async Task<int> CreateCommentAsync(CreateCommentDto commentDto)
         {
             var comment = _mapper.Map<Comment>(commentDto);
-            comment.UserId = userId;
-            comment.PostId = postId;
+            
             comment.CreatedAt = DateTime.Now;
             
 
             _context.Comments.Add(comment);
-            await _context.SaveChangesAsync();
+            
 
-            return await GetCommentByIdAsync(comment.Id);
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<CommentDto?> UpdateCommentAsync(int id, UpdateCommentDto commentDto)
@@ -65,14 +64,14 @@ namespace backend.Repository.Implementation
             return await GetCommentByIdAsync(id);
         }
 
-        public async Task<bool> DeleteCommentAsync(int id)
+        public async Task<int> DeleteCommentAsync(int id)
         {
             var comment = await _context.Comments.FindAsync(id);
-            if (comment == null) return false;
+            if (comment == null) return -1;
 
             _context.Comments.Remove(comment);
-            await _context.SaveChangesAsync();
-            return true;
+            
+            return await _context.SaveChangesAsync();;
         }
     }
 } 

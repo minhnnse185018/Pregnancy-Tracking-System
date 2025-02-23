@@ -12,7 +12,6 @@ namespace backend.Dtos.Posts
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string? UserName { get; set; }
-        public string? UserType { get; set; }
         public int CommentCount { get; set; }
         public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
     }

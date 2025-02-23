@@ -15,6 +15,7 @@ using backend.Dtos.Answers;
 using backend.Dtos.MembershipPlans;
 using backend.Dtos.Memberships;
 using backend.Dtos.PregnancyProfiles;
+using backend.Dtos.FetalStandard;
 
 namespace backend.Mapper
 {
