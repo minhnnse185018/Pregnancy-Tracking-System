@@ -4,17 +4,19 @@ import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import AboutUs from "./components/Customer/AboutUs/AboutUs";
+import { AuthProvider } from './components/Customer/AuthContext';
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import Contact from './components/Customer/Contact/Contact';
+import Footer from "./components/Customer/Footer/Footer";
 import LoginPage from "./components/Customer/Login/LoginPage"; // Ensure the correct path
 import MembershipPage from "./components/Customer/Member/MembershipPage";
-import Footer from "./components/HomePage/Footer";
+import Navbarr from "./components/Customer/Navbarr/Navbarr";
 import Header from "./components/HomePage/Header/Header";
 import MainContent from "./components/HomePage/Maincontent/Maincontent";
-import Navbarr from "./components/HomePage/Navbarr";
 function App() {
   return (
     <div>
+      <AuthProvider>
       <ToastContainer autoClose={1300} />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
@@ -70,6 +72,7 @@ function App() {
           }
         />
       </Routes>
+      </AuthProvider>
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
+import { AuthContext } from "../AuthContext"; // Import AuthContext
 import * as Components from "./Components";
 
 const PageContainer = styled.div`
@@ -20,14 +21,14 @@ const GoogleButtonContainer = styled.div`
 `;
 
 function LoginPage() {
-  const clientId =
-    "157843865023-45o3ncemhfk5n348ee0kdrmn9cq02u9b.apps.googleusercontent.com";
+  const clientId = "157843865023-45o3ncemhfk5n348ee0kdrmn9cq02u9b.apps.googleusercontent.com";
   const [signIn, toggle] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setHasToken } = useContext(AuthContext); // Lấy setHasToken từ AuthContext
 
   const validateEmail = (email) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -47,30 +48,29 @@ function LoginPage() {
 
     try {
       const response = await axios.post("http://localhost:5254/api/Login", {
-        email: email,
-        password: password
+        email,
+        password
       },
       {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+        headers: { "Content-Type": "application/json" }
+      });
 
-      const { token} = response.data;
+      const { token, userID, userRole } = response.data;
       if (token) {
-        localStorage.setItem("token", token);
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("userID", userID);
+        sessionStorage.setItem("userRole", userRole);
+        setHasToken(true); // Cập nhật trạng thái đăng nhập trong AuthContext
         navigate("/");
         toast.success("Login successful!");
-
       } else {
         setError("Email or Password Incorrect. Please try again.");
-        setLoading(false);
       }
     } catch (error) {
-      setError("ERROR.");
+      setError("Login failed. Please try again.");
+    } finally {
       setLoading(false);
-    } 
+    }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
@@ -78,10 +78,24 @@ function LoginPage() {
     setError("");
 
     try {
-      // Handle Google login success
-      console.log(credentialResponse);
-      toast.success("Google login successful!");
-      navigate("/");
+      const response = await axios.post("http://localhost:5254/api/LoginGoogle", {
+        credential: credentialResponse.credential
+      },
+      {
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const { token, userID, userRole } = response.data;
+      if (token) {
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("userID", userID);
+        sessionStorage.setItem("userRole", userRole);
+        setHasToken(true); // Cập nhật trạng thái đăng nhập trong AuthContext
+        toast.success("Google login successful!");
+        navigate("/");
+      } else {
+        setError("Google login failed. Please try again.");
+      }
     } catch (error) {
       setError("Google login failed. Please try again.");
     } finally {
@@ -89,125 +103,85 @@ function LoginPage() {
     }
   };
 
-  useEffect(() => {
-    const handleGoogleCallback = async () => {
-      setLoading(true);
-      setError("");
-
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get("token");
-
-      if (email) {
-        try {
-          const response = await axios.post("hhttp://localhost:5254/api/Login", {
-            email,
-          });
-
-          const { token } = response.data;
-          if (token) {
-            localStorage.setItem("token", token);
-            toast.success("Login successful!");
-            navigate("/");
-          } else {
-            setError("Google login failed. Please try again.");
-          }
-        } catch (error) {
-          console.error("Error logging in with Google:", error);
-        }
-      }
-      setLoading(false);
-    };
-
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get("token");
-
-    if (email) {
-      handleGoogleCallback(email);
-    }
-  }, [navigate]);
-
   return (
-    <div>
-      <GoogleOAuthProvider clientId={clientId}>
-        <PageContainer>
-          <Components.Container>
-            <Components.SignUpContainer signisnIn={signIn}>
-              <Components.Form>
-                <Components.Title>Create Account</Components.Title>
-                <GoogleButtonContainer>
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={() => toast.error("Google login failed")}
-                    text="signup_with"
-                  />
-                </GoogleButtonContainer>
-                <Components.Input type="text" placeholder="Name" />
-                <Components.Input type="email" placeholder="Email" />
-                <Components.Input type="password" placeholder="Password" />
-                <Components.Button>Sign Up</Components.Button>
-              </Components.Form>
-            </Components.SignUpContainer>
-
-            <Components.SignInContainer signinIn={signIn}>
-              <Components.Form onSubmit={handleLogin}>
-                <Components.Title>Sign in</Components.Title>
-                <GoogleButtonContainer>
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={() => toast.error("Google login failed")}
-                    text="signin_with"
-                  />
-                </GoogleButtonContainer>
-                <Components.Input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+    <GoogleOAuthProvider clientId={clientId}>
+      <PageContainer>
+        <Components.Container>
+          <Components.SignUpContainer signinIn={signIn}>
+            <Components.Form>
+              <Components.Title>Create Account</Components.Title>
+              <GoogleButtonContainer>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => toast.error("Google login failed")}
+                  text="signup_with"
                 />
-                <Components.Input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+              </GoogleButtonContainer>
+              <Components.Input type="text" placeholder="Name" />
+              <Components.Input type="email" placeholder="Email" />
+              <Components.Input type="password" placeholder="Password" />
+              <Components.Button>Sign Up</Components.Button>
+            </Components.Form>
+          </Components.SignUpContainer>
+
+          <Components.SignInContainer signinIn={signIn}>
+            <Components.Form onSubmit={handleLogin}>
+              <Components.Title>Sign in</Components.Title>
+              <GoogleButtonContainer>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => toast.error("Google login failed")}
+                  text="signin_with"
                 />
-                <Components.Anchor href="#">
-                  Forgot your password?
-                </Components.Anchor>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <Components.Button type="submit" disabled={loading}>
-                  {loading ? "Signing In..." : "Sign In"}
-                </Components.Button>
-              </Components.Form>
-            </Components.SignInContainer>
+              </GoogleButtonContainer>
+              <Components.Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Components.Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Components.Anchor href="#">
+                Forgot your password?
+              </Components.Anchor>
+              {error && <p style={{ color: "red" }}>{error}</p>}
+              <Components.Button type="submit" disabled={loading}>
+                {loading ? "Signing In..." : "Sign In"}
+              </Components.Button>
+            </Components.Form>
+          </Components.SignInContainer>
 
-            <Components.OverlayContainer signinIn={signIn}>
-              <Components.Overlay signinIn={signIn}>
-                <Components.LeftOverlayPanel signinIn={signIn}>
-                  <Components.Title>Welcome Back!</Components.Title>
-                  <Components.Paragraph>
-                    To keep connected with us please login with your personal
-                    info
-                  </Components.Paragraph>
-                  <Components.GhostButton onClick={() => toggle(true)}>
-                    Sign In
-                  </Components.GhostButton>
-                </Components.LeftOverlayPanel>
+          <Components.OverlayContainer signinIn={signIn}>
+            <Components.Overlay signinIn={signIn}>
+              <Components.LeftOverlayPanel signinIn={signIn}>
+                <Components.Title>Welcome Back!</Components.Title>
+                <Components.Paragraph>
+                  To keep connected with us please login with your personal info
+                </Components.Paragraph>
+                <Components.GhostButton onClick={() => toggle(true)}>
+                  Sign In
+                </Components.GhostButton>
+              </Components.LeftOverlayPanel>
 
-                <Components.RightOverlayPanel signinIn={signIn}>
-                  <Components.Title>Hello, Friend!</Components.Title>
-                  <Components.Paragraph>
-                    Enter Your personal details and start journey with us
-                  </Components.Paragraph>
-                  <Components.GhostButton onClick={() => toggle(false)}>
-                    Sign Up
-                  </Components.GhostButton>
-                </Components.RightOverlayPanel>
-              </Components.Overlay>
-            </Components.OverlayContainer>
-          </Components.Container>
-        </PageContainer>
-      </GoogleOAuthProvider>
-    </div>
+              <Components.RightOverlayPanel signinIn={signIn}>
+                <Components.Title>Hello, Friend!</Components.Title>
+                <Components.Paragraph>
+                  Enter Your personal details and start journey with us
+                </Components.Paragraph>
+                <Components.GhostButton onClick={() => toggle(false)}>
+                  Sign Up
+                </Components.GhostButton>
+              </Components.RightOverlayPanel>
+            </Components.Overlay>
+          </Components.OverlayContainer>
+        </Components.Container>
+      </PageContainer>
+    </GoogleOAuthProvider>
   );
 }
 
