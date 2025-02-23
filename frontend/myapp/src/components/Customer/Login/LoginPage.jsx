@@ -46,12 +46,18 @@ function LoginPage() {
     }
 
     try {
-      const response = await axios.post("https://reqres.in/api/login", {
-        email,
-        password,
-      });
+      const response = await axios.post("http://localhost:5254/api/Login/login", {
+        email: email,
+        password: password
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
-      const { token } = response.data;
+      const { token} = response.data;
       if (token) {
         localStorage.setItem("token", token);
         navigate("/");
@@ -59,9 +65,11 @@ function LoginPage() {
 
       } else {
         setError("Email or Password Incorrect. Please try again.");
+        setLoading(false);
       }
     } catch (error) {
       setError("Email or Password Incorrect.");
+      setLoading(false);
     } 
   };
 
