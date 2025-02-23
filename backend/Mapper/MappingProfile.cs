@@ -12,6 +12,9 @@ using backend.Dtos.FAQs;
 using backend.Dtos.Appointments;
 using backend.Dtos.Questions;
 using backend.Dtos.Answers;
+using backend.Dtos.MembershipPlans;
+using backend.Dtos.Memberships;
+using backend.Dtos.PregnancyProfiles;
 
 namespace backend.Mapper
 {
@@ -79,6 +82,35 @@ namespace backend.Mapper
                     opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"));
             CreateMap<CreateAnswerDto, Answer>();
             CreateMap<UpdateAnswerDto, Answer>();
+
+            // PregnancyProfile mappings
+            CreateMap<PregnancyProfile, PregnancyProfileDto>()
+                .ForMember(dest => dest.UserName,
+                    opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
+                .ForMember(dest => dest.FetalMeasurements,
+                    opt => opt.MapFrom(src => src.FetalMeasurements));
+            CreateMap<CreatePregnancyProfileDto, PregnancyProfile>();
+            CreateMap<UpdatePregnancyProfileDto, PregnancyProfile>();
+
+            // FetalGrowthStandard mappings
+            CreateMap<FetalGrowthStandard, FetalGrowthStandardDto>();
+            CreateMap<CreateFetalGrowthStandardDto, FetalGrowthStandard>();
+            CreateMap<UpdateFetalGrowthStandardDto, FetalGrowthStandard>();
+
+            // Membership mappings
+            CreateMap<Membership, MembershipDto>()
+                .ForMember(dest => dest.UserName,
+                    opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
+                .ForMember(dest => dest.PlanName,
+                    opt => opt.MapFrom(src => src.Plan.PlanName));
+            CreateMap<CreateMembershipDto, Membership>();
+            CreateMap<UpdateMembershipDto, Membership>();
+
+            // MembershipPlan mappings
+            CreateMap<MembershipPlan, MembershipPlanDto>();
+            CreateMap<CreateMembershipPlanDto, MembershipPlan>();
+            CreateMap<UpdateMembershipPlanDto, MembershipPlan>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

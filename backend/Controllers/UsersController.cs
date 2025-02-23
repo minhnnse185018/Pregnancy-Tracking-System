@@ -22,45 +22,45 @@ namespace backend.Controllers
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetAllAsync()
         { 
             var users = await _userRepository.GetAllUsersAsync();
             return Ok(users);
         }
-        [HttpGet("email/{email}")]
+        [HttpGet("GetByEmail/{email}")]
         public async Task<IActionResult> GetUserByEmailAsync(string email)
         {
             var user = await _userRepository.GetUserByEmailAsync(email);
             return user==null? NotFound():Ok(user);
         }
-        [HttpGet("{id:int}")]
+        [HttpGet("GetById/{id:int}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
             return user==null? NotFound():Ok(user);
         }
-        [HttpGet("filter")]
+        [HttpGet("FilterRSts")]
         public async Task<IActionResult> GetUserByFilter([FromQuery] string? role, [FromQuery] string? status)
         {
             var users = await _userRepository.GetFilteredUsersAsync(role,status);
             return users==null? NotFound():Ok(users);
         }
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> AddUserAsync(UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
             await _userRepository.CreateUser(user);
             return  Ok();
         }
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<IActionResult> UpdateUserAsync(int id, UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
             var result = await _userRepository.UpdateUser(id,user);
             return result>0? Ok():BadRequest();
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteUserAsync(int id)
         {
             

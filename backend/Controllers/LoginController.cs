@@ -35,42 +35,24 @@ namespace backend.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("login")]
+        [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            try
+            var user = await _userRepository.Login(loginDto);
+            if (user == null)
             {
-                
-
-                var userDto = await _userRepository.Login(loginDto);
-
-                if (userDto == null)
-                {
-                    return Unauthorized(new
-                    {
-                        success = false,
-                        message = "Invalid email or password"
-                    });
-                }
-
-                // Map UserDto back to User for token generation
-                
-                var token = _jwtService.GenerateToken(userDto);
-
-                return Ok(token);
+                return Unauthorized(new { message = "Invalid credentials" });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "An error occurred while processing your request",
-                    error = ex.Message
-                });
-            }
+
+            var token = _jwtService.GenerateToken(user);
+
+            return Ok(new 
+            { 
+                token = token, 
+                userID = user.Id, 
+                userRole=user.UserType
+            });
         }
-
-        
 
         [HttpPost("validate-token")]
         public IActionResult ValidateToken()

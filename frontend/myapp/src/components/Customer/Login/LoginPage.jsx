@@ -46,7 +46,7 @@ function LoginPage() {
     }
 
     try {
-      const response = await axios.post("https://reqres.in/api/login", {
+      const response = await axios.post("http://localhost:5254/api/Login", {
         email: email,
         password: password
       },
@@ -99,7 +99,7 @@ function LoginPage() {
 
       if (email) {
         try {
-          const response = await axios.post("https://reqres.in/api/login", {
+          const response = await axios.post("hhttp://localhost:5254/api/Login", {
             email,
           });
 
