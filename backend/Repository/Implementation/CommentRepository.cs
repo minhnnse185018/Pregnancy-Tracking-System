@@ -46,7 +46,6 @@ namespace backend.Repository.Implementation
             comment.PostId = postId;
             comment.CreatedAt = DateTime.Now;
             
-            comment.Status = "active";
 
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();

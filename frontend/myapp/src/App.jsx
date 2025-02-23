@@ -19,7 +19,7 @@ function App() {
       <AuthProvider>
       <ToastContainer autoClose={1300} />
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/customer-login" element={<LoginPage />} />
         <Route
           path="/"
           element={

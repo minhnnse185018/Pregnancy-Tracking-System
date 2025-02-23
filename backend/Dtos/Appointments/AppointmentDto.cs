@@ -4,7 +4,6 @@ namespace backend.Dtos.Appointments
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string? UserName { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string? Purpose { get; set; }
         public string? Status { get; set; }

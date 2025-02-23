@@ -264,6 +264,14 @@ F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\appsettings.js
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\backend.deps.json
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\backend.runtimeconfig.json
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\global.json
+D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.csproj.AssemblyReference.cache
+D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.GeneratedMSBuildEditorConfig.editorconfig
+D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.AssemblyInfoInputs.cache
+D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.AssemblyInfo.cs
+D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.csproj.CoreCompileInputs.cache
+D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cs
+D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cache
+D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.sourcelink.json
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\web.config
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\appsettings.Development.json
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\global.json
@@ -508,14 +516,6 @@ D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
-D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.csproj.AssemblyReference.cache
-D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.GeneratedMSBuildEditorConfig.editorconfig
-D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.AssemblyInfoInputs.cache
-D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.AssemblyInfo.cs
-D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.csproj.CoreCompileInputs.cache
-D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cs
-D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cache
-D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.sourcelink.json
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\staticwebassets.build.json
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\staticwebassets.development.json
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\staticwebassets\msbuild.backend.Microsoft.AspNetCore.StaticWebAssets.props
