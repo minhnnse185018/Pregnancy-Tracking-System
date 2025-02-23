@@ -12,7 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250223061911_init")]
+    [Migration("20250223162703_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace backend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -95,9 +95,6 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AuthorType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CommentText")
                         .HasColumnType("nvarchar(max)");
 
@@ -106,9 +103,6 @@ namespace backend.Migrations
 
                     b.Property<int>("PostId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -380,9 +374,6 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AuthorType")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");

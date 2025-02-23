@@ -1459,10 +1459,10 @@
           }
         }
       },
-      "Microsoft.EntityFrameworkCore.Tools/8.0.0": {
+      "Microsoft.EntityFrameworkCore.Tools/8.0.2": {
         "type": "package",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Design": "8.0.0"
+          "Microsoft.EntityFrameworkCore.Design": "8.0.2"
         },
         "compile": {
           "lib/net8.0/_._": {}
@@ -5228,17 +5228,17 @@
         "microsoft.entityframeworkcore.sqlserver.nuspec"
       ]
     },
-    "Microsoft.EntityFrameworkCore.Tools/8.0.0": {
-      "sha512": "zRdaXiiB1gEA0b+AJTd2+drh78gkEA4HyZ1vqNZrKq4xwW8WwavSiQsoeb1UsIMZkocLMBbhQYWClkZzuTKEgQ==",
+    "Microsoft.EntityFrameworkCore.Tools/8.0.2": {
+      "sha512": "PWy3X3Z1fnWlbU6pQMSnBvMwqERoKsriJ688TMl1xT2NyqcSk6/dX22eI5eV+qYXYmYna72Dq2u0P8tNZ6AYtg==",
       "type": "package",
-      "path": "microsoft.entityframeworkcore.tools/8.0.0",
+      "path": "microsoft.entityframeworkcore.tools/8.0.2",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "lib/net8.0/_._",
-        "microsoft.entityframeworkcore.tools.8.0.0.nupkg.sha512",
+        "microsoft.entityframeworkcore.tools.8.0.2.nupkg.sha512",
         "microsoft.entityframeworkcore.tools.nuspec",
         "tools/EntityFrameworkCore.PS2.psd1",
         "tools/EntityFrameworkCore.PS2.psm1",
@@ -8339,7 +8339,7 @@
       "Microsoft.EntityFrameworkCore >= 8.0.2",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.2",
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.2",
-      "Microsoft.EntityFrameworkCore.Tools >= 8.0.0",
+      "Microsoft.EntityFrameworkCore.Tools >= 8.0.2",
       "Microsoft.Extensions.Options >= 8.0.0",
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.19.5",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 8.0.0",
@@ -8355,11 +8355,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "f:\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
+      "projectUniqueName": "F:\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
       "projectName": "backend",
-      "projectPath": "f:\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
+      "projectPath": "F:\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
       "packagesPath": "C:\\Users\\TAI LOC\\.nuget\\packages\\",
-      "outputPath": "f:\\SWP\\Pregnancy-Tracking-System\\backend\\obj\\",
+      "outputPath": "F:\\SWP\\Pregnancy-Tracking-System\\backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -8391,8 +8391,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.100"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -8432,7 +8431,7 @@
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
             "target": "Package",
-            "version": "[8.0.0, )"
+            "version": "[8.0.2, )"
           },
           "Microsoft.Extensions.Options": {
             "target": "Package",
@@ -8478,7 +8477,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.103/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.406/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

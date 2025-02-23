@@ -6,6 +6,6 @@ namespace backend.Dtos.Memberships
         public int PlanId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; } = "active";
+        public string Status { get; set; }
     }
 } 

@@ -59,9 +59,7 @@ namespace backend.Mapper
                         src.IsPublished == false ? "draft" : src.Status));
 
             // Appointment mappings
-            CreateMap<Appointment, AppointmentDto>()
-                .ForMember(dest => dest.UserName,
-                    opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"));
+            CreateMap<Appointment, AppointmentDto>();
             CreateMap<CreateAppointmentDto, Appointment>();
             CreateMap<UpdateAppointmentDto, Appointment>();
 
