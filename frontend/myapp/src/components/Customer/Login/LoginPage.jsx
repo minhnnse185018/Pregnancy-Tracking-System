@@ -46,7 +46,7 @@ function LoginPage() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5254/api/Login/login", {
+      const response = await axios.post("https://reqres.in/api/login", {
         email: email,
         password: password
       },
@@ -68,7 +68,7 @@ function LoginPage() {
         setLoading(false);
       }
     } catch (error) {
-      setError("Email or Password Incorrect.");
+      setError("ERROR.");
       setLoading(false);
     } 
   };

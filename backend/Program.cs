@@ -20,7 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pregnancy Tracking API", Version = "v1" });
-
+    
     // Add JWT Authentication
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -52,9 +52,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 // Configure Database
-builder.Services.AddDbContext<ApplicationDBContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+builder.Services.AddDbContext<ApplicationDBContext>(options => {
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     options.UseSqlServer(connectionString);
 });
@@ -94,14 +93,6 @@ builder.Services.AddCors(options =>
                 .AllowCredentials();
         });
 });
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
-});
-
 
 // Add JWT service
 builder.Services.AddScoped<JwtService>();
@@ -125,7 +116,6 @@ app.UseHttpsRedirection();
 
 // Enable CORS - add this before other middleware
 app.UseCors("AllowReactApp");
-app.UseCors("AllowAll");
 
 // Add Authentication & Authorization
 app.UseAuthentication();

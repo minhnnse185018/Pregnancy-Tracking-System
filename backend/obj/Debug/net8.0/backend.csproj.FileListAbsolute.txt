@@ -265,11 +265,10 @@ F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\appsettings.js
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\backend.deps.json
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\backend.runtimeconfig.json
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\global.json
-<<<<<<< Updated upstream
+D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\web.config
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\appsettings.Development.json
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\appsettings.json
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\global.json
-D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\web.config
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\appsettings.Development.json
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\appsettings.json
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\publish\backend.deps.json
@@ -533,5 +532,3 @@ D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.pdb
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\ref\backend.dll
-=======
->>>>>>> Stashed changes
