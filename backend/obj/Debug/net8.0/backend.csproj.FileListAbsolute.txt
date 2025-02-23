@@ -138,7 +138,6 @@ F:\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.genruntimeconf
 F:\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\ref\backend.dll
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\AutoMapper.dll
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
-F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Razor.Language.dll
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\Microsoft.Build.dll
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\Microsoft.Build.Framework.dll
