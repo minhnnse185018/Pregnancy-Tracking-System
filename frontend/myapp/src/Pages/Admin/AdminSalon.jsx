@@ -416,32 +416,32 @@
 // };
 
 // export default AdminSalon;
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import {
+  Alert,
   Box,
+  Button,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  Modal,
   Paper,
-  Typography,
+  Select,
+  Snackbar,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Button,
-  Modal,
   TextField,
-  FormControl,
-  Select,
-  MenuItem,
-  Stack,
-  InputLabel,
-  Snackbar,
-  Alert,
+  Typography,
 } from "@mui/material";
+import axios from "axios";
+import { ErrorMessage, Field, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import * as Yup from "yup";
 
 const AdminSalon = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -651,7 +651,7 @@ const AdminSalon = () => {
       }}
     >
       <Typography variant="h4" fontWeight="bold" sx={{ mb: 2 }}>
-        Salon Management
+        BabyCenter Management
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
@@ -661,7 +661,7 @@ const AdminSalon = () => {
           sx={{ backgroundColor: "#4CAF50" }}
           onClick={handleOpenAddModal}
         >
-          Add Salon
+          Add Function
         </Button>
       </Box>
 
@@ -675,7 +675,7 @@ const AdminSalon = () => {
                 <TableHead>
                   <TableRow sx={{ backgroundColor: "#4caf50", color: "#fff" }}>
                     <TableCell sx={{ color: "#fff" }}>No</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Salon Name</TableCell>
+                    <TableCell sx={{ color: "#fff" }}>Function Name</TableCell>
                     <TableCell sx={{ color: "#fff" }}>Address</TableCell>
                     <TableCell sx={{ color: "#fff" }}>Status</TableCell>
                     <TableCell sx={{ color: "#fff" }}>Image</TableCell>

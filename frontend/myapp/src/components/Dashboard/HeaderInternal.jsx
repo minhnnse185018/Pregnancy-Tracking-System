@@ -19,11 +19,21 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Customer/AuthContext";
 import NotificationMenu from "./NotificationMenu";
 
-const darkTheme = createTheme({
+// Theme thiết kế phù hợp với chủ đề Mom and Baby
+const momAndBabyTheme = createTheme({
   palette: {
     primary: {
-      main: "#4CAF50",
+      main: "#FFC1CC", // Hồng pastel nhẹ
     },
+    secondary: {
+      main: "#AEEEEE", // Xanh Tiffany Blue
+    },
+    background: {
+      default: "#FFF5EE", // Kem nhạt
+    },
+  },
+  typography: {
+    fontFamily: '"Poppins", sans-serif',
   },
 });
 
@@ -50,19 +60,19 @@ const Header = () => {
   };
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={momAndBabyTheme}>
       <CssBaseline />
-      <AppBar position="static">
+      <AppBar position="static" sx={{ bgcolor: "#FFF5EE", boxShadow: "none" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
             {/* Logo */}
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <img
                 src={`${process.env.PUBLIC_URL}/images/logo.png`}
-                alt="logo"
+                alt="Mom and Baby Logo"
                 width="50"
                 height="50"
-                style={{ filter: "invert(1)" }}
+                style={{ borderRadius: "50%" }}
               />
               <Typography
                 variant="h6"
@@ -70,13 +80,13 @@ const Header = () => {
                 component="div"
                 sx={{
                   ml: 1,
-                  fontFamily: "monospace",
+                  fontFamily: '"Poppins", sans-serif',
                   fontWeight: 700,
-                  letterSpacing: ".3rem",
-                  color: "white",
+                  letterSpacing: ".1rem",
+                  color: "#D2691E", // Nâu ấm
                 }}
               >
-                LEOPARD
+                MOM & BABY
               </Typography>
             </Box>
 
@@ -86,7 +96,7 @@ const Header = () => {
                 <Tooltip title="Open notifications">
                   <IconButton
                     onClick={handleOpenNotificationMenu}
-                    sx={{ color: "white", mr: 1 }}
+                    sx={{ color: "#D2691E", mr: 1 }}
                   >
                     <Badge
                       color="error"
@@ -108,24 +118,19 @@ const Header = () => {
                   <Button
                     variant="contained"
                     onClick={handleLogout}
-                    startIcon={<ExitToAppIcon style={{ color: "#4CAF50" }} />}
+                    startIcon={<ExitToAppIcon style={{ color: "#FFC1CC" }} />}
                     sx={{
-                      bgcolor: "white",
-                      color: "#4CAF50",
+                      bgcolor: "#FFFFFF",
+                      color: "#D2691E",
                       padding: "8px 16px",
-                      borderRadius: "8px",
+                      borderRadius: "20px",
                       fontWeight: "bold",
                       fontSize: "0.9rem",
                       textTransform: "none",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      border: "1px solid #4CAF50",
+                      border: "2px solid #FFC1CC",
+                      boxShadow: "none",
                       "&:hover": {
-                        bgcolor: "#f0f0f0",
-                      },
-                      "&:active": {
-                        bgcolor: "#e0e0e0",
+                        bgcolor: "#FFF0F5",
                       },
                     }}
                   >
@@ -134,7 +139,6 @@ const Header = () => {
                 </Tooltip>
               </Box>
             )}
-
           </Toolbar>
         </Container>
       </AppBar>

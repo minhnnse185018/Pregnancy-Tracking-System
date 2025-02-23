@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
 import GroupIcon from "@mui/icons-material/Group"; // Icon cho Profile
 import PeopleIcon from "@mui/icons-material/People"; // Icon cho Manage Personnel
 import StoreIcon from "@mui/icons-material/Store"; // Icon cho Manage Salon
+import React from "react";
+import { Link } from "react-router-dom";
 
 const AdminSidebar = () => {
   return (
@@ -20,7 +20,7 @@ const AdminSidebar = () => {
         </li>
         <li style={listItemStyle}>
           <Link to="admin-salon" style={linkStyle}>
-            <StoreIcon /> Manage Salon
+            <StoreIcon /> Manage Service
           </Link>
         </li>
       </ul>
@@ -28,42 +28,48 @@ const AdminSidebar = () => {
   );
 };
 
-// Sidebar styling
+// Sidebar styling phù hợp với chủ đề Mom and Baby
 const sidebarStyle = {
-  width: "240px",
-  backgroundColor: "#E8E8E8",
-  height: "100vh", // Đảm bảo sidebar phủ toàn bộ chiều cao
+  width: "260px",
+  backgroundColor: "#FFF5EE", // Màu kem nhẹ
+  height: "100vh",
+  padding: "20px 0",
+  boxShadow: "2px 0 10px rgba(0, 0, 0, 0.1)",
+  borderRadius: "0 20px 20px 0", // Bo tròn góc phải
 };
 
 // List styling
 const listStyle = {
   listStyleType: "none",
-  padding: 12,
-  color: "#4CAF50", // Chuyển màu chữ sang xanh lá cây
-  backgroundColor: "#DFDFDF",
+  padding: 0,
+  color: "#D2691E", // Nâu ấm
 };
 
 // List item styling
 const listItemStyle = {
-  padding: "20px 0",
-  borderBottom: "1px solid grey",
+  padding: "15px 20px",
+  borderBottom: "1px solid #F4A8A8", // Viền pastel nhẹ
   fontWeight: "bold",
   textAlign: "left",
-  transition: "background 0.3s",
+  transition: "background 0.3s, transform 0.2s",
+  borderRadius: "10px",
 };
 
 // Link styling
 const linkStyle = {
   textDecoration: "none",
-  color: "#4CAF50", // Màu chữ chuyển sang xanh lá cây
+  color: "#D2691E", // Nâu ấm
   display: "flex",
   alignItems: "center",
-  gap: "0.6rem",
+  gap: "0.8rem",
+  fontSize: "1rem",
+  fontWeight: "600",
 };
 
 // Hover effect
 listItemStyle[":hover"] = {
-  backgroundColor: "#BCBCBC",
+  backgroundColor: "#FFDAB9", // Màu cam pastel nhẹ khi hover
+  transform: "scale(1.05)",
 };
 
 export default AdminSidebar;

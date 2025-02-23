@@ -72,17 +72,31 @@ const managerContentStyle = {
 };
 
 // Nền và overlay cho Admin
+// const backgroundContainerStyle = {
+//   flex: 1,
+//   backgroundImage:
+//     'url("https://channel.mediacdn.vn/2021/1/1/photo-2-1609515208847787441742.jpg")', // Hình nền
+//   backgroundSize: "cover",
+//   backgroundPosition: "center",
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "center",
+//   position: "relative",
+// };
+
 const backgroundContainerStyle = {
   flex: 1,
-  backgroundImage:
-    'url("https://channel.mediacdn.vn/2021/1/1/photo-2-1609515208847787441742.jpg")', // Hình nền
-  backgroundSize: "cover",
-  backgroundPosition: "center",
+  backgroundImage: 'url("https://i.pinimg.com/474x/3e/b3/84/3eb384e241d905ce3526423f313d7a50.jpg")', // Hình nền
+  backgroundSize: "contain",  // Giữ nguyên tỉ lệ ảnh, không bị cắt
+  backgroundRepeat: "no-repeat",  // Không lặp lại ảnh
+  backgroundPosition: "center center",  // Căn giữa ảnh trong container
+  backgroundColor: "#FFF5EE", // Thêm màu nền nhẹ nếu ảnh không phủ hết
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   position: "relative",
 };
+
 
 const overlayStyle = {
   backgroundColor: "rgba(0, 0, 0, 0.5)", // Overlay xám
