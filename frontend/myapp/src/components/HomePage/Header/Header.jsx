@@ -1,7 +1,19 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'swiper/css';
+import 'swiper/css/autoplay';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import { A11y, Autoplay, Navigation, Pagination, Scrollbar } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import './Header.css';
+
 const Header = () => {
   return (
+    <div>
+      <ToastContainer />
+    
     <section className="hero">
       <div className="container hero-grid">
         <div className="hero-content">
@@ -14,10 +26,23 @@ const Header = () => {
           </div>
         </div>
         <div className="hero-image">
-          <img src="images/hero-pregnancy.png" alt="Pregnancy Journey" />
+          <Swiper
+            modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
+            spaceBetween={50}
+            slidesPerView={1}
+            navigation
+            pagination={{ clickable: true }}
+            scrollbar={{ draggable: true }}
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
+          >
+            <SwiperSlide><img src='/images/hero-pregnancy.png' alt="Pregnancy Journey 1" /></SwiperSlide>
+            <SwiperSlide><img src='/images/about-mainpicture.png' alt="Pregnancy Journey 2" /></SwiperSlide>
+            <SwiperSlide><img src='/images/tracking-demo.png' alt="Pregnancy Journey 3" /></SwiperSlide>
+          </Swiper>
         </div>
       </div>
     </section>
+    </div>
   );
 };
 
