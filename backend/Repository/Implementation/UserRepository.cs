@@ -16,10 +16,10 @@ namespace backend.Repository.Implementation
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
 
-        public UserRepository(ApplicationDBContext context,IMapper mapper)
+        public UserRepository(ApplicationDBContext context, IMapper mapper)
         {
             _context = context;
-            _mapper=mapper;
+            _mapper = mapper;
         }
 
         public async Task<UserDto?> Login(LoginDto loginDto)
@@ -32,18 +32,12 @@ namespace backend.Repository.Implementation
                 return null;
             }
 
-            if (user.Status != "Active")
+            if (user.Status.ToLower() != "active")
             {
                 return null;
             }
 
             return _mapper.Map<UserDto>(user);
-        }
-
-        public async Task<User?> GetUserByEmail(string email)
-        {
-            return await _context.Users
-                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
         }
 
         public async Task<bool> IsEmailExists(string email)
@@ -52,28 +46,87 @@ namespace backend.Repository.Implementation
                 .AnyAsync(u => u.Email.ToLower() == email.ToLower());
         }
 
-        public async Task<User> CreateUser(User user)
+        public async Task<User?> CreateUser(User user)
         {
+            if (await IsEmailExists(user.Email))
+            {
+                return null;
+            }
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;
         }
 
-        public async Task<User?> GetUserById(int id)
+        public async Task<int> UpdateUser(int id, User user)
         {
-            return await _context.Users.FindAsync(id);
+            try
+            {
+                var existUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                if (existUser == null) return 0;
+
+                user.Id = id;
+                _context.Entry(existUser).CurrentValues.SetValues(user);
+                _context.Entry(existUser).Property(x => x.Password).IsModified = false;
+                _context.Entry(existUser).State = EntityState.Modified;
+
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
 
-        public async Task<bool> UpdateUser(User user)
+        public async Task<List<UserDto>> GetAllUsersAsync()
         {
-            _context.Entry(user).State = EntityState.Modified;
-            var result = await _context.SaveChangesAsync();
-            return result > 0;
+            var users = await _context.Users
+                .OrderBy(u => u.FirstName)
+                .ToListAsync();
+
+            return _mapper.Map<List<UserDto>>(users);
         }
 
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<List<UserDto>> GetFilteredUsersAsync(string? role = null, string? status = null)
         {
-            return await _context.Users.ToListAsync();
+            var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(role))
+            {
+                query = query.Where(u => u.UserType == role);
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(u => u.Status == status);
+            }
+
+            var users = await query
+                .OrderBy(u => u.FirstName)
+                .ToListAsync();
+
+            return _mapper.Map<List<UserDto>>(users);
+        }
+
+        public async Task<UserDto?> GetUserByIdAsync(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            return user == null ? null : _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<UserDto?> GetUserByEmailAsync(string email)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            return user == null ? null : _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<int> DeleteUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            _context.Users.Remove(user);
+            return await _context.SaveChangesAsync();
+
         }
     }
 }

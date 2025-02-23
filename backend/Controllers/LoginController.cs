@@ -16,6 +16,7 @@ using backend.Repository.Interface;
 using backend.Dtos;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+//using Google.Apis.Auth;
 
 namespace backend.Controllers
 {
@@ -113,6 +114,73 @@ namespace backend.Controllers
                 });
             }
         }
+
+    //     [HttpPost("google-login")]
+    //     public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+    //     {
+    //         try
+    //         {
+    //             // Verify Google token
+    //             var payload = await VerifyGoogleToken(request.Credential);
+    //             if (payload == null)
+    //             {
+    //                 return BadRequest(new { message = "Invalid Google token" });
+    //             }
+
+    //             // Check if user exists, if not create new user
+    //             var userDto = await _userRepository.GetUserByEmail(payload.Email);
+    //             if (userDto == null)
+    //             {
+    //                 // Create new user
+    //                 var newUser = new UserDto
+    //                 {
+    //                     Email = payload.Email,
+    //                     FirstName = payload.GivenName,
+    //                     LastName = payload.FamilyName,
+    //                     UserType = "Customer",
+    //                     Status = "active"
+    //                 };
+
+    //                 userDto = await _userRepository.CreateUser(newUser);
+    //             }
+
+    //             // Generate JWT token
+    //             var token = _jwtService.GenerateToken(userDto);
+
+    //             return Ok(new
+    //             {
+    //                 success = true,
+    //                 message = "Google login successful",
+    //                 token
+    //             });
+    //         }
+    //         catch (Exception ex)
+    //         {
+    //             return StatusCode(500, new
+    //             {
+    //                 success = false,
+    //                 message = "An error occurred during Google login",
+    //                 error = ex.Message
+    //             });
+    //         }
+    //     }
+
+    //     private async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string token)
+    //     {
+    //         try
+    //         {
+    //             var settings = new GoogleJsonWebSignature.ValidationSettings()
+    //             {
+    //                 Audience = new[] { "157843865023-45o3ncemhfk5n348ee0kdrmn9cq02u9b.apps.googleusercontent.com" }
+    //             };
+    //             var payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
+    //             return payload;
+    //         }
+    //         catch
+    //         {
+    //             return null;
+    //         }
+    //     }
     }
 
     public class LoginRequest
@@ -128,4 +196,9 @@ namespace backend.Controllers
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
     }
+
+    // public class GoogleLoginRequest
+    // {
+    //     public string Credential { get; set; }
+    // }
 }

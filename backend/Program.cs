@@ -99,6 +99,9 @@ builder.Services.AddScoped<JwtService>();
 
 // Add this line before var app = builder.Build();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+
 
 var app = builder.Build();
 

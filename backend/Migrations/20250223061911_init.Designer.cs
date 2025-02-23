@@ -12,7 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250221140948_init")]
+    [Migration("20250223061911_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -96,8 +96,7 @@ namespace backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AuthorType")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CommentText")
                         .HasColumnType("nvarchar(max)");
@@ -199,16 +198,19 @@ namespace backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ExaminationDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal>("HeightCm")
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateOnly>("MeasurementDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Week")
                         .HasColumnType("int");
 
                     b.Property<decimal>("WeightGrams")
@@ -380,8 +382,7 @@ namespace backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AuthorType")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -416,14 +417,14 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("ConceptionDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("ConceptionDate")
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DueDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("DueDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("PregnancyStatus")
                         .HasColumnType("nvarchar(max)");
@@ -433,8 +434,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("PregnancyProfiles");
                 });
@@ -476,9 +476,7 @@ namespace backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -578,13 +576,13 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.FetalMeasurement", b =>
                 {
-                    b.HasOne("backend.Models.PregnancyProfile", "PregnancyProfile")
+                    b.HasOne("backend.Models.PregnancyProfile", "Profile")
                         .WithMany("FetalMeasurements")
                         .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PregnancyProfile");
+                    b.Navigation("Profile");
                 });
 
             modelBuilder.Entity("backend.Models.GrowthAlert", b =>
@@ -641,7 +639,7 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -650,9 +648,9 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.PregnancyProfile", b =>
                 {
                     b.HasOne("backend.Models.User", "User")
-                        .WithOne("PregnancyProfile")
-                        .HasForeignKey("backend.Models.PregnancyProfile", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany("PregnancyProfiles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -663,7 +661,7 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.User", "User")
                         .WithMany("Questions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -713,7 +711,7 @@ namespace backend.Migrations
 
                     b.Navigation("Posts");
 
-                    b.Navigation("PregnancyProfile");
+                    b.Navigation("PregnancyProfiles");
 
                     b.Navigation("Questions");
                 });

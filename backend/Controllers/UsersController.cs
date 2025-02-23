@@ -1,0 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using backend.Dtos;
+using backend.Models;
+using backend.Repository.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+
+namespace backend.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UsersController:ControllerBase
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+        public UsersController(IUserRepository userRepository, IMapper mapper)
+        {
+            _userRepository = userRepository;
+            _mapper = mapper;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync ()
+        { 
+            var users = await _userRepository.GetAllUsersAsync();
+            return Ok(users);
+        }
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetUserByEmailAsync(string email)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            return user==null? NotFound():Ok(user);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            return user==null? NotFound():Ok(user);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUserByFilter(string? role,string? status)
+        {
+            var users = await _userRepository.GetFilteredUsersAsync(role,status);
+            return users==null? NotFound():Ok(users);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddUserAsync(UserDto userDto)
+        {
+            var user = _mapper.Map<User>(userDto);
+            await _userRepository.CreateUser(user);
+            return  Ok();
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpsateUserAsync(int id,UserDto userDto)
+        {
+            var user = _mapper.Map<User>(userDto);
+            var result = await _userRepository.UpdateUser(id,user);
+            return result>0? Ok():BadRequest();
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUserAsync(int id)
+        {
+            
+            var result = await _userRepository.DeleteUser(id);
+            return result>0? Ok():BadRequest();
+        }
+    }
+}

@@ -80,7 +80,7 @@ namespace backend.Migrations
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "active"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -148,7 +148,7 @@ namespace backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    AuthorType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    AuthorType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -163,7 +163,7 @@ namespace backend.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,8 +173,8 @@ namespace backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    ConceptionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ConceptionDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    DueDate = table.Column<DateOnly>(type: "date", nullable: false),
                     PregnancyStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -186,7 +186,7 @@ namespace backend.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,7 +208,7 @@ namespace backend.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -253,7 +253,7 @@ namespace backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    AuthorType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    AuthorType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CommentText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -282,10 +282,11 @@ namespace backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProfileId = table.Column<int>(type: "int", nullable: false),
-                    ExaminationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     WeightGrams = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     HeightCm = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    MeasurementDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Week = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -296,7 +297,7 @@ namespace backend.Migrations
                         column: x => x.ProfileId,
                         principalTable: "PregnancyProfiles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -414,8 +415,7 @@ namespace backend.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PregnancyProfiles_UserId",
                 table: "PregnancyProfiles",
-                column: "UserId",
-                unique: true);
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_UserId",

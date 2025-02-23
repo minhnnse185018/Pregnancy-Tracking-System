@@ -16,7 +16,7 @@ namespace backend.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
-        public virtual PregnancyProfile? PregnancyProfile { get; set; }
+        public virtual ICollection<PregnancyProfile>? PregnancyProfiles { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
         public virtual ICollection<Answer> Answers { get; set; } = new List<Answer>();

@@ -43,33 +43,82 @@ namespace backend.Data
                 entity.Property(e => e.Password).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.UserType).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Status).HasDefaultValue("active");
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             });
 
             // PregnancyProfile configuration
             modelBuilder.Entity<PregnancyProfile>(entity =>
             {
                 entity.HasKey(e => e.Id);
+
                 entity.HasOne(p => p.User)
-                    .WithOne(u => u.PregnancyProfile)
-                    .HasForeignKey<PregnancyProfile>(p => p.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .WithMany(u => u.PregnancyProfiles)  // ✅ One user has many pregnancy profiles
+                    .HasForeignKey(p => p.UserId)        // ✅ Explicitly define the foreign key
+                    .OnDelete(DeleteBehavior.Cascade);   // ✅ Delete all pregnancy profiles if user is deleted
             });
+
+
 
             // FetalMeasurement configuration
             modelBuilder.Entity<FetalMeasurement>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasOne(f => f.PregnancyProfile)
+                entity.Property(e => e.WeightGrams).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.HeightCm).HasColumnType("decimal(10,2)");
+                
+                entity.HasOne(f => f.Profile)
                     .WithMany(p => p.FetalMeasurements)
                     .HasForeignKey(f => f.ProfileId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Post configuration
+            modelBuilder.Entity<Post>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(p => p.User)
+                    .WithMany(u => u.Posts)
+                    .HasForeignKey(p => p.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Comment configuration
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(c => c.User)
+                    .WithMany(u => u.Comments)
+                    .HasForeignKey(c => c.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
-                
-                // Add decimal precision
-                entity.Property(e => e.WeightGrams)
-                    .HasColumnType("decimal(10,2)");
-                entity.Property(e => e.HeightCm)
-                    .HasColumnType("decimal(10,2)");
+
+                entity.HasOne(c => c.Post)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(c => c.PostId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Question configuration
+            modelBuilder.Entity<Question>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(q => q.User)
+                    .WithMany(u => u.Questions)
+                    .HasForeignKey(q => q.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Answer configuration
+            modelBuilder.Entity<Answer>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(a => a.User)
+                    .WithMany(u => u.Answers)
+                    .HasForeignKey(a => a.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(a => a.Question)
+                    .WithMany(q => q.Answers)
+                    .HasForeignKey(a => a.QuestionId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // FetalGrowthStandard configuration
@@ -106,56 +155,6 @@ namespace backend.Data
                     .WithMany(u => u.Appointments)
                     .HasForeignKey(a => a.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // Question configuration
-            modelBuilder.Entity<Question>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.HasOne(q => q.User)
-                    .WithMany(u => u.Questions)
-                    .HasForeignKey(q => q.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // Answer configuration
-            modelBuilder.Entity<Answer>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.HasOne(a => a.Question)
-                    .WithMany(q => q.Answers)
-                    .HasForeignKey(a => a.QuestionId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(a => a.User)
-                    .WithMany(u => u.Answers)
-                    .HasForeignKey(a => a.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // Post configuration
-            modelBuilder.Entity<Post>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.HasOne(p => p.User)
-                    .WithMany(u => u.Posts)
-                    .HasForeignKey(p => p.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.Property(e => e.AuthorType).HasMaxLength(50);
-            });
-
-            // Comment configuration
-            modelBuilder.Entity<Comment>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.HasOne(c => c.Post)
-                    .WithMany(p => p.Comments)
-                    .HasForeignKey(c => c.PostId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(c => c.User)
-                    .WithMany(u => u.Comments)
-                    .HasForeignKey(c => c.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.Property(e => e.AuthorType).HasMaxLength(50);
             });
 
             // FAQ configuration
