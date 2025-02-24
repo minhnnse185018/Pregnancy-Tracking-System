@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 import { AuthContext } from "../AuthContext"; // Import AuthContext
 import * as Components from "./Components";
-import Navbarr from "../../HomePage/Navbarr";
 
 const PageContainer = styled.div`
   display: flex;
@@ -38,8 +37,16 @@ function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
     try {
-<<<<<<< HEAD
       const response = await axios.post("http://localhost:5254/api/Login", {
         email,
         password
@@ -63,32 +70,14 @@ function LoginPage() {
       setError("Login failed. Please try again.");
     } finally {
       setLoading(false);
-=======
-      const response = await axios.post("http://localhost:5254/api/Login/login", 
-        {
-          email: email,
-          password: password
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      const { token } = response.data;
-      localStorage.setItem("token", token);
-      toast.success("Login successful!");
-      setIsLoggedIn(true);
-    } catch (error) {
-      navigate("/");
-      toast.error("Login failed. Please check your credentials.");
->>>>>>> origin/truong-loc
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError("");
+
     try {
-<<<<<<< HEAD
       const response = await axios.post("http://localhost:5254/api/LoginGoogle", {
         credential: credentialResponse.credential
       },
@@ -107,20 +96,14 @@ function LoginPage() {
       } else {
         setError("Google login failed. Please try again.");
       }
-=======
-      // Handle Google login success
-      console.log(credentialResponse);
-      toast.success("Google login successful!");
-      setIsLoggedIn(true);
-      navigate("/");
->>>>>>> origin/truong-loc
     } catch (error) {
-      toast.error("Google login failed");
+      setError("Google login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-<<<<<<< HEAD
     <GoogleOAuthProvider clientId={clientId}>
       <PageContainer>
         <Components.Container>
@@ -140,30 +123,6 @@ function LoginPage() {
               <Components.Button>Sign Up</Components.Button>
             </Components.Form>
           </Components.SignUpContainer>
-=======
-    <div>
-      <Navbarr />
-      <GoogleOAuthProvider clientId={clientId}>
-        <PageContainer>
-          <ToastContainer />
-          <Components.Container>
-            <Components.SignUpContainer signinIn={signIn}>
-              <Components.Form>
-                <Components.Title>Create Account</Components.Title>
-                <GoogleButtonContainer>
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={() => toast.error("Google login failed")}
-                    text="signup_with"
-                  />
-                </GoogleButtonContainer>
-                <Components.Input type="text" placeholder="Name" />
-                <Components.Input type="email" placeholder="Email" />
-                <Components.Input type="password" placeholder="Password" />
-                <Components.Button>Sign Up</Components.Button>
-              </Components.Form>
-            </Components.SignUpContainer>
->>>>>>> origin/truong-loc
 
           <Components.SignInContainer signinIn={signIn}>
             <Components.Form onSubmit={handleLogin}>
@@ -174,7 +133,6 @@ function LoginPage() {
                   onError={() => toast.error("Google login failed")}
                   text="signin_with"
                 />
-<<<<<<< HEAD
               </GoogleButtonContainer>
               <Components.Input
                 type="email"
@@ -209,33 +167,6 @@ function LoginPage() {
                   Sign In
                 </Components.GhostButton>
               </Components.LeftOverlayPanel>
-=======
-                <Components.Input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <Components.Anchor href="#">
-                  Forgot your password?
-                </Components.Anchor>
-                <Components.Button type="submit">Sign In</Components.Button>
-              </Components.Form>
-            </Components.SignInContainer>
-
-            <Components.OverlayContainer signinIn={signIn}>
-              <Components.Overlay signinIn={signIn}>
-                <Components.LeftOverlayPanel signinIn={signIn}>
-                  <Components.Title>Welcome Back!</Components.Title>
-                  <Components.Paragraph>
-                    To keep connected with us please login with your personal
-                    info
-</Components.Paragraph>
-                  <Components.GhostButton onClick={() => toggle(true)}>
-                    Sign In
-                  </Components.GhostButton>
-                </Components.LeftOverlayPanel>
->>>>>>> origin/truong-loc
 
               <Components.RightOverlayPanel signinIn={signIn}>
                 <Components.Title>Hello, Friend!</Components.Title>
