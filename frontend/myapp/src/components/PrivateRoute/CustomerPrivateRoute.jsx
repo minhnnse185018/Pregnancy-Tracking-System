@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {Outlet } from 'react-router-dom';
-import CustomerLoginModal from '../Customer/CustomerLoginModal';
+import { Outlet } from 'react-router-dom';
+import LoginPage from '../Customer/Login/LoginPage';
 
 const CustomerPrivateRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -27,7 +27,7 @@ const CustomerPrivateRoute = () => {
           aria-hidden="true"
           style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
         >
-          <CustomerLoginModal />
+          <LoginPage />
         </div>
       </>
     );

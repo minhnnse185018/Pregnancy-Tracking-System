@@ -11,7 +11,7 @@ const InternalLoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
+
   const validateEmail = (email) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
@@ -36,52 +36,62 @@ const InternalLoginPage = () => {
 
       const { token, userID, userRole } = response.data;
 
+      if (!token || !userID || !userRole) {
+        setError('Access Denied: This login is for internal staff only.');
+        setLoading(false);
+        return;
+      }
+
       if (userRole === 1) {
         setError('Your account does not have internal login permissions. Please select customer login.');
         setLoading(false);
         return;
       }
-
       if (token && userID && userRole) {
-        sessionStorage.setItem('token', token);
-        sessionStorage.setItem('userID', userID);
-        sessionStorage.setItem('userRole', userRole);
-        window.dispatchEvent(new Event('storage'));
+      // Lưu thông tin vào sessionStorage
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('userID', userID);
+      sessionStorage.setItem('userRole', userRole);
+      window.dispatchEvent(new Event('storage'));
 
-        // const closeButton = document.querySelector("#internalLoginModal .btn-close");
-        // if (closeButton) {
-        //   closeButton.click();
-        // }
+      toast.success("Login Successfully!");
+      setLoading(false);
 
+      // Điều hướng về login layout sau khi đăng nhập thành công
+      navigate('/admin');
+      
+      // switch (userRole) {
+      //   case 2:
+      //     navigate('/stylist');
+      //      window.location.reload();
+      //     break;
+      //   case 3:
+      //     navigate('/staff');
+      //     window.location.reload();
+      //     break;
+      //   case 4:
+      //     navigate('/manager');
+      //     window.location.reload();
+      //     break;
+      //   case 5:
+      //     navigate('/admin');
+      //     window.location.reload();
+      //     break;
+      //   default:
+      //     setError('Access Denied: Invalid role for internal login.');
+      // }
+
+    }else{
+      setError('Access Denied: This login is for internal staff only.');
         setLoading(false);
-        toast.success("Login Successfully!");
-          switch (userRole) {
-          case 2:
-            navigate('/stylist');
-            window.location.reload();
-            break;
-          case 3:
-            navigate('/staff');
-            window.location.reload();
-            break;
-          case 4:
-            navigate('/manager');
-            window.location.reload();
-            break;
-          case 5:
-            navigate('/admin');
-            window.location.reload();
-            break;
-          default:
-            setError('Access Denied: Invalid role for internal login.');
-        }
-      } else {
-        setError('Access Denied: This login is for internal staff only.');
-        setLoading(false);
-      }
+    }
     } catch (error) {
+      
       setError('Username or Password Incorrect.');
       setLoading(false);
+
+      // Điều hướng về trang login layout nếu đăng nhập thất bại
+      navigate('/internal-login');
     }
   };
 
@@ -94,12 +104,6 @@ const InternalLoginPage = () => {
               <img src="images/logo.png" alt="baby icon" className="logo" />
               Internal Staff Login
             </h5>
-            {/* <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button> */}
           </div>
           <div className="modal-body">
             <p className="info-text">This Login Only For Internal Staff!!</p>
@@ -148,16 +152,13 @@ const InternalLoginPage = () => {
                   Forgot Password?
                 </Link>
               </div>
-              <button type="submit" className="login-btn" disabled={loading} >
+              <button type="submit" className="login-btn" disabled={loading}>
                 {loading ? 'Logging in...' : 'Log In'}
               </button>
             </form>
             <div className="text-center mt-3">
               <p>or sign in with</p>
               <div className="d-flex justify-content-center">
-
-              {/* <button onClick={() => navigate('/admin')}>Go to Admin</button> */}
-
                 <Link to="#" className="google-btn">
                   <FaGoogle />
                 </Link>

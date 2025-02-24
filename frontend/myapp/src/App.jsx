@@ -7,6 +7,7 @@ import AboutUs from "./components/Customer/AboutUs/AboutUs";
 import { AuthProvider } from './components/Customer/AuthContext';
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import Contact from './components/Customer/Contact/Contact';
+import UserProfile from './components/Customer/CustomerProfile';
 import Footer from "./components/Customer/Footer/Footer";
 import InternalLoginPage from './components/Customer/Login/InternalLoginPage';
 import LoginPage from "./components/Customer/Login/LoginPage"; // Ensure the correct path
@@ -15,6 +16,7 @@ import Navbarr from "./components/Customer/Navbarr/Navbarr";
 import Header from "./components/HomePage/Header/Header";
 import MainContent from "./components/HomePage/Maincontent/Maincontent";
 import AdminPrivateRoute from './components/PrivateRoute/AdminPrivateRoute';
+import CustomerPrivateRoute from './components/PrivateRoute/CustomerPrivateRoute';
 import AdminLayout from './Layouts/Admin/AdminLayout';
 import AdminPersonnel from './Pages/Admin/AdminPersonnel';
 import AdminProfilePage from './Pages/Admin/AdminProfilePage';
@@ -79,6 +81,18 @@ function App() {
             </>
           }
         />
+        <Route path="/profile" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <UserProfile />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
          {/* DASHBOARD ADMIN */}
          <Route path="/admin" element={<AdminPrivateRoute />}>
             <Route path="" element={<AdminLayout />}>
