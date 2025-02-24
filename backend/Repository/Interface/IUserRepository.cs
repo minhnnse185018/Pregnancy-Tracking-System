@@ -18,6 +18,7 @@ namespace backend.Repository.Interface
         Task<List<UserDto>> GetFilteredUsersAsync(string? role = null, string? status = null);
         Task<UserDto?> GetUserByIdAsync(int id);
         Task<UserDto?> GetUserByEmailAsync(string email);
+        Task<int> Register(RegisterRequest register);
     }
     
 }

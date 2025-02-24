@@ -16,6 +16,7 @@ using backend.Dtos.MembershipPlans;
 using backend.Dtos.Memberships;
 using backend.Dtos.PregnancyProfiles;
 using backend.Dtos.FetalStandard;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace backend.Mapper
 {
@@ -24,6 +25,7 @@ namespace backend.Mapper
         public MappingProfile()
         {
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, RegisterRequest>().ReverseMap();
 
             // Post mappings
             CreateMap<Post, PostDto>()

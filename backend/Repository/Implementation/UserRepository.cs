@@ -128,5 +128,32 @@ namespace backend.Repository.Implementation
             return await _context.SaveChangesAsync();
 
         }
+
+        public async Task<int> Register(RegisterRequest register)
+        {
+            // Check if email already exists
+            if (await IsEmailExists(register.Email))
+            {
+                return -1; // Email already exists
+            }
+
+            var user = _mapper.Map<User>(register);
+            
+            // Set default values
+            user.CreatedAt = DateTime.Now;
+            
+            user.Status = "active";
+            user.UserType = "1"; // Default role for new registrations
+
+            try
+            {
+                await _context.Users.AddAsync(user);
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return 0; // Registration failed
+            }
+        }
     }
 }

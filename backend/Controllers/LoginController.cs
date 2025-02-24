@@ -98,31 +98,82 @@ namespace backend.Controllers
             }
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            try
+            {
+                
+
+                
+                var result = await _userRepository.Register(request);
+                if (result > 0)
+                {
+                    // Get the registered user
+                    var user = await _userRepository.GetUserByEmailAsync(request.Email);
+                    if (user != null)
+                    {
+                        // Generate token
+                        var token = _jwtService.GenerateToken(user);
+                        return Ok(new 
+                        { token,
+                            userID=user.Id,
+                            userRole=user.UserType
+                         });
+                    }
+                }
+
+                return BadRequest(new { message = "Registration failed" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred during registration", error = ex.Message });
+            }
+        }
+
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
         {
             try
             {
-                // Verify Google token
-                var payload = await VerifyGoogleToken(request.Credential);
-                if (payload == null)
+                if (string.IsNullOrEmpty(request.Credential))
                 {
-                    return BadRequest(new { message = "Invalid Google token" });
+                    return BadRequest(new { message = "Google credential is required" });
                 }
 
-                // Check if user exists, if not create new user
-                var userDto = await _userRepository.GetUserByEmailAsync(payload.Email);
+                // Get user info from token
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(request.Credential) as JwtSecurityToken;
+                
+                if (jsonToken == null)
+                {
+                    return BadRequest(new { message = "Invalid token format" });
+                }
+
+                var email = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
+                var firstName = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "given_name")?.Value;
+                var lastName = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "family_name")?.Value;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return BadRequest(new { message = "Email not found in token" });
+                }
+
+                // Check if user exists
+                var userDto = await _userRepository.GetUserByEmailAsync(email);
+                
                 if (userDto == null)
                 {
                     // Create new user
                     var newUser = new User
                     {
-                        Email = payload.Email,
-                        FirstName = payload.GivenName,
-                        LastName = payload.FamilyName,
+                        Email = email,
+                        FirstName = firstName ?? "",
+                        LastName = lastName ?? "",
                         UserType = "Customer",
                         Status = "active",
-                        CreatedAt = DateTime.Now
+                        CreatedAt = DateTime.Now,
+                        Password = "" // Set empty password for Google users
                     };
 
                     var createdUser = await _userRepository.CreateUser(newUser);
@@ -130,45 +181,29 @@ namespace backend.Controllers
                     {
                         return StatusCode(500, new { message = "Failed to create user" });
                     }
-                    userDto = _mapper.Map<UserDto>(createdUser);
+                    
                 }
-                userDto = await _userRepository.GetUserByEmailAsync(payload.Email);
+                userDto = await _userRepository.GetUserByEmailAsync(email);
                 // Generate JWT token
                 var token = _jwtService.GenerateToken(userDto);
 
                 return Ok(new
                 {
-                    token,
-                    userID=userDto.Id,
-                    userRole=userDto.UserType
+                    token = token,
+                    user = userDto.Id,
+                    userRole= userDto.UserType
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "An error occurred during Google login",
-                    error = ex.Message
-                });
+                Console.WriteLine($"Google login error: {ex}");
+                return StatusCode(500, new { message = "An error occurred during login" });
             }
         }
 
-        private async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string token)
+        public class GoogleLoginRequest
         {
-            try
-            {
-                var settings = new GoogleJsonWebSignature.ValidationSettings()
-                {
-                    Audience = new[] { "157843865023-45o3ncemhfk5n348ee0kdrmn9cq02u9b.apps.googleusercontent.com" }
-                };
-                var payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
-                return payload;
-            }
-            catch
-            {
-                return null;
-            }
+            public string? Credential { get; set; }
         }
     }
 
@@ -178,16 +213,7 @@ namespace backend.Controllers
         public string Password { get; set; } = null!;
     }
 
-    public class RegisterRequest
-    {
-        public string Email { get; set; } = null!;
-        public string Password { get; set; } = null!;
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-    }
+    
 
-    // public class GoogleLoginRequest
-    // {
-    //     public string Credential { get; set; }
-    // }
+    
 }
