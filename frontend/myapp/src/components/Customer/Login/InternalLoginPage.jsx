@@ -48,10 +48,10 @@ const InternalLoginPage = () => {
         sessionStorage.setItem('userRole', userRole);
         window.dispatchEvent(new Event('storage'));
 
-        const closeButton = document.querySelector("#internalLoginModal .btn-close");
-        if (closeButton) {
-          closeButton.click();
-        }
+        // const closeButton = document.querySelector("#internalLoginModal .btn-close");
+        // if (closeButton) {
+        //   closeButton.click();
+        // }
 
         setLoading(false);
         toast.success("Login Successfully!");
@@ -91,15 +91,15 @@ const InternalLoginPage = () => {
         <div className="modal-content login-box">
           <div className="modal-header">
             <h5 className="modal-title text-center w-100">
-              <img src="images/logo.png" alt="salon icon" className="logo" />
+              <img src="images/logo.png" alt="baby icon" className="logo" />
               Internal Staff Login
             </h5>
-            <button
+            {/* <button
               type="button"
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-            ></button>
+            ></button> */}
           </div>
           <div className="modal-body">
             <p className="info-text">This Login Only For Internal Staff!!</p>
@@ -148,14 +148,15 @@ const InternalLoginPage = () => {
                   Forgot Password?
                 </Link>
               </div>
-              <button type="submit" className="login-btn" disabled={loading}>
+              <button type="submit" className="login-btn" disabled={loading} >
                 {loading ? 'Logging in...' : 'Log In'}
               </button>
             </form>
             <div className="text-center mt-3">
               <p>or sign in with</p>
               <div className="d-flex justify-content-center">
-              <button onClick={() => navigate('/admin')}>Go to Admin</button>
+
+              {/* <button onClick={() => navigate('/admin')}>Go to Admin</button> */}
 
                 <Link to="#" className="google-btn">
                   <FaGoogle />

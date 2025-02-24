@@ -47,7 +47,7 @@ const LoginButton = () => {
             }}
             style={{
               borderRadius: "10px",
-              backgroundColor: "#F9CAFA",
+              backgroundColor: "#E495D9",
               border: "none",
             }}
           >
@@ -62,7 +62,7 @@ const LoginButton = () => {
             }}
             style={{
               borderRadius: "10px",
-              backgroundColor: "#F9CAFA",
+              backgroundColor: "#E495D9",
               border: "none",
             }}
           >
