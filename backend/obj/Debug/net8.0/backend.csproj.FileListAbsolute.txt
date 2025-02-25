@@ -540,5 +540,3 @@ C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\re
 C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.pdb
 C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\ref\backend.dll
-C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\package-lock.json
-C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\package.json

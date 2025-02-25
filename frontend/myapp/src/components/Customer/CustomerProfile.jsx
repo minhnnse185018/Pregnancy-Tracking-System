@@ -8,11 +8,6 @@ const validatePhoneNumber = (phoneNumber) => {
   return phonePattern.test(phoneNumber);
 };
 
-const validateFullName = (fullName) => {
-  const fullNamePattern = /^[a-zA-Z\s]+$/;
-  return fullNamePattern.test(fullName);
-};
-
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState({
@@ -28,12 +23,14 @@ const UserProfile = () => {
   const [errors, setErrors] = useState({
     fristName: "",
     lastName: "",
+    email: "",
     gender: "",
     dateOfBirth: "",
     image: "",
     phone: "",
   });
 
+  //Get user by ID
   useEffect(() => {
     const userId = sessionStorage.getItem("userID");
     if (userId) {
@@ -44,9 +41,9 @@ const UserProfile = () => {
           );
           if (response.status === 200) {
             const {
-              email,
               firstName,
               lastName,
+              email,
               gender,
               dateOfBirth,
               image,
@@ -72,35 +69,77 @@ const UserProfile = () => {
       fetchUserData();
     }
   }, []);
-
+  //handle input from user
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUser((prevUser) => ({
       ...prevUser,
-      [name]: value,
+      [name]: value, // Dynamically updating the field being edited
     }));
 
+    // Validation
     let errorMsg = "";
-    if (name === "fullName" && !validateFullName(value)) {
-      errorMsg = "Full name can only contain letters and spaces.";
-    } else if (name === "phone" && !validatePhoneNumber(value)) {
-      errorMsg = "Please enter a valid phone number.";
+
+    // First Name & Last Name: Only letters and spaces allowed
+    if (name === "firstName" || name === "lastName") {
+      if (!/^[a-zA-Z\s]+$/.test(value)) {
+        errorMsg = "Only letters and spaces are allowed.";
+      }
     }
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: errorMsg }));
+    // Phone Number: Must start with 03, 05, 07, 08, or 09 and contain 10 digits
+    else if (name === "phone") {
+      if (!/^(03|05|07|08|09)\d{8}$/.test(value)) {
+        errorMsg = "Please enter a valid phone number.";
+      }
+    }
+    // Email: Must be a valid Gmail address
+    else if (name === "email") {
+      if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value)) {
+        errorMsg = "Please enter a valid Gmail address (example@gmail.com).";
+      }
+    }
+    // Gender: Must be 'Male', 'Female', or 'Other'
+    else if (name === "gender") {
+      const allowedGenders = ["Male", "Female", "Other"];
+      if (!allowedGenders.includes(value)) {
+        errorMsg = "Gender must be Male, Female, or Other.";
+      }
+    }
+    // Date of Birth: Must be in YYYY-MM-DD format and a valid date
+    else if (name === "dateOfBirth") {
+      const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+      if (!datePattern.test(value)) {
+        errorMsg = "Date of Birth must be in YYYY-MM-DD format.";
+      } else {
+        const enteredDate = new Date(value);
+        const today = new Date();
+        if (enteredDate > today) {
+          errorMsg = "Date of Birth cannot be in the future.";
+        }
+      }
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: errorMsg, // Assign error message to the respective field
+    }));
   };
 
-  //Edit user profile
+                            //Edit user profile
   const toggleEditMode = async () => {
     if (isEditing) {
       if (JSON.stringify(user) !== JSON.stringify(initialUser)) {
         try {
           const userId = sessionStorage.getItem("userID");
           const response = await axios.put(
-            `http://localhost:8080/user/update/${userId}`,
+            `http://localhost:5254/api/Users/Update/1${userId}`,
             {
-              name: user.fullName,
+              firstName: user.firstName,
+              lastName: user.lastName,
               email: user.email,
               phone: user.phone,
+              gender: user.gender,
+              dateOfBirth: user.dateOfBirth,
             }
           );
           if (response.status === 200) {
@@ -128,7 +167,8 @@ const UserProfile = () => {
           borderRadius: "12px",
           maxWidth: "500px",
           margin: "auto",
-          marginTop: "100px",
+          marginTop: "150px",
+          marginBottom: "150px",
           backgroundColor: "#f7f9fc",
           boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
         }}
@@ -144,12 +184,13 @@ const UserProfile = () => {
         >
           User Profile
         </h2>
+
         <div style={{ marginBottom: "20px" }}>
-          <label style={{ fontSize: "16px", color: "#555" }}>Full Name:</label>
+          <label style={{ fontSize: "16px", color: "#555" }}>First Name:</label>
           <input
             type="text"
-            name="fullName"
-            value={user.firstName + " " + user.lastName}
+            name="firstName"
+            value={user.firstName}
             onChange={handleInputChange}
             disabled={!isEditing}
             style={{
@@ -163,33 +204,64 @@ const UserProfile = () => {
               outline: "none",
             }}
           />
-          {errors.fullName && (
+          {errors.firstName && (
             <span style={{ color: "red", fontSize: "14px" }}>
-              {errors.fullName}
+              {errors.firstName}
             </span>
           )}
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <label style={{ fontSize: "16px", color: "#555" }}>Email:</label>
+          <label style={{ fontSize: "16px", color: "#555" }}>Last Name:</label>
           <input
-            type="email"
-            name="email"
-            value={user.email}
-            disabled
+            type="text"
+            name="lastName"
+            value={user.lastName}
+            onChange={handleInputChange}
+            disabled={!isEditing}
             style={{
               width: "100%",
               padding: "12px",
               fontSize: "16px",
               margin: "8px 0",
               borderRadius: "8px",
-              border: "2px solid #ccc",
-              backgroundColor: "#f1f3f5",
-              color: "#777",
+              border: errors.fullName ? "2px solid red" : "2px solid #ccc",
+              backgroundColor: isEditing ? "#fff" : "#e9ecef",
               outline: "none",
             }}
           />
+          {errors.firstName && (
+            <span style={{ color: "red", fontSize: "14px" }}>
+              {errors.firstName}
+            </span>
+          )}
         </div>
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ fontSize: "16px", color: "#555" }}>Email :</label>
+          <input
+            type="text"
+            name="email"
+            value={user.email}
+            onChange={handleInputChange}
+            disabled={!isEditing}
+            style={{
+              width: "100%",
+              padding: "12px",
+              fontSize: "16px",
+              margin: "8px 0",
+              borderRadius: "8px",
+              border: errors.email ? "2px solid red" : "2px solid #ccc",
+              backgroundColor: isEditing ? "#fff" : "#e9ecef",
+              outline: "none",
+            }}
+          />
+          {errors.email && (
+            <span style={{ color: "red", fontSize: "14px" }}>
+              {errors.email}
+            </span>
+          )}
+        </div>
+
         <div style={{ marginBottom: "20px" }}>
           <label style={{ fontSize: "16px", color: "#555" }}>Gender:</label>
           <input
@@ -217,7 +289,9 @@ const UserProfile = () => {
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <label style={{ fontSize: "16px", color: "#555" }}>dateOfBirth:</label>
+          <label style={{ fontSize: "16px", color: "#555" }}>
+            dateOfBirth:
+          </label>
           <input
             type="text"
             name="phone"
@@ -267,17 +341,14 @@ const UserProfile = () => {
           )}
         </div>
 
-
-
-
         <button
           onClick={toggleEditMode}
           style={{
             padding: "12px 24px",
             fontSize: "18px",
             fontWeight: "bold",
-            color: "#fff",
-            backgroundColor: isEditing ? "#28a745" : "#007bff",
+            color: "#9BBAA36",
+            backgroundColor: isEditing ? "#9BBAA3" : "#9BBAA36",
             border: "none",
             borderRadius: "8px",
             cursor: "pointer",
