@@ -54,7 +54,7 @@ namespace backend.Repository.Implementation
             _mapper.Map(planDto, plan);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<MembershipPlanDto>(plan);
+            return _mapper.Map<MembershipPlanDto>(await _context.MembershipPlans.FindAsync(id));
         }
 
         public async Task<int> DeletePlanAsync(int id)

@@ -39,7 +39,7 @@ namespace backend.Repository.Implementation
             return membership == null ? null : _mapper.Map<MembershipDto>(membership);
         }
 
-        public async Task<List<MembershipDto>> GetMembershipsByUserIdAsync(int userId)
+        public async Task<List<MembershipDto>?> GetMembershipsByUserIdAsync(int userId)
         {
             var memberships = await _context.Memberships
                 .Include(m => m.User)
@@ -51,15 +51,15 @@ namespace backend.Repository.Implementation
             return _mapper.Map<List<MembershipDto>>(memberships);
         }
 
-        public async Task<MembershipDto> CreateMembershipAsync(CreateMembershipDto membershipDto)
+        public async Task<int> CreateMembershipAsync(CreateMembershipDto membershipDto)
         {
             var membership = _mapper.Map<Membership>(membershipDto);
             membership.CreatedAt = DateTime.Now;
 
             _context.Memberships.Add(membership);
-            await _context.SaveChangesAsync();
+            
 
-            return await GetMembershipByIdAsync(membership.Id);
+            return await _context.SaveChangesAsync();;
         }
 
         public async Task<MembershipDto?> UpdateMembershipAsync(int id, UpdateMembershipDto membershipDto)
@@ -73,14 +73,14 @@ namespace backend.Repository.Implementation
             return await GetMembershipByIdAsync(id);
         }
 
-        public async Task<bool> DeleteMembershipAsync(int id)
+        public async Task<int> DeleteMembershipAsync(int id)
         {
             var membership = await _context.Memberships.FindAsync(id);
-            if (membership == null) return false;
+            if (membership == null) return -1;
 
             _context.Memberships.Remove(membership);
-            await _context.SaveChangesAsync();
-            return true;
+            
+            return await _context.SaveChangesAsync();;
         }
 
         public async Task<bool> IsMembershipActiveAsync(int userId)
