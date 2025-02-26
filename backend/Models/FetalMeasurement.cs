@@ -27,7 +27,10 @@ namespace backend.Models
             if (Profile != null)
             {
                 int daysDifference = MeasurementDate.DayNumber - Profile.ConceptionDate.DayNumber;
-                Week = (int)Math.Floor(daysDifference / 7.0);
+                Week = (int)Math.Floor(daysDifference / 7.0) + 1; // Add 1 to start from week 1
+                
+                // Ensure week is not negative
+                if (Week < 1) Week = 1;
             }
         }
     }

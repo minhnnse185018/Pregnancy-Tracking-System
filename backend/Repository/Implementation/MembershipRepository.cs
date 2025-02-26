@@ -53,24 +53,41 @@ namespace backend.Repository.Implementation
 
         public async Task<int> CreateMembershipAsync(CreateMembershipDto membershipDto)
         {
-            var membership = _mapper.Map<Membership>(membershipDto);
-            membership.CreatedAt = DateTime.Now;
+            try
+            {
+                // Get plan to calculate end date
+                var plan = await _context.MembershipPlans.FindAsync(membershipDto.PlanId);
+                if (plan == null) return -1;
 
-            _context.Memberships.Add(membership);
-            
+                var membership = _mapper.Map<Membership>(membershipDto);
+                membership.EndDate = membershipDto.StartDate.AddDays(plan.Duration*7);
+                membership.Status = "active";
+                membership.CreatedAt = DateTime.Now;
 
-            return await _context.SaveChangesAsync();;
+                await _context.Memberships.AddAsync(membership);
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
 
-        public async Task<MembershipDto?> UpdateMembershipAsync(int id, UpdateMembershipDto membershipDto)
+        public async Task<MembershipDto?> UpdateMembershipAsync(int id, string Status)
         {
-            var membership = await _context.Memberships.FindAsync(id);
-            if (membership == null) return null;
+            try
+            {
+                var membership = await _context.Memberships.FindAsync(id);
+                if (membership == null) return null;
+                membership.Status=Status;
 
-            _mapper.Map(membershipDto, membership);
-            await _context.SaveChangesAsync();
-
-            return await GetMembershipByIdAsync(id);
+                await _context.SaveChangesAsync();
+                return await GetMembershipByIdAsync(id);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public async Task<int> DeleteMembershipAsync(int id)
@@ -90,5 +107,20 @@ namespace backend.Repository.Implementation
                     && m.Status == "active" 
                     && m.EndDate > DateTime.Now);
         }
+
+        public async Task<int> ExtendMemberShipAsync(int id)
+        {
+            var membership = await _context.Memberships.FindAsync(id);
+            if (membership == null) return -1;
+            var plan = await _context.MembershipPlans.FindAsync(membership.PlanId);
+            if (plan == null) return -1;
+            membership.Status="Active";
+            membership.StartDate = membership.EndDate;
+            membership.EndDate = membership.StartDate.AddDays(plan.Duration * 7);
+            
+
+            return await _context.SaveChangesAsync();; 
+        }
+
     }
 } 

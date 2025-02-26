@@ -106,7 +106,7 @@ namespace backend.Mapper
                 .ForMember(dest => dest.PlanName,
                     opt => opt.MapFrom(src => src.Plan.PlanName));
             CreateMap<CreateMembershipDto, Membership>();
-            CreateMap<UpdateMembershipDto, Membership>();
+
 
             // MembershipPlan mappings
             CreateMap<MembershipPlan, MembershipPlanDto>();

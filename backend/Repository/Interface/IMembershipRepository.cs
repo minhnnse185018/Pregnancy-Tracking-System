@@ -8,8 +8,9 @@ namespace backend.Repository.Interface
         Task<MembershipDto?> GetMembershipByIdAsync(int id);
         Task<List<MembershipDto>?> GetMembershipsByUserIdAsync(int userId);
         Task<int> CreateMembershipAsync(CreateMembershipDto membershipDto);
-        Task<MembershipDto?> UpdateMembershipAsync(int id, UpdateMembershipDto membershipDto);
+        Task<MembershipDto?> UpdateMembershipAsync(int id, string Status);
         Task<int> DeleteMembershipAsync(int id);
+        Task<int> ExtendMemberShipAsync(int id);
         Task<bool> IsMembershipActiveAsync(int userId);
     }
 } 

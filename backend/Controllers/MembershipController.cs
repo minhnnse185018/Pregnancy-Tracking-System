@@ -51,9 +51,9 @@ namespace backend.Controllers
         }
 
         [HttpPut("UpdateMBShip/{id}")]
-        public async Task<IActionResult> UpdateMembership(int id, [FromBody] UpdateMembershipDto membershipDto)
+        public async Task<IActionResult> UpdateMembership(int id,[FromBody] string Status )
         {
-            var membership = await _membershipRepository.UpdateMembershipAsync(id, membershipDto);
+            var membership = await _membershipRepository.UpdateMembershipAsync(id, Status);
             return membership == null ? NotFound() : Ok(membership);
         }
 
@@ -62,6 +62,12 @@ namespace backend.Controllers
         {
             var result = await _membershipRepository.DeleteMembershipAsync(id);
             return result >0? Ok() : NotFound();
+        }
+        [HttpPut("ExtendMemberShip/{id}")]
+        public async Task<IActionResult> ExtendMembership([FromBody]int id )
+        {
+            var membership = await _membershipRepository.ExtendMemberShipAsync(id);
+            return membership <0 ? NotFound() : Ok();
         }
     }
 } 
