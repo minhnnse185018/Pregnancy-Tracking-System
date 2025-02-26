@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+using backend.Helpers;
+
 namespace backend.Models
 {
     public class FetalMeasurement
@@ -6,7 +9,10 @@ namespace backend.Models
         public int ProfileId { get; set; }
         public decimal WeightGrams { get; set; }
         public decimal HeightCm { get; set; }
+        
+        [JsonConverter(typeof(DateOnlyConverter))]
         public DateOnly MeasurementDate { get; set; }
+        
         public string? Notes { get; set; }
         public int Week { get; private set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

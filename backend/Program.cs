@@ -5,12 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Repository.Interface;
 using backend.Repository.Implementation;
 using backend.Services;
+using backend.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers()
-    .AddNewtonsoftJson();
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.Converters.Add(new DateOnlyConverter());
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

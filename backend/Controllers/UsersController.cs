@@ -60,6 +60,13 @@ namespace backend.Controllers
             var result = await _userRepository.UpdateUser(id,user);
             return result>0? Ok():BadRequest();
         }
+        [HttpPut("UpdateInfo")]
+        public async Task<IActionResult> UpdateUserAsync( UpdateUserInfoDto infoDto)
+        {
+            
+            var result = await _userRepository.UpdateUserInfo(infoDto);
+            return result>0? Ok():BadRequest();
+        }
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteUserAsync(int id)
         {

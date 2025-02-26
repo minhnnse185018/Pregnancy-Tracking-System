@@ -13,6 +13,7 @@ namespace backend.Repository.Interface
         Task<bool> IsEmailExists(string email);
         Task<User?> CreateUser(User user);
         Task<int> UpdateUser(int id, User user);
+        Task<int> UpdateUserInfo(UpdateUserInfoDto user);
         Task<int> DeleteUser(int id);
         Task<List<UserDto>> GetAllUsersAsync();
         Task<List<UserDto>> GetFilteredUsersAsync(string? role = null, string? status = null);

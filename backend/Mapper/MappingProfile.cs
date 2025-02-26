@@ -26,6 +26,7 @@ namespace backend.Mapper
         {
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<User, RegisterRequest>().ReverseMap();
+            CreateMap<User, UpdateUserInfoDto>().ReverseMap();
 
             // Post mappings
             CreateMap<Post, PostDto>()

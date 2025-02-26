@@ -155,5 +155,25 @@ namespace backend.Repository.Implementation
                 return 0; // Registration failed
             }
         }
+
+        public async Task<int> UpdateUserInfo(UpdateUserInfoDto user)
+        {
+            try
+            {
+                var existUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == user.Id);
+                if (existUser == null) return 0;
+
+                
+                _context.Entry(existUser).CurrentValues.SetValues(user);
+                _context.Entry(existUser).Property(x => x.Password).IsModified = false;
+                _context.Entry(existUser).State = EntityState.Modified;
+
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
     }
 }

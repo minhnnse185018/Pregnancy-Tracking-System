@@ -78,7 +78,7 @@ function LoginPage() {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5254/api/LoginGoogle", {
+      const response = await axios.post("http://localhost:5254/api/Login/google-login", {
         credential: credentialResponse.credential
       },
       {
