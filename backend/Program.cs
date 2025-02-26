@@ -14,6 +14,7 @@ builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.Converters.Add(new DateOnlyConverter());
+        options.SerializerSettings.DateFormatString = "yyyy-MM-dd";
     });
 
 builder.Services.AddEndpointsApiExplorer();

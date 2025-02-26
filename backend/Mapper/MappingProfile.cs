@@ -24,9 +24,22 @@ namespace backend.Mapper
     {
         public MappingProfile()
         {
-            CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<User, RegisterRequest>().ReverseMap();
-            CreateMap<User, UpdateUserInfoDto>().ReverseMap();
+            CreateMap<User, UserDto>();
+            CreateMap<UserDto, User>();
+
+            // For Registration
+            CreateMap<RegisterRequest, User>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.Status, opt => opt.Ignore())
+                .ForMember(dest => dest.UserType, opt => opt.Ignore())
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth));
+
+            // For Update
+            CreateMap<UpdateUserInfoDto, User>()
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Post mappings
             CreateMap<Post, PostDto>()

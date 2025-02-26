@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
-
+using backend.Helpers;
 
 namespace backend.Data
 {
@@ -34,6 +34,29 @@ namespace backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configure DateOnly properties
+            var dateOnlyConverter = new DateOnlyConverterEF();
+            
+            modelBuilder.Entity<User>()
+                .Property(e => e.DateOfBirth)
+                .HasColumnType("date")
+                .HasConversion(dateOnlyConverter);
+
+            modelBuilder.Entity<PregnancyProfile>()
+                .Property(e => e.ConceptionDate)
+                .HasColumnType("date")
+                .HasConversion(dateOnlyConverter);
+
+            modelBuilder.Entity<PregnancyProfile>()
+                .Property(e => e.DueDate)
+                .HasColumnType("date")
+                .HasConversion(dateOnlyConverter);
+
+            modelBuilder.Entity<FetalMeasurement>()
+                .Property(e => e.MeasurementDate)
+                .HasColumnType("date")
+                .HasConversion(dateOnlyConverter);
+
             // User configuration
             modelBuilder.Entity<User>(entity =>
             {
@@ -55,8 +78,6 @@ namespace backend.Data
                     .HasForeignKey(p => p.UserId)        // ✅ Explicitly define the foreign key
                     .OnDelete(DeleteBehavior.Cascade);   // ✅ Delete all pregnancy profiles if user is deleted
             });
-
-
 
             // FetalMeasurement configuration
             modelBuilder.Entity<FetalMeasurement>(entity =>
