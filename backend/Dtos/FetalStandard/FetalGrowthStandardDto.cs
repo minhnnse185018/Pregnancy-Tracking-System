@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+using backend.Helpers;
+
 namespace backend.Dtos.FetalStandard
 {
     public class FetalGrowthStandardDto
