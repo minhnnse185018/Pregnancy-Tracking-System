@@ -131,47 +131,71 @@ namespace backend.Repository.Implementation
 
         public async Task<int> Register(RegisterRequest register)
         {
-            // Check if email already exists
-            if (await IsEmailExists(register.Email))
+            try 
             {
-                return -1; // Email already exists
-            }
+                if (await IsEmailExists(register.Email))
+                {
+                    return -1;
+                }
 
-            var user = _mapper.Map<User>(register);
-            
-            // Set default values
-            user.CreatedAt = DateTime.Now;
-            
-            user.Status = "active";
-            user.UserType = "1"; // Default role for new registrations
+                var user = _mapper.Map<User>(register);
+                
+                // Set default values
+                user.CreatedAt = DateTime.Now;
+                user.Status = "active";
+                user.UserType = "1";
 
-            try
-            {
+                // Explicitly set Phone and DateOfBirth
+                if (!string.IsNullOrWhiteSpace(register.Phone))
+                {
+                    user.Phone = register.Phone.Trim();
+                }
+                if (register.DateOfBirth.HasValue)
+                {
+                    user.DateOfBirth = register.DateOfBirth.Value;
+                }
+
                 await _context.Users.AddAsync(user);
                 return await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return 0; // Registration failed
+                Console.WriteLine($"Registration error: {ex.Message}");
+                return 0;
             }
         }
 
-        public async Task<int> UpdateUserInfo(UpdateUserInfoDto user)
+        public async Task<int> UpdateUserInfo(UpdateUserInfoDto userDto)
         {
             try
             {
-                var existUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == user.Id);
-                if (existUser == null) return 0;
+                var user = await _context.Users.FindAsync(userDto.Id);
+                if (user == null) return -1;
 
-                
-                _context.Entry(existUser).CurrentValues.SetValues(user);
-                _context.Entry(existUser).Property(x => x.Password).IsModified = false;
-                _context.Entry(existUser).State = EntityState.Modified;
+                // Update basic info
+                if (!string.IsNullOrWhiteSpace(userDto.FirstName)) user.FirstName = userDto.FirstName;
+                if (!string.IsNullOrWhiteSpace(userDto.LastName)) user.LastName = userDto.LastName;
+                if (!string.IsNullOrWhiteSpace(userDto.Gender)) user.Gender = userDto.Gender;
+                if (!string.IsNullOrWhiteSpace(userDto.Image)) user.Image = userDto.Image;
 
+                // Explicitly update Phone
+                if (userDto.Phone != null)
+                {
+                    user.Phone = string.IsNullOrWhiteSpace(userDto.Phone) ? null : userDto.Phone.Trim();
+                }
+
+                // Explicitly update DateOfBirth
+                if (userDto.DateOfBirth.HasValue)
+                {
+                    user.DateOfBirth = userDto.DateOfBirth.Value;
+                }
+
+                _context.Entry(user).State = EntityState.Modified;
                 return await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Update error: {ex.Message}");
                 return -1;
             }
         }

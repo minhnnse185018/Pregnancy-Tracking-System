@@ -47,9 +47,9 @@ namespace backend.Controllers
             return users==null? NotFound():Ok(users);
         }
         [HttpPost("Add")]
-        public async Task<IActionResult> AddUserAsync(UserDto userDto)
+        public async Task<IActionResult> AddUserAsync(User user)
         {
-            var user = _mapper.Map<User>(userDto);
+            
             await _userRepository.CreateUser(user);
             return  Ok();
         }
