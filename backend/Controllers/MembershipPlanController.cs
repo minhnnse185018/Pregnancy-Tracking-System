@@ -40,7 +40,7 @@ namespace backend.Controllers
         public async Task<IActionResult> CreatePlan([FromBody] CreateMembershipPlanDto planDto)
         {
             var plan = await _planRepository.CreatePlanAsync(planDto);
-            return CreatedAtAction(nameof(GetPlanById), new { id = plan.Id }, plan);
+            return plan>0?Ok():BadRequest();
         }
 
         [HttpPut("{id}")]
@@ -54,7 +54,7 @@ namespace backend.Controllers
         public async Task<IActionResult> DeletePlan(int id)
         {
             var result = await _planRepository.DeletePlanAsync(id);
-            return result ? Ok() : NotFound();
+            return result>0 ? Ok() : NotFound();
         }
     }
 } 
