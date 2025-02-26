@@ -1,0 +1,15 @@
+using backend.Dtos.Memberships;
+
+namespace backend.Repository.Interface
+{
+    public interface IMembershipRepository
+    {
+        Task<List<MembershipDto>> GetAllMembershipsAsync();
+        Task<MembershipDto?> GetMembershipByIdAsync(int id);
+        Task<List<MembershipDto>> GetMembershipsByUserIdAsync(int userId);
+        Task<MembershipDto> CreateMembershipAsync(CreateMembershipDto membershipDto);
+        Task<MembershipDto?> UpdateMembershipAsync(int id, UpdateMembershipDto membershipDto);
+        Task<bool> DeleteMembershipAsync(int id);
+        Task<bool> IsMembershipActiveAsync(int userId);
+    }
+} 

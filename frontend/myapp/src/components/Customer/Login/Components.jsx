@@ -67,8 +67,8 @@
 
  export const Button = styled.button`
     border-radius: 20px;
-    border: 1px solid #ff4b2b;
-    background-color: #ff4b2b;
+    border: 1px solid rgb(80, 10, 84);
+    background-color:rgb(229, 154, 233);
     color: #ffffff;
     font-size: 12px;
     font-weight: bold;
@@ -110,7 +110,7 @@ ${props =>
 export const Overlay = styled.div`
 background: #ff416c;
 background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
-background: linear-gradient(to right, #ff4b2b, #ff416c);
+background: linear-gradient(to right, rgb(249, 158, 243),rgb(249, 158, 243));  //chinh color form singin signup
 background-repeat: no-repeat;
 background-size: cover;
 background-position: 0 0;

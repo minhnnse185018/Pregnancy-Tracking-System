@@ -1,151 +1,175 @@
+/* Root variables for consistent theming */
 :root {
-    --primary-pink: #FFF0F5; /* Light Pink */
-    --secondary-pink: #FFE4E1; /* Very Light Pink */
-    --accent-pink: #FFB6C1; /* Light Pinkish */
-    --deep-pink: #FF69B4; /* Deep Pink */
-    --text-primary: #2D3436; /* Dark Gray */
-    --text-secondary: #636E72; /* Light Gray */
-    --background: #FFFFFF; /* White */
-    --shadow: rgba(0, 0, 0, 0.1); /* Light Shadow */
-  }
-  
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    width: 100%;
-    font-family: 'Segoe UI', sans-serif;
-    color: var(--text-primary);
-    line-height: 1.6;
-    background: var(--background);
-  }
-  
-  .container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0 40px;
-  }
-  
-  .membership-container {
-    padding: 20px;
-    background: var(--primary-pink); /* Set the background color to light pink */
-  }
-  
-  .membership-title {
-    font-size: 2em;
-    margin-bottom: 20px;
+  --primary-pink: #FFF5F7; /* Softer Light Pink */
+  --secondary-pink: #FFEFF1; /* Very Pale Pink */
+  --accent-pink: #FFC1CC; /* Gentle Pink */
+  --deep-pink: #FF85A1; /* Softer Deep Pink */
+  --pastel-blue: #D4E4F7; /* Light Baby Blue */
+  --text-primary: #4A4A4A; /* Softer Dark Gray */
+  --text-secondary: #7A8B99; /* Gentle Gray-Blue */
+  --background: #FFFFFF; /* Pure White */
+  --shadow: rgba(0, 0, 0, 0.05); /* Very Subtle Shadow */
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  font-family: 'Comic Neue', 'Segoe UI', sans-serif;
+  color: var(--text-primary);
+  line-height: 1.6;
+  background: var(--background);
+}
+
+/* Header wrapper */
+.header-wrapper {
+  background: linear-gradient(135deg, var(--primary-pink), var(--pastel-blue));
+  padding: 2rem 0;
+}
+
+/* Hero section */
+.hero {
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Hero content */
+.hero-content {
+  padding: 1rem;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  color: var(--deep-pink);
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 2px var(--shadow);
+}
+
+.hero-content h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--deep-pink);
+  color: var(--background);
+}
+
+.btn-primary:hover {
+  background: var(--accent-pink);
+  transform: scale(1.05);
+}
+
+.btn-secondary {
+  background: var(--secondary-pink);
+  color: var(--text-primary);
+  border: 2px solid var(--accent-pink);
+}
+
+.btn-secondary:hover {
+  background: var(--accent-pink);
+  color: var(--background);
+  transform: scale(1.05);
+}
+
+/* Hero image */
+.hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px var(--shadow);
+}
+
+/* Swiper custom styles */
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
     text-align: center;
-    color: var(--deep-pink);
   }
-  
-  .membership-description {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-    text-align: center;
-    color: var(--text-secondary);
+
+  .hero-content h1 {
+    font-size: 2rem;
   }
-  
-  .membership-plans {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+
+  .hero-content h2 {
+    font-size: 1.25rem;
   }
-  
-  .membership-plan {
-    background: white;
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 10px;
-    width: 30%;
-    text-align: center;
-    box-shadow: 0 10px 20px var(--shadow);
-    transition: transform 0.3s;
-    margin: 10px;
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
   }
-  
-  .membership-plan:hover {
-    transform: scale(1.05);
+
+  .hero-image {
+    margin-top: 1rem;
   }
-  
-  .membership-plan h2 {
-    font-size: 1.5em;
-    color: var(--deep-pink);
-    margin-bottom: 10px;
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 1.5rem;
   }
-  
-  .membership-plan p {
-    font-size: 1.1em;
-    color: var(--text-primary);
-    margin-bottom: 10px;
+
+  .hero-content h2 {
+    font-size: 1rem;
   }
-  
-  .membership-plan ul {
-    list-style: none;
-    padding: 0;
-    color: var(--text-secondary);
+
+  .hero-content p {
+    font-size: 0.9rem;
   }
-  
-  .membership-plan ul li {
-    margin-bottom: 8px;
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.5rem 1rem;
   }
-  
-  .membership-plan button {
-    background: var(--deep-pink);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .membership-plan button:hover {
-    background: var(--accent-pink);
-  }
-  
-  .payment-method-title {
-    font-size: 1.5em;
-    margin-top: 30px;
-    text-align: center;
-    color: var(--deep-pink);
-  }
-  
-  .payment-method-description {
-    font-size: 1em;
-    margin-bottom: 20px;
-    text-align: center;
-    color: var(--text-secondary);
-  }
-  
-  .payment-methods {
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--text-secondary);
-  }
-  
-  .payment-methods p {
-    margin-bottom: 10px;
-  }
-  
-  .qr-code {
-    width: 150px;
-    height: 150px;
-    display: block;
-    margin: 10px auto;
-  }
-  
-  @media (max-width: 768px) {
-    .membership-plans {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .membership-plan {
-      width: 80%;
-    }
-  }
-  
+}
