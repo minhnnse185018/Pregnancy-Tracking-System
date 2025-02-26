@@ -38,6 +38,7 @@ const Header = () => {
             <SwiperSlide><img src='/images/hero-pregnancy.png' alt="Pregnancy Journey 1" /></SwiperSlide>
             <SwiperSlide><img src='/images/about-mainpicture.png' alt="Pregnancy Journey 2" /></SwiperSlide>
             <SwiperSlide><img src='/images/tracking-demo.png' alt="Pregnancy Journey 3" /></SwiperSlide>
+            <SwiperSlide><img src='/images/swiper4.png' alt="Pregnancy Journey 3" /></SwiperSlide>
           </Swiper>
         </div>
       </div>
