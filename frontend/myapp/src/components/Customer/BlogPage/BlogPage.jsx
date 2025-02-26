@@ -12,33 +12,42 @@ function CommunityPosts() {
   const [selectedPostId, setSelectedPostId] = useState(null);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(
-          "https://67b7d8632bddacfb27101cc1.mockapi.io/api/Blog/Comment"
-        );
-        setPosts(response.data);
-      } catch (err) {
-        setError("Failed to load posts.");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPosts();
   }, []);
 
+  // Function to fetch posts from the API
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get(
+        "https://67b7d8632bddacfb27101cc1.mockapi.io/api/Blog/content"
+      );
+      setPosts(response.data);
+    } catch (err) {
+      setError("Failed to load posts.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to handle adding a new comment
   const handleAddComment = async () => {
     if (!commentText.trim()) return;
     try {
       await axios.post(
-        `https://67b7d8632bddacfb27101cc1.mockapi.io/api/Blog/Comment/${selectedPostId}/comments`,
+        `https://67b7d8632bddacfb27101cc1.mockapi.io/api/Blog/comment`,
         {
+          postId: selectedPostId, // Associate comment with the correct post
           text: commentText,
         }
       );
       alert("Comment added successfully!");
+
+      // Close the modal and reset input
       setShowModal(false);
       setCommentText("");
+
+      // Refresh the posts to show updated comment counts
+      fetchPosts();
     } catch (error) {
       console.error("Error adding comment:", error);
     }
@@ -96,7 +105,7 @@ function CommunityPosts() {
                       }}
                       className="add-comment-btn"
                     >
-                      💬 leave comment
+                      💬 Comment
                     </button>
                   </div>
                 </div>

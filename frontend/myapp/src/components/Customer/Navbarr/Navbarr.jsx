@@ -57,7 +57,7 @@ export default function Navbarr() {
               <Link to="/membership" className="nav-link">Member</Link>
             </li>
             <li className="nav-item">
-              <Link to="/blog" className="nav-link">Blog</Link>
+              <Link to="/blog" className="nav-link">Community</Link>
             </li>
             <li className="nav-item">
               <Link to="/contact" className="nav-link">Contact</Link>

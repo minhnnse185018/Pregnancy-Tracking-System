@@ -8,7 +8,13 @@
     --background: #FFFFFF; /* White */
     --shadow: rgba(0, 0, 0, 0.1); /* Light Shadow */
   }
-  
+  .membership-container p{ 
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    margin-top: 50px;
+  }
   * {
     margin: 0;
     padding: 0;

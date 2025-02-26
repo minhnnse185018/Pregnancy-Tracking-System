@@ -132,7 +132,7 @@ const UserProfile = () => {
         try {
           const userId = sessionStorage.getItem("userID");
           const response = await axios.put(
-            `http://localhost:5254/api/Users/Update/1${userId}`,
+            `http://localhost:5254/api/Users/UpdateInfo${userId}`,
             {
               firstName: user.firstName,
               lastName: user.lastName,
