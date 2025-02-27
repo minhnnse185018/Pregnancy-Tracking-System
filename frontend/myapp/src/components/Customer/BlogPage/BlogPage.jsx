@@ -10,6 +10,8 @@ function CommunityPosts() {
   const [showModal, setShowModal] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [showComments, setShowComments] = useState(false);
 
   useEffect(() => {
     fetchPosts();
@@ -19,7 +21,7 @@ function CommunityPosts() {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(
-        "https://67b7d8632bddacfb27101cc1.mockapi.io/api/Blog/content"
+        "http://localhost:5254/api/Post/GetAll"
       );
       setPosts(response.data);
     } catch (err) {
@@ -73,29 +75,23 @@ function CommunityPosts() {
 
       <div className="posts-container">
         {posts.length === 0 ? (
-          <p>No posts available.</p>
+          <p>Chưa có bài viết nào.</p>
         ) : (
           posts.map((post) => (
             <div key={post.id} className="post-card">
               <div className="post-content">
                 <div className="post-user">
-                  <img
-                    src={post.avatar || "/images/default-avatar.jpg"}
-                    alt={post.author}
-                    className="user-avatar"
-                  />
                   <div className="post-info">
                     <p className="post-metadata">
-                      By <span className="author-name">{post.author}</span> in{" "}
-                      <span className="group-name">{post.category}</span>
+                      Đăng bởi <span className="author-name">{post.userName}</span>
                     </p>
-                    <h2 className="post-title">{post.question}</h2>
+                    <h2 className="post-title">Title: {post.title}</h2>
                   </div>
                 </div>
-                <p className="post-text">{post.answer}</p>
+                <p className="post-text">Content: {post.content}</p>
                 <div className="post-stats">
                   <span className="post-time">
-                    {new Date(post.created_at).toLocaleString()}
+                    Created At: {new Date(post.createdAt).toLocaleDateString()}
                   </span>
                   <div className="interaction-stats">
                     <button
@@ -105,10 +101,40 @@ function CommunityPosts() {
                       }}
                       className="add-comment-btn"
                     >
-                      💬 Comment
+                      💬 Leave Comment 
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedPost(post);
+                        setShowComments(!showComments);
+                      }}
+                      className="view-comments-btn"
+                    >
+                      💬 View Comments ({post.commentCount})
                     </button>
                   </div>
                 </div>
+
+                {showComments && selectedPost?.id === post.id && (
+                  <div className="comments-section">
+                    <h3>Comments</h3>
+                    {post.comments && post.comments.length > 0 ? (
+                      post.comments.map((comment) => (
+                        <div key={comment.id} className="comment">
+                          <div className="comment-header">
+                            <span className="comment-author">{comment.userName}</span>
+                            <span className="comment-date">
+                              {new Date(comment.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <p className="comment-content">{comment.content}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No comments yet</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           ))

@@ -132,14 +132,15 @@ const UserProfile = () => {
         try {
           const userId = sessionStorage.getItem("userID");
           const response = await axios.put(
-            `http://localhost:5254/api/Users/UpdateInfo${userId}`,
+            `http://localhost:5254/api/Users/UpdateInfo`,
             {
               firstName: user.firstName,
               lastName: user.lastName,
-              email: user.email,
-              phone: user.phone,
+              email: user.email,  
               gender: user.gender,
               dateOfBirth: user.dateOfBirth,
+              image : user.image,
+              phone: user.phone,
             }
           );
           if (response.status === 200) {
@@ -243,7 +244,7 @@ const UserProfile = () => {
             name="email"
             value={user.email}
             onChange={handleInputChange}
-            disabled={!isEditing}
+            disabled
             style={{
               width: "100%",
               padding: "12px",
@@ -251,7 +252,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.email ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: isEditing ? "#fff" : "#e9ecef",
+              backgroundColor:"#e9ecef",
               outline: "none",
             }}
           />
@@ -265,7 +266,7 @@ const UserProfile = () => {
         <div style={{ marginBottom: "20px" }}>
           <label style={{ fontSize: "16px", color: "#555" }}>Gender:</label>
           <input
-            type="text"
+            type="generic"
             name="Gender"
             value={user.gender}
             onChange={handleInputChange}
@@ -294,7 +295,7 @@ const UserProfile = () => {
           </label>
           <input
             type="text"
-            name="phone"
+            name="dateOfBirth"
             value={user.dateOfBirth}
             onChange={handleInputChange}
             disabled={!isEditing}

@@ -78,7 +78,7 @@ function LoginPage() {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5254/api/LoginGoogle", {
+      const response = await axios.post("http://localhost:5254/api/Login/google-login", {
         credential: credentialResponse.credential
       },
       {
@@ -119,7 +119,7 @@ function LoginPage() {
               </GoogleButtonContainer>
               <Components.Input type="text" placeholder="Name" />
               <Components.Input type="email" placeholder="Email" />
-              <Components.Input type="password" placeholder="Password" />
+              <Components.Input type="password" required  minLength={6} placeholder="Password" />
               <Components.Button>Sign Up</Components.Button>
             </Components.Form>
           </Components.SignUpContainer>
@@ -141,7 +141,7 @@ function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Components.Input
-                type="password"
+                type="password" required minLength={6}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
