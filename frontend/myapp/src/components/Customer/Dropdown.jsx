@@ -45,7 +45,7 @@ const UserIconDropdown = () => {
           src="images/user.png"
           alt="User"
           style={{
-            width: "30px",
+            width: "25px",
             borderRadius: "50%",
             verticalAlign: "middle",
           }}

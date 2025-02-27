@@ -1,175 +1,212 @@
-/* Root variables for consistent theming */
-:root {
-  --primary-pink: #FFF5F7; /* Softer Light Pink */
-  --secondary-pink: #FFEFF1; /* Very Pale Pink */
-  --accent-pink: #FFC1CC; /* Gentle Pink */
-  --deep-pink: #FF85A1; /* Softer Deep Pink */
-  --pastel-blue: #D4E4F7; /* Light Baby Blue */
-  --text-primary: #4A4A4A; /* Softer Dark Gray */
-  --text-secondary: #7A8B99; /* Gentle Gray-Blue */
-  --background: #FFFFFF; /* Pure White */
-  --shadow: rgba(0, 0, 0, 0.05); /* Very Subtle Shadow */
-}
-
-/* Reset and base styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  width: 100%;
-  font-family: 'Comic Neue', 'Segoe UI', sans-serif;
-  color: var(--text-primary);
-  line-height: 1.6;
-  background: var(--background);
-}
-
-/* Header wrapper */
-.header-wrapper {
-  background: linear-gradient(135deg, var(--primary-pink), var(--pastel-blue));
-  padding: 2rem 0;
-}
-
-/* Hero section */
-.hero {
-  padding: 2rem 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  align-items: center;
-}
-
-/* Hero content */
-.hero-content {
-  padding: 1rem;
-}
-
-.hero-content h1 {
-  font-size: 2.5rem;
-  color: var(--deep-pink);
-  font-weight: bold;
-  margin-bottom: 1rem;
-  text-shadow: 1px 1px 2px var(--shadow);
-}
-
-.hero-content h2 {
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
-}
-
-.hero-content p {
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  margin-bottom: 1.5rem;
-}
-
-.hero-buttons {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn-primary,
-.btn-secondary {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border-radius: 25px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.btn-primary {
-  background: var(--deep-pink);
-  color: var(--background);
-}
-
-.btn-primary:hover {
-  background: var(--accent-pink);
-  transform: scale(1.05);
-}
-
-.btn-secondary {
-  background: var(--secondary-pink);
-  color: var(--text-primary);
-  border: 2px solid var(--accent-pink);
-}
-
-.btn-secondary:hover {
-  background: var(--accent-pink);
-  color: var(--background);
-  transform: scale(1.05);
-}
-
-/* Hero image */
-.hero-image img {
-  width: 100%;
-  height: auto;
-  border-radius: 15px;
-  box-shadow: 0 8px 16px var(--shadow);
-}
-
-/* Swiper custom styles */
-.swiper {
-  width: 100%;
-  height: 100%;
-}
-
-.swiper-slide {
+/* General Container */
+.membership-container {
+  padding: 40px;
+  background: linear-gradient(135deg, #f9f5f6 0%, #e6f0fa 100%);
+  min-height: 100vh;
   text-align: center;
+  font-family: 'Arial', sans-serif;
 }
 
-/* Responsive design */
+/* Title */
+.membership-title {
+  font-size: 2.5rem;
+  color: #ff6f91;
+  margin-bottom: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Description */
+.membership-description {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* Plans Container */
+.membership-plans {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* Individual Plan Card */
+.membership-plan {
+  background: #fff;
+  border-radius: 15px;
+  padding: 25px;
+  width: 320px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.membership-plan:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.membership-plan h2 {
+  font-size: 1.6rem;
+  color: #4a90e2;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.membership-plan p {
+  font-size: 1.3rem;
+  color: #ff6f91;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.membership-plan ul {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  margin-bottom: 25px;
+}
+
+.membership-plan ul li {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.membership-plan ul li:before {
+  content: '✔';
+  color: #ff6f91;
+  position: absolute;
+  left: 0;
+  font-size: 1.1rem;
+}
+
+/* Button Styling */
+.membership-plan .btn {
+  background-color: #ff6f91;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+}
+
+.membership-plan .btn:hover {
+  background-color: #e65b7b;
+}
+
+/* Payment Modal */
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.payment-options label {
+  font-size: 1.1rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.payment-options input[type="radio"] {
+  accent-color: #ff6f91;
+}
+
+.payment-details {
+  margin-top: 25px;
+  background: #f9f5f6;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.payment-details p {
+  font-size: 1rem;
+  color: #555;
+  margin: 5px 0;
+}
+
+.qr-code {
+  width: 180px;
+  margin: 15px auto;
+  display: block;
+  border: 2px solid #ff6f91;
+  border-radius: 5px;
+}
+
+/* Modal Buttons */
+.modal-footer .btn-secondary {
+  background-color: #ccc;
+  border: none;
+}
+
+.modal-footer .btn-primary {
+  background-color: #ff6f91;
+  border: none;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #e65b7b;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    text-align: center;
+  .membership-container {
+    padding: 20px;
   }
 
-  .hero-content h1 {
+  .membership-title {
     font-size: 2rem;
   }
 
-  .hero-content h2 {
-    font-size: 1.25rem;
+  .membership-description {
+    font-size: 1rem;
   }
 
-  .hero-buttons {
+  .membership-plans {
     flex-direction: column;
-    gap: 0.75rem;
+    align-items: center;
   }
 
-  .hero-image {
-    margin-top: 1rem;
+  .membership-plan {
+    width: 90%;
+  }
+
+  .qr-code {
+    width: 150px;
   }
 }
 
 @media (max-width: 480px) {
-  .hero-content h1 {
-    font-size: 1.5rem;
+  .membership-title {
+    font-size: 1.8rem;
   }
 
-  .hero-content h2 {
-    font-size: 1rem;
+  .membership-plan h2 {
+    font-size: 1.4rem;
   }
 
-  .hero-content p {
+  .membership-plan p {
+    font-size: 1.1rem;
+  }
+
+  .membership-plan ul li {
     font-size: 0.9rem;
   }
 
-  .btn-primary,
-  .btn-secondary {
-    padding: 0.5rem 1rem;
+  .membership-plan .btn {
+    font-size: 1rem;
+    padding: 8px 16px;
   }
 }
