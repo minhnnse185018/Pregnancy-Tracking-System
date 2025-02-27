@@ -36,7 +36,7 @@ function CommunityPosts() {
     if (!commentText.trim()) return;
     try {
       await axios.post(
-        `https://67b7d8632bddacfb27101cc1.mockapi.io/api/Blog/comment`,
+        `http://localhost:5254/api/Post`,
         {
           postId: selectedPostId, // Associate comment with the correct post
           text: commentText,
