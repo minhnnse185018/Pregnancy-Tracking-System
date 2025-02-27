@@ -1,22 +1,23 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import React from "react";
-import { Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "./App.css";
-import AboutUs from "./components/Customer/AboutUs/AboutUs";
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import './App.css';
+import AboutUs from './components/Customer/AboutUs/AboutUs';
 import { AuthProvider } from './components/Customer/AuthContext';
-import BlogPage from "./components/Customer/BlogPage/BlogPage";
+import BlogPage from './components/Customer/BlogPage/BlogPage';
 import Contact from './components/Customer/Contact/Contact';
 import UserProfile from './components/Customer/CustomerProfile';
-import Footer from "./components/Customer/Footer/Footer";
+import FetalGrowthTracker from './components/Customer/FetalGrowthTracker/FetalGrowthTracker';
+import Footer from './components/Customer/Footer/Footer';
 import Header from './components/Customer/Header/Header';
 import InternalLoginPage from './components/Customer/Login/InternalLoginPage';
-import LoginPage from "./components/Customer/Login/LoginPage";
-import MembershipPage from "./components/Customer/Member/MembershipPage";
-import Navbarr from "./components/Customer/Navbarr/Navbarr";
+import LoginPage from './components/Customer/Login/LoginPage';
+import MembershipPage from './components/Customer/Member/MembershipPage';
+import Navbarr from './components/Customer/Navbarr/Navbarr';
 import PaymentFailure from './components/Dashboard/PaymentFailure';
 import PaymentSuccess from './components/Dashboard/PaymentSuccess';
-import MainContent from "./components/HomePage/Maincontent/Maincontent";
+import MainContent from './components/HomePage/Maincontent/Maincontent';
 import AdminPrivateRoute from './components/PrivateRoute/AdminPrivateRoute';
 import CustomerPrivateRoute from './components/PrivateRoute/CustomerPrivateRoute';
 import AdminLayout from './Layouts/Admin/AdminLayout';
@@ -31,7 +32,6 @@ function App() {
       <AuthProvider>
         <ToastContainer autoClose={1300} />
         <Routes>
-          {/* Public Routes */}
           <Route path="/customer-login" element={<LoginPage />} />
           <Route path="/internal-login" element={<InternalLoginPage />} />
 
@@ -76,22 +76,6 @@ function App() {
               </>
             }
           />
-
-          {/* Customer Protected Route */}
-          <Route path="/profile" element={<CustomerPrivateRoute />}>
-            <Route
-              path=""
-              element={
-                <>
-                  <Navbarr />
-                  <UserProfile />
-                  <Footer />
-                </>
-              }
-            />
-          </Route>
-
-          {/* Membership Routes */}
           <Route
             path="/membership"
             element={
@@ -122,8 +106,30 @@ function App() {
               </>
             }
           />
+          <Route
+            path="/growth-tracker"
+            element={
+              <>
+                <Navbarr />
+                <FetalGrowthTracker />
+                <Footer />
+              </>
+            }
+          />
 
-          {/* Admin Protected Routes */}
+          {/* Protected Routes */}
+          <Route path="/profile" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <UserProfile />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
           <Route path="/admin" element={<AdminPrivateRoute />}>
             <Route path="" element={<AdminLayout />}>
               <Route path="admin-profile" element={<AdminProfilePage />} />
