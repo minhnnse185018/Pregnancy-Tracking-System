@@ -51,7 +51,7 @@ export default function Navbarr() {
               <Link to="/about" className="nav-link">About Us</Link>
             </li>
             <li className="nav-item">
-              <Link to="/tracking" className="nav-link">Follow</Link>
+              <Link to="/growth-tracker" className="nav-link">Tracker</Link>
             </li>
             <li className="nav-item">
               <Link to="/membership" className="nav-link">Member</Link>
