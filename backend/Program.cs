@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Repository.Interface;
 using backend.Repository.Implementation;
 using backend.Services;
-using backend.Helpers;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
-        options.SerializerSettings.Converters.Add(new DateOnlyConverter());
         options.SerializerSettings.DateFormatString = "yyyy-MM-dd";
     });
 

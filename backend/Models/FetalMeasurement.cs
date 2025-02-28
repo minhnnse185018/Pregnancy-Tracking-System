@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using backend.Helpers;
+
 
 namespace backend.Models
 {
@@ -10,8 +10,7 @@ namespace backend.Models
         public decimal WeightGrams { get; set; }
         public decimal HeightCm { get; set; }
         
-        [JsonConverter(typeof(DateOnlyConverter))]
-        public DateOnly MeasurementDate { get; set; }
+        public DateTime MeasurementDate { get; set; }
         
         public string? Notes { get; set; }
         public int Week { get; private set; }
@@ -26,10 +25,8 @@ namespace backend.Models
         {
             if (Profile != null)
             {
-                int daysDifference = MeasurementDate.DayNumber - Profile.ConceptionDate.DayNumber;
-                Week = (int)Math.Floor(daysDifference / 7.0) + 1; // Add 1 to start from week 1
-                
-                // Ensure week is not negative
+                TimeSpan difference = MeasurementDate - Profile.ConceptionDate;
+                Week = (int)Math.Floor(difference.TotalDays / 7.0) + 1;
                 if (Week < 1) Week = 1;
             }
         }

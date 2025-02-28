@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using backend.Helpers;
+
 
 namespace backend.Models
 {
@@ -8,11 +8,8 @@ namespace backend.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         
-        [JsonConverter(typeof(DateOnlyConverter))]
-        public DateOnly ConceptionDate { get; set; }
-        
-        [JsonConverter(typeof(DateOnlyConverter))]
-        public DateOnly DueDate { get; set; }
+        public DateTime ConceptionDate { get; set; }
+        public DateTime DueDate { get; set; }
         
         public string? PregnancyStatus { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
