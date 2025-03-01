@@ -6,11 +6,10 @@ using AutoMapper;
 using backend.Models;
 using backend.Dtos.FetalGrowth;
 using backend.Data;
-using backend.Repository.Interface;
 
 namespace backend.Repository.Implementation
 {
-    public class FetalMeasurementRepository : IFetalMeasurementRepository
+    public class FetalMeasurementRepository
     {
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
@@ -21,52 +20,21 @@ namespace backend.Repository.Implementation
             _mapper = mapper;
         }
 
-        public async Task<List<FetalMeasurementDto>> GetAllMeasurementsAsync()
+        public async Task<FetalMeasurementDto> CreateMeasurementAsync(CreateFetalMeasurementDto dto)
         {
-            var measurements = await _context.FetalMeasurements
-                .Include(f => f.Profile)
-                .OrderByDescending(f => f.MeasurementDate)
-                .ToListAsync();
-
-            return _mapper.Map<List<FetalMeasurementDto>>(measurements);
-        }
-
-        public async Task<FetalMeasurementDto?> GetMeasurementByIdAsync(int id)
-        {
-            var measurement = await _context.FetalMeasurements
-                .Include(f => f.Profile)
-                .FirstOrDefaultAsync(f => f.Id == id);
-
-            return measurement == null ? null : _mapper.Map<FetalMeasurementDto>(measurement);
-        }
-
-        public async Task<List<FetalMeasurementDto>> GetMeasurementsByProfileIdAsync(int profileId)
-        {
-            var measurements = await _context.FetalMeasurements
-                .Include(f => f.Profile)
-                .Where(f => f.ProfileId == profileId)
-                .OrderByDescending(f => f.MeasurementDate)
-                .ToListAsync();
-
-            return _mapper.Map<List<FetalMeasurementDto>>(measurements);
-        }
-
-        public async Task<FetalMeasurementDto> CreateMeasurementAsync(CreateFetalMeasurementDto measurementDto)
-        {
-            var measurement = _mapper.Map<FetalMeasurement>(measurementDto);
+            var measurement = _mapper.Map<FetalMeasurement>(dto);
             
-            // Load profile to calculate week
-            measurement.Profile = await _context.PregnancyProfiles.FindAsync(measurementDto.ProfileId);
+            // Load the profile to calculate week
+            measurement.Profile = await _context.PregnancyProfiles.FindAsync(dto.ProfileId);
             measurement.CalculateWeek();
-            measurement.CreatedAt = DateTime.Now;
 
-            await _context.FetalMeasurements.AddAsync(measurement);
+            _context.FetalMeasurements.Add(measurement);
             await _context.SaveChangesAsync();
 
-            return await GetMeasurementByIdAsync(measurement.Id);
+            return _mapper.Map<FetalMeasurementDto>(measurement);
         }
 
-        public async Task<FetalMeasurementDto?> UpdateMeasurementAsync(int id, UpdateFetalMeasurementDto measurementDto)
+        public async Task<FetalMeasurementDto?> UpdateMeasurementAsync(int id, UpdateFetalMeasurementDto dto)
         {
             var measurement = await _context.FetalMeasurements
                 .Include(f => f.Profile)
@@ -74,20 +42,11 @@ namespace backend.Repository.Implementation
 
             if (measurement == null) return null;
 
-            _mapper.Map(measurementDto, measurement);
+            _mapper.Map(dto, measurement);
             measurement.CalculateWeek();
 
             await _context.SaveChangesAsync();
-            return await GetMeasurementByIdAsync(id);
-        }
-
-        public async Task<int> DeleteMeasurementAsync(int id)
-        {
-            var measurement = await _context.FetalMeasurements.FindAsync(id);
-            if (measurement == null) return -1;
-
-            _context.FetalMeasurements.Remove(measurement);
-            return await _context.SaveChangesAsync();
+            return _mapper.Map<FetalMeasurementDto>(measurement);
         }
     }
 } 

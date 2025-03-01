@@ -4,7 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
+<<<<<<< HEAD
 using backend.Helpers;
+=======
+
+>>>>>>> origin/truong-son
 
 namespace backend.Data
 {
@@ -34,6 +38,7 @@ namespace backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
+<<<<<<< HEAD
             // Configure DateOnly properties
             var dateOnlyConverter = new DateOnlyConverterEF();
             
@@ -57,6 +62,8 @@ namespace backend.Data
                 .HasColumnType("date")
                 .HasConversion(dateOnlyConverter);
 
+=======
+>>>>>>> origin/truong-son
             // User configuration
             modelBuilder.Entity<User>(entity =>
             {
@@ -79,6 +86,11 @@ namespace backend.Data
                     .OnDelete(DeleteBehavior.Cascade);   // ✅ Delete all pregnancy profiles if user is deleted
             });
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/truong-son
             // FetalMeasurement configuration
             modelBuilder.Entity<FetalMeasurement>(entity =>
             {

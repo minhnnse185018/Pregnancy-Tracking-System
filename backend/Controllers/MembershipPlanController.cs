@@ -15,46 +15,46 @@ namespace backend.Controllers
             _planRepository = planRepository;
         }
 
-        [HttpGet("GetAllPlans")]
+        [HttpGet]
         public async Task<IActionResult> GetAllPlans()
         {
             var plans = await _planRepository.GetAllPlansAsync();
             return Ok(plans);
         }
 
-        [HttpGet("GetActivePlans")]
+        [HttpGet("active")]
         public async Task<IActionResult> GetActivePlans()
         {
             var plans = await _planRepository.GetActivePlansAsync();
             return Ok(plans);
         }
 
-        [HttpGet("GetPlanById/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetPlanById(int id)
         {
             var plan = await _planRepository.GetPlanByIdAsync(id);
             return plan == null ? NotFound() : Ok(plan);
         }
 
-        [HttpPost("CreatePlan")]
+        [HttpPost]
         public async Task<IActionResult> CreatePlan([FromBody] CreateMembershipPlanDto planDto)
         {
             var plan = await _planRepository.CreatePlanAsync(planDto);
-            return plan>0?Ok():BadRequest();
+            return CreatedAtAction(nameof(GetPlanById), new { id = plan.Id }, plan);
         }
 
-        [HttpPut("UpdatePlan/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePlan(int id, [FromBody] UpdateMembershipPlanDto planDto)
         {
             var plan = await _planRepository.UpdatePlanAsync(id, planDto);
             return plan == null ? NotFound() : Ok(plan);
         }
 
-        [HttpDelete("DeletePlan/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlan(int id)
         {
             var result = await _planRepository.DeletePlanAsync(id);
-            return result>0 ? Ok() : NotFound();
+            return result ? Ok() : NotFound();
         }
     }
 } 

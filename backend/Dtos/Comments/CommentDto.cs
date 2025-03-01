@@ -9,5 +9,9 @@ namespace backend.Dtos.Comments
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string? UserName { get; set; } // Additional field for displaying commenter name
+<<<<<<< HEAD
+=======
+        public string? UserType { get; set; }
+>>>>>>> origin/truong-son
     }
 } 

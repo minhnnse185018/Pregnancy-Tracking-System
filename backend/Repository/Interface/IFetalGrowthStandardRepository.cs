@@ -1,5 +1,8 @@
 using backend.Dtos.FetalGrowth;
+<<<<<<< HEAD
 using backend.Dtos.FetalStandard;
+=======
+>>>>>>> origin/truong-son
 
 namespace backend.Repository.Interface
 {

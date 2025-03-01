@@ -92,7 +92,11 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+<<<<<<< HEAD
                     b.Property<string>("Content")
+=======
+                    b.Property<string>("CommentText")
+>>>>>>> origin/truong-son
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -192,7 +196,11 @@ namespace backend.Migrations
                     b.Property<decimal>("HeightCm")
                         .HasColumnType("decimal(10,2)");
 
+<<<<<<< HEAD
                     b.Property<DateTime>("MeasurementDate")
+=======
+                    b.Property<DateOnly>("MeasurementDate")
+>>>>>>> origin/truong-son
                         .HasColumnType("date");
 
                     b.Property<string>("Notes")
@@ -405,13 +413,21 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+<<<<<<< HEAD
                     b.Property<DateTime>("ConceptionDate")
+=======
+                    b.Property<DateOnly>("ConceptionDate")
+>>>>>>> origin/truong-son
                         .HasColumnType("date");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+<<<<<<< HEAD
                     b.Property<DateTime>("DueDate")
+=======
+                    b.Property<DateOnly>("DueDate")
+>>>>>>> origin/truong-son
                         .HasColumnType("date");
 
                     b.Property<string>("PregnancyStatus")
@@ -467,7 +483,11 @@ namespace backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateOfBirth")
+<<<<<<< HEAD
                         .HasColumnType("date");
+=======
+                        .HasColumnType("datetime2");
+>>>>>>> origin/truong-son
 
                     b.Property<string>("Email")
                         .IsRequired()

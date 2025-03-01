@@ -128,6 +128,7 @@ namespace backend.Repository.Implementation
             return await _context.SaveChangesAsync();
 
         }
+<<<<<<< HEAD
 
         public async Task<int> Register(RegisterRequest register)
         {
@@ -199,5 +200,7 @@ namespace backend.Repository.Implementation
                 return -1;
             }
         }
+=======
+>>>>>>> origin/truong-son
     }
 }

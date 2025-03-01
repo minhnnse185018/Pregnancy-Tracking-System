@@ -16,7 +16,10 @@ using backend.Repository.Interface;
 using backend.Dtos;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+<<<<<<< HEAD
 using Google.Apis.Auth;
+=======
+>>>>>>> origin/truong-son
 //using Google.Apis.Auth;
 
 namespace backend.Controllers
@@ -213,7 +216,22 @@ namespace backend.Controllers
         public string Password { get; set; } = null!;
     }
 
+<<<<<<< HEAD
     
 
     
+=======
+    public class RegisterRequest
+    {
+        public string Email { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+    }
+
+    // public class GoogleLoginRequest
+    // {
+    //     public string Credential { get; set; }
+    // }
+>>>>>>> origin/truong-son
 }
