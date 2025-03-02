@@ -4,11 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
-<<<<<<< HEAD
-using backend.Helpers;
-=======
 
->>>>>>> origin/truong-son
 
 namespace backend.Data
 {
@@ -38,42 +34,10 @@ namespace backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
-<<<<<<< HEAD
-            // Configure DateOnly properties
-            var dateOnlyConverter = new DateOnlyConverterEF();
-            
-            modelBuilder.Entity<User>()
-                .Property(e => e.DateOfBirth)
-                .HasColumnType("date")
-                .HasConversion(dateOnlyConverter);
-
-            modelBuilder.Entity<PregnancyProfile>()
-                .Property(e => e.ConceptionDate)
-                .HasColumnType("date")
-                .HasConversion(dateOnlyConverter);
-
-            modelBuilder.Entity<PregnancyProfile>()
-                .Property(e => e.DueDate)
-                .HasColumnType("date")
-                .HasConversion(dateOnlyConverter);
-
-            modelBuilder.Entity<FetalMeasurement>()
-                .Property(e => e.MeasurementDate)
-                .HasColumnType("date")
-                .HasConversion(dateOnlyConverter);
-
-=======
->>>>>>> origin/truong-son
             // User configuration
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
-                entity.HasIndex(e => e.Email).IsUnique();
-                entity.Property(e => e.Password).IsRequired().HasMaxLength(255);
-                entity.Property(e => e.UserType).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Status).HasDefaultValue("active");
-            });
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
 
             // PregnancyProfile configuration
             modelBuilder.Entity<PregnancyProfile>(entity =>
@@ -86,11 +50,6 @@ namespace backend.Data
                     .OnDelete(DeleteBehavior.Cascade);   // ✅ Delete all pregnancy profiles if user is deleted
             });
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> origin/truong-son
             // FetalMeasurement configuration
             modelBuilder.Entity<FetalMeasurement>(entity =>
             {

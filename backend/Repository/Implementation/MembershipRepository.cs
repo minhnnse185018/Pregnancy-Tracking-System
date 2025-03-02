@@ -39,11 +39,7 @@ namespace backend.Repository.Implementation
             return membership == null ? null : _mapper.Map<MembershipDto>(membership);
         }
 
-<<<<<<< HEAD
         public async Task<List<MembershipDto>?> GetMembershipsByUserIdAsync(int userId)
-=======
-        public async Task<List<MembershipDto>> GetMembershipsByUserIdAsync(int userId)
->>>>>>> origin/truong-son
         {
             var memberships = await _context.Memberships
                 .Include(m => m.User)
@@ -55,7 +51,6 @@ namespace backend.Repository.Implementation
             return _mapper.Map<List<MembershipDto>>(memberships);
         }
 
-<<<<<<< HEAD
         public async Task<int> CreateMembershipAsync(CreateMembershipDto membershipDto)
         {
             try
@@ -103,38 +98,6 @@ namespace backend.Repository.Implementation
             _context.Memberships.Remove(membership);
             
             return await _context.SaveChangesAsync();;
-=======
-        public async Task<MembershipDto> CreateMembershipAsync(CreateMembershipDto membershipDto)
-        {
-            var membership = _mapper.Map<Membership>(membershipDto);
-            membership.CreatedAt = DateTime.Now;
-
-            _context.Memberships.Add(membership);
-            await _context.SaveChangesAsync();
-
-            return await GetMembershipByIdAsync(membership.Id);
-        }
-
-        public async Task<MembershipDto?> UpdateMembershipAsync(int id, UpdateMembershipDto membershipDto)
-        {
-            var membership = await _context.Memberships.FindAsync(id);
-            if (membership == null) return null;
-
-            _mapper.Map(membershipDto, membership);
-            await _context.SaveChangesAsync();
-
-            return await GetMembershipByIdAsync(id);
-        }
-
-        public async Task<bool> DeleteMembershipAsync(int id)
-        {
-            var membership = await _context.Memberships.FindAsync(id);
-            if (membership == null) return false;
-
-            _context.Memberships.Remove(membership);
-            await _context.SaveChangesAsync();
-            return true;
->>>>>>> origin/truong-son
         }
 
         public async Task<bool> IsMembershipActiveAsync(int userId)
@@ -144,7 +107,6 @@ namespace backend.Repository.Implementation
                     && m.Status == "active" 
                     && m.EndDate > DateTime.Now);
         }
-<<<<<<< HEAD
 
         public async Task<int> ExtendMemberShipAsync(int id)
         {
@@ -160,7 +122,5 @@ namespace backend.Repository.Implementation
             return await _context.SaveChangesAsync();; 
         }
 
-=======
->>>>>>> origin/truong-son
     }
 } 

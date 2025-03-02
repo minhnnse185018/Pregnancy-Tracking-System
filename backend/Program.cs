@@ -5,24 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Repository.Interface;
 using backend.Repository.Implementation;
 using backend.Services;
-<<<<<<< HEAD
-using backend.Helpers;
-=======
->>>>>>> origin/truong-son
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers()
-<<<<<<< HEAD
     .AddNewtonsoftJson(options =>
     {
-        options.SerializerSettings.Converters.Add(new DateOnlyConverter());
         options.SerializerSettings.DateFormatString = "yyyy-MM-dd";
     });
-=======
-    .AddNewtonsoftJson();
->>>>>>> origin/truong-son
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -46,12 +38,8 @@ builder.Services.AddCors(options =>
             builder
                 .WithOrigins("http://localhost:3000")
                 .AllowAnyMethod()
-<<<<<<< HEAD
                 .AllowAnyHeader()
                 .AllowCredentials();
-=======
-                .AllowAnyHeader();
->>>>>>> origin/truong-son
         });
 });
 
@@ -66,10 +54,7 @@ builder.Services.AddScoped<IPregnancyProfileRepository, PregnancyProfileReposito
 builder.Services.AddScoped<IFetalGrowthStandardRepository, FetalGrowthStandardRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IMembershipPlanRepository, MembershipPlanRepository>();
-<<<<<<< HEAD
 builder.Services.AddScoped<IFetalMeasurementRepository, FetalMeasurementRepository>();
-=======
->>>>>>> origin/truong-son
 
 var app = builder.Build();
 

@@ -61,7 +61,6 @@ namespace backend.Repository.Implementation
             return await GetProfileByIdAsync(id);
         }
 
-<<<<<<< HEAD
         public async Task<int> DeleteProfileAsync(int id)
         {
             var profile = await _context.PregnancyProfiles.FindAsync(id);
@@ -84,16 +83,6 @@ namespace backend.Repository.Implementation
                 return _mapper.Map<List<PregnancyProfileDto>>(profiles);
             
             
-=======
-        public async Task<bool> DeleteProfileAsync(int id)
-        {
-            var profile = await _context.PregnancyProfiles.FindAsync(id);
-            if (profile == null) return false;
-
-            _context.PregnancyProfiles.Remove(profile);
-            await _context.SaveChangesAsync();
-            return true;
->>>>>>> origin/truong-son
         }
     }
 } 

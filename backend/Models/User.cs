@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 using Newtonsoft.Json;
-using backend.Helpers;
 
-=======
->>>>>>> origin/truong-son
+
 namespace backend.Models
 {
     public class User
@@ -15,12 +12,7 @@ namespace backend.Models
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Gender { get; set; }
-<<<<<<< HEAD
-        [JsonConverter(typeof(DateOnlyConverter))]
-        public DateOnly? DateOfBirth { get; set; }
-=======
         public DateTime? DateOfBirth { get; set; }
->>>>>>> origin/truong-son
         public string? Image { get; set; }
         public string? Phone { get; set; }
         public string Status { get; set; } = "active";
