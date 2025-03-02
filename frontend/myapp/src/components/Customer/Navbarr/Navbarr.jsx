@@ -1,7 +1,10 @@
 "use client";
 
+import EventIcon from "@mui/icons-material/Event"; // Icon cho Book Appointment
+import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety"; // Icon cho Health Tips
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { Badge, IconButton, Tooltip } from "@mui/material";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp"; // Icon cho Growth Tracker
+import { Badge, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
@@ -13,13 +16,16 @@ import "./Navbarr.css";
 export default function Navbarr() {
   const { hasToken } = useContext(AuthContext); // Lấy state từ AuthContext
   const [anchorElNotification, setAnchorElNotification] = useState(null);
+  const [anchorElService, setAnchorElService] = useState(null); // State cho dropdown Service
   const [unreadCount, setUnreadCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(hasToken);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // State để kiểm soát toggle menu
 
   useEffect(() => {
     setIsAuthenticated(hasToken); // Re-render khi token thay đổi
   }, [hasToken]);
 
+  // Xử lý mở/đóng menu thông báo
   const handleOpenNotificationMenu = (event) => {
     setAnchorElNotification(event.currentTarget);
   };
@@ -28,8 +34,22 @@ export default function Navbarr() {
     setAnchorElNotification(null);
   };
 
+  // Xử lý mở/đóng menu Service
+  const handleOpenServiceMenu = (event) => {
+    setAnchorElService(event.currentTarget);
+  };
+
+  const handleCloseServiceMenu = () => {
+    setAnchorElService(null);
+  };
+
+  // Xử lý toggle menu khi nhấp vào hamburger
+  const handleToggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg ftco_navbar ftco-navbar-light scrolled" id="ftco-navbar">
+    <nav className="navbar navbar-expand-lg ftco-navbar-light scrolled" id="ftco-navbar">
       <div className="container">
         <div className="brand-container">
           <Link className="brand-text-link" to="/">
@@ -38,29 +58,95 @@ export default function Navbarr() {
           </Link>
         </div>
 
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ftco-nav">
+        <button
+          className="navbar-toggler"
+          type="button"
+          aria-controls="ftco-nav"
+          aria-expanded={isMenuOpen}
+          aria-label="Toggle navigation"
+          onClick={handleToggleMenu} // Thêm sự kiện toggle
+        >
           <span className="fa fa-bars"></span>
         </button>
 
-        <div className="collapse navbar-collapse nav-center" id="ftco-nav">
+        <div
+          className={`collapse navbar-collapse nav-center ${isMenuOpen ? "show" : ""}`}
+          id="ftco-nav"
+        >
           <ul className="navbar-nav">
             <li className="nav-item">
-              <Link to="/" className="nav-link">Home</Link>
+              <Link to="/" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </Link>
             </li>
             <li className="nav-item">
-              <Link to="/about" className="nav-link">About Us</Link>
+              <Link to="/about" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                About Us
+              </Link>
             </li>
             <li className="nav-item">
-              <Link to="/growth-tracker" className="nav-link">Tracker</Link>
+              <span
+                className="nav-link"
+                onClick={(e) => {
+                  handleOpenServiceMenu(e);
+                  setIsMenuOpen(false); // Đóng menu khi chọn Service
+                }}
+              >
+                Service
+              </span>
+              <Menu
+                anchorEl={anchorElService}
+                open={Boolean(anchorElService)}
+                onClose={handleCloseServiceMenu}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
+              >
+                <MenuItem onClick={() => { handleCloseServiceMenu(); setIsMenuOpen(false); }}>
+                  <ListItemIcon>
+                    <TrendingUpIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Link to="/growth-tracker" style={{ textDecoration: "none", color: "inherit" }}>
+                      Growth Tracker
+                    </Link>
+                  </ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => { handleCloseServiceMenu(); setIsMenuOpen(false); }}>
+                  <ListItemIcon>
+                    <EventIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Link to="/appointment" style={{ textDecoration: "none", color: "inherit" }}>
+                      Book Appointment
+                    </Link>
+                  </ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => { handleCloseServiceMenu(); setIsMenuOpen(false); }}>
+                  <ListItemIcon>
+                    <HealthAndSafetyIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Link to="/health-tips" style={{ textDecoration: "none", color: "inherit" }}>
+                      Health Tips
+                    </Link>
+                  </ListItemText>
+                </MenuItem>
+              </Menu>
             </li>
             <li className="nav-item">
-              <Link to="/membership" className="nav-link">Member</Link>
+              <Link to="/membership" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                Member
+              </Link>
             </li>
             <li className="nav-item">
-              <Link to="/blog" className="nav-link">Community</Link>
+              <Link to="/blog" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                Community
+              </Link>
             </li>
             <li className="nav-item">
-              <Link to="/contact" className="nav-link">Contact</Link>
+              <Link to="/contact" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                Contact
+              </Link>
             </li>
           </ul>
         </div>
@@ -68,9 +154,9 @@ export default function Navbarr() {
         <div className="nav-auth">
           {isAuthenticated ? (
             <>
-              <UserIconDropdown />
+              <UserIconDropdown onClick={() => setIsMenuOpen(false)} />
               <Tooltip title="Open notifications">
-                <IconButton onClick={handleOpenNotificationMenu}>
+                <IconButton onClick={(e) => { handleOpenNotificationMenu(e); setIsMenuOpen(false); }}>
                   <Badge color="error" variant="dot" invisible={unreadCount === 0}>
                     <NotificationsIcon />
                   </Badge>
@@ -83,7 +169,7 @@ export default function Navbarr() {
               />
             </>
           ) : (
-            <LoginButton />
+            <LoginButton onClick={() => setIsMenuOpen(false)} />
           )}
         </div>
       </div>

@@ -7,12 +7,14 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         <div className="row">
-          <div className="col-md-6 col-lg-4 mb-4 mb-md-0">
+          {/* Cột 1: Mom & Baby */}
+          <div className="col-lg-4">
             <h2 className="footer-heading">Mom & Baby</h2>
             <p>Đồng hành cùng mẹ bầu trên hành trình thai kỳ.</p>
           </div>
 
-          <div className="col-md-6 col-lg-4 mb-4 mb-md-0">
+          {/* Cột 2: Quick Links */}
+          <div className="col-lg-4">
             <h2 className="footer-heading">Quick Links</h2>
             <ul className="list-unstyled">
               <li>
@@ -43,7 +45,8 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-md-6 col-lg-4 mb-4 mb-md-0">
+          {/* Cột 3: Have a Questions */}
+          <div className="col-lg-4">
             <h2 className="footer-heading">Have a Questions?</h2>
             <div className="block-23 mb-3">
               <ul>
@@ -70,9 +73,9 @@ const Footer = () => {
           </div>
         </div>
         <div className="row mt-5">
-          <div className="col-md-12 text-center">
+          <div className="col-12 text-center">
             <p className="copyright">
-              Copyright &copy; {new Date().getFullYear()} Mom & Baby. Tất cả quyền được bảo lưu.
+              Copyright © {new Date().getFullYear()} Mom & Baby. Tất cả quyền được bảo lưu.
             </p>
           </div>
         </div>

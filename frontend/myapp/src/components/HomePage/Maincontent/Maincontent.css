@@ -1,194 +1,190 @@
-/* Hero Section */
-.hero {
-    padding-top: 70px;
-    background: linear-gradient(135deg, var(--primary-pink), var(--secondary-pink));
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-  
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 45% 55%;
-    gap: 40px;
-    align-items: center;
-  }
-  
-  .hero-content {
-    padding-right: 20px;
-  }
-  
-  .hero-content h1 {
-    font-size: 48px;
-    line-height: 1.2;
-    color: var(--text-primary);
-    margin-bottom: 16px;
-  }
-  
-  .hero-content h2 {
-    font-size: 24px;
-    color: var(--deep-pink);
-    margin-bottom: 24px;
-  }
-  
-  .hero-content p {
-    font-size: 18px;
-    color: var(--text-secondary);
-    margin-bottom: 32px;
-  }
-  
-  .hero-buttons {
-    display: flex;
-    gap: 16px;
-  }
-  
-  .btn-primary {
-    background: var(--deep-pink);
-    color: white;
-    padding: 12px 32px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: transform 0.3s;
-  }
-  
-  .btn-secondary {
-    background: transparent;
-    border: 2px solid var(--deep-pink);
-    color: var(--deep-pink);
-    padding: 12px 32px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-  }
-  
-  .hero-image img {
-    width: 90%;
-    height: auto;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Features Section */
-  .features {
-    padding: 80px 0;
-    background: var(--background);
-  }
-  
-  .section-header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
-  
-  .section-header h2 {
-    font-size: 36px;
-    color: var(--text-primary);
-    margin-bottom: 16px;
-  }
-  
-  .section-header p {
-    font-size: 18px;
-    color: var(--text-secondary);
-  }
-  
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
-  }
-  
+/* Section Features */
+.features {
+  background-color: #fff0f5; /* Hồng phấn nhạt làm nền */
+  padding: 60px 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-header h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: #d81b60; /* Hồng đậm cho tiêu đề */
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.section-header p {
+  font-size: 18px;
+  color: #6b7280; /* Xám nhạt */
+}
+
+/* Features Grid */
+.features-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.feature-card {
+  flex: 0 0 100%; /* Full width trên mobile */
+  max-width: 100%;
+  background-color: #fff; /* Nền trắng cho card */
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Bóng nhẹ */
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px); /* Hiệu ứng nâng lên khi hover */
+}
+
+@media (min-width: 768px) {
   .feature-card {
-    background: white;
-    padding: 32px;
-    border-radius: 16px;
-    box-shadow: 0 10px 20px var(--shadow);
-    transition: transform 0.3s;
+    flex: 0 0 32%; /* 3 cột trên desktop */
+    max-width: 32%;
   }
-  
-  .feature-icon {
-    width: 64px;
-    height: 64px;
-    background: var(--primary-pink);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 24px;
+}
+
+.feature-icon img {
+  width: 60px; /* Kích thước ảnh icon */
+  height: 60px;
+  margin-bottom: 15px;
+}
+
+.feature-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #4a4a4a; /* Xám đậm nhẹ */
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 15px;
+}
+
+.feature-link {
+  display: inline-block;
+  color: #ab47bc; /* Tím pastel */
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.feature-link:hover {
+  color: #ce93d8; /* Tím nhạt hơn khi hover */
+}
+
+/* Section Tracking */
+.tracking {
+  background-color: #fff; /* Nền trắng */
+  padding: 60px 0;
+}
+
+.tracking-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tracking-content {
+  flex: 0 0 100%; /* Full width trên mobile */
+  max-width: 100%;
+}
+
+@media (min-width: 992px) {
+  .tracking-content {
+    flex: 0 0 50%; /* 50% trên desktop */
+    max-width: 50%;
   }
-  
-  .feature-icon img {
-    width: 130px;
-    height: 110px;
+}
+
+.tracking-content h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: #d81b60; /* Hồng đậm */
+  margin-bottom: 10px;
+}
+
+.tracking-content p {
+  font-size: 18px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.tracking-features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tracking-item {
+  display: flex;
+  align-items: center;
+}
+
+.tracking-item i {
+  font-size: 30px;
+  color: #ce93d8; /* Tím nhạt cho icon */
+  margin-right: 15px;
+}
+
+.tracking-text h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4a4a4a;
+  margin-bottom: 5px;
+}
+
+.tracking-text p {
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.tracking-link {
+  color: #ab47bc; /* Tím pastel */
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.tracking-link:hover {
+  color: #ce93d8; /* Tím nhạt hơn khi hover */
+}
+
+.tracking-image {
+  flex: 0 0 100%; /* Full width trên mobile */
+  max-width: 100%;
+  text-align: center;
+}
+
+@media (min-width: 992px) {
+  .tracking-image {
+    flex: 0 0 50%; /* 50% trên desktop */
+    max-width: 50%;
   }
-  
-  .feature-icon i {
-    font-size: 24px;
-    color: var(--deep-pink);
-  }
-  
-  .feature-card h3 {
-    font-size: 20px;
-    margin-bottom: 16px;
-    color: var(--text-primary);
-  }
-  
-  .feature-card p {
-    color: var(--text-secondary);
-  }
-  
-  /* Tracking Section */
-  .tracking {
-    padding: 80px 0;
-    background: var(--primary-pink);
-  }
-  
-  .tracking-grid {
-    display: grid;
-    grid-template-columns: 45% 55%;
-    gap: 40px;
-    align-items: center;
-  }
-  
-  .tracking-content h2 {
-    font-size: 36px;
-    margin-bottom: 16px;
-    color: var(--text-primary);
-  }
-  
-  .tracking-image img {
-    width: 90%;
-    height: auto;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  }
-  
-  .tracking-features {
-    display: grid;
-    gap: 24px;
-    margin-top: 32px;
-  }
-  
-  .tracking-item {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 24px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px var(--shadow);
-  }
-  
-  .tracking-item i {
-    font-size: 24px;
-    color: var(--deep-pink);
-  }
-  
-  .tracking-text h4 {
-    font-size: 18px;
-    margin-bottom: 8px;
-    color: var(--text-primary);
-  }
-  
-  .tracking-text p {
-    color: var(--text-secondary);
-  }
+}
+
+.tracking-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
