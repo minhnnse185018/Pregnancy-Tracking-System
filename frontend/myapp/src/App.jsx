@@ -6,6 +6,7 @@ import './App.css';
 import AboutUs from './components/Customer/AboutUs/AboutUs';
 import { AuthProvider } from './components/Customer/AuthContext';
 import BlogPage from './components/Customer/BlogPage/BlogPage';
+import BookAppointment from './components/Customer/BookAppointment/BookAppointment';
 import Contact from './components/Customer/Contact/Contact';
 import UserProfile from './components/Customer/CustomerProfile';
 import FetalGrowthTracker from './components/Customer/FetalGrowthTracker/FetalGrowthTracker';
@@ -52,6 +53,16 @@ function App() {
               <>
                 <Navbarr />
                 <AboutUs />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/appointment"
+            element={
+              <>
+                <Navbarr />
+                <BookAppointment />
                 <Footer />
               </>
             }
