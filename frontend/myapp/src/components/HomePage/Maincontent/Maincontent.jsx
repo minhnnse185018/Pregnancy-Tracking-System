@@ -85,7 +85,7 @@ const MainContent = () => {
             </div>
           </div>
           <div className="tracking-image">
-            <img src="images/tracking-demo.png" alt="Tracking Features" />
+            <img src="images/bookappointment.png" alt="Tracking Features" />
           </div>
         </div>
       </section>
