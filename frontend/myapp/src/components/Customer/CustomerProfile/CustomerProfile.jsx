@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { FcPlus } from "react-icons/fc";
 import "react-toastify/dist/ReactToastify.css";
 
 const validatePhoneNumber = (phoneNumber) => {
@@ -10,8 +11,10 @@ const validatePhoneNumber = (phoneNumber) => {
 
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [img, setImg] = useState(null);
   const [user, setUser] = useState({
-    fristName: "",
+    firstName: "",
     lastName: "",
     email: "",
     gender: "",
@@ -21,7 +24,7 @@ const UserProfile = () => {
   });
   const [initialUser, setInitialUser] = useState(null);
   const [errors, setErrors] = useState({
-    fristName: "",
+    firstName: "",
     lastName: "",
     email: "",
     gender: "",
@@ -119,36 +122,62 @@ const UserProfile = () => {
       }
     }
 
+
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: errorMsg, // Assign error message to the respective field
     }));
   };
+  const handleUploadFile = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreviewImage(URL.createObjectURL(file));
+      setImg(file);
+    }
+  };
 
-                            //Edit user profile
+  //Edit user profile
   const toggleEditMode = async () => {
     if (isEditing) {
       if (JSON.stringify(user) !== JSON.stringify(initialUser)) {
         try {
           const userId = sessionStorage.getItem("userID");
+
+          const updatedUser = {
+            id: userId,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            gender: user.gender,
+            dateOfBirth: user.dateOfBirth,
+            image: user.image,
+            phone: user.phone,
+            userType: "1",
+            status: "active",
+          };
+
           const response = await axios.put(
-            `http://localhost:5254/api/Users/UpdateInfo`,
+            `http://localhost:5254/api/Users/Update/${userId}`,
+            updatedUser,
             {
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email,  
-              gender: user.gender,
-              dateOfBirth: user.dateOfBirth,
-              image : user.image,
-              phone: user.phone,
+              headers: {
+                "Content-Type": "application/json",
+              },
             }
           );
+
           if (response.status === 200) {
             toast.success("Profile updated successfully!");
             setInitialUser(user);
           }
         } catch (error) {
-          toast.error("Failed to update profile!");
+          console.error(
+            "Update failed:",
+            error.response?.data || error.message
+          );
+          toast.error(
+            "Failed to update profile! " + (error.response?.data?.message || "")
+          );
         }
       }
       setIsEditing(false);
@@ -170,11 +199,11 @@ const UserProfile = () => {
           margin: "auto",
           marginTop: "150px",
           marginBottom: "150px",
-          backgroundColor: "#f7f9fc",
+          backgroundColor: "rgb(212, 212, 212)",
           boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2
+        <h2 
           style={{
             fontSize: "24px",
             fontWeight: "bold",
@@ -252,7 +281,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.email ? "2px solid red" : "2px solid #ccc",
-              backgroundColor:"#e9ecef",
+              backgroundColor: "#e9ecef",
               outline: "none",
             }}
           />
@@ -266,8 +295,8 @@ const UserProfile = () => {
         <div style={{ marginBottom: "20px" }}>
           <label style={{ fontSize: "16px", color: "#555" }}>Gender:</label>
           <input
-            type="generic"
-            name="Gender"
+            type="text"
+            name="gender"
             value={user.gender}
             onChange={handleInputChange}
             disabled={!isEditing}
@@ -342,6 +371,39 @@ const UserProfile = () => {
           )}
         </div>
 
+        
+
+        <div className="col-md-12">
+          <label className="form-label label-upload" htmlFor="labelUpload">
+            <FcPlus /> Upload File Image
+          </label>
+          <input
+            type="file"
+            id="labelUpload"
+            hidden
+            accept="image/png, image/jpeg, image/jpg"
+            onChange={handleUploadFile} // ✅ Now defined
+          />
+        </div>
+
+        <div className="col-md-12 img-preview">
+          {previewImage ? (
+            <img
+              src={previewImage}
+              alt="Uploaded preview"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "300px",
+                borderRadius: "8px",
+                marginTop: "10px",
+                marginBottom: "10px",
+              }}
+            />
+          ) : (
+            <span>Preview Image</span>
+          )}
+        </div>
+        <br />
         <button
           onClick={toggleEditMode}
           style={{
@@ -359,6 +421,7 @@ const UserProfile = () => {
         >
           {isEditing ? "Save" : "Edit"}
         </button>
+
       </div>
     </div>
   );
