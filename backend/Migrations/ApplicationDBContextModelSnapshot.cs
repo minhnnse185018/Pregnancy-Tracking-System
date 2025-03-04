@@ -225,17 +225,11 @@ namespace backend.Migrations
                     b.Property<string>("AlertMessage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("AlertType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("MeasurementId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Severity")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
@@ -377,6 +371,9 @@ namespace backend.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");

@@ -12,7 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250228054110_init")]
+    [Migration("20250304063301_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -228,17 +228,11 @@ namespace backend.Migrations
                     b.Property<string>("AlertMessage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("AlertType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("MeasurementId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Severity")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
@@ -380,6 +374,9 @@ namespace backend.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");

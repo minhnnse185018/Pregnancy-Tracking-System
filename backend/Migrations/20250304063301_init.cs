@@ -150,6 +150,7 @@ namespace backend.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -333,8 +334,6 @@ namespace backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MeasurementId = table.Column<int>(type: "int", nullable: false),
                     AlertMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AlertType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Severity = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
