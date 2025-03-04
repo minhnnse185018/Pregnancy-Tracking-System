@@ -18,7 +18,6 @@ namespace backend.Dtos
         
         public DateTime? DateOfBirth { get; set; }
         
-        public string? Image { get; set; }
         public string? Phone { get; set; }
         public string Status { get; set; } = "active";
     }
