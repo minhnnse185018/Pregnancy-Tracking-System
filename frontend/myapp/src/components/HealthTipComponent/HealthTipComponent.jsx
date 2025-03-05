@@ -1,50 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const HealthTipComponent = () => {
-  // State for health tips (mock data with more details)
-  const [healthTips, setHealthTips] = useState([]);
+  const [openIndex, setOpenIndex] = useState(null);
 
-  // Mock data with detailed health tips for pregnant women
-  useEffect(() => {
-    const mockTips = [
-      {
-        id: 1,
-        category: "Dinh dưỡng",
-        title: "Ăn uống cân bằng",
-        description: "Bổ sung trái cây, rau củ (như bông cải xanh, cam), và protein nạc (gà, cá hồi). Tránh đồ ăn nhanh và đường tinh luyện.",
-        tip: "Uống sữa bầu giàu canxi mỗi ngày để hỗ trợ xương cho mẹ và bé."
-      },
-      {
-        id: 2,
-        category: "Sức khỏe",
-        title: "Uống đủ nước",
-        description: "Uống 8-10 ly nước mỗi ngày để tránh mất nước, đặc biệt trong 3 tháng đầu.",
-        tip: "Thêm nước dừa hoặc nước ép trái cây để tăng hương vị và dinh dưỡng."
-      },
-      {
-        id: 3,
-        category: "Tập luyện",
-        title: "Bài tập nhẹ nhàng",
-        description: "Thử yoga cho bà bầu hoặc đi bộ 20-30 phút mỗi ngày để cải thiện tuần hoàn.",
-        tip: "Tham khảo ý kiến bác sĩ trước khi bắt đầu bất kỳ bài tập nào."
-      },
-      {
-        id: 4,
-        category: "Chăm sóc",
-        title: "Khám thai định kỳ",
-        description: "Thăm khám bác sĩ hàng tháng để theo dõi sự phát triển của thai nhi.",
-        tip: "Ghi chú các triệu chứng bất thường như đau bụng hoặc chóng mặt để báo cáo."
-      },
-      {
-        id: 5,
-        category: "Tâm lý",
-        title: "Giữ tinh thần thoải mái",
-        description: "Nghe nhạc nhẹ, thiền định, hoặc trò chuyện với người thân để giảm căng thẳng.",
-        tip: "Tham gia các nhóm hỗ trợ bà bầu để chia sẻ kinh nghiệm."
-      }
-    ];
-    setHealthTips(mockTips);
-  }, []);
+  const faqs = [
+    {
+      question: "Thời gian mang thai là bao lâu?",
+      answer: "Thời gian mang thai trung bình là 40 tuần (khoảng 9 tháng) tính từ ngày đầu tiên của kỳ kinh cuối cùng. Hãy tham khảo ý kiến bác sĩ để theo dõi sát sao."
+    },
+    {
+      question: "Tôi nên ăn gì để khỏe mạnh khi mang thai?",
+      answer: "Bổ sung trái cây, rau xanh (như bông cải xanh, táo), protein nạc (gà, cá hồi), và sữa bầu giàu canxi. Tránh đồ ăn nhanh và caffeine quá mức."
+    },
+    {
+      question: "Có nên tập thể dục không?",
+      answer: "Có, bạn có thể tập yoga cho bà bầu hoặc đi bộ 20-30 phút mỗi ngày. Tuy nhiên, hãy hỏi ý kiến bác sĩ trước khi bắt đầu."
+    },
+    {
+      question: "Làm thế nào để giảm căng thẳng?",
+      answer: "Nghe nhạc nhẹ, thiền định, hoặc trò chuyện với người thân. Tham gia nhóm hỗ trợ bà bầu cũng là một ý tưởng tốt."
+    },
+    {
+      question: "Khi nào cần đi khám thai?",
+      answer: "Nên đi khám hàng tháng trong 3 tháng đầu và 3 tháng giữa, sau đó tăng lên 2 tuần/lần vào 3 tháng cuối. Ghi chú các triệu chứng bất thường."
+    }
+  ];
+
+  const handleToggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
   return (
     <div className="health-tip-container">
@@ -52,121 +36,123 @@ const HealthTipComponent = () => {
         {`
           .health-tip-container {
             font-family: 'Arial', sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #f9ebeb 0%, #e6e6fa 100%); /* Gradient nhẹ nhàng */
+            max-width: 900px;
+            margin: 100px auto 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #fce4ec 0%, #e8eaf6 100%);
             color: #333;
-            min-height: 100vh;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+          }
+
+          .main-title {
+            text-align: center;
+            color: #ad1457;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
           }
 
           header {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 182, 193, 0.2); /* Hồng nhạt trong suốt */
-            padding: 20px;
-            border-radius: 15px;
+            text-align: center;
             margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
           }
 
           header h1 {
-            margin: 0;
-            color: #d81b60;
+            color: #6a1b9a;
             font-size: 28px;
-            font-weight: 700;
-            text-transform: uppercase;
-          }
-
-          .health-tips-section {
-            margin-top: 30px;
-          }
-
-          .section-title {
-            text-align: center;
-            color: #6a1b9a;
-            font-size: 26px;
-            margin-bottom: 30px;
             font-weight: 600;
-            text-decoration: underline;
-            text-underline-offset: 5px;
+            margin: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d81b60;
+            display: inline-block;
           }
 
-          .tip-card {
-            background: #ffffff;
+          .faq-section {
+            margin-top: 20px;
+          }
+
+          .faq-item {
+            background-color: #fff;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
           }
 
-          .tip-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-          }
-
-          .tip-card h3 {
-            color: #6a1b9a;
-            margin: 0 0 10px 0;
-            font-size: 20px;
-            font-weight: 600;
-          }
-
-          .tip-card .category {
-            font-size: 14px;
-            color: #d81b9a;
-            margin-bottom: 5px;
-            font-style: italic;
-          }
-
-          .tip-card p {
-            margin: 5px 0;
-            color: #555;
-            line-height: 1.6;
-          }
-
-          .tip-card .extra-tip {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f0f0ff;
-            border-left: 4px solid #d81b60;
-            border-radius: 5px;
+          .faq-question {
+            padding: 18px 25px;
+            font-size: 17px;
+            font-weight: 500;
             color: #444;
-            font-style: italic;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #fce4ec 0%, #f8bbd0 100%);
+            transition: background 0.3s ease;
           }
 
-          .image-placeholder {
-            width: 100%;
-            height: 200px;
-            background: url('https://via.placeholder.com/1200x200?text=Pregnancy+Image') no-repeat center;
-            background-size: cover;
-            border-radius: 10px;
-            margin-bottom: 20px;
+          .faq-question:hover {
+            background: linear-gradient(90deg, #f8bbd0 0%, #e1bee7 100%);
+          }
+
+          .faq-answer {
+            padding: 20px 25px;
+            color: #555;
+            background-color: #fafafa;
+            line-height: 1.7;
+            animation: slideDown 0.3s ease-out;
+          }
+
+          .toggle-btn {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ad1457;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            transition: transform 0.3s ease;
+          }
+
+          .toggle-btn.active {
+            transform: rotate(45deg);
+          }
+
+          @keyframes slideDown {
+            from { max-height: 0; opacity: 0; }
+            to { max-height: 200px; opacity: 1; }
           }
         `}
       </style>
 
+      <h1 className="main-title">Hỗ Trợ Sức Khỏe Thai Kỳ</h1>
       <header>
-        <h1>Mẹo Sức Khỏe Cho Phụ Nữ Mang Thai</h1>
+        <h1>Câu Hỏi Thường Gặp Về Thai Kỳ</h1>
       </header>
 
-      <div className="image-placeholder" /> {/* Placeholder cho hình ảnh minh họa */}
-
-      <section className="health-tips-section">
-        <h2 className="section-title">Mẹo Quan Trọng Cho Thai Kỳ Khỏe Mạnh</h2>
-        {healthTips.length > 0 ? (
-          healthTips.map((tip) => (
-            <div className="tip-card" key={tip.id}>
-              <span className="category">{tip.category}</span>
-              <h3>{tip.title}</h3>
-              <p>{tip.description}</p>
-              <div className="extra-tip">Mẹo nhỏ: {tip.tip}</div>
+      <section className="faq-section">
+        {faqs.map((faq, index) => (
+          <div className="faq-item" key={index}>
+            <div className="faq-question" onClick={() => handleToggle(index)}>
+              <span>{faq.question}</span>
+              <button className={`toggle-btn ${openIndex === index ? 'active' : ''}`}>
+                {openIndex === index ? '-' : '+'}
+              </button>
             </div>
-          ))
-        ) : (
-          <p style={{ textAlign: 'center', color: '#666', fontSize: '18px' }}>Đang tải mẹo sức khỏe...</p>
-        )}
+            <div className="faq-answer" style={{ display: openIndex === index ? 'block' : 'none' }}>
+              {faq.answer}
+            </div>
+          </div>
+        ))}
       </section>
     </div>
   );
