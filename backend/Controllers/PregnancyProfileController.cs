@@ -15,47 +15,41 @@ namespace backend.Controllers
             _profileRepository = profileRepository;
         }
 
-        [HttpGet("GetProfileById/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetProfileById(int id)
         {
             var profile = await _profileRepository.GetProfileByIdAsync(id);
             return profile == null ? NotFound() : Ok(profile);
         }
 
-        [HttpGet("GetUserProfile/{userId}")]
+        [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetProfileByUserId(int userId)
         {
             var profile = await _profileRepository.GetProfileByUserIdAsync(userId);
             return profile == null ? NotFound() : Ok(profile);
         }
 
-        [HttpPost("NewProfile")]
-        public async Task<IActionResult> CreateProfile(int userId,[FromBody] CreatePregnancyProfileDto profileDto)
+        [HttpPost]
+        public async Task<IActionResult> CreateProfile([FromBody] CreatePregnancyProfileDto profileDto)
         {
-            // TODO: Get userId from toke
+            // TODO: Get userId from token
+            int userId = 1; // Temporary
             var profile = await _profileRepository.CreateProfileAsync(userId, profileDto);
-            return Ok(profile);
+            return CreatedAtAction(nameof(GetProfileById), new { id = profile.Id }, profile);
         }
 
-        [HttpPut("EditProfile/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProfile(int id, [FromBody] UpdatePregnancyProfileDto profileDto)
         {
             var profile = await _profileRepository.UpdateProfileAsync(id, profileDto);
             return profile == null ? NotFound() : Ok(profile);
         }
 
-        [HttpDelete("DeleteProfile/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProfile(int id)
         {
             var result = await _profileRepository.DeleteProfileAsync(id);
-            return result>0 ? Ok() : NotFound();
-        }
-
-        [HttpGet("GetAllProfile")]
-        public async Task<IActionResult> GetAllProfiles()
-        {
-            var profiles = await _profileRepository.GetAllProfileAsync();
-            return Ok(profiles);
+            return result ? Ok() : NotFound();
         }
     }
 } 

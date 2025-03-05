@@ -15,59 +15,53 @@ namespace backend.Controllers
             _membershipRepository = membershipRepository;
         }
 
-        [HttpGet("GetAllMemberShips")]
+        [HttpGet]
         public async Task<IActionResult> GetAllMemberships()
         {
             var memberships = await _membershipRepository.GetAllMembershipsAsync();
             return Ok(memberships);
         }
 
-        [HttpGet("GetMBShipId/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetMembershipById(int id)
         {
             var membership = await _membershipRepository.GetMembershipByIdAsync(id);
             return membership == null ? NotFound() : Ok(membership);
         }
 
-        [HttpGet("UserMBShips/{userId}")]
+        [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetMembershipsByUserId(int userId)
         {
             var memberships = await _membershipRepository.GetMembershipsByUserIdAsync(userId);
             return Ok(memberships);
         }
 
-        [HttpGet("UserActiveMBS/{userId}")]
+        [HttpGet("active/{userId}")]
         public async Task<IActionResult> CheckActiveMembership(int userId)
         {
             var isActive = await _membershipRepository.IsMembershipActiveAsync(userId);
             return Ok(new { isActive });
         }
 
-        [HttpPost("CreateMBS")]
+        [HttpPost]
         public async Task<IActionResult> CreateMembership([FromBody] CreateMembershipDto membershipDto)
         {
-            var result = await _membershipRepository.CreateMembershipAsync(membershipDto);
-            return result>0?Ok():BadRequest();
+            var membership = await _membershipRepository.CreateMembershipAsync(membershipDto);
+            return CreatedAtAction(nameof(GetMembershipById), new { id = membership.Id }, membership);
         }
 
-        [HttpPut("UpdateMBShip/{id}")]
-        public async Task<IActionResult> UpdateMembership(int id,[FromBody] string Status )
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMembership(int id, [FromBody] UpdateMembershipDto membershipDto)
         {
-            var membership = await _membershipRepository.UpdateMembershipAsync(id, Status);
+            var membership = await _membershipRepository.UpdateMembershipAsync(id, membershipDto);
             return membership == null ? NotFound() : Ok(membership);
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMembership(int id)
         {
             var result = await _membershipRepository.DeleteMembershipAsync(id);
-            return result >0? Ok() : NotFound();
-        }
-        [HttpPut("ExtendMemberShip/{id}")]
-        public async Task<IActionResult> ExtendMembership([FromBody]int id )
-        {
-            var membership = await _membershipRepository.ExtendMemberShipAsync(id);
-            return membership <0 ? NotFound() : Ok();
+            return result ? Ok() : NotFound();
         }
     }
 } 

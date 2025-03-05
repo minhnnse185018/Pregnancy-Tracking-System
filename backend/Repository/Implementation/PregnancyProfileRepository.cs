@@ -61,28 +61,14 @@ namespace backend.Repository.Implementation
             return await GetProfileByIdAsync(id);
         }
 
-        public async Task<int> DeleteProfileAsync(int id)
+        public async Task<bool> DeleteProfileAsync(int id)
         {
             var profile = await _context.PregnancyProfiles.FindAsync(id);
-            if (profile == null) return -1;
+            if (profile == null) return false;
 
             _context.PregnancyProfiles.Remove(profile);
-            
-            return await _context.SaveChangesAsync();;
-        }
-
-        public async Task<List<PregnancyProfileDto>?> GetAllProfileAsync()
-        {
-            
-                var profiles = await _context.PregnancyProfiles
-                    .Include(p => p.User)  // Include User to get FirstName and LastName
-                    .Include(p => p.FetalMeasurements)
-                    .OrderByDescending(p => p.CreatedAt)
-                    .ToListAsync();
-
-                return _mapper.Map<List<PregnancyProfileDto>>(profiles);
-            
-            
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 } 

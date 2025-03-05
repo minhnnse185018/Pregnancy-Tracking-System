@@ -18,13 +18,14 @@ import MembershipPage from "./components/Customer/Member/MembershipPage";
 import Navbarr from "./components/Customer/Navbarr/Navbarr";
 import PaymentFailure from "./components/Dashboard/PaymentFailure";
 import PaymentSuccess from "./components/Dashboard/PaymentSuccess";
+import HealthTipComponent from "./components/HealthTipComponent/HealthTipComponent";
 import MainContent from "./components/HomePage/Maincontent/Maincontent";
 import AdminPrivateRoute from "./components/PrivateRoute/AdminPrivateRoute";
 import CustomerPrivateRoute from "./components/PrivateRoute/CustomerPrivateRoute";
 import AdminLayout from "./Layouts/Admin/AdminLayout";
+import AdminSalon from "./Pages/Admin/AdminBlog";
 import AdminPersonnel from "./Pages/Admin/AdminPersonnel";
 import AdminProfilePage from "./Pages/Admin/AdminProfilePage";
-import AdminSalon from "./Pages/Admin/AdminSalon";
 import ManageCustomer from "./Pages/Admin/ManagerCustomer";
 
 function App() {
@@ -123,6 +124,16 @@ function App() {
               <>
                 <Navbarr />
                 <FetalGrowthTracker />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/health-tips"
+            element={
+              <>
+                <Navbarr />
+                <HealthTipComponent />
                 <Footer />
               </>
             }

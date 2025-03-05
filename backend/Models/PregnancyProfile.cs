@@ -1,16 +1,11 @@
-using Newtonsoft.Json;
-
-
 namespace backend.Models
 {
     public class PregnancyProfile
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        
-        public DateTime ConceptionDate { get; set; }
-        public DateTime DueDate { get; set; }
-        
+        public DateOnly ConceptionDate { get; set; }
+        public DateOnly DueDate { get; set; }
         public string? PregnancyStatus { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
