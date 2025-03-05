@@ -36,14 +36,14 @@ namespace backend.Repository.Implementation
             return plan == null ? null : _mapper.Map<MembershipPlanDto>(plan);
         }
 
-        public async Task<MembershipPlanDto> CreatePlanAsync(CreateMembershipPlanDto planDto)
+        public async Task<int> CreatePlanAsync(CreateMembershipPlanDto planDto)
         {
             var plan = _mapper.Map<MembershipPlan>(planDto);
 
             _context.MembershipPlans.Add(plan);
-            await _context.SaveChangesAsync();
+            
 
-            return _mapper.Map<MembershipPlanDto>(plan);
+            return await _context.SaveChangesAsync() ;
         }
 
         public async Task<MembershipPlanDto?> UpdatePlanAsync(int id, UpdateMembershipPlanDto planDto)
@@ -54,17 +54,17 @@ namespace backend.Repository.Implementation
             _mapper.Map(planDto, plan);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<MembershipPlanDto>(plan);
+            return _mapper.Map<MembershipPlanDto>(await _context.MembershipPlans.FindAsync(id));
         }
 
-        public async Task<bool> DeletePlanAsync(int id)
+        public async Task<int> DeletePlanAsync(int id)
         {
             var plan = await _context.MembershipPlans.FindAsync(id);
-            if (plan == null) return false;
+            if (plan == null) return -1;
 
             _context.MembershipPlans.Remove(plan);
-            await _context.SaveChangesAsync();
-            return true;
+            
+            return await _context.SaveChangesAsync();;
         }
 
         public async Task<List<MembershipPlanDto>> GetActivePlansAsync()

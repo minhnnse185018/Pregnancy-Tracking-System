@@ -35,15 +35,9 @@ namespace backend.Data
             base.OnModelCreating(modelBuilder);
 
             // User configuration
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
-                entity.HasIndex(e => e.Email).IsUnique();
-                entity.Property(e => e.Password).IsRequired().HasMaxLength(255);
-                entity.Property(e => e.UserType).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Status).HasDefaultValue("active");
-            });
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
 
             // PregnancyProfile configuration
             modelBuilder.Entity<PregnancyProfile>(entity =>
@@ -55,8 +49,6 @@ namespace backend.Data
                     .HasForeignKey(p => p.UserId)        // ✅ Explicitly define the foreign key
                     .OnDelete(DeleteBehavior.Cascade);   // ✅ Delete all pregnancy profiles if user is deleted
             });
-
-
 
             // FetalMeasurement configuration
             modelBuilder.Entity<FetalMeasurement>(entity =>

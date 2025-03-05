@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+
+
 namespace backend.Dtos.FetalStandard
 {
     public class FetalGrowthStandardDto
@@ -9,4 +12,4 @@ namespace backend.Dtos.FetalStandard
         public decimal MedianValue { get; set; }
         public decimal MaxValue { get; set; }
     }
-}
+} 

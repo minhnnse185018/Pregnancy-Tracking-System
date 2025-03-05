@@ -1,4 +1,5 @@
 using backend.Dtos.FetalGrowth;
+using backend.Dtos.FetalStandard;
 
 namespace backend.Repository.Interface
 {

@@ -15,6 +15,8 @@ using backend.Dtos.Answers;
 using backend.Dtos.MembershipPlans;
 using backend.Dtos.Memberships;
 using backend.Dtos.PregnancyProfiles;
+using backend.Dtos.FetalStandard;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace backend.Mapper
 {
@@ -22,12 +24,29 @@ namespace backend.Mapper
     {
         public MappingProfile()
         {
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserDto>();
+            CreateMap<UserDto, User>();
+
+            // For Registration
+            CreateMap<RegisterRequest, User>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.Status, opt => opt.Ignore())
+                .ForMember(dest => dest.UserType, opt => opt.Ignore())
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth));
+
+            // For Update
+            CreateMap<UpdateUserInfoDto, User>()
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Post mappings
             CreateMap<Post, PostDto>()
                 .ForMember(dest => dest.UserName, 
-                    opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
+                    opt => opt.MapFrom(src => src.User != null 
+                        ? $"{src.User.FirstName} {src.User.LastName}"
+                        : "Deleted User"))
                 .ForMember(dest => dest.CommentCount, 
                     opt => opt.MapFrom(src => src.Comments.Count))
                 .ForMember(dest => dest.Comments,
@@ -39,7 +58,9 @@ namespace backend.Mapper
             // Comment mappings
             CreateMap<Comment, CommentDto>()
                 .ForMember(dest => dest.UserName,
-                    opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"));
+                    opt => opt.MapFrom(src => src.User != null 
+                        ? $"{src.User.FirstName} {src.User.LastName}"
+                        : "Deleted User"));
             CreateMap<CreateCommentDto, Comment>();
             CreateMap<UpdateCommentDto, Comment>();
 
@@ -66,7 +87,9 @@ namespace backend.Mapper
             // Question mappings
             CreateMap<Question, QuestionDto>()
                 .ForMember(dest => dest.UserName,
-                    opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
+                    opt => opt.MapFrom(src => src.User != null 
+                        ? $"{src.User.FirstName} {src.User.LastName}"
+                        : "Deleted User"))
                 .ForMember(dest => dest.AnswerCount,
                     opt => opt.MapFrom(src => src.Answers.Count))
                 .ForMember(dest => dest.Answers,
@@ -77,14 +100,18 @@ namespace backend.Mapper
             // Answer mappings
             CreateMap<Answer, AnswerDto>()
                 .ForMember(dest => dest.UserName,
-                    opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"));
+                    opt => opt.MapFrom(src => src.User != null 
+                        ? $"{src.User.FirstName} {src.User.LastName}"
+                        : "Deleted User"));
             CreateMap<CreateAnswerDto, Answer>();
             CreateMap<UpdateAnswerDto, Answer>();
 
             // PregnancyProfile mappings
             CreateMap<PregnancyProfile, PregnancyProfileDto>()
                 .ForMember(dest => dest.UserName,
-                    opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
+                    opt => opt.MapFrom(src => src.User != null 
+                        ? $"{src.User.FirstName} {src.User.LastName}"
+                        : "Deleted User"))
                 .ForMember(dest => dest.FetalMeasurements,
                     opt => opt.MapFrom(src => src.FetalMeasurements));
             CreateMap<CreatePregnancyProfileDto, PregnancyProfile>();
@@ -98,11 +125,15 @@ namespace backend.Mapper
             // Membership mappings
             CreateMap<Membership, MembershipDto>()
                 .ForMember(dest => dest.UserName,
-                    opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
+                    opt => opt.MapFrom(src => src.User != null 
+                        ? $"{src.User.FirstName} {src.User.LastName}"
+                        : "Deleted User"))
                 .ForMember(dest => dest.PlanName,
-                    opt => opt.MapFrom(src => src.Plan.PlanName));
+                    opt => opt.MapFrom(src => src.Plan != null 
+                        ? src.Plan.PlanName 
+                        : "Deleted Plan"));
             CreateMap<CreateMembershipDto, Membership>();
-            CreateMap<UpdateMembershipDto, Membership>();
+
 
             // MembershipPlan mappings
             CreateMap<MembershipPlan, MembershipPlanDto>();

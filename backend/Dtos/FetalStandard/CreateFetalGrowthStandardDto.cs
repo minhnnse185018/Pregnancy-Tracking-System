@@ -8,4 +8,4 @@ namespace backend.Dtos.FetalStandard
         public decimal MedianValue { get; set; }
         public decimal MaxValue { get; set; }
     }
-}
+} 

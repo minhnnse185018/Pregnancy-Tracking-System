@@ -6,11 +6,15 @@ using backend.Repository.Interface;
 using backend.Repository.Implementation;
 using backend.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers()
-    .AddNewtonsoftJson();
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.DateFormatString = "yyyy-MM-dd";
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,7 +38,8 @@ builder.Services.AddCors(options =>
             builder
                 .WithOrigins("http://localhost:3000")
                 .AllowAnyMethod()
-                .AllowAnyHeader();
+                .AllowAnyHeader()
+                .AllowCredentials();
         });
 });
 
@@ -49,6 +54,7 @@ builder.Services.AddScoped<IPregnancyProfileRepository, PregnancyProfileReposito
 builder.Services.AddScoped<IFetalGrowthStandardRepository, FetalGrowthStandardRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IMembershipPlanRepository, MembershipPlanRepository>();
+builder.Services.AddScoped<IFetalMeasurementRepository, FetalMeasurementRepository>();
 
 var app = builder.Build();
 
