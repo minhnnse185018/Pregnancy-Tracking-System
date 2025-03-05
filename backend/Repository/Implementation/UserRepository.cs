@@ -176,7 +176,7 @@ namespace backend.Repository.Implementation
                 if (!string.IsNullOrWhiteSpace(userDto.FirstName)) user.FirstName = userDto.FirstName;
                 if (!string.IsNullOrWhiteSpace(userDto.LastName)) user.LastName = userDto.LastName;
                 if (!string.IsNullOrWhiteSpace(userDto.Gender)) user.Gender = userDto.Gender;
-                if (!string.IsNullOrWhiteSpace(userDto.Image)) user.Image = userDto.Image;
+                
 
                 // Explicitly update Phone
                 if (userDto.Phone != null)
