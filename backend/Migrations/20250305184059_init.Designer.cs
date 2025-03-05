@@ -12,7 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250305175514_init")]
+    [Migration("20250305184059_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -120,7 +120,7 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "Thank you for sharing your experience! It's very helpful.",
-                            CreatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9817),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6520),
                             PostId = 1,
                             UserId = 2
                         },
@@ -128,7 +128,7 @@ namespace backend.Migrations
                         {
                             Id = 2,
                             Content = "I'm glad you found it helpful! Feel free to ask any questions.",
-                            CreatedAt = new DateTime(2025, 3, 6, 1, 55, 13, 413, DateTimeKind.Local).AddTicks(9819),
+                            CreatedAt = new DateTime(2025, 3, 6, 2, 40, 58, 359, DateTimeKind.Local).AddTicks(6526),
                             PostId = 1,
                             UserId = 1
                         });
@@ -171,20 +171,20 @@ namespace backend.Migrations
                             Id = 1,
                             Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
                             Category = "Fetal Development",
-                            CreatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9764),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6425),
                             DisplayOrder = 1,
                             Question = "What is the normal fetal weight at 12 weeks?",
-                            UpdatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9757)
+                            UpdatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6420)
                         },
                         new
                         {
                             Id = 2,
                             Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
                             Category = "Prenatal Care",
-                            CreatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9766),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6428),
                             DisplayOrder = 2,
                             Question = "How often should I have prenatal check-ups?",
-                            UpdatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9765)
+                            UpdatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6426)
                         });
                 });
 
@@ -256,9 +256,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9718),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6375),
                             HeightCm = 25.5m,
-                            MeasurementDate = new DateTime(2025, 2, 27, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9737),
+                            MeasurementDate = new DateTime(2025, 2, 27, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6374),
                             ProfileId = 1,
                             Week = 0,
                             WeightGrams = 500.00m
@@ -266,9 +266,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9738),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6384),
                             HeightCm = 28.5m,
-                            MeasurementDate = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9739),
+                            MeasurementDate = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6383),
                             ProfileId = 1,
                             Week = 0,
                             WeightGrams = 650.00m
@@ -456,10 +456,10 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "I'm excited to share my journey through the first trimester...",
-                            CreatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9796),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6472),
                             Status = "published",
                             Title = "My First Pregnancy Experience",
-                            UpdatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9784),
+                            UpdatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6466),
                             UserId = 1
                         });
                 });
@@ -484,8 +484,8 @@ namespace backend.Migrations
                     b.Property<string>("PregnancyStatus")
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("nvarchar(max)")
-                        .HasComputedColumnSql("CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END", true);
+                        .HasColumnType("nvarchar(20)")
+                        .HasComputedColumnSql("CAST(CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END AS nvarchar(20))", false);
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -500,9 +500,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            ConceptionDate = new DateTime(2024, 12, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9683),
-                            CreatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9696),
-                            DueDate = new DateTime(2025, 9, 2, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9695),
+                            ConceptionDate = new DateTime(2024, 12, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6279),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6298),
+                            DueDate = new DateTime(2025, 9, 2, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6297),
                             UserId = 1
                         });
                 });
@@ -588,7 +588,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9334),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(5467),
                             Email = "1@gmail.com",
                             Password = "111111",
                             Status = "active",
@@ -597,7 +597,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9337),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(5473),
                             Email = "2@gmail.com",
                             Password = "222222",
                             Status = "active",

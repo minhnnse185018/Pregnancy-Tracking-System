@@ -44,13 +44,14 @@ namespace backend.Data
                 entity.HasKey(e => e.Id);
 
                 entity.HasOne(p => p.User)
-                    .WithMany(u => u.PregnancyProfiles)  // ✅ One user has many pregnancy profiles
-                    .HasForeignKey(p => p.UserId)        // ✅ Explicitly define the foreign key
-                    .OnDelete(DeleteBehavior.Cascade);   // ✅ Delete all pregnancy profiles if user is deleted
+                    .WithMany(u => u.PregnancyProfiles)
+                    .HasForeignKey(p => p.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
-                // Add computed column for PregnancyStatus
+                // Add computed column for PregnancyStatus without persisting
                 entity.Property(e => e.PregnancyStatus)
-                    .HasComputedColumnSql("CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END", stored: true);
+                    .HasColumnType("nvarchar(20)")
+                    .HasComputedColumnSql("CAST(CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END AS nvarchar(20))", stored: false);
             });
 
             // FetalMeasurement configuration
@@ -59,7 +60,7 @@ namespace backend.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.WeightGrams).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.HeightCm).HasColumnType("decimal(10,2)");
-                
+
                 entity.HasOne(f => f.Profile)
                     .WithMany(p => p.FetalMeasurements)
                     .HasForeignKey(f => f.ProfileId)
@@ -242,7 +243,7 @@ namespace backend.Data
                     WeightGrams = 500.00M,
                     HeightCm = 25.5M,
                     MeasurementDate = DateTime.Now.AddDays(-7),
-                    
+                    CreatedAt = DateTime.Now
                 },
                 new FetalMeasurement
                 {
@@ -251,7 +252,7 @@ namespace backend.Data
                     WeightGrams = 650.00M,
                     HeightCm = 28.5M,
                     MeasurementDate = DateTime.Now,
-                    
+                    CreatedAt = DateTime.Now
                 }
             );
 

@@ -175,7 +175,7 @@ namespace backend.Migrations
                     ConceptionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PregnancyStatus = table.Column<string>(type: "nvarchar(max)", nullable: false, computedColumnSql: "CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END", stored: true)
+                    PregnancyStatus = table.Column<string>(type: "nvarchar(20)", nullable: false, computedColumnSql: "CAST(CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END AS nvarchar(20))", stored: false)
                 },
                 constraints: table =>
                 {
@@ -352,8 +352,8 @@ namespace backend.Migrations
                 columns: new[] { "Id", "Answer", "Category", "CreatedAt", "DisplayOrder", "Question", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9764), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9757) },
-                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9766), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9765) }
+                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6425), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6420) },
+                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6428), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6426) }
                 });
 
             migrationBuilder.InsertData(
@@ -361,27 +361,27 @@ namespace backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "DateOfBirth", "Email", "FirstName", "Gender", "LastName", "Password", "Phone", "Status", "UserType" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9334), null, "1@gmail.com", null, null, null, "111111", null, "active", "1" },
-                    { 2, new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9337), null, "2@gmail.com", null, null, null, "222222", null, "active", "5" }
+                    { 1, new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(5467), null, "1@gmail.com", null, null, null, "111111", null, "active", "1" },
+                    { 2, new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(5473), null, "2@gmail.com", null, null, null, "222222", null, "active", "5" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "CreatedAt", "Image", "Status", "Title", "UpdatedAt", "UserId" },
-                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9796), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9784), 1 });
+                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6472), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6466), 1 });
 
             migrationBuilder.InsertData(
                 table: "PregnancyProfiles",
                 columns: new[] { "Id", "ConceptionDate", "CreatedAt", "DueDate", "UserId" },
-                values: new object[] { 1, new DateTime(2024, 12, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9683), new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9696), new DateTime(2025, 9, 2, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9695), 1 });
+                values: new object[] { 1, new DateTime(2024, 12, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6279), new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6298), new DateTime(2025, 9, 2, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6297), 1 });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "CreatedAt", "PostId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9817), 1, 2 },
-                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 6, 1, 55, 13, 413, DateTimeKind.Local).AddTicks(9819), 1, 1 }
+                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6520), 1, 2 },
+                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 6, 2, 40, 58, 359, DateTimeKind.Local).AddTicks(6526), 1, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -389,8 +389,8 @@ namespace backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "HeightCm", "MeasurementDate", "Notes", "ProfileId", "Week", "WeightGrams" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9718), 25.5m, new DateTime(2025, 2, 27, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9737), null, 1, 0, 500.00m },
-                    { 2, new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9738), 28.5m, new DateTime(2025, 3, 6, 0, 55, 13, 413, DateTimeKind.Local).AddTicks(9739), null, 1, 0, 650.00m }
+                    { 1, new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6375), 25.5m, new DateTime(2025, 2, 27, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6374), null, 1, 0, 500.00m },
+                    { 2, new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6384), 28.5m, new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6383), null, 1, 0, 650.00m }
                 });
 
             migrationBuilder.CreateIndex(
