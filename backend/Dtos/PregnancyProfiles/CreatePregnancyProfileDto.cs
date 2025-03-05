@@ -11,7 +11,5 @@ namespace backend.Dtos.PregnancyProfiles
         
 
         public DateTime DueDate { get; set; }
-        
-        public string? PregnancyStatus { get; set; }
     }
 } 

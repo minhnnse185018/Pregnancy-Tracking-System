@@ -1,4 +1,4 @@
-namespace backend.Dtos.Memberships
+namespace backend.Dtos.MembershipPlans
 {
     public class MembershipPlanDto
     {
@@ -7,6 +7,5 @@ namespace backend.Dtos.Memberships
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public int Duration { get; set; }
-        public bool IsActive { get; set; }
     }
 } 

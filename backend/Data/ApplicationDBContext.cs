@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace backend.Data
 {
     public class ApplicationDBContext : DbContext
@@ -48,6 +47,10 @@ namespace backend.Data
                     .WithMany(u => u.PregnancyProfiles)  // ✅ One user has many pregnancy profiles
                     .HasForeignKey(p => p.UserId)        // ✅ Explicitly define the foreign key
                     .OnDelete(DeleteBehavior.Cascade);   // ✅ Delete all pregnancy profiles if user is deleted
+
+                // Add computed column for PregnancyStatus
+                entity.Property(e => e.PregnancyStatus)
+                    .HasComputedColumnSql("CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END", stored: true);
             });
 
             // FetalMeasurement configuration
@@ -154,7 +157,6 @@ namespace backend.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Category).HasMaxLength(50);
-                entity.Property(e => e.Status).HasMaxLength(20);
             });
 
             // MembershipPlan configuration
@@ -195,6 +197,118 @@ namespace backend.Data
                 entity.Property(e => e.PaymentMethod).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.PaymentStatus).HasMaxLength(50);
             });
+
+            // Seed Data
+            // 1. Users
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1,
+                    Email = "1@gmail.com",
+                    Password = "111111",
+                    UserType = "1",
+                    Status = "active",
+                    CreatedAt = DateTime.Now
+                },
+                new User
+                {
+                    Id = 2,
+                    Email = "2@gmail.com",
+                    Password = "222222",
+                    UserType = "5",
+                    Status = "active",
+                    CreatedAt = DateTime.Now
+                }
+            );
+
+            // 2. Pregnancy Profiles
+            modelBuilder.Entity<PregnancyProfile>().HasData(
+                new PregnancyProfile
+                {
+                    Id = 1,
+                    UserId = 1,
+                    ConceptionDate = DateTime.Now.AddDays(-90),
+                    DueDate = DateTime.Now.AddDays(180),
+                    CreatedAt = DateTime.Now
+                }
+            );
+
+            // 3. Fetal Measurements
+            modelBuilder.Entity<FetalMeasurement>().HasData(
+                new FetalMeasurement
+                {
+                    Id = 1,
+                    ProfileId = 1,
+                    WeightGrams = 500.00M,
+                    HeightCm = 25.5M,
+                    MeasurementDate = DateTime.Now.AddDays(-7),
+                    
+                },
+                new FetalMeasurement
+                {
+                    Id = 2,
+                    ProfileId = 1,
+                    WeightGrams = 650.00M,
+                    HeightCm = 28.5M,
+                    MeasurementDate = DateTime.Now,
+                    
+                }
+            );
+
+            // 4. FAQs
+            modelBuilder.Entity<FAQ>().HasData(
+                new FAQ
+                {
+                    Id = 1,
+                    Question = "What is the normal fetal weight at 12 weeks?",
+                    Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
+                    Category = "Fetal Development",
+                    DisplayOrder = 1,
+                    CreatedAt = DateTime.Now
+                },
+                new FAQ
+                {
+                    Id = 2,
+                    Question = "How often should I have prenatal check-ups?",
+                    Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
+                    Category = "Prenatal Care",
+                    DisplayOrder = 2,
+                    CreatedAt = DateTime.Now
+                }
+            );
+
+            // 5. Posts
+            modelBuilder.Entity<Post>().HasData(
+                new Post
+                {
+                    Id = 1,
+                    UserId = 1,
+                    Title = "My First Pregnancy Experience",
+                    Content = "I'm excited to share my journey through the first trimester...",
+                    CreatedAt = DateTime.Now,
+                    Status = "published"
+                }
+            );
+
+            // 6. Comments
+            modelBuilder.Entity<Comment>().HasData(
+                new Comment
+                {
+                    Id = 1,
+                    UserId = 2,
+                    PostId = 1,
+                    Content = "Thank you for sharing your experience! It's very helpful.",
+                    CreatedAt = DateTime.Now
+                },
+                new Comment
+                {
+                    Id = 2,
+                    UserId = 1,
+                    PostId = 1,
+                    Content = "I'm glad you found it helpful! Feel free to ask any questions.",
+                    CreatedAt = DateTime.Now.AddHours(1)
+                }
+            );
         }
     }
 }

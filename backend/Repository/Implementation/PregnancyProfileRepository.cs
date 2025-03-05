@@ -18,14 +18,15 @@ namespace backend.Repository.Implementation
             _mapper = mapper;
         }
 
-        public async Task<PregnancyProfileDto?> GetProfileByUserIdAsync(int userId)
+        public async Task<List<PregnancyProfileDto>> GetAllProfilesAsync()
         {
-            var profile = await _context.PregnancyProfiles
+            var profiles = await _context.PregnancyProfiles
                 .Include(p => p.User)
                 .Include(p => p.FetalMeasurements)
-                .FirstOrDefaultAsync(p => p.UserId == userId);
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
 
-            return profile == null ? null : _mapper.Map<PregnancyProfileDto>(profile);
+            return _mapper.Map<List<PregnancyProfileDto>>(profiles);
         }
 
         public async Task<PregnancyProfileDto?> GetProfileByIdAsync(int id)
@@ -38,27 +39,44 @@ namespace backend.Repository.Implementation
             return profile == null ? null : _mapper.Map<PregnancyProfileDto>(profile);
         }
 
-        public async Task<PregnancyProfileDto> CreateProfileAsync(int userId, CreatePregnancyProfileDto profileDto)
+        public async Task<List<PregnancyProfileDto>> GetProfilesByUserIdAsync(int userId)
+        {
+            var profiles = await _context.PregnancyProfiles
+                .Include(p => p.User)
+                .Include(p => p.FetalMeasurements)
+                .Where(p => p.UserId == userId)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            return _mapper.Map<List<PregnancyProfileDto>>(profiles);
+        }
+
+        public async Task<int> CreateProfileAsync(CreatePregnancyProfileDto profileDto)
         {
             var profile = _mapper.Map<PregnancyProfile>(profileDto);
-            profile.UserId = userId;
             profile.CreatedAt = DateTime.Now;
 
             _context.PregnancyProfiles.Add(profile);
-            await _context.SaveChangesAsync();
-
-            return await GetProfileByIdAsync(profile.Id);
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<PregnancyProfileDto?> UpdateProfileAsync(int id, UpdatePregnancyProfileDto profileDto)
         {
-            var profile = await _context.PregnancyProfiles.FindAsync(id);
+            var profile = await _context.PregnancyProfiles
+                .Include(p => p.User)
+                .Include(p => p.FetalMeasurements)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (profile == null) return null;
 
-            _mapper.Map(profileDto, profile);
-            await _context.SaveChangesAsync();
+            // Only update non-null properties
+            if (profileDto.ConceptionDate.HasValue)
+                profile.ConceptionDate = profileDto.ConceptionDate.Value;
+            if (profileDto.DueDate.HasValue)
+                profile.DueDate = profileDto.DueDate.Value;
 
-            return await GetProfileByIdAsync(id);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<PregnancyProfileDto>(profile);
         }
 
         public async Task<int> DeleteProfileAsync(int id)
@@ -67,22 +85,7 @@ namespace backend.Repository.Implementation
             if (profile == null) return -1;
 
             _context.PregnancyProfiles.Remove(profile);
-            
-            return await _context.SaveChangesAsync();;
-        }
-
-        public async Task<List<PregnancyProfileDto>?> GetAllProfileAsync()
-        {
-            
-                var profiles = await _context.PregnancyProfiles
-                    .Include(p => p.User)  // Include User to get FirstName and LastName
-                    .Include(p => p.FetalMeasurements)
-                    .OrderByDescending(p => p.CreatedAt)
-                    .ToListAsync();
-
-                return _mapper.Map<List<PregnancyProfileDto>>(profiles);
-            
-            
+            return await _context.SaveChangesAsync();
         }
     }
 } 

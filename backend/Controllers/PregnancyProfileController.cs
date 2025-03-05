@@ -15,6 +15,13 @@ namespace backend.Controllers
             _profileRepository = profileRepository;
         }
 
+        [HttpGet("GetAllProfiles")]
+        public async Task<IActionResult> GetAllProfiles()
+        {
+            var profiles = await _profileRepository.GetAllProfilesAsync();
+            return Ok(profiles);
+        }
+
         [HttpGet("GetProfileById/{id}")]
         public async Task<IActionResult> GetProfileById(int id)
         {
@@ -22,24 +29,29 @@ namespace backend.Controllers
             return profile == null ? NotFound() : Ok(profile);
         }
 
-        [HttpGet("GetUserProfile/{userId}")]
-        public async Task<IActionResult> GetProfileByUserId(int userId)
+        [HttpGet("GetProfilesByUserId/{userId}")]
+        public async Task<IActionResult> GetProfilesByUserId(int userId)
         {
-            var profile = await _profileRepository.GetProfileByUserIdAsync(userId);
-            return profile == null ? NotFound() : Ok(profile);
+            var profiles = await _profileRepository.GetProfilesByUserIdAsync(userId);
+            return Ok(profiles);
         }
 
-        [HttpPost("NewProfile")]
-        public async Task<IActionResult> CreateProfile(int userId,[FromBody] CreatePregnancyProfileDto profileDto)
+        [HttpPost("CreateProfile")]
+        public async Task<IActionResult> CreateProfile([FromBody] CreatePregnancyProfileDto profileDto)
         {
-            // TODO: Get userId from toke
-            var profile = await _profileRepository.CreateProfileAsync(userId, profileDto);
-            return Ok(profile);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _profileRepository.CreateProfileAsync(profileDto);
+            return result > 0 ? Ok() : BadRequest();
         }
 
-        [HttpPut("EditProfile/{id}")]
+        [HttpPut("UpdateProfile/{id}")]
         public async Task<IActionResult> UpdateProfile(int id, [FromBody] UpdatePregnancyProfileDto profileDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var profile = await _profileRepository.UpdateProfileAsync(id, profileDto);
             return profile == null ? NotFound() : Ok(profile);
         }
@@ -48,14 +60,7 @@ namespace backend.Controllers
         public async Task<IActionResult> DeleteProfile(int id)
         {
             var result = await _profileRepository.DeleteProfileAsync(id);
-            return result>0 ? Ok() : NotFound();
-        }
-
-        [HttpGet("GetAllProfile")]
-        public async Task<IActionResult> GetAllProfiles()
-        {
-            var profiles = await _profileRepository.GetAllProfileAsync();
-            return Ok(profiles);
+            return result > 0 ? Ok() : NotFound();
         }
     }
 } 
