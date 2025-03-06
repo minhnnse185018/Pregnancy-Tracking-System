@@ -373,7 +373,7 @@ const UserProfile = () => {
 
         
 
-        <div className="col-md-12">
+        {/* <div className="col-md-12">
           <label className="form-label label-upload" htmlFor="labelUpload">
             <FcPlus /> Upload File Image
           </label>
@@ -402,7 +402,7 @@ const UserProfile = () => {
           ) : (
             <span>Preview Image</span>
           )}
-        </div>
+        </div> */}
         <br />
         <button
           onClick={toggleEditMode}
