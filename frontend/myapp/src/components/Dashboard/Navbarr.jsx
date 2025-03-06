@@ -37,9 +37,9 @@ function Navbarr() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mx-auto">
-            <Nav.Link as={Link} to="/">Trang chủ</Nav.Link>
-            <Nav.Link href="#features">Cộng Đồng</Nav.Link>
-            <Nav.Link href="#tracking">Theo dõi</Nav.Link>
+            <Nav.Link as={Link} to="/">Home Page</Nav.Link>
+            <Nav.Link href="#features">Community</Nav.Link>
+            <Nav.Link href="#tracking">Follow</Nav.Link>
             <Nav.Link href="membership">Member</Nav.Link>
             <Nav.Link href="blog">Blog</Nav.Link>
           </Nav>
