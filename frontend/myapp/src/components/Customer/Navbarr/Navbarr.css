@@ -4,21 +4,21 @@
   z-index: 1000;
   transition: all 0.3s ease;
   background-color: #ffffff !important;
-  padding: 10px 0; /* Giảm padding từ 15px xuống 10px */
+  padding: 15px 0;
 }
 
 /* Brand container styles */
 .brand-container {
   display: flex;
   align-items: center;
-  gap: 10px; /* Giảm gap từ 15px xuống 10px */
-  min-width: 150px; /* Giảm min-width từ 200px xuống 150px */
+  gap: 15px;
+  min-width: 200px;
 }
 
 /* Logo styles */
 .navbar-logo {
-  width: 40px !important; /* Giảm từ 60px xuống 40px */
-  height: 40px !important;
+  width: 60px !important;
+  height: 60px !important;
   object-fit: contain;
   user-select: none;
 }
@@ -31,7 +31,7 @@
 
 .brand-text {
   color: #333;
-  font-size: 20px; /* Giảm từ 26px xuống 20px */
+  font-size: 26px;
   font-weight: 700;
   user-select: none;
   transition: color 0.3s ease;
@@ -46,13 +46,13 @@
   display: flex;
   justify-content: center;
   margin: 0 auto;
-  gap: 8px; /* Giảm gap từ 10px xuống 8px */
+  gap: 10px;
 }
 
 .nav-link {
   color: #555 !important;
-  font-size: 15px !important; /* Giảm từ 17px xuống 15px */
-  padding: 0.4rem 0.6rem !important; /* Giảm padding từ 0.5rem 0.8rem xuống */
+  font-size: 17px !important;
+  padding: 0.5rem 0.8rem !important;
   font-weight: 600 !important;
   position: relative;
   transition: all 0.3s ease;
@@ -65,7 +65,7 @@
 
 /* Auth section styles */
 .nav-auth {
-  min-width: 120px; /* Giảm từ 160px xuống 120px */
+  min-width: 160px;
   display: flex;
   justify-content: flex-end;
 }
@@ -74,12 +74,12 @@
 .navbar-toggler {
   border: none;
   color: #555 !important;
-  padding: 0.2rem 0.5rem; /* Giảm padding từ 0.25rem 0.75rem */
-  font-size: 1rem; /* Giảm từ 1.25rem */
+  padding: 0.25rem 0.75rem;
+  font-size: 1.25rem;
   line-height: 1;
   background-color: transparent;
-  cursor: pointer !important;
-  z-index: 1001;
+  cursor: pointer !important; /* Đảm bảo con trỏ tay */
+  z-index: 1001; /* Đặt trên các phần tử khác */
   position: relative;
 }
 
@@ -89,7 +89,7 @@
 
 .navbar-toggler .fa-bars {
   color: #555;
-  font-size: 20px; /* Giảm từ 24px xuống 20px */
+  font-size: 24px;
 }
 
 /* Logout link styles */
@@ -110,7 +110,7 @@
 /* Responsive adjustments */
 @media (max-width: 991.98px) {
   .ftco-navbar-light {
-    padding: 8px 0; /* Giảm từ 10px xuống 8px */
+    padding: 10px 0;
   }
 
   .brand-container {
@@ -118,21 +118,21 @@
   }
 
   .navbar-logo {
-    width: 35px !important; /* Giảm từ 50px xuống 35px */
-    height: 35px !important;
+    width: 50px !important;
+    height: 50px !important;
   }
 
   .brand-text {
-    font-size: 18px; /* Giảm từ 24px xuống 18px */
+    font-size: 24px;
   }
 
   .navbar-collapse {
     background: #fff;
-    padding: 15px; /* Giảm từ 15px xuống 10px */
+    padding: 15px;
     border-radius: 4px;
-    margin-top: 10px; /* Giảm từ 10px xuống 8px */
+    margin-top: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    display: none;
+    display: none; /* Ẩn mặc định */
     position: absolute;
     top: 100%;
     left: 0;
@@ -141,11 +141,11 @@
   }
 
   .navbar-collapse.show {
-    display: block;
+    display: block; /* Hiển thị khi toggle */
   }
 
   .nav-link {
-    padding: 8px 12px !important; /* Giảm từ 10px 15px */
+    padding: 10px 15px !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     text-align: left;
   }
@@ -162,7 +162,7 @@
 
   .nav-auth {
     justify-content: center;
-    margin-top: 8px; /* Giảm từ 10px xuống 8px */
+    margin-top: 10px;
     flex-direction: column;
     align-items: center;
   }
@@ -204,7 +204,7 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 10px; /* Giảm từ 15px xuống 10px */
+  padding: 0 15px;
 }
 
 /* Dropdown menu styles */
@@ -214,5 +214,5 @@
 }
 
 .MuiListItemIcon-root {
-  min-width: 25px; /* Giảm từ 30px xuống 25px */
+  min-width: 30px; /* Khoảng cách giữa icon và text */
 }

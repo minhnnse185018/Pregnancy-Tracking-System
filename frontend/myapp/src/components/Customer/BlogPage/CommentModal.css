@@ -1,88 +1,43 @@
 .modal-overlay {
-    /* Full screen overlay */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal-content {
-    /* Modal box styling */
-    background-color: white;
-    padding: 24px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .modal-content h2 {
-    /* Header styling */
-    margin: 0 0 16px 0;
-    font-size: 1.5rem;
-    color: #1f2937;
-    font-weight: 600;
-  }
-  
-  .modal-content textarea {
-    /* Textarea styling */
-    width: 100%;
-    min-height: 120px;
-    padding: 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    margin-bottom: 16px;
-    font-size: 1rem;
-    resize: vertical;
-  }
-  
-  .modal-content textarea:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-  }
-  
-  .modal-actions {
-    /* Button container */
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-  }
-  
-  .modal-actions button {
-    /* Button base styles */
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .modal-actions button:first-child {
-    /* Submit button */
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
-    border: 1px solid #e5e7eb;
-  }
-  
-  .modal-actions button:first-child:hover {
-    background-color: #afc9ff;
-  }
-  
-  .modal-actions button:last-child {
-    /* Cancel button */
-    background-color: rgb(255, 255, 255);
-    color: #0f0f10;
-    border: 1px solid #e5e7eb;
-  }
-  
-  .modal-actions button:last-child:hover {
-    background-color: #ff9999;
-    border-color: #d1d5db;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.submit-comment-btn,
+.cancel-comment-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-comment-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.cancel-comment-btn {
+  background: #f44336;
+  color: white;
+}

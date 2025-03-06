@@ -17,12 +17,14 @@ function CommunityPosts() {
     fetchPosts();
   }, []);
 
-  // Function to fetch posts from the API
   const fetchPosts = async () => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      alert("User not logged in. Please log in first.");
+      return;
+    }
     try {
-      const response = await axios.get(
-        "http://localhost:5254/api/Post/GetAll"
-      );
+      const response = await axios.get("http://localhost:5254/api/Post/GetAll");
       setPosts(response.data);
     } catch (err) {
       setError("Failed to load posts.");
@@ -31,51 +33,49 @@ function CommunityPosts() {
     }
   };
 
-  // Function to handle adding a new comment
   const handleAddComment = async () => {
-    if (!commentText.trim()) return;
+    console.log("Post ID được chọn:", selectedPostId);
+    console.log("Nội dung comment:", commentText);
+  
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      alert("Bạn chưa đăng nhập. Vui lòng đăng nhập trước!");
+      return;
+    }
+    if (!commentText.trim()) {
+      alert("Nội dung bình luận không được để trống!");
+      return;
+    }
+  
     try {
-      await axios.post(
-        `https://67b7d8632bddacfb27101cc1.mockapi.io/api/Blog/comment`,
-        {
-          postId: selectedPostId, // Associate comment with the correct post
-          text: commentText,
-        }
-      );
-      alert("Comment added successfully!");
-
-      // Close the modal and reset input
+      const response = await axios.post("http://localhost:5254/api/Comment", {
+        postId: selectedPostId,
+        userId,
+        content: commentText,
+      });
+      console.log("Phản hồi từ server:", response);
+      alert("Bình luận đã được thêm thành công!");
       setShowModal(false);
       setCommentText("");
-
-      // Refresh the posts to show updated comment counts
       fetchPosts();
     } catch (error) {
-      console.error("Error adding comment:", error);
+      console.error("Lỗi khi thêm bình luận:", error);
     }
   };
+  
 
   if (loading) return <p>Loading posts...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
     <div className="community-container pregnant-theme">
-      <nav className="community-nav">
-        <button className="nav-item active">Home</button>
-        <button className="nav-item">Bookmarks</button>
-        <button className="nav-item">Trending</button>
-        <button className="nav-item">My Groups</button>
-        <button className="nav-item">Activity</button>
-        <button className="nav-item">Discover</button>
-      </nav>
-
       <div className="posts-header">
         <h1 className="posts-title">Posts in my groups</h1>
       </div>
 
       <div className="posts-container">
         {posts.length === 0 ? (
-          <p>Chưa có bài viết nào.</p>
+          <p>No Posts Yet.</p>
         ) : (
           posts.map((post) => (
             <div key={post.id} className="post-card">
@@ -83,7 +83,8 @@ function CommunityPosts() {
                 <div className="post-user">
                   <div className="post-info">
                     <p className="post-metadata">
-                      Đăng bởi <span className="author-name">{post.userName}</span>
+                      Post by:{" "}
+                      <span className="author-name">{post.userName}</span>
                     </p>
                     <h2 className="post-title">Title: {post.title}</h2>
                   </div>
@@ -94,15 +95,6 @@ function CommunityPosts() {
                     Created At: {new Date(post.createdAt).toLocaleDateString()}
                   </span>
                   <div className="interaction-stats">
-                    <button
-                      onClick={() => {
-                        setShowModal(true);
-                        setSelectedPostId(post.id);
-                      }}
-                      className="add-comment-btn"
-                    >
-                      💬 Leave Comment 
-                    </button>
                     <button
                       onClick={() => {
                         setSelectedPost(post);
@@ -122,7 +114,9 @@ function CommunityPosts() {
                       post.comments.map((comment) => (
                         <div key={comment.id} className="comment">
                           <div className="comment-header">
-                            <span className="comment-author">{comment.userName}</span>
+                            <span className="comment-author">
+                              {comment.userName}
+                            </span>
                             <span className="comment-date">
                               {new Date(comment.createdAt).toLocaleDateString()}
                             </span>
@@ -133,6 +127,15 @@ function CommunityPosts() {
                     ) : (
                       <p>No comments yet</p>
                     )}
+                    <button
+                      onClick={() => {
+                        setShowModal(true);
+                        setSelectedPostId(post.id);
+                      }}
+                      className="add-comment-btn"
+                    >
+                      💬 Leave Comment
+                    </button>
                   </div>
                 )}
               </div>
@@ -141,14 +144,13 @@ function CommunityPosts() {
         )}
       </div>
 
-      {showModal && (
-        <CommentModal
-          commentText={commentText}
-          setCommentText={setCommentText}
-          handleAddComment={handleAddComment}
-          setShowModal={setShowModal}
-        />
-      )}
+      <CommentModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        commentText={commentText}
+        setCommentText={setCommentText}
+        handleAddComment={handleAddComment}
+      />
     </div>
   );
 }
