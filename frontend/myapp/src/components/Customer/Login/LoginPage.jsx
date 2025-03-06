@@ -101,9 +101,15 @@ function LoginPage() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5254/api/Register", {
+      const response = await axios.post("http://localhost:5254/api/Login/register", {
         email: signUpEmail,
         password: signUpPassword,
+        firstname: " ",
+        lastName:" ",
+        phone:"",
+        dateOfBirth:"",
+        gender:"",
+        image:"",
       }, {
         headers: { "Content-Type": "application/json" },
       });
