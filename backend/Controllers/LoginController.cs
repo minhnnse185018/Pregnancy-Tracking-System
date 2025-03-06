@@ -16,6 +16,7 @@ using backend.Repository.Interface;
 using backend.Dtos;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Google.Apis.Auth;
 //using Google.Apis.Auth;
 
 namespace backend.Controllers
@@ -97,72 +98,113 @@ namespace backend.Controllers
             }
         }
 
-    //     [HttpPost("google-login")]
-    //     public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
-    //     {
-    //         try
-    //         {
-    //             // Verify Google token
-    //             var payload = await VerifyGoogleToken(request.Credential);
-    //             if (payload == null)
-    //             {
-    //                 return BadRequest(new { message = "Invalid Google token" });
-    //             }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            try
+            {
+                
 
-    //             // Check if user exists, if not create new user
-    //             var userDto = await _userRepository.GetUserByEmail(payload.Email);
-    //             if (userDto == null)
-    //             {
-    //                 // Create new user
-    //                 var newUser = new UserDto
-    //                 {
-    //                     Email = payload.Email,
-    //                     FirstName = payload.GivenName,
-    //                     LastName = payload.FamilyName,
-    //                     UserType = "Customer",
-    //                     Status = "active"
-    //                 };
+                
+                var result = await _userRepository.Register(request);
+                if (result > 0)
+                {
+                    // Get the registered user
+                    var user = await _userRepository.GetUserByEmailAsync(request.Email);
+                    if (user != null)
+                    {
+                        // Generate token
+                        var token = _jwtService.GenerateToken(user);
+                        return Ok(new 
+                        { token,
+                            userID=user.Id,
+                            userRole=user.UserType
+                         });
+                    }
+                }
 
-    //                 userDto = await _userRepository.CreateUser(newUser);
-    //             }
+                return BadRequest(new { message = "Registration failed" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred during registration", error = ex.Message });
+            }
+        }
 
-    //             // Generate JWT token
-    //             var token = _jwtService.GenerateToken(userDto);
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.Credential))
+                {
+                    return BadRequest(new { message = "Google credential is required" });
+                }
 
-    //             return Ok(new
-    //             {
-    //                 success = true,
-    //                 message = "Google login successful",
-    //                 token
-    //             });
-    //         }
-    //         catch (Exception ex)
-    //         {
-    //             return StatusCode(500, new
-    //             {
-    //                 success = false,
-    //                 message = "An error occurred during Google login",
-    //                 error = ex.Message
-    //             });
-    //         }
-    //     }
+                // Get user info from token
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(request.Credential) as JwtSecurityToken;
+                
+                if (jsonToken == null)
+                {
+                    return BadRequest(new { message = "Invalid token format" });
+                }
 
-    //     private async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string token)
-    //     {
-    //         try
-    //         {
-    //             var settings = new GoogleJsonWebSignature.ValidationSettings()
-    //             {
-    //                 Audience = new[] { "157843865023-45o3ncemhfk5n348ee0kdrmn9cq02u9b.apps.googleusercontent.com" }
-    //             };
-    //             var payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
-    //             return payload;
-    //         }
-    //         catch
-    //         {
-    //             return null;
-    //         }
-    //     }
+                var email = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
+                var firstName = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "given_name")?.Value;
+                var lastName = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "family_name")?.Value;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return BadRequest(new { message = "Email not found in token" });
+                }
+
+                // Check if user exists
+                var userDto = await _userRepository.GetUserByEmailAsync(email);
+                
+                if (userDto == null)
+                {
+                    // Create new user
+                    var newUser = new User
+                    {
+                        Email = email,
+                        FirstName = firstName ?? "",
+                        LastName = lastName ?? "",
+                        UserType = "Customer",
+                        Status = "active",
+                        CreatedAt = DateTime.Now,
+                        Password = "" // Set empty password for Google users
+                    };
+
+                    var createdUser = await _userRepository.CreateUser(newUser);
+                    if (createdUser == null)
+                    {
+                        return StatusCode(500, new { message = "Failed to create user" });
+                    }
+                    
+                }
+                userDto = await _userRepository.GetUserByEmailAsync(email);
+                // Generate JWT token
+                var token = _jwtService.GenerateToken(userDto);
+
+                return Ok(new
+                {
+                    token = token,
+                    user = userDto.Id,
+                    userRole= userDto.UserType
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Google login error: {ex}");
+                return StatusCode(500, new { message = "An error occurred during login" });
+            }
+        }
+
+        public class GoogleLoginRequest
+        {
+            public string? Credential { get; set; }
+        }
     }
 
     public class LoginRequest
@@ -171,16 +213,7 @@ namespace backend.Controllers
         public string Password { get; set; } = null!;
     }
 
-    public class RegisterRequest
-    {
-        public string Email { get; set; } = null!;
-        public string Password { get; set; } = null!;
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-    }
+    
 
-    // public class GoogleLoginRequest
-    // {
-    //     public string Credential { get; set; }
-    // }
+    
 }

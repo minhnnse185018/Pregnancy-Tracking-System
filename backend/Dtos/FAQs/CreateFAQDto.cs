@@ -6,6 +6,5 @@ namespace backend.Dtos.FAQs
         public string Answer { get; set; } = null!;
         public string? Category { get; set; }
         public int DisplayOrder { get; set; }
-        public bool IsPublished { get; set; } = true;
     }
 } 

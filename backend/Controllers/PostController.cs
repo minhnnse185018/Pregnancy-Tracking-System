@@ -15,38 +15,36 @@ namespace backend.Controllers
             _postRepository = postRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllPosts()
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllPostsAsync()
         {
             var posts = await _postRepository.GetAllPostsAsync();
             return Ok(posts);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPostById(int id)
+        [HttpGet("GetPostById/{id}")]
+        public async Task<IActionResult> GetPostByIdAsync(int id)
         {
             var post = await _postRepository.GetPostByIdAsync(id);
             return post == null ? NotFound() : Ok(post);
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("GetByUserId/{userId}")]
         public async Task<IActionResult> GetPostsByUserId(int userId)
         {
             var posts = await _postRepository.GetPostsByUserIdAsync(userId);
-            return Ok(posts);
+            return posts==null? NotFound():Ok(posts);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePost([FromBody] CreatePostDto postDto)
+        public async Task<IActionResult> CreatePostAsync([FromBody] CreatePostDto postDto)
         {
-            // TODO: Get userId from token
-            int userId = 1; // Temporary
-            var post = await _postRepository.CreatePostAsync(userId, postDto);
-            return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, post);
+            
+            return await _postRepository.CreatePostAsync(postDto)>0?Ok():BadRequest();
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePost(int id, [FromBody] UpdatePostDto postDto)
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> UpdatePostAsync(int id, [FromBody] UpdatePostDto postDto)
         {
             var post = await _postRepository.UpdatePostAsync(id, postDto);
             return post == null ? NotFound() : Ok(post);
@@ -56,7 +54,7 @@ namespace backend.Controllers
         public async Task<IActionResult> DeletePost(int id)
         {
             var result = await _postRepository.DeletePostAsync(id);
-            return result ? Ok() : NotFound();
+            return result >0? Ok() : NotFound();
         }
 
         [HttpGet("search")]

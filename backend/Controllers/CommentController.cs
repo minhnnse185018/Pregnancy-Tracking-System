@@ -23,8 +23,8 @@ namespace backend.Controllers
             return Ok(comments);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCommentById(int id)
+        [HttpGet("{Userid}")]
+        public async Task<IActionResult> GetCommentByUserId(int id)
         {
             var comment = await _commentRepository.GetCommentByIdAsync(id);
             return comment == null ? NotFound() : Ok(comment);
@@ -33,24 +33,23 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateComment([FromBody] CreateCommentDto commentDto)
         {
-            // TODO: Get userId from token
-            int userId = 1; // Temporary
-            var comment = await _commentRepository.CreateCommentAsync(userId, commentDto.PostId, commentDto);
-            return CreatedAtAction(nameof(GetCommentById), new { id = comment.Id }, comment);
+           
+            
+            return await _commentRepository.CreateCommentAsync( commentDto)>0?Ok():BadRequest();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateComment/{id}")]
         public async Task<IActionResult> UpdateComment(int id, [FromBody] UpdateCommentDto commentDto)
         {
             var comment = await _commentRepository.UpdateCommentAsync(id, commentDto);
             return comment == null ? NotFound() : Ok(comment);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
             var result = await _commentRepository.DeleteCommentAsync(id);
-            return result ? Ok() : NotFound();
+            return result>0 ? Ok() : NotFound();
         }
     }
 } 

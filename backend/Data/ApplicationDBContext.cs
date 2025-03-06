@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace backend.Data
 {
     public class ApplicationDBContext : DbContext
@@ -35,15 +34,9 @@ namespace backend.Data
             base.OnModelCreating(modelBuilder);
 
             // User configuration
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
-                entity.HasIndex(e => e.Email).IsUnique();
-                entity.Property(e => e.Password).IsRequired().HasMaxLength(255);
-                entity.Property(e => e.UserType).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.Status).HasDefaultValue("active");
-            });
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
 
             // PregnancyProfile configuration
             modelBuilder.Entity<PregnancyProfile>(entity =>
@@ -51,12 +44,15 @@ namespace backend.Data
                 entity.HasKey(e => e.Id);
 
                 entity.HasOne(p => p.User)
-                    .WithMany(u => u.PregnancyProfiles)  // ✅ One user has many pregnancy profiles
-                    .HasForeignKey(p => p.UserId)        // ✅ Explicitly define the foreign key
-                    .OnDelete(DeleteBehavior.Cascade);   // ✅ Delete all pregnancy profiles if user is deleted
+                    .WithMany(u => u.PregnancyProfiles)
+                    .HasForeignKey(p => p.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Add computed column for PregnancyStatus without persisting
+                entity.Property(e => e.PregnancyStatus)
+                    .HasColumnType("nvarchar(20)")
+                    .HasComputedColumnSql("CAST(CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END AS nvarchar(20))", stored: false);
             });
-
-
 
             // FetalMeasurement configuration
             modelBuilder.Entity<FetalMeasurement>(entity =>
@@ -64,7 +60,7 @@ namespace backend.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.WeightGrams).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.HeightCm).HasColumnType("decimal(10,2)");
-                
+
                 entity.HasOne(f => f.Profile)
                     .WithMany(p => p.FetalMeasurements)
                     .HasForeignKey(f => f.ProfileId)
@@ -162,7 +158,6 @@ namespace backend.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Category).HasMaxLength(50);
-                entity.Property(e => e.Status).HasMaxLength(20);
             });
 
             // MembershipPlan configuration
@@ -201,8 +196,119 @@ namespace backend.Data
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.PaymentMethod).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.PaymentStatus).HasMaxLength(50);
             });
+
+            // Seed Data
+            // 1. Users
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1,
+                    Email = "1@gmail.com",
+                    Password = "111111",
+                    UserType = "1",
+                    Status = "active",
+                    CreatedAt = DateTime.Now
+                },
+                new User
+                {
+                    Id = 2,
+                    Email = "2@gmail.com",
+                    Password = "222222",
+                    UserType = "5",
+                    Status = "active",
+                    CreatedAt = DateTime.Now
+                }
+            );
+
+            // 2. Pregnancy Profiles
+            modelBuilder.Entity<PregnancyProfile>().HasData(
+                new PregnancyProfile
+                {
+                    Id = 1,
+                    UserId = 1,
+                    ConceptionDate = DateTime.Now.AddDays(-90),
+                    DueDate = DateTime.Now.AddDays(180),
+                    CreatedAt = DateTime.Now
+                }
+            );
+
+            // 3. Fetal Measurements
+            modelBuilder.Entity<FetalMeasurement>().HasData(
+                new FetalMeasurement
+                {
+                    Id = 1,
+                    ProfileId = 1,
+                    WeightGrams = 500.00M,
+                    HeightCm = 25.5M,
+                    MeasurementDate = DateTime.Now.AddDays(-7),
+                    CreatedAt = DateTime.Now
+                },
+                new FetalMeasurement
+                {
+                    Id = 2,
+                    ProfileId = 1,
+                    WeightGrams = 650.00M,
+                    HeightCm = 28.5M,
+                    MeasurementDate = DateTime.Now,
+                    CreatedAt = DateTime.Now
+                }
+            );
+
+            // 4. FAQs
+            modelBuilder.Entity<FAQ>().HasData(
+                new FAQ
+                {
+                    Id = 1,
+                    Question = "What is the normal fetal weight at 12 weeks?",
+                    Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
+                    Category = "Fetal Development",
+                    DisplayOrder = 1,
+                    CreatedAt = DateTime.Now
+                },
+                new FAQ
+                {
+                    Id = 2,
+                    Question = "How often should I have prenatal check-ups?",
+                    Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
+                    Category = "Prenatal Care",
+                    DisplayOrder = 2,
+                    CreatedAt = DateTime.Now
+                }
+            );
+
+            // 5. Posts
+            modelBuilder.Entity<Post>().HasData(
+                new Post
+                {
+                    Id = 1,
+                    UserId = 1,
+                    Title = "My First Pregnancy Experience",
+                    Content = "I'm excited to share my journey through the first trimester...",
+                    CreatedAt = DateTime.Now,
+                    Status = "published"
+                }
+            );
+
+            // 6. Comments
+            modelBuilder.Entity<Comment>().HasData(
+                new Comment
+                {
+                    Id = 1,
+                    UserId = 2,
+                    PostId = 1,
+                    Content = "Thank you for sharing your experience! It's very helpful.",
+                    CreatedAt = DateTime.Now
+                },
+                new Comment
+                {
+                    Id = 2,
+                    UserId = 1,
+                    PostId = 1,
+                    Content = "I'm glad you found it helpful! Feel free to ask any questions.",
+                    CreatedAt = DateTime.Now.AddHours(1)
+                }
+            );
         }
     }
 }

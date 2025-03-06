@@ -92,7 +92,7 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CommentText")
+                    b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -111,6 +111,24 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Content = "Thank you for sharing your experience! It's very helpful.",
+                            CreatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6964),
+                            PostId = 1,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Content = "I'm glad you found it helpful! Feel free to ask any questions.",
+                            CreatedAt = new DateTime(2025, 3, 6, 14, 45, 20, 779, DateTimeKind.Local).AddTicks(6967),
+                            PostId = 1,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.FAQ", b =>
@@ -137,16 +155,34 @@ namespace backend.Migrations
                     b.Property<string>("Question")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("FAQs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
+                            Category = "Fetal Development",
+                            CreatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6902),
+                            DisplayOrder = 1,
+                            Question = "What is the normal fetal weight at 12 weeks?",
+                            UpdatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6897)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
+                            Category = "Prenatal Care",
+                            CreatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6905),
+                            DisplayOrder = 2,
+                            Question = "How often should I have prenatal check-ups?",
+                            UpdatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6903)
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.FetalGrowthStandard", b =>
@@ -192,8 +228,8 @@ namespace backend.Migrations
                     b.Property<decimal>("HeightCm")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<DateOnly>("MeasurementDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("MeasurementDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
@@ -212,6 +248,28 @@ namespace backend.Migrations
                     b.HasIndex("ProfileId");
 
                     b.ToTable("FetalMeasurements");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6872),
+                            HeightCm = 25.5m,
+                            MeasurementDate = new DateTime(2025, 2, 27, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6871),
+                            ProfileId = 1,
+                            Week = 0,
+                            WeightGrams = 500.00m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6877),
+                            HeightCm = 28.5m,
+                            MeasurementDate = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6876),
+                            ProfileId = 1,
+                            Week = 0,
+                            WeightGrams = 650.00m
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.GrowthAlert", b =>
@@ -225,17 +283,11 @@ namespace backend.Migrations
                     b.Property<string>("AlertMessage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("AlertType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("MeasurementId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Severity")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
@@ -297,9 +349,6 @@ namespace backend.Migrations
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("PlanName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -327,24 +376,23 @@ namespace backend.Migrations
                     b.Property<int>("MembershipId")
                         .HasColumnType("int");
 
+                    b.Property<string>("PaymentDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<bool>("PaymentStatus")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("PaymentsDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("VnpayPayDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("VnpayResponseCode")
                         .HasColumnType("nvarchar(max)");
@@ -378,6 +426,9 @@ namespace backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
@@ -395,6 +446,18 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Content = "I'm excited to share my journey through the first trimester...",
+                            CreatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6937),
+                            Status = "published",
+                            Title = "My First Pregnancy Experience",
+                            UpdatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6931),
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.PregnancyProfile", b =>
@@ -405,17 +468,20 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("ConceptionDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("ConceptionDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("DueDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PregnancyStatus")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("nvarchar(20)")
+                        .HasComputedColumnSql("CAST(CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END AS nvarchar(20))", false);
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -425,6 +491,16 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PregnancyProfiles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConceptionDate = new DateTime(2024, 12, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6827),
+                            CreatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6836),
+                            DueDate = new DateTime(2025, 9, 2, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6835),
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.Question", b =>
@@ -471,8 +547,7 @@ namespace backend.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
@@ -480,30 +555,23 @@ namespace backend.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("active");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserType")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -511,6 +579,26 @@ namespace backend.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6576),
+                            Email = "1@gmail.com",
+                            Password = "111111",
+                            Status = "active",
+                            UserType = "1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 3, 6, 13, 45, 20, 779, DateTimeKind.Local).AddTicks(6580),
+                            Email = "2@gmail.com",
+                            Password = "222222",
+                            Status = "active",
+                            UserType = "5"
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.Answer", b =>

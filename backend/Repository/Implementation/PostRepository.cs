@@ -41,7 +41,7 @@ namespace backend.Repository.Implementation
             return post == null ? null : _mapper.Map<PostDto>(post);
         }
 
-        public async Task<List<PostDto>> GetPostsByUserIdAsync(int userId)
+        public async Task<List<PostDto>?> GetPostsByUserIdAsync(int userId)
         {
             var posts = await _context.Posts
                 .Include(p => p.User)
@@ -50,22 +50,24 @@ namespace backend.Repository.Implementation
                 .Where(p => p.UserId == userId)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
-
+            if(posts==null)
+            {
+                return null;
+            }
             return _mapper.Map<List<PostDto>>(posts);
         }
 
-        public async Task<PostDto> CreatePostAsync(int userId, CreatePostDto postDto)
+        public async Task<int> CreatePostAsync( CreatePostDto postDto)
         {
             var post = _mapper.Map<Post>(postDto);
-            post.UserId = userId;
             post.CreatedAt = DateTime.Now;
             post.UpdatedAt = DateTime.Now;
             post.Status = "active";
 
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
+            await _context.Posts.AddAsync(post);
+            
 
-            return await GetPostByIdAsync(post.Id);
+            return await _context.SaveChangesAsync() ;
         }
 
         public async Task<PostDto?> UpdatePostAsync(int id, UpdatePostDto postDto)
@@ -80,17 +82,17 @@ namespace backend.Repository.Implementation
             return await GetPostByIdAsync(id);
         }
 
-        public async Task<bool> DeletePostAsync(int id)
+        public async Task<int> DeletePostAsync(int id)
         {
             var post = await _context.Posts.FindAsync(id);
-            if (post == null) return false;
+            if (post == null) return -1;
 
             _context.Posts.Remove(post);
-            await _context.SaveChangesAsync();
-            return true;
+            
+            return await _context.SaveChangesAsync();;
         }
 
-        public async Task<List<PostDto>> SearchPostsAsync(string searchTerm)
+        public async Task<List<PostDto>?> SearchPostsAsync(string searchTerm)
         {
             var posts = await _context.Posts
                 .Include(p => p.User)
@@ -102,5 +104,7 @@ namespace backend.Repository.Implementation
 
             return _mapper.Map<List<PostDto>>(posts);
         }
+
+        
     }
 } 
