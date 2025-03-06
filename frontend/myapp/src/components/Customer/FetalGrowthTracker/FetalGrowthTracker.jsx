@@ -13,7 +13,14 @@ function FetalGrowthTracker() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const API_URL = 'http://localhost:5000/api/fetal-growth'; // Adjust to your API endpoint
+  // Định nghĩa các endpoint API
+  const API_BASE_URL = 'http://localhost:5000'; // Thay bằng URL server thực tế của bạn
+  const API_ENDPOINTS = {
+    getAll: '/api/FetalGrowthStandard',
+    post: '/api/FetalGrowthStandard',
+    getById: (id) => `/api/FetalGrowthStandard/${id}`,
+    getByWeek: (week) => `/api/FetalGrowthStandard/week/${week}`,
+  };
 
   // Check authentication status manually using sessionStorage
   const hasToken = !!sessionStorage.getItem('token');
@@ -22,28 +29,36 @@ function FetalGrowthTracker() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      if (hasToken) {
-        // Authenticated user: Fetch from API
-        try {
+      try {
+        if (hasToken) {
+          // Authenticated user: Fetch all data from API
           const token = sessionStorage.getItem('token');
-          const response = await axios.get(API_URL, {
+          const response = await axios.get(`${API_BASE_URL}${API_ENDPOINTS.getAll}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setGrowthData(response.data);
-        } catch (err) {
-          console.error('Fetch error:', err.response ? err.response.data : err.message);
-          setError('Không thể tải dữ liệu từ server. Vui lòng thử lại sau.');
+          // Ánh xạ dữ liệu từ API về định dạng của ứng dụng
+          const mappedData = response.data.map(item => ({
+            week: item.weekNumber,
+            weight: item.measurementType === 'weight' ? item.medianValue : null,
+            height: item.measurementType === 'height' ? item.medianValue : null,
+          }));
+          setGrowthData(mappedData);
+        } else {
+          // Guest: Load from localStorage
+          const savedData = localStorage.getItem('guestFetalGrowthData');
+          setGrowthData(savedData ? JSON.parse(savedData) : []);
         }
-      } else {
-        // Guest: Load from localStorage
-        const savedData = localStorage.getItem('guestFetalGrowthData');
-        setGrowthData(savedData ? JSON.parse(savedData) : []);
+      } catch (err) {
+        console.error('Fetch error:', err.response ? err.response.data : err.message);
+        setError('Không thể tải dữ liệu từ server. Vui lòng thử lại sau.');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchData();
-  }, [hasToken]); // Re-run when hasToken changes
+  }, [hasToken]);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!week || !weight || !height) {
@@ -52,40 +67,63 @@ function FetalGrowthTracker() {
     }
 
     const newEntry = {
-      week: parseInt(week),
-      weight: parseFloat(weight),
-      height: parseFloat(height),
+      weekNumber: parseInt(week),
+      measurementType: 'weight', // Gửi riêng cho weight
+      minValue: null,
+      medianValue: parseFloat(weight),
+      maxValue: null,
+    };
+
+    const heightEntry = {
+      weekNumber: parseInt(week),
+      measurementType: 'height', // Gửi riêng cho height
+      minValue: null,
+      medianValue: parseFloat(height),
+      maxValue: null,
     };
 
     setLoading(true);
-    if (hasToken) {
-      // Authenticated user: Save to API
-      try {
+    try {
+      if (hasToken) {
+        // Authenticated user: Save to API with json-patch+json
         const token = sessionStorage.getItem('token');
-        console.log('Submitting with token:', token, 'Data:', newEntry); // Debug
-        const response = await axios.post(API_URL, newEntry, {
-          headers: { Authorization: `Bearer ${token}` },
+        const weightResponse = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.post}`, newEntry, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json-patch+json', // Theo yêu cầu API
+          },
         });
-        const updatedData = [...growthData.filter((entry) => entry.week !== newEntry.week), response.data];
+        const heightResponse = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.post}`, heightEntry, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json-patch+json',
+          },
+        });
+        const updatedData = [
+          ...growthData.filter((entry) => entry.week !== parseInt(week)),
+          { week: parseInt(week), weight: parseFloat(weight), height: parseFloat(height) },
+        ];
         setGrowthData(updatedData);
-        setLatestEntry(response.data);
-      } catch (err) {
-        console.error('API Error:', err.response ? err.response.data : err.message);
-        setError(`Không thể lưu dữ liệu: ${err.response ? err.response.data.message || err.response.statusText : err.message}`);
+        setLatestEntry({ week: parseInt(week), weight: parseFloat(weight), height: parseFloat(height) });
+      } else {
+        // Guest: Save to localStorage
+        const updatedData = [
+          ...growthData.filter((entry) => entry.week !== parseInt(week)),
+          { week: parseInt(week), weight: parseFloat(weight), height: parseFloat(height) },
+        ];
+        setGrowthData(updatedData);
+        setLatestEntry({ week: parseInt(week), weight: parseFloat(weight), height: parseFloat(height) });
+        localStorage.setItem('guestFetalGrowthData', JSON.stringify(updatedData));
       }
-    } else {
-      // Guest: Save to localStorage
-      const updatedData = [...growthData.filter((entry) => entry.week !== newEntry.week), newEntry];
-      setGrowthData(updatedData);
-      setLatestEntry(newEntry);
-      localStorage.setItem('guestFetalGrowthData', JSON.stringify(updatedData));
+    } catch (err) {
+      console.error('API Error:', err.response ? err.response.data : err.message);
+      setError(`Không thể lưu dữ liệu: ${err.response ? err.response.data.message || err.response.statusText : err.message}`);
+    } finally {
+      setWeek('');
+      setWeight('');
+      setHeight('');
+      setLoading(false);
     }
-
-    // Clear form
-    setWeek('');
-    setWeight('');
-    setHeight('');
-    setLoading(false);
   };
 
   // Prepare chart data
@@ -98,7 +136,7 @@ function FetalGrowthTracker() {
   }));
 
   return (
-    <div className="growth-tracker-container">
+    <div className="growth-tracker-container" style={{ marginTop: '50px' }}>
       <h1 className="tracker-title">Theo dõi tăng trưởng thai nhi</h1>
       <p className="tracker-description">
         Nhập thông tin để theo dõi và so sánh sự tăng trưởng của bé qua các tuần!{' '}
