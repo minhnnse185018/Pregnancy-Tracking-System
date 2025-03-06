@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+
+
 namespace backend.Dtos.FetalGrowth
 {
     public class FetalMeasurementDto
@@ -6,7 +9,10 @@ namespace backend.Dtos.FetalGrowth
         public int ProfileId { get; set; }
         public decimal WeightGrams { get; set; }
         public decimal HeightCm { get; set; }
-        public DateOnly MeasurementDate { get; set; }
+        
+
+        public DateTime MeasurementDate { get; set; }
+        
         public string? Notes { get; set; }
         public int Week { get; set; }
     }

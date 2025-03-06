@@ -128,5 +128,76 @@ namespace backend.Repository.Implementation
             return await _context.SaveChangesAsync();
 
         }
+
+        public async Task<int> Register(RegisterRequest register)
+        {
+            try 
+            {
+                if (await IsEmailExists(register.Email))
+                {
+                    return -1;
+                }
+
+                var user = _mapper.Map<User>(register);
+                
+                // Set default values
+                user.CreatedAt = DateTime.Now;
+                user.Status = "active";
+                user.UserType = "1";
+
+                // Explicitly set Phone and DateOfBirth
+                if (!string.IsNullOrWhiteSpace(register.Phone))
+                {
+                    user.Phone = register.Phone.Trim();
+                }
+                if (register.DateOfBirth.HasValue)
+                {
+                    user.DateOfBirth = register.DateOfBirth.Value;
+                }
+
+                await _context.Users.AddAsync(user);
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Registration error: {ex.Message}");
+                return 0;
+            }
+        }
+
+        public async Task<int> UpdateUserInfo(UpdateUserInfoDto userDto)
+        {
+            try
+            {
+                var user = await _context.Users.FindAsync(userDto.Id);
+                if (user == null) return -1;
+
+                // Update basic info
+                if (!string.IsNullOrWhiteSpace(userDto.FirstName)) user.FirstName = userDto.FirstName;
+                if (!string.IsNullOrWhiteSpace(userDto.LastName)) user.LastName = userDto.LastName;
+                if (!string.IsNullOrWhiteSpace(userDto.Gender)) user.Gender = userDto.Gender;
+                
+
+                // Explicitly update Phone
+                if (userDto.Phone != null)
+                {
+                    user.Phone = string.IsNullOrWhiteSpace(userDto.Phone) ? null : userDto.Phone.Trim();
+                }
+
+                // Explicitly update DateOfBirth
+                if (userDto.DateOfBirth.HasValue)
+                {
+                    user.DateOfBirth = userDto.DateOfBirth.Value;
+                }
+
+                _context.Entry(user).State = EntityState.Modified;
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Update error: {ex.Message}");
+                return -1;
+            }
+        }
     }
 }

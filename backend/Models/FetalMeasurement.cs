@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+
+
 namespace backend.Models
 {
     public class FetalMeasurement
@@ -6,9 +9,11 @@ namespace backend.Models
         public int ProfileId { get; set; }
         public decimal WeightGrams { get; set; }
         public decimal HeightCm { get; set; }
-        public DateOnly MeasurementDate { get; set; }
+        
+        public DateTime MeasurementDate { get; set; }
+        
         public string? Notes { get; set; }
-        public int Week { get; private set; }
+        public int Week { get; protected set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
@@ -20,8 +25,9 @@ namespace backend.Models
         {
             if (Profile != null)
             {
-                int daysDifference = MeasurementDate.DayNumber - Profile.ConceptionDate.DayNumber;
-                Week = (int)Math.Floor(daysDifference / 7.0);
+                TimeSpan difference = MeasurementDate - Profile.ConceptionDate;
+                Week = (int)Math.Floor(difference.TotalDays / 7.0) + 1;
+                if (Week < 1) Week = 1;
             }
         }
     }
