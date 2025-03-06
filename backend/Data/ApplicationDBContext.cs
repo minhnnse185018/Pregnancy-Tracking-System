@@ -196,7 +196,6 @@ namespace backend.Data
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.PaymentMethod).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.PaymentStatus).HasMaxLength(50);
             });
 
             // Seed Data

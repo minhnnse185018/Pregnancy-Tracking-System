@@ -55,6 +55,8 @@ builder.Services.AddScoped<IFetalGrowthStandardRepository, FetalGrowthStandardRe
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IMembershipPlanRepository, MembershipPlanRepository>();
 builder.Services.AddScoped<IFetalMeasurementRepository, FetalMeasurementRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+
 
 var app = builder.Build();
 
