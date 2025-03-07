@@ -1,4 +1,5 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
 import 'swiper/css';
 import 'swiper/css/autoplay';
 import 'swiper/css/navigation';
@@ -10,6 +11,9 @@ import './Header.css';
 
 const Header = () => {
   return (
+    <div>
+      <ToastContainer />
+    
     <section className="hero">
       <div className="container hero-grid">
         <div className="hero-content">
@@ -38,6 +42,7 @@ const Header = () => {
         </div>
       </div>
     </section>
+    </div>
   );
 };
 

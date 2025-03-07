@@ -3,10 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@mui/icons-material": "^6.4.5",
+    "@mui/material": "^6.4.5",
+    "@mui/x-date-pickers": "^7.27.0",
     "@react-oauth/google": "^0.12.1",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
+    "date-fns": "^2.29.3",
+    "formik": "^2.4.6",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.7",
     "react-dom": "^19.0.0",
@@ -16,7 +23,8 @@
     "react-scripts": "^5.0.1",
     "react-toastify": "^11.0.2",
     "styled-components": "^6.1.15",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "yup": "^1.6.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,8 +49,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }
