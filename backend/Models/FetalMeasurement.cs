@@ -13,7 +13,7 @@ namespace backend.Models
         public DateTime MeasurementDate { get; set; }
         
         public string? Notes { get; set; }
-        public int Week { get; private set; }
+        public int Week { get; protected set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties

@@ -71,13 +71,9 @@ namespace backend.Mapper
 
             // FAQ mappings
             CreateMap<FAQ, FAQDto>();
-            CreateMap<CreateFAQDto, FAQ>()
-                .ForMember(dest => dest.Status, 
-                    opt => opt.MapFrom(src => src.IsPublished ? "published" : "draft"));
+            CreateMap<CreateFAQDto, FAQ>();
             CreateMap<UpdateFAQDto, FAQ>()
-                .ForMember(dest => dest.Status, 
-                    opt => opt.MapFrom(src => src.IsPublished == true ? "published" : 
-                        src.IsPublished == false ? "draft" : src.Status));
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Appointment mappings
             CreateMap<Appointment, AppointmentDto>();

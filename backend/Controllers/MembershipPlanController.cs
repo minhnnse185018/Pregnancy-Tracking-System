@@ -22,13 +22,6 @@ namespace backend.Controllers
             return Ok(plans);
         }
 
-        [HttpGet("GetActivePlans")]
-        public async Task<IActionResult> GetActivePlans()
-        {
-            var plans = await _planRepository.GetActivePlansAsync();
-            return Ok(plans);
-        }
-
         [HttpGet("GetPlanById/{id}")]
         public async Task<IActionResult> GetPlanById(int id)
         {
@@ -39,8 +32,8 @@ namespace backend.Controllers
         [HttpPost("CreatePlan")]
         public async Task<IActionResult> CreatePlan([FromBody] CreateMembershipPlanDto planDto)
         {
-            var plan = await _planRepository.CreatePlanAsync(planDto);
-            return plan>0?Ok():BadRequest();
+            var result = await _planRepository.CreatePlanAsync(planDto);
+            return result > 0 ? Ok() : BadRequest();
         }
 
         [HttpPut("UpdatePlan/{id}")]
@@ -54,7 +47,7 @@ namespace backend.Controllers
         public async Task<IActionResult> DeletePlan(int id)
         {
             var result = await _planRepository.DeletePlanAsync(id);
-            return result>0 ? Ok() : NotFound();
+            return result > 0 ? Ok() : NotFound();
         }
     }
 } 

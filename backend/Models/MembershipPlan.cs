@@ -7,7 +7,6 @@ namespace backend.Models
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public int Duration { get; set; }
-        public bool IsActive { get; set; } = true;
 
         // Navigation property
         public virtual ICollection<Membership> Memberships { get; set; } = new List<Membership>();

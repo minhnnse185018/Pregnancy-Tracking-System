@@ -1,7 +1,6 @@
 using AutoMapper;
 using backend.Data;
 using backend.Dtos.MembershipPlans;
-using backend.Dtos.Memberships;
 using backend.Models;
 using backend.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -39,11 +38,8 @@ namespace backend.Repository.Implementation
         public async Task<int> CreatePlanAsync(CreateMembershipPlanDto planDto)
         {
             var plan = _mapper.Map<MembershipPlan>(planDto);
-
             _context.MembershipPlans.Add(plan);
-            
-
-            return await _context.SaveChangesAsync() ;
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<MembershipPlanDto?> UpdatePlanAsync(int id, UpdateMembershipPlanDto planDto)
@@ -63,20 +59,7 @@ namespace backend.Repository.Implementation
             if (plan == null) return -1;
 
             _context.MembershipPlans.Remove(plan);
-            
-            return await _context.SaveChangesAsync();;
+            return await _context.SaveChangesAsync();
         }
-
-        public async Task<List<MembershipPlanDto>> GetActivePlansAsync()
-        {
-            var plans = await _context.MembershipPlans
-                .Where(p => p.IsActive)
-                .OrderBy(p => p.Price)
-                .ToListAsync();
-
-            return _mapper.Map<List<MembershipPlanDto>>(plans);
-        }
-
-        
     }
 } 

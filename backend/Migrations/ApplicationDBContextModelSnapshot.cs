@@ -111,6 +111,24 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Content = "Thank you for sharing your experience! It's very helpful.",
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6520),
+                            PostId = 1,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Content = "I'm glad you found it helpful! Feel free to ask any questions.",
+                            CreatedAt = new DateTime(2025, 3, 6, 2, 40, 58, 359, DateTimeKind.Local).AddTicks(6526),
+                            PostId = 1,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.FAQ", b =>
@@ -137,16 +155,34 @@ namespace backend.Migrations
                     b.Property<string>("Question")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("FAQs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
+                            Category = "Fetal Development",
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6425),
+                            DisplayOrder = 1,
+                            Question = "What is the normal fetal weight at 12 weeks?",
+                            UpdatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6420)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
+                            Category = "Prenatal Care",
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6428),
+                            DisplayOrder = 2,
+                            Question = "How often should I have prenatal check-ups?",
+                            UpdatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6426)
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.FetalGrowthStandard", b =>
@@ -212,6 +248,28 @@ namespace backend.Migrations
                     b.HasIndex("ProfileId");
 
                     b.ToTable("FetalMeasurements");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6375),
+                            HeightCm = 25.5m,
+                            MeasurementDate = new DateTime(2025, 2, 27, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6374),
+                            ProfileId = 1,
+                            Week = 0,
+                            WeightGrams = 500.00m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6384),
+                            HeightCm = 28.5m,
+                            MeasurementDate = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6383),
+                            ProfileId = 1,
+                            Week = 0,
+                            WeightGrams = 650.00m
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.GrowthAlert", b =>
@@ -290,9 +348,6 @@ namespace backend.Migrations
 
                     b.Property<int>("Duration")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<string>("PlanName")
                         .IsRequired()
@@ -392,6 +447,18 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Content = "I'm excited to share my journey through the first trimester...",
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6472),
+                            Status = "published",
+                            Title = "My First Pregnancy Experience",
+                            UpdatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6466),
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.PregnancyProfile", b =>
@@ -412,7 +479,10 @@ namespace backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PregnancyStatus")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("nvarchar(20)")
+                        .HasComputedColumnSql("CAST(CASE WHEN GETDATE() < DueDate THEN 'On Going' ELSE 'Completed' END AS nvarchar(20))", false);
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -422,6 +492,16 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PregnancyProfiles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConceptionDate = new DateTime(2024, 12, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6279),
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6298),
+                            DueDate = new DateTime(2025, 9, 2, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(6297),
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.Question", b =>
@@ -500,6 +580,26 @@ namespace backend.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(5467),
+                            Email = "1@gmail.com",
+                            Password = "111111",
+                            Status = "active",
+                            UserType = "1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 3, 6, 1, 40, 58, 359, DateTimeKind.Local).AddTicks(5473),
+                            Email = "2@gmail.com",
+                            Password = "222222",
+                            Status = "active",
+                            UserType = "5"
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.Answer", b =>
