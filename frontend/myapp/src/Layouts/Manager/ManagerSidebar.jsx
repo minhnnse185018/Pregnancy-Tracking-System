@@ -1,13 +1,14 @@
+import BarChartIcon from "@mui/icons-material/BarChart"; // Icon for Manage Revenue
+import DescriptionIcon from "@mui/icons-material/Description"; // Icon for Manage Blog
+import EventIcon from "@mui/icons-material/Event"; // Icon for View Appointments
+import GroupIcon from "@mui/icons-material/Group"; // Icon for Profile
+import PaymentIcon from "@mui/icons-material/Payment"; // Icon for Manage Payroll
+import PeopleIcon from "@mui/icons-material/People"; // Icon for Manage Personnel
+import ScheduleIcon from "@mui/icons-material/Schedule"; // Icon for Manager Schedule
+import StoreIcon from "@mui/icons-material/Store"; // Icon for Manage Services
 import React from "react";
 import { Link } from "react-router-dom";
-import GroupIcon from "@mui/icons-material/Group"; // Icon cho Profile
-import BarChartIcon from "@mui/icons-material/BarChart"; // Icon cho Manage Revenue
-import PeopleIcon from "@mui/icons-material/People"; // Icon cho Manage Personnel
-import StoreIcon from "@mui/icons-material/Store"; // Icon cho Manage Services
-import DescriptionIcon from "@mui/icons-material/Description"; // Icon cho Manage Blog
-import PaymentIcon from "@mui/icons-material/Payment"; // Icon cho Manage Payroll
-import EventIcon from "@mui/icons-material/Event"; // Icon cho View Appointments
-import ScheduleIcon from "@mui/icons-material/Schedule";
+
 const ManagerSidebar = () => {
   return (
     <div className="sidebar" style={sidebarStyle}>
@@ -57,42 +58,51 @@ const ManagerSidebar = () => {
   );
 };
 
-// Sidebar styling
+// Sidebar styling aligned with AdminSidebar and Mom & Baby theme
 const sidebarStyle = {
-  width: "240px",
-  backgroundColor: "#E8E8E8",
-  height: "100vh", // Đảm bảo sidebar phủ toàn bộ chiều cao
+  width: "260px",
+  backgroundColor: "#FFF5EE", // Creamy light color
+  height: "100vh",
+  padding: "20px 0",
+  boxShadow: "2px 0 10px rgba(0, 0, 0, 0.1)",
+  borderRadius: "0 20px 20px 0", // Rounded right corners
 };
 
 // List styling
 const listStyle = {
   listStyleType: "none",
-  padding: 12,
-  color: "#4CAF50",
-  backgroundColor: "#DFDFDF",
+  padding: 0,
+  color: "#D2691E", // Warm brown
 };
 
 // List item styling
 const listItemStyle = {
-  padding: "20px 0",
-  borderBottom: "1px solid grey",
+  padding: "15px 20px",
+  borderBottom: "1px solid #F4A8A8", // Soft pastel border
   fontWeight: "bold",
   textAlign: "left",
-  transition: "background 0.3s",
+  transition: "background 0.3s, transform 0.2s",
+  borderRadius: "10px",
 };
 
 // Link styling
 const linkStyle = {
   textDecoration: "none",
-  color: "#4CAF50", // Màu chữ chuyển sang xanh lá cây
+  color: "#D2691E", // Warm brown
   display: "flex",
   alignItems: "center",
-  gap: "0.6rem",
+  gap: "0.8rem",
+  fontSize: "1rem",
+  fontWeight: "600",
 };
 
 // Hover effect
-listItemStyle[":hover"] = {
-  backgroundColor: "#BCBCBC",
+const hoverStyle = {
+  backgroundColor: "#FFDAB9", // Light peach on hover
+  transform: "scale(1.05)",
 };
+
+// Apply hover effect (since inline styles don't support :hover, this is for reference)
+listItemStyle[":hover"] = hoverStyle;
 
 export default ManagerSidebar;

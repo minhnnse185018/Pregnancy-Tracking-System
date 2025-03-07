@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import InternalLoginModal from '../Customer/InternalLoginModal';
-
+import InternalLoginPage from '../Customer/Login/InternalLoginPage';
 const ManagerPrivateRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -28,7 +27,7 @@ const ManagerPrivateRoute = () => {
           aria-hidden="true"
           style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
         >
-          <InternalLoginModal />
+          <InternalLoginPage />
         </div>
       </>
     );

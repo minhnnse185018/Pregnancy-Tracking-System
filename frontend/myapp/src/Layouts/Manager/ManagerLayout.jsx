@@ -1,10 +1,10 @@
+import "@fontsource/poppins"; // Import font chữ Poppins
+import { Typography } from "@mui/material";
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import ManagerSidebar from "./ManagerSidebar";
-import Header from "../../components/Dashboard/Header";
 import BreadcrumbsHeader from "../../components/Dashboard/breadcum";
-import { Typography } from "@mui/material";
-import "@fontsource/poppins"; // Import font chữ Poppins
+import HeaderInternal from "../../components/Dashboard/HeaderInternal";
+import ManagerSidebar from "./ManagerSidebar";
 
 const ManagerLayout = () => {
   const location = useLocation(); // Lấy thông tin route hiện tại
@@ -14,7 +14,7 @@ const ManagerLayout = () => {
 
   return (
     <div style={mainWrapperStyle}>
-      <Header /> {/* Giữ nguyên header */}
+      <HeaderInternal /> {/* Giữ nguyên header */}
       <div style={breadcrumbWrapperStyle}>
         <BreadcrumbsHeader /> {/* Breadcrumb nằm ngay dưới header */}
       </div>
@@ -76,7 +76,7 @@ const managerContentStyle = {
 const backgroundContainerStyle = {
   flex: 1,
   backgroundImage:
-    'url("https://channel.mediacdn.vn/thumb_w/640/2021/1/1/photo-1-16095152049991064406913.jpg")',
+    'url("https://img1.wallspic.com/previews/3/5/1/3/3/133153/133153-holding_hands-childbirth-organ-health-heart-550x310.jpg")',
   backgroundSize: "cover",
   backgroundPosition: "center",
   display: "flex",
