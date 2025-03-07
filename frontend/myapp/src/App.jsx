@@ -22,11 +22,22 @@ import HealthTipComponent from "./components/HealthTipComponent/HealthTipCompone
 import MainContent from "./components/HomePage/Maincontent/Maincontent";
 import AdminPrivateRoute from "./components/PrivateRoute/AdminPrivateRoute";
 import CustomerPrivateRoute from "./components/PrivateRoute/CustomerPrivateRoute";
+import ManagerPrivateRoute from "./components/PrivateRoute/ManagerPrivateRoute";
 import AdminLayout from "./Layouts/Admin/AdminLayout";
+import ManagerLayout from "./Layouts/Manager/ManagerLayout";
 import AdminSalon from "./Pages/Admin/AdminBlog";
 import AdminPersonnel from "./Pages/Admin/AdminPersonnel";
 import AdminProfilePage from "./Pages/Admin/AdminProfilePage";
 import ManageCustomer from "./Pages/Admin/ManagerCustomer";
+import ManagerAppointments from "./Pages/Manager/ManagerAppointments";
+import ManagerBlogs from "./Pages/Manager/ManagerBlogs";
+import ManagerPayroll from "./Pages/Manager/ManagerPayroll";
+import ManagerPersonnel from "./Pages/Manager/ManagerPersonnel";
+import ManagerProfilePage from "./Pages/Manager/ManagerProfilePage";
+import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
+import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
+import ManagerServices from "./Pages/Manager/ManagerServices";
+import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
 
 function App() {
   return (
@@ -152,12 +163,33 @@ function App() {
               }
             />
           </Route>
+          {/* DASHBOARD ADMIN */}
           <Route path="/admin" element={<AdminPrivateRoute />}>
             <Route path="" element={<AdminLayout />}>
               <Route path="admin-profile" element={<AdminProfilePage />} />
               <Route path="admin-personnel" element={<AdminPersonnel />} />
               <Route path="admin-salon" element={<AdminSalon />} />
               <Route path="admin-customer" element={<ManageCustomer />} />
+            </Route>
+          </Route>
+          {/* DASHBOARD MANAGER */}
+          <Route path="/manager" element={<ManagerPrivateRoute />}>
+            <Route path="" element={<ManagerLayout />}>
+              <Route path="manager-services" element={<ManagerServices />} />
+              <Route path="manager-profile" element={<ManagerProfilePage />} />
+              <Route path="manager-personnel" element={<ManagerPersonnel />} />
+              <Route path="manager-revenue" element={<ManageRevenuePage />} />
+              <Route path="manager-payroll" element={<ManagerPayroll />} />
+              <Route
+                path="manager-transaction"
+                element={<ManagerTransaction />}
+              />
+              <Route path="manager-blog" element={<ManagerBlogs />} />
+              <Route
+                path="view-appointments"
+                element={<ManagerAppointments />}
+              />
+              <Route path="manager-schedule" element={<ManagerSchedule />} />
             </Route>
           </Route>
         </Routes>
