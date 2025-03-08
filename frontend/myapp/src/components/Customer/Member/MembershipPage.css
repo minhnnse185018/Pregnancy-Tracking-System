@@ -1,6 +1,7 @@
 /* General Container */
 .membership-container {
   padding: 40px;
+  margin-top: 75px;
   background: linear-gradient(135deg, #f9f5f6 0%, #e6f0fa 100%);
   min-height: 100vh;
   text-align: center;

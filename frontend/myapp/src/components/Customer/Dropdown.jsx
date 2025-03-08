@@ -65,9 +65,6 @@ const UserIconDropdown = () => {
           <Link className="dropdown-item" to="/profile">
             <FaRegUserCircle /> View Profile
           </Link>
-          <Link className="dropdown-item" to="/profile-PregnancyProfileView">
-            <FaRegUserCircle /> Profile Pregnancy
-          </Link>
           <Link className="dropdown-item" to="/viewappointment">
             <RiVipDiamondLine /> View Appointments
           </Link>
