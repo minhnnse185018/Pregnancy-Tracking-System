@@ -263,15 +263,7 @@ namespace backend.Data
                     DisplayOrder = 2,
                     CreatedAt = DateTime.Now
                 }
-                new FAQ
-                {
-                    Id = 33,
-                    Question = "How often should I have prenatal check-ups?",
-                    Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
-                    Category = "Prenatal Care",
-                    DisplayOrder = 3,
-                    CreatedAt = DateTime.Now
-                }
+
             );
 
             // 5. Posts
