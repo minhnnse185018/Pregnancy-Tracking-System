@@ -352,8 +352,8 @@ namespace backend.Migrations
                 columns: new[] { "Id", "Answer", "Category", "CreatedAt", "DisplayOrder", "Question", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9336), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9333) },
-                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9340), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9337) }
+                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2025), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2023) },
+                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2028), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2027) }
                 });
 
             migrationBuilder.InsertData(
@@ -361,27 +361,27 @@ namespace backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "DateOfBirth", "Email", "FirstName", "Gender", "LastName", "Password", "Phone", "Status", "UserType" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9087), null, "1@gmail.com", null, null, null, "111111", null, "active", "1" },
-                    { 2, new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9089), null, "2@gmail.com", null, null, null, "222222", null, "active", "5" }
+                    { 1, new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1662), null, "1@gmail.com", null, null, null, "111111", null, "active", "1" },
+                    { 2, new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1664), null, "2@gmail.com", null, null, null, "222222", null, "active", "5" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "CreatedAt", "Image", "Status", "Title", "UpdatedAt", "UserId" },
-                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9358), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9355), 1 });
+                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2050), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2049), 1 });
 
             migrationBuilder.InsertData(
                 table: "PregnancyProfiles",
                 columns: new[] { "Id", "ConceptionDate", "CreatedAt", "DueDate", "UserId" },
-                values: new object[] { 1, new DateTime(2024, 12, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9280), new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9287), new DateTime(2025, 9, 2, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9286), 1 });
+                values: new object[] { 1, new DateTime(2024, 12, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1953), new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1958), new DateTime(2025, 9, 3, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1958), 1 });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "CreatedAt", "PostId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9377), 1, 2 },
-                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 6, 16, 28, 2, 460, DateTimeKind.Local).AddTicks(9379), 1, 1 }
+                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2071), 1, 2 },
+                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 7, 9, 52, 9, 659, DateTimeKind.Local).AddTicks(2073), 1, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -389,8 +389,8 @@ namespace backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "HeightCm", "MeasurementDate", "Notes", "ProfileId", "Week", "WeightGrams" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9313), 25.5m, new DateTime(2025, 2, 27, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9312), null, 1, 0, 500.00m },
-                    { 2, new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9316), 28.5m, new DateTime(2025, 3, 6, 15, 28, 2, 460, DateTimeKind.Local).AddTicks(9315), null, 1, 0, 650.00m }
+                    { 1, new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1984), 25.5m, new DateTime(2025, 2, 28, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1983), null, 1, 0, 500.00m },
+                    { 2, new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1987), 28.5m, new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1986), null, 1, 0, 650.00m }
                 });
 
             migrationBuilder.CreateIndex(

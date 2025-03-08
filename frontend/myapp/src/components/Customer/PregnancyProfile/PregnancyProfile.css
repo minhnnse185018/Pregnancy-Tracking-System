@@ -1,0 +1,209 @@
+.pregnancy-profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .profile-header h1 {
+    font-size: 28px;
+    color: #333;
+    margin: 0;
+  }
+  
+  .profile-status {
+    background-color: #ff69b4;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .profile-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  
+  .profile-info-section,
+  .pregnancy-progress-section,
+  .fetal-measurements-section,
+  .no-measurements {
+    padding: 24px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .profile-info-section h2,
+  .pregnancy-progress-section h2,
+  .fetal-measurements-section h2,
+  .no-measurements h2 {
+    font-size: 20px;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .info-label {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .info-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .progress-info {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 24px;
+  }
+  
+  .progress-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .progress-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff69b4;
+  }
+  
+  .progress-label {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+  }
+  
+  .progress-bar-container {
+    margin-top: 16px;
+  }
+  
+  .progress-bar-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+  }
+  
+  .progress-bar-outer {
+    width: 100%;
+    height: 12px;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, #ff69b4, #ff8dc7);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+  }
+  
+  .progress-percentage {
+    font-size: 14px;
+    color: #666;
+    margin-top: 8px;
+    text-align: right;
+  }
+  
+  .measurements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .measurement-item {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  
+  .measurement-date {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ff69b4;
+    margin-bottom: 8px;
+  }
+  
+  .measurement-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  
+  .measurement-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .detail-label {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .detail-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .no-measurements p {
+    color: #666;
+    font-size: 15px;
+  }
+  
+  .loading, .error-message, .not-found {
+    text-align: center;
+    padding: 40px;
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .error-message {
+    color: #e53935;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .progress-info {
+      gap: 16px;
+    }
+    
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+  }

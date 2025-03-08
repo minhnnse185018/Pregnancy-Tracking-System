@@ -12,7 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250307005014_init")]
+    [Migration("20250307015210_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -120,7 +120,7 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "Thank you for sharing your experience! It's very helpful.",
-                            CreatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9252),
+                            CreatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2071),
                             PostId = 1,
                             UserId = 2
                         },
@@ -128,7 +128,7 @@ namespace backend.Migrations
                         {
                             Id = 2,
                             Content = "I'm glad you found it helpful! Feel free to ask any questions.",
-                            CreatedAt = new DateTime(2025, 3, 7, 8, 50, 13, 870, DateTimeKind.Local).AddTicks(9254),
+                            CreatedAt = new DateTime(2025, 3, 7, 9, 52, 9, 659, DateTimeKind.Local).AddTicks(2073),
                             PostId = 1,
                             UserId = 1
                         });
@@ -171,20 +171,20 @@ namespace backend.Migrations
                             Id = 1,
                             Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
                             Category = "Fetal Development",
-                            CreatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9207),
+                            CreatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2025),
                             DisplayOrder = 1,
                             Question = "What is the normal fetal weight at 12 weeks?",
-                            UpdatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9206)
+                            UpdatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2023)
                         },
                         new
                         {
                             Id = 2,
                             Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
                             Category = "Prenatal Care",
-                            CreatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9209),
+                            CreatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2028),
                             DisplayOrder = 2,
                             Question = "How often should I have prenatal check-ups?",
-                            UpdatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9208)
+                            UpdatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2027)
                         });
                 });
 
@@ -256,9 +256,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9188),
+                            CreatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1984),
                             HeightCm = 25.5m,
-                            MeasurementDate = new DateTime(2025, 2, 28, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9187),
+                            MeasurementDate = new DateTime(2025, 2, 28, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1983),
                             ProfileId = 1,
                             Week = 0,
                             WeightGrams = 500.00m
@@ -266,9 +266,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9191),
+                            CreatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1987),
                             HeightCm = 28.5m,
-                            MeasurementDate = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9190),
+                            MeasurementDate = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1986),
                             ProfileId = 1,
                             Week = 0,
                             WeightGrams = 650.00m
@@ -379,24 +379,23 @@ namespace backend.Migrations
                     b.Property<int>("MembershipId")
                         .HasColumnType("int");
 
+                    b.Property<string>("PaymentDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<bool>("PaymentStatus")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("PaymentsDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("VnpayPayDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("VnpayResponseCode")
                         .HasColumnType("nvarchar(max)");
@@ -456,10 +455,10 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "I'm excited to share my journey through the first trimester...",
-                            CreatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9231),
+                            CreatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2050),
                             Status = "published",
                             Title = "My First Pregnancy Experience",
-                            UpdatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9229),
+                            UpdatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(2049),
                             UserId = 1
                         });
                 });
@@ -500,9 +499,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            ConceptionDate = new DateTime(2024, 12, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9162),
-                            CreatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9167),
-                            DueDate = new DateTime(2025, 9, 3, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(9166),
+                            ConceptionDate = new DateTime(2024, 12, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1953),
+                            CreatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1958),
+                            DueDate = new DateTime(2025, 9, 3, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1958),
                             UserId = 1
                         });
                 });
@@ -588,7 +587,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(8901),
+                            CreatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1662),
                             Email = "1@gmail.com",
                             Password = "111111",
                             Status = "active",
@@ -597,7 +596,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 7, 7, 50, 13, 870, DateTimeKind.Local).AddTicks(8903),
+                            CreatedAt = new DateTime(2025, 3, 7, 8, 52, 9, 659, DateTimeKind.Local).AddTicks(1664),
                             Email = "2@gmail.com",
                             Password = "222222",
                             Status = "active",

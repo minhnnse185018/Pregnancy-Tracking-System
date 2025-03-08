@@ -26,7 +26,7 @@ import AdminPersonnel from "./Pages/Admin/AdminPersonnel";
 import AdminProfilePage from "./Pages/Admin/AdminProfilePage";
 import AdminSalon from "./Pages/Admin/AdminSalon";
 import ManageCustomer from "./Pages/Admin/ManagerCustomer";
-
+import PregnancyProfileView from "./components/Customer/PregnancyProfile/PregnancyProfile";
 function App() {
   return (
     <div>
@@ -136,6 +136,19 @@ function App() {
                 <>
                   <Navbarr />
                   <UserProfile />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
+           {/* Protected Routes */}
+           <Route path="/profile-PregnancyProfileView" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <PregnancyProfileView />
                   <Footer />
                 </>
               }
