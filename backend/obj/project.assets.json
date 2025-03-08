@@ -8525,23 +8525,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Hong Nga\\.nuget\\packages\\": {},
+    "C:\\Users\\admin\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\temp\\Pregnancy-Tracking-System\\backend\\backend.csproj",
+      "projectUniqueName": "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
       "projectName": "backend",
-      "projectPath": "D:\\temp\\Pregnancy-Tracking-System\\backend\\backend.csproj",
-      "packagesPath": "C:\\Users\\Hong Nga\\.nuget\\packages\\",
-      "outputPath": "D:\\temp\\Pregnancy-Tracking-System\\backend\\obj\\",
+      "projectPath": "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
+      "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
+      "outputPath": "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Hong Nga\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -8657,7 +8657,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.406/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

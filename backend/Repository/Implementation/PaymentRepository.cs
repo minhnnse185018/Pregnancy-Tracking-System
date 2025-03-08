@@ -30,7 +30,7 @@ namespace backend.Repository.Implementation
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{model.PaymentMethod} {model.Amount}");
+            pay.AddRequestData("vnp_OrderInfo", $"{model.PaymentMethod}  {model.Amount} {model.PaymentDescription}");
             pay.AddRequestData("vnp_OrderType", "other");
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", tick);
