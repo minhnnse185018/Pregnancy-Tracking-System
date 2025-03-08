@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\backend.csproj": {}
   },
   "projects": {
@@ -12,12 +13,29 @@
         "projectPath": "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
         "outputPath": "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\obj\\",
+=======
+    "C:\\Users\\ADMIN\\Desktop\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\ADMIN\\Desktop\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ADMIN\\Desktop\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
+        "projectName": "backend",
+        "projectPath": "C:\\Users\\ADMIN\\Desktop\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ADMIN\\Desktop\\SWP\\Pregnancy-Tracking-System\\backend\\obj\\",
+>>>>>>> 862bef80df1abb68d60abacc26653315e0dad29a
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
+<<<<<<< HEAD
           "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
+          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>> 862bef80df1abb68d60abacc26653315e0dad29a
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -43,7 +61,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -133,7 +152,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.406/PortableRuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+>>>>>>> 862bef80df1abb68d60abacc26653315e0dad29a
         }
       }
     }
