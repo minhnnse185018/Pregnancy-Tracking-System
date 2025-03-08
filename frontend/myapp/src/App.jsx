@@ -11,7 +11,6 @@ import Contact from "./components/Customer/Contact/Contact";
 import UserProfile from "./components/Customer/CustomerProfile/CustomerProfile";
 import FetalGrowthTracker from "./components/Customer/FetalGrowthTracker/FetalGrowthTracker";
 import Footer from "./components/Customer/Footer/Footer";
-import Header from "./components/Customer/Header/Header";
 import InternalLoginPage from "./components/Customer/Login/InternalLoginPage";
 import LoginPage from "./components/Customer/Login/LoginPage";
 import MembershipPage from "./components/Customer/Member/MembershipPage";
@@ -53,7 +52,7 @@ function App() {
             element={
               <>
                 <Navbarr />
-                <Header />
+                {/* <Header /> */}
                 <MainContent />
                 <Footer />
               </>

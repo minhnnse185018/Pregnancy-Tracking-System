@@ -1,9 +1,7 @@
-"use client";
-
-import EventIcon from "@mui/icons-material/Event"; // Icon cho Book Appointment
-import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety"; // Icon cho Health Tips
+import EventIcon from "@mui/icons-material/Event";
+import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp"; // Icon cho Growth Tracker
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { Badge, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -11,21 +9,19 @@ import { AuthContext } from "../AuthContext";
 import CustomerNotificationMenu from "../CustomerNotificationMenu";
 import UserIconDropdown from "../Dropdown";
 import LoginButton from "../Login/LoginButton";
-import "./Navbarr.css";
 
 export default function Navbarr() {
-  const { hasToken } = useContext(AuthContext); // Lấy state từ AuthContext
+  const { hasToken } = useContext(AuthContext);
   const [anchorElNotification, setAnchorElNotification] = useState(null);
-  const [anchorElService, setAnchorElService] = useState(null); // State cho dropdown Service
+  const [anchorElService, setAnchorElService] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(hasToken);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State để kiểm soát toggle menu
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    setIsAuthenticated(hasToken); // Re-render khi token thay đổi
+    setIsAuthenticated(hasToken);
   }, [hasToken]);
 
-  // Xử lý mở/đóng menu thông báo
   const handleOpenNotificationMenu = (event) => {
     setAnchorElNotification(event.currentTarget);
   };
@@ -34,7 +30,6 @@ export default function Navbarr() {
     setAnchorElNotification(null);
   };
 
-  // Xử lý mở/đóng menu Service
   const handleOpenServiceMenu = (event) => {
     setAnchorElService(event.currentTarget);
   };
@@ -43,13 +38,232 @@ export default function Navbarr() {
     setAnchorElService(null);
   };
 
-  // Xử lý toggle menu khi nhấp vào hamburger
   const handleToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const styles = `
+  /* Navbar Styles */
+  .ftco-navbar-light {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #fff !important;
+    padding: 10px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  /* Container adjustments */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
+
+  /* Brand container styles */
+  .brand-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 220px;
+  }
+
+  /* Logo styles */
+  .navbar-logo {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .brand-text-link:hover .navbar-logo {
+    transform: scale(1.1);
+  }
+
+  /* Brand text styles */
+  .brand-text-link {
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .brand-text {
+    color: #f06292; /* Hồng nhạt đậm hơn */
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    transition: color 0.3s ease;
+  }
+
+  .brand-text-link:hover .brand-text {
+    color: #ec407a; /* Hồng đậm vừa khi hover */
+  }
+
+  /* Navigation center styles */
+  .nav-center {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-link {
+    color: #f06292 !important; /* Hồng nhạt đậm hơn */
+    font-size: 15px !important;
+    padding: 8px 12px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .nav-link:hover {
+    color: #4db6ac !important; /* Xanh teal nhạt khi hover */
+  }
+
+  /* Hover effect underline */
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: #4db6ac; /* Xanh teal nhạt cho gạch chân */
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+
+  .nav-link:hover::after {
+    width: 60%;
+  }
+
+  /* Auth section styles */
+  .nav-auth {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 120px;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+  }
+
+  /* Hamburger button styles */
+  .navbar-toggler {
+    border: none;
+    padding: 5px 10px;
+    background-color: transparent;
+    cursor: pointer;
+    display: none;
+  }
+
+  .navbar-toggler .fa-bars {
+    color: #f06292; /* Hồng nhạt đậm hơn */
+    font-size: 20px;
+  }
+
+  .navbar-toggler:focus {
+    box-shadow: none;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 991.98px) {
+    .ftco-navbar-light {
+      padding: 8px 0;
+    }
+
+    .container {
+      flex-wrap: wrap;
+    }
+
+    .navbar-toggler {
+      display: block;
+    }
+
+    .navbar-collapse {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      padding: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 0 0 5px 5px;
+    }
+
+    .nav-center {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      padding: 10px 15px !important;
+      text-align: left;
+      text-transform: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-link:last-child {
+      border-bottom: none;
+    }
+
+    .nav-auth {
+      margin-top: 10px;
+      justify-content: flex-start;
+      gap: 15px;
+    }
+
+    .navbar-logo {
+      width: 50px;
+      height: 50px;
+    }
+
+    .brand-text {
+      font-size: 18px;
+    }
+  }
+
+  /* Dropdown menu styles */
+  .MuiMenuItem-root {
+    padding: 8px 16px;
+    transition: background-color 0.3s ease;
+  }
+
+  .MuiListItemIcon-root {
+    min-width: 30px;
+    color: #f06292; /* Hồng nhạt đậm hơn */
+  }
+
+  .MuiListItemText-primary {
+    font-size: 14px;
+    color: #f06292; /* Hồng nhạt đậm hơn */
+    font-weight: 500;
+  }
+
+  .MuiMenuItem-root:hover {
+    background-color: #fce4ec; /* Giữ nguyên nền hồng nhạt */
+    color: #4db6ac; /* Xanh teal nhạt khi hover */
+  }
+`;
+
   return (
-    <nav className="navbar navbar-expand-lg ftco-navbar-light scrolled" id="ftco-navbar">
+    <nav className="navbar navbar-expand-lg ftco-navbar-light" id="ftco-navbar">
+      <style>{styles}</style>
       <div className="container">
         <div className="brand-container">
           <Link className="brand-text-link" to="/">
@@ -64,7 +278,7 @@ export default function Navbarr() {
           aria-controls="ftco-nav"
           aria-expanded={isMenuOpen}
           aria-label="Toggle navigation"
-          onClick={handleToggleMenu} // Thêm sự kiện toggle
+          onClick={handleToggleMenu}
         >
           <span className="fa fa-bars"></span>
         </button>
@@ -89,7 +303,7 @@ export default function Navbarr() {
                 className="nav-link"
                 onClick={(e) => {
                   handleOpenServiceMenu(e);
-                  setIsMenuOpen(false); // Đóng menu khi chọn Service
+                  setIsMenuOpen(false);
                 }}
               >
                 Service
