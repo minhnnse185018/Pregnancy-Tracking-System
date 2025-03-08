@@ -26,8 +26,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 // Configure Database
-builder.Services.AddDbContext<ApplicationDBContext>(options => {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     options.UseSqlServer(connectionString);
 });
@@ -62,6 +63,7 @@ builder.Services.AddScoped<IFetalMeasurementRepository, FetalMeasurementReposito
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IFAQRepository, FAQRepository>();
 
 
 var app = builder.Build();
