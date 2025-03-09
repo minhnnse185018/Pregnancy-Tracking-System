@@ -37,6 +37,7 @@ import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
+import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
 
 function App() {
   return (
@@ -157,6 +158,18 @@ function App() {
                 <>
                   <Navbarr />
                   <UserProfile />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
+          <Route path="/profilePregnancy" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <PregnancyProfile />
                   <Footer />
                 </>
               }
