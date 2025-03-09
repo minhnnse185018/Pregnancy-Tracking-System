@@ -1,49 +1,53 @@
-﻿using AutoMapper;
-using backend.Dtos.Appointments;
+﻿using backend.Dtos.Appointments;
 using backend.Models;
 using backend.Repository.Interface;
 using backend.Services.Interface;
+using System;
+using System.Threading.Tasks;
 
-namespace backend.Services.Implementation
+public class AppointmentService : IAppointmentService
 {
-    public class AppointmentService : IAppointmentService
+    private readonly IAppointmentRepository _appointmentRepo;
+    private readonly IEmailService _emailService;
+    private readonly IUserRepository _userRepo;
+
+    public AppointmentService(IAppointmentRepository appointmentRepo, IEmailService emailService, IUserRepository userRepo)
     {
-        private readonly IAppointmentRepository _appointmentRepository;
-        private readonly IMapper _mapper;
+        _appointmentRepo = appointmentRepo;
+        _emailService = emailService;
+        _userRepo = userRepo;
+    }
 
-        public AppointmentService(IAppointmentRepository appointmentRepository, IMapper mapper)
+    public async Task<Appointment> CreateAppointmentAsync(AppointmentDto appointmentDto)
+    {
+        var appointment = new Appointment
         {
-            _appointmentRepository = appointmentRepository;
-            _mapper = mapper;
-        }
+            UserId = appointmentDto.UserId,
+            Title = appointmentDto.Title,
+            Description = appointmentDto.Description,
+            AppointmentDate = appointmentDto.AppointmentDate
+        };
+        return await _appointmentRepo.CreateAppointmentAsync(appointment);
+    }
 
-        public async Task<AppointmentDto> GetAppointmentByIdAsync(int id)
-        {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(id);
-            return _mapper.Map<AppointmentDto>(appointment);
-        }
+    public async Task<bool> CancelAppointmentAsync(Guid id)
+    {
+        var success = await _appointmentRepo.CancelAppointmentAsync(id);
+        if (!success) return false;
 
-        public async Task<IEnumerable<AppointmentDto>> GetAllAppointmentsAsync()
+        var appointment = await _appointmentRepo.GetAppointmentByIdAsync(id);
+        var user = await _userRepo.GetUserByIdAsync(appointment.UserId);
+        if (user != null)
         {
-            var appointments = await _appointmentRepository.GetAllAppointmentsAsync();
-            return _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+            string subject = "Xác nhận hủy lịch hẹn";
+            string body = $"Chào {user.LastName}, bạn đã hủy lịch hẹn {appointment.Description} vào {appointment.AppointmentDate}. Nếu bạn cần đặt lại lịch, vui lòng liên hệ với chúng tôi.";
+            await _emailService.SendEmailAsync(user.Email, subject, body);
         }
+        return true;
+    }
 
-        public async Task CreateAppointmentAsync(AppointmentDto appointmentDto)
-        {
-            var appointment = _mapper.Map<Appointment>(appointmentDto);
-            await _appointmentRepository.CreateAppointmentAsync(appointment);
-        }
-
-        public async Task UpdateAppointmentAsync(AppointmentDto appointmentDto)
-        {
-            var appointment = _mapper.Map<Appointment>(appointmentDto);
-            await _appointmentRepository.UpdateAppointmentAsync(appointment);
-        }
-
-        public async Task DeleteAppointmentAsync(int id)
-        {
-            await _appointmentRepository.DeleteAppointmentAsync(id);
-        }
+    public async Task<Appointment> UpdateAppointmentAsync(Guid id, AppointmentDto appointmentDto)
+    {
+        return await _appointmentRepo.UpdateAppointmentAsync(id, appointmentDto);
     }
 }

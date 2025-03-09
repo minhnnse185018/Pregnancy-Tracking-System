@@ -1,13 +1,13 @@
 ﻿using backend.Dtos.Appointments;
+using backend.Models;
 
 namespace backend.Services.Interface
 {
     public interface IAppointmentService
     {
-        Task<AppointmentDto> GetAppointmentByIdAsync(int id);
-        Task<IEnumerable<AppointmentDto>> GetAllAppointmentsAsync();
-        Task CreateAppointmentAsync(AppointmentDto appointmentDto);
-        Task UpdateAppointmentAsync(AppointmentDto appointmentDto);
-        Task DeleteAppointmentAsync(int id);
+        Task<Appointment> CreateAppointmentAsync(AppointmentDto appointmentDto);
+        Task<bool> CancelAppointmentAsync(Guid id);
+        Task<Appointment> UpdateAppointmentAsync(Guid id, AppointmentDto appointmentDto);
     }
+
 }

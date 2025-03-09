@@ -8,6 +8,7 @@ using backend.Services;
 using backend.Services.Implementation;
 using backend.Services.Interface;
 using backend.Mapper;
+using backend.Helper;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,8 +48,12 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
+
 // Add JWT service for login only
 builder.Services.AddScoped<JwtService>();
+
+// Email
+builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSetting"));
 
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -62,6 +67,8 @@ builder.Services.AddScoped<IFetalMeasurementRepository, FetalMeasurementReposito
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 
 
 var app = builder.Build();

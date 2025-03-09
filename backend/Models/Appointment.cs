@@ -1,4 +1,4 @@
-namespace backend.Models
+﻿namespace backend.Models
 {
     public class Appointment
     {
@@ -7,7 +7,7 @@ namespace backend.Models
         public string? Title { get; set; }
         public string? Description { get; set; }
         public DateTime AppointmentDate { get; set; }
-        public int? ReminderBeforeHours { get; set; }
+        public string Status { get; set; } = "Scheduled";
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation property
