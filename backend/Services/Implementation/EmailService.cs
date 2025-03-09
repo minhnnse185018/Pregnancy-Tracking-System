@@ -1,10 +1,8 @@
 ﻿using backend.Services.Interface;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.Extensions.Configuration;
-using MimeKit;
-using System.Net.Mail;
 using System.Net;
+using System.Net.Mail;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Threading.Tasks;
 
 namespace backend.Services.Implementation
@@ -12,6 +10,7 @@ namespace backend.Services.Implementation
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;
+
         public EmailService(IConfiguration config)
         {
             _config = config;
@@ -21,7 +20,7 @@ namespace backend.Services.Implementation
         {
             try
             {
-                using (var client = new System.Net.Mail.SmtpClient(_config["Smtp:Host"]))
+                using (var client = new SmtpClient(_config["Smtp:Host"]))
                 {
                     client.Port = int.Parse(_config["Smtp:Port"]);
                     client.Credentials = new NetworkCredential(_config["Smtp:Username"], _config["Smtp:Password"]);
@@ -37,14 +36,15 @@ namespace backend.Services.Implementation
                     mailMessage.To.Add(toEmail);
 
                     await client.SendMailAsync(mailMessage);
-                    Console.WriteLine($"✅ Email sent successfully to {toEmail}");
+
+                    // Thêm log thông báo khi gửi email thành công
+                    Console.WriteLine($"📧 Email đã gửi đến: {toEmail}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Failed to send email: {ex.Message}");
+                Console.WriteLine($"❌ Lỗi khi gửi email: {ex.Message}");
             }
         }
-
     }
 }

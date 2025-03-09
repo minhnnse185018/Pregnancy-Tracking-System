@@ -49,12 +49,23 @@ namespace backend.Repository.Implementation
             return appointment;
         }
 
-        public async Task<List<Appointment>> GetUpcomingAppointmentsAsync()
+        public async Task<List<Appointment>> GetAppointmentsInTimeRange(DateTime from, DateTime to)
         {
             return await _context.Appointments
-                .Where(a => a.AppointmentDate > DateTime.UtcNow && a.Status == "Scheduled")
+                .Where(a => a.AppointmentDate >= from && a.AppointmentDate <= to)
+                .Include(a => a.User) // Nếu cần thông tin user
                 .ToListAsync();
         }
 
+
+        public Task<List<Appointment>> GetUpcomingAppointmentsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Appointment>> GetUpcomingAppointmentsAsync(DateTime reminderTime)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

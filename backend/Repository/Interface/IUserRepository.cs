@@ -20,6 +20,8 @@ namespace backend.Repository.Interface
         Task<UserDto?> GetUserByIdAsync(int id);
         Task<UserDto?> GetUserByEmailAsync(string email);
         Task<int> Register(RegisterRequest register);
+        Task<bool> ForgotPasswordAsync(string email);
+
     }
-    
+
 }
