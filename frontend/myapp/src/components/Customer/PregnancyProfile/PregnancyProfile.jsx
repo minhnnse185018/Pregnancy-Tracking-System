@@ -19,7 +19,17 @@ function PregnancyProfileView() {
       const response = await axios.get(
         `http://localhost:5254/api/PregnancyProfile/GetAllProfiles`
       );
-      setProfile(response.data);
+  
+      // Find the profile that matches the URL parameter `id`
+      const selectedProfile = response.data.find((profile) => profile.id === parseInt(id));
+  
+      if (!selectedProfile) {
+        setError("Pregnancy profile not found.");
+        setLoading(false);
+        return;
+      }
+  
+      setProfile(selectedProfile);
       setLoading(false);
     } catch (err) {
       console.error("Error fetching pregnancy profile:", err);
@@ -27,6 +37,7 @@ function PregnancyProfileView() {
       setLoading(false);
     }
   };
+  
 
   // Calculate weeks of pregnancy
   const calculateWeeksOfPregnancy = (conceptionDate) => {

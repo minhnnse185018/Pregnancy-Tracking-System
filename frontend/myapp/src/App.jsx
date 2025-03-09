@@ -162,6 +162,18 @@ function App() {
               }
             />
           </Route>
+          <Route path="/profilePregnancy" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <PregnancyProfile />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
           {/* DASHBOARD ADMIN */}
           <Route path="/admin" element={<AdminPrivateRoute />}>
             <Route path="" element={<AdminLayout />}>
