@@ -8,6 +8,8 @@ namespace backend.Services.Interface
         Task<Appointment> CreateAppointmentAsync(AppointmentDto appointmentDto);
         Task<bool> CancelAppointmentAsync(Guid id);
         Task<Appointment> UpdateAppointmentAsync(Guid id, AppointmentDto appointmentDto);
+        Task SendAppointmentRemindersAsync();
+
     }
 
 }

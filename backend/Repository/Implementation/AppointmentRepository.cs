@@ -48,5 +48,13 @@ namespace backend.Repository.Implementation
             await _context.SaveChangesAsync();
             return appointment;
         }
+
+        public async Task<List<Appointment>> GetUpcomingAppointmentsAsync()
+        {
+            return await _context.Appointments
+                .Where(a => a.AppointmentDate > DateTime.UtcNow && a.Status == "Scheduled")
+                .ToListAsync();
+        }
+
     }
 }

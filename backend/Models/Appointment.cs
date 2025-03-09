@@ -1,4 +1,6 @@
-﻿namespace backend.Models
+﻿using System.Text.Json.Serialization;
+
+namespace backend.Models
 {
     public class Appointment
     {
@@ -11,6 +13,7 @@
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation property
+        [JsonIgnore]
         public virtual User User { get; set; } = null!;
     }
 } 

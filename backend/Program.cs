@@ -1,4 +1,3 @@
-// Program.cs
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,7 @@ using backend.Services.Implementation;
 using backend.Services.Interface;
 using backend.Mapper;
 using backend.Helper;
-
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +27,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 // Configure Database
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     options.UseSqlServer(connectionString);
 });
@@ -47,7 +46,6 @@ builder.Services.AddCors(options =>
         });
 });
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
-
 
 // Add JWT service for login only
 builder.Services.AddScoped<JwtService>();
@@ -69,7 +67,8 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-
+// Add Quartz job
+QuartzConfig.AddQuartzJobs(builder.Services);
 
 var app = builder.Build();
 
@@ -88,3 +87,23 @@ app.UseCors("AllowReactApp");
 app.MapControllers();
 
 app.Run();
+
+// Quartz Configuration
+public static class QuartzConfig
+{
+    public static void AddQuartzJobs(this IServiceCollection services)
+    {
+        services.AddQuartz(q =>
+        {
+            var jobKey = new JobKey("AppointmentReminderJob");
+            q.AddJob<AppointmentReminderJob>(opts => opts.WithIdentity(jobKey));
+            q.AddTrigger(t => t
+                .ForJob(jobKey)
+                .WithIdentity("AppointmentReminderTrigger")
+                .WithSimpleSchedule(s => s
+                    .WithIntervalInMinutes(1) // Ki?m tra m?i phút ?? test nhanh
+                    .RepeatForever()));
+        });
+        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+    }
+}

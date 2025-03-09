@@ -3,6 +3,8 @@ using backend.Models;
 using backend.Repository.Interface;
 using backend.Services.Interface;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 public class AppointmentService : IAppointmentService
@@ -27,7 +29,36 @@ public class AppointmentService : IAppointmentService
             Description = appointmentDto.Description,
             AppointmentDate = appointmentDto.AppointmentDate
         };
-        return await _appointmentRepo.CreateAppointmentAsync(appointment);
+        var createdAppointment = await _appointmentRepo.CreateAppointmentAsync(appointment);
+
+        var user = await _userRepo.GetUserByIdAsync(appointment.UserId);
+        if (user != null)
+        {
+            string subject = "Xác nhận đặt lịch hẹn";
+            string body = $"Chào {user.LastName}, bạn có lịch {appointment.Title} vào {appointment.AppointmentDate}. Vui lòng có mặt đúng giờ.";
+            await _emailService.SendEmailAsync(user.Email, subject, body);
+        }
+        return createdAppointment;
+    }
+
+    public async Task SendAppointmentRemindersAsync()
+    {
+        var now = DateTime.UtcNow;
+        var upcomingAppointments = await _appointmentRepo.GetUpcomingAppointmentsAsync();
+
+        foreach (var appointment in upcomingAppointments)
+        {
+            if ((appointment.AppointmentDate - now).TotalHours <= 1 && appointment.Status == "Scheduled")
+            {
+                var user = await _userRepo.GetUserByIdAsync(appointment.UserId);
+                if (user != null)
+                {
+                    string subject = "Nhắc nhở lịch hẹn";
+                    string body = $"Chào {user.LastName}, bạn có lịch {appointment.Title} vào {appointment.AppointmentDate}. Vui lòng có mặt đúng giờ.";
+                    await _emailService.SendEmailAsync(user.Email, subject, body);
+                }
+            }
+        }
     }
 
     public async Task<bool> CancelAppointmentAsync(Guid id)
@@ -40,7 +71,7 @@ public class AppointmentService : IAppointmentService
         if (user != null)
         {
             string subject = "Xác nhận hủy lịch hẹn";
-            string body = $"Chào {user.LastName}, bạn đã hủy lịch hẹn {appointment.Description} vào {appointment.AppointmentDate}. Nếu bạn cần đặt lại lịch, vui lòng liên hệ với chúng tôi.";
+            string body = $"Chào {user.LastName}, bạn đã hủy {appointment.Description} vào {appointment.AppointmentDate}. Nếu bạn cần đặt lại lịch, vui lòng liên hệ với chúng tôi.";
             await _emailService.SendEmailAsync(user.Email, subject, body);
         }
         return true;
