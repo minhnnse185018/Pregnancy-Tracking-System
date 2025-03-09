@@ -263,7 +263,6 @@ namespace backend.Data
                     DisplayOrder = 2,
                     CreatedAt = DateTime.Now
                 }
-
             );
 
             // 5. Posts

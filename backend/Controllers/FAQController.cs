@@ -1,5 +1,4 @@
 using backend.Dtos.FAQs;
-using backend.Repository.Implementation;
 using backend.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -58,4 +57,4 @@ namespace backend.Controllers
             return result > 0 ? Ok() : NotFound();
         }
     }
-}
+} 

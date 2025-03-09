@@ -19,6 +19,7 @@ namespace backend.Models
 
         // Navigation properties
         public virtual ICollection<PregnancyProfile>? PregnancyProfiles { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();

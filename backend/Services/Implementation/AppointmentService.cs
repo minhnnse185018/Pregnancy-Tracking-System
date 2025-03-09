@@ -1,49 +1,84 @@
-﻿using AutoMapper;
-using backend.Dtos.Appointments;
+﻿using backend.Dtos.Appointments;
 using backend.Models;
 using backend.Repository.Interface;
 using backend.Services.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace backend.Services.Implementation
+public class AppointmentService : IAppointmentService
 {
-    public class AppointmentService : IAppointmentService
+    private readonly IAppointmentRepository _appointmentRepo;
+    private readonly IEmailService _emailService;
+    private readonly IUserRepository _userRepo;
+
+    public AppointmentService(IAppointmentRepository appointmentRepo, IEmailService emailService, IUserRepository userRepo)
     {
-        private readonly IAppointmentRepository _appointmentRepository;
-        private readonly IMapper _mapper;
+        _appointmentRepo = appointmentRepo;
+        _emailService = emailService;
+        _userRepo = userRepo;
+    }
 
-        public AppointmentService(IAppointmentRepository appointmentRepository, IMapper mapper)
+    public async Task<Appointment> CreateAppointmentAsync(AppointmentDto appointmentDto)
+    {
+        var appointment = new Appointment
         {
-            _appointmentRepository = appointmentRepository;
-            _mapper = mapper;
-        }
+            UserId = appointmentDto.UserId,
+            Title = appointmentDto.Title,
+            Description = appointmentDto.Description,
+            AppointmentDate = appointmentDto.AppointmentDate
+        };
+        var createdAppointment = await _appointmentRepo.CreateAppointmentAsync(appointment);
 
-        public async Task<AppointmentDto> GetAppointmentByIdAsync(int id)
+        var user = await _userRepo.GetUserByIdAsync(appointment.UserId);
+        if (user != null)
         {
-            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(id);
-            return _mapper.Map<AppointmentDto>(appointment);
+            string subject = "Xác nhận đặt lịch hẹn";
+            string body = $"Chào {user.LastName}, bạn có lịch {appointment.Title} vào {appointment.AppointmentDate}. Vui lòng có mặt đúng giờ.";
+            await _emailService.SendEmailAsync(user.Email, subject, body);
         }
+        return createdAppointment;
+    }
 
-        public async Task<IEnumerable<AppointmentDto>> GetAllAppointmentsAsync()
-        {
-            var appointments = await _appointmentRepository.GetAllAppointmentsAsync();
-            return _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
-        }
+    public async Task SendAppointmentRemindersAsync()
+    {
+        var now = DateTime.UtcNow;
+        var upcomingAppointments = await _appointmentRepo.GetUpcomingAppointmentsAsync();
 
-        public async Task CreateAppointmentAsync(AppointmentDto appointmentDto)
+        foreach (var appointment in upcomingAppointments)
         {
-            var appointment = _mapper.Map<Appointment>(appointmentDto);
-            await _appointmentRepository.CreateAppointmentAsync(appointment);
+            if ((appointment.AppointmentDate - now).TotalHours <= 1 && appointment.Status == "Scheduled")
+            {
+                var user = await _userRepo.GetUserByIdAsync(appointment.UserId);
+                if (user != null)
+                {
+                    string subject = "Nhắc nhở lịch hẹn";
+                    string body = $"Chào {user.LastName}, bạn có lịch {appointment.Title} vào {appointment.AppointmentDate}. Vui lòng có mặt đúng giờ.";
+                    await _emailService.SendEmailAsync(user.Email, subject, body);
+                }
+            }
         }
+    }
 
-        public async Task UpdateAppointmentAsync(AppointmentDto appointmentDto)
-        {
-            var appointment = _mapper.Map<Appointment>(appointmentDto);
-            await _appointmentRepository.UpdateAppointmentAsync(appointment);
-        }
+    public async Task<bool> CancelAppointmentAsync(Guid id)
+    {
+        var success = await _appointmentRepo.CancelAppointmentAsync(id);
+        if (!success) return false;
 
-        public async Task DeleteAppointmentAsync(int id)
+        var appointment = await _appointmentRepo.GetAppointmentByIdAsync(id);
+        var user = await _userRepo.GetUserByIdAsync(appointment.UserId);
+        if (user != null)
         {
-            await _appointmentRepository.DeleteAppointmentAsync(id);
+            string subject = "Xác nhận hủy lịch hẹn";
+            string body = $"Chào {user.LastName}, bạn đã hủy {appointment.Description} vào {appointment.AppointmentDate}. Nếu bạn cần đặt lại lịch, vui lòng liên hệ với chúng tôi.";
+            await _emailService.SendEmailAsync(user.Email, subject, body);
         }
+        return true;
+    }
+
+    public async Task<Appointment> UpdateAppointmentAsync(Guid id, AppointmentDto appointmentDto)
+    {
+        return await _appointmentRepo.UpdateAppointmentAsync(id, appointmentDto);
     }
 }
