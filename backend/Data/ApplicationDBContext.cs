@@ -20,15 +20,13 @@ namespace backend.Data
         public DbSet<FetalGrowthStandard> FetalGrowthStandards { get; set; }
         public DbSet<GrowthAlert> GrowthAlerts { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Question> Questions { get; set; }
-        public DbSet<Answer> Answers { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
         public DbSet<MembershipPlan> MembershipPlans { get; set; }
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<Payment> Payments { get; set; }
-
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -92,30 +90,20 @@ namespace backend.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Question configuration
-            modelBuilder.Entity<Question>(entity =>
+            modelBuilder.Entity<Message>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasOne(q => q.User)
-                    .WithMany(u => u.Questions)
-                    .HasForeignKey(q => q.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            // Answer configuration
-            modelBuilder.Entity<Answer>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.HasOne(a => a.User)
-                    .WithMany(u => u.Answers)
-                    .HasForeignKey(a => a.UserId)
+                entity.HasOne(m => m.Member)
+                    .WithMany(u => u.SentMessages)
+                    .HasForeignKey(m => m.MemberId)
                     .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(a => a.Question)
-                    .WithMany(q => q.Answers)
-                    .HasForeignKey(a => a.QuestionId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(m => m.Doctor)
+                    .WithMany(u => u.ReceivedMessages)
+                    .HasForeignKey(m => m.DoctorId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
+
+
 
             // FetalGrowthStandard configuration
             modelBuilder.Entity<FetalGrowthStandard>(entity =>
@@ -123,7 +111,7 @@ namespace backend.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.WeekNumber).IsRequired();
                 entity.Property(e => e.MeasurementType).HasMaxLength(20);
-                
+
                 // Add decimal precision
                 entity.Property(e => e.MinValue)
                     .HasColumnType("decimal(10,2)");
@@ -196,7 +184,6 @@ namespace backend.Data
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.PaymentMethod).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.PaymentStatus).HasMaxLength(50);
             });
 
             // Seed Data

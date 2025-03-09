@@ -22,35 +22,6 @@ namespace backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("backend.Models.Answer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AnswerText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Answers");
-                });
-
             modelBuilder.Entity("backend.Models.Appointment", b =>
                 {
                     b.Property<int>("Id")
@@ -68,8 +39,9 @@ namespace backend.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReminderBeforeHours")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -117,7 +89,7 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "Thank you for sharing your experience! It's very helpful.",
-                            CreatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5278),
+                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8361),
                             PostId = 1,
                             UserId = 2
                         },
@@ -125,7 +97,7 @@ namespace backend.Migrations
                         {
                             Id = 2,
                             Content = "I'm glad you found it helpful! Feel free to ask any questions.",
-                            CreatedAt = new DateTime(2025, 3, 6, 15, 41, 11, 458, DateTimeKind.Local).AddTicks(5281),
+                            CreatedAt = new DateTime(2025, 3, 10, 0, 18, 17, 978, DateTimeKind.Local).AddTicks(8363),
                             PostId = 1,
                             UserId = 1
                         });
@@ -168,20 +140,20 @@ namespace backend.Migrations
                             Id = 1,
                             Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
                             Category = "Fetal Development",
-                            CreatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5224),
+                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8307),
                             DisplayOrder = 1,
                             Question = "What is the normal fetal weight at 12 weeks?",
-                            UpdatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5221)
+                            UpdatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8304)
                         },
                         new
                         {
                             Id = 2,
                             Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
                             Category = "Prenatal Care",
-                            CreatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5228),
+                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8310),
                             DisplayOrder = 2,
                             Question = "How often should I have prenatal check-ups?",
-                            UpdatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5226)
+                            UpdatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8308)
                         });
                 });
 
@@ -253,9 +225,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5196),
+                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8176),
                             HeightCm = 25.5m,
-                            MeasurementDate = new DateTime(2025, 2, 27, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5194),
+                            MeasurementDate = new DateTime(2025, 3, 2, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8175),
                             ProfileId = 1,
                             Week = 0,
                             WeightGrams = 500.00m
@@ -263,9 +235,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5201),
+                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8180),
                             HeightCm = 28.5m,
-                            MeasurementDate = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5200),
+                            MeasurementDate = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8179),
                             ProfileId = 1,
                             Week = 0,
                             WeightGrams = 650.00m
@@ -362,6 +334,41 @@ namespace backend.Migrations
                     b.ToTable("MembershipPlans");
                 });
 
+            modelBuilder.Entity("backend.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Sender")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("backend.Models.Payment", b =>
                 {
                     b.Property<int>("Id")
@@ -376,24 +383,23 @@ namespace backend.Migrations
                     b.Property<int>("MembershipId")
                         .HasColumnType("int");
 
+                    b.Property<string>("PaymentDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<bool>("PaymentStatus")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("PaymentsDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("VnpayPayDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("VnpayResponseCode")
                         .HasColumnType("nvarchar(max)");
@@ -453,10 +459,10 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "I'm excited to share my journey through the first trimester...",
-                            CreatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5253),
+                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8335),
                             Status = "published",
                             Title = "My First Pregnancy Experience",
-                            UpdatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5250),
+                            UpdatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8331),
                             UserId = 1
                         });
                 });
@@ -497,39 +503,11 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            ConceptionDate = new DateTime(2024, 12, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5157),
-                            CreatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5163),
-                            DueDate = new DateTime(2025, 9, 2, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5162),
+                            ConceptionDate = new DateTime(2024, 12, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8133),
+                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8141),
+                            DueDate = new DateTime(2025, 9, 5, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8140),
                             UserId = 1
                         });
-                });
-
-            modelBuilder.Entity("backend.Models.Question", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("QuestionText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>
@@ -585,7 +563,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(4997),
+                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(7888),
                             Email = "1@gmail.com",
                             Password = "111111",
                             Status = "active",
@@ -594,31 +572,12 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 6, 14, 41, 11, 458, DateTimeKind.Local).AddTicks(5002),
+                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(7892),
                             Email = "2@gmail.com",
                             Password = "222222",
                             Status = "active",
                             UserType = "5"
                         });
-                });
-
-            modelBuilder.Entity("backend.Models.Answer", b =>
-                {
-                    b.HasOne("backend.Models.Question", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("Answers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("backend.Models.Appointment", b =>
@@ -692,6 +651,25 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("backend.Models.Message", b =>
+                {
+                    b.HasOne("backend.Models.User", "Doctor")
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.User", "Member")
+                        .WithMany("SentMessages")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Member");
+                });
+
             modelBuilder.Entity("backend.Models.Payment", b =>
                 {
                     b.HasOne("backend.Models.Membership", "Membership")
@@ -733,17 +711,6 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("backend.Models.Question", b =>
-                {
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("Questions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("backend.Models.FetalMeasurement", b =>
                 {
                     b.Navigation("GrowthAlerts");
@@ -769,15 +736,8 @@ namespace backend.Migrations
                     b.Navigation("FetalMeasurements");
                 });
 
-            modelBuilder.Entity("backend.Models.Question", b =>
-                {
-                    b.Navigation("Answers");
-                });
-
             modelBuilder.Entity("backend.Models.User", b =>
                 {
-                    b.Navigation("Answers");
-
                     b.Navigation("Appointments");
 
                     b.Navigation("Comments");
@@ -790,7 +750,9 @@ namespace backend.Migrations
 
                     b.Navigation("PregnancyProfiles");
 
-                    b.Navigation("Questions");
+                    b.Navigation("ReceivedMessages");
+
+                    b.Navigation("SentMessages");
                 });
 #pragma warning restore 612, 618
         }
