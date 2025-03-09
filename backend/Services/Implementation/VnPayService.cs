@@ -1,26 +1,29 @@
-﻿using backend.Dtos.Payment;
-using backend.Models;
-using backend.Repository.Interface;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using backend.Dtos.Payment;
+using backend.Services.Interface;
 using PregnancyTrackingSystem.Libraries;
 
-namespace backend.Repository.Implementation
+namespace backend.Services.Implementation
 {
-    public class PaymentRepository : IPaymentRepository
+    public class VnPayService : IVnPayService
     {
         private readonly IConfiguration _configuration;
 
-        public PaymentRepository(IConfiguration configuration)
+        public VnPayService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-
-        public string CreatePaymentUrl(CreatePaymentDTO model, HttpContext context)
+        public string CreatePaymentUrl(PaymentRequestDto model, HttpContext context)
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
             var pay = new VnPayLibrary();
-            var urlCallBack = _configuration["PaymentCallBack:ReturnUrl"];
+            var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
@@ -30,7 +33,7 @@ namespace backend.Repository.Implementation
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{model.PaymentMethod}  {model.Amount} {model.PaymentDescription}");
+            pay.AddRequestData("vnp_OrderInfo", $"{model.PaymentMethod} {model.PaymentDescription} {model.Amount}");
             pay.AddRequestData("vnp_OrderType", "other");
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", tick);
@@ -40,14 +43,14 @@ namespace backend.Repository.Implementation
 
             return paymentUrl;
         }
-
-
-        public Payment PaymentExecute(IQueryCollection collections)
+        public PaymentResponseDto PaymentExecute(IQueryCollection collections)
         {
             var pay = new VnPayLibrary();
             var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
 
             return response;
         }
+
+
     }
 }
