@@ -13,10 +13,14 @@ function CommunityPosts() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [showComments, setShowComments] = useState(false);
 
+  const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const [newPostTitle, setNewPostTitle] = useState("");
+  const [newPostContent, setNewPostContent] = useState("");
+
   useEffect(() => {
     fetchPosts();
   }, []);
-
+  //handle post
   const fetchPosts = async () => {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
@@ -32,37 +36,70 @@ function CommunityPosts() {
       setLoading(false);
     }
   };
-
+  //handleComment function
   const handleAddComment = async () => {
-    console.log("Post ID được chọn:", selectedPostId);
-    console.log("Nội dung comment:", commentText);
-  
+    console.log("Selected Post ID:", selectedPostId);
+    console.log("Comment content:", commentText);
+
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
-      alert("Bạn chưa đăng nhập. Vui lòng đăng nhập trước!");
+      alert("You are not logged in. Please log in first!");
       return;
     }
     if (!commentText.trim()) {
-      alert("Nội dung bình luận không được để trống!");
+      alert("Comment content cannot be empty!");
       return;
     }
-  
+
     try {
       const response = await axios.post("http://localhost:5254/api/Comment", {
         postId: selectedPostId,
         userId,
         content: commentText,
       });
-      console.log("Phản hồi từ server:", response);
-      alert("Bình luận đã được thêm thành công!");
+      console.log("Server response:", response);
+      alert("Comment added successfully!");
       setShowModal(false);
       setCommentText("");
       fetchPosts();
     } catch (error) {
-      console.error("Lỗi khi thêm bình luận:", error);
+      console.error("Error adding comment:", error);
     }
   };
-  
+
+                                  //function create post
+  const handleCreatePost = async () => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      alert("You are not logged in. Please log in first!");
+      return;
+    }
+    if (!newPostTitle.trim()) {
+      alert("Post title cannot be empty!");
+      return;
+    }
+    if (!newPostContent.trim()) {
+      alert("Post content cannot be empty!");
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:5254/api/Post", {
+        title: newPostTitle,
+        content: newPostContent,
+        userId,
+      });
+      console.log("Server response:", response);
+      alert("Post created successfully!");
+      setShowCreatePostModal(false);
+      setNewPostTitle("");
+      setNewPostContent("");
+      fetchPosts();
+    } catch (error) {
+      console.error("Error creating post:", error);
+      alert("Failed to create post. Please try again.");
+    }
+  };
 
   if (loading) return <p>Loading posts...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
@@ -70,9 +107,14 @@ function CommunityPosts() {
   return (
     <div className="community-container pregnant-theme">
       <div className="posts-header">
-        <h1 className="posts-title">Posts in my groups</h1>
+        <h1 className="posts-title">Posts in my group</h1>
       </div>
-
+      <button
+        onClick={() => setShowCreatePostModal(true)}
+        className="create-post-btn"
+      >
+        ✍️ Create New Post
+      </button>
       <div className="posts-container">
         {posts.length === 0 ? (
           <p>No Posts Yet.</p>
@@ -151,6 +193,32 @@ function CommunityPosts() {
         setCommentText={setCommentText}
         handleAddComment={handleAddComment}
       />
+      {/* Create Post Modal */}
+      {showCreatePostModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Create New Post</h2>
+            <input
+              type="text"
+              placeholder="Post Title"
+              value={newPostTitle}
+              onChange={(e) => setNewPostTitle(e.target.value)}
+              className="post-title-input"
+            />
+            <textarea
+              placeholder="Write your post content here..."
+              value={newPostContent}
+              onChange={(e) => setNewPostContent(e.target.value)}
+            />
+            <div className="modal-actions">
+              <button onClick={handleCreatePost}>Create Post</button>
+              <button onClick={() => setShowCreatePostModal(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
