@@ -16,6 +16,7 @@ using backend.Dtos.Memberships;
 using backend.Dtos.PregnancyProfiles;
 using backend.Dtos.FetalStandard;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using backend.Dtos.Payment;
 
 namespace backend.Mapper
 {
@@ -115,6 +116,9 @@ namespace backend.Mapper
             CreateMap<CreateMembershipPlanDto, MembershipPlan>();
             CreateMap<UpdateMembershipPlanDto, MembershipPlan>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<Payment, PaymentRequestDto>().ReverseMap();
+            CreateMap<Payment, PaymentResponseDto>().ReverseMap();
         }
     }
 }

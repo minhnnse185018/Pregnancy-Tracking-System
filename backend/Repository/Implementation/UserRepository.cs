@@ -7,6 +7,7 @@ using backend.Data;
 using backend.Dtos;
 using backend.Models;
 using backend.Repository.Interface;
+using backend.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository.Implementation
@@ -15,11 +16,14 @@ namespace backend.Repository.Implementation
     {
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
 
-        public UserRepository(ApplicationDBContext context, IMapper mapper)
+        public UserRepository(ApplicationDBContext context, IMapper mapper, IEmailService emailService)
         {
             _context = context;
             _mapper = mapper;
+            _emailService = emailService;
+
         }
 
         public async Task<UserDto?> Login(LoginDto loginDto)
@@ -198,6 +202,27 @@ namespace backend.Repository.Implementation
                 Console.WriteLine($"Update error: {ex.Message}");
                 return -1;
             }
+        }
+
+        public async Task<bool> ForgotPasswordAsync(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                return false;
+            }
+            string newPassword = GenerateRandomPassword(6);
+            user.Password = newPassword;
+            await _context.SaveChangesAsync();
+            await _emailService.SendEmailAsync(user.Email, "Password Reset", $"Your new password is: {newPassword}");
+            return true;
+        }
+
+        private string GenerateRandomPassword(int length)
+        {
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            Random random = new Random();
+            return new string(Enumerable.Repeat(validChars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

@@ -9,6 +9,8 @@ using backend.Services.Interface;
 using backend.Mapper;
 using backend.Helper;
 using Quartz;
+using Hangfire;
+using Hangfire.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +48,6 @@ builder.Services.AddCors(options =>
                 .AllowCredentials();
         });
 });
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 // Add JWT service for login only
 builder.Services.AddScoped<JwtService>();
@@ -63,16 +64,33 @@ builder.Services.AddScoped<IFetalGrowthStandardRepository, FetalGrowthStandardRe
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IMembershipPlanRepository, MembershipPlanRepository>();
 builder.Services.AddScoped<IFetalMeasurementRepository, FetalMeasurementRepository>();
-builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAppointmentReminderService, AppointmentReminderService>();
 builder.Services.AddScoped<IFAQRepository, FAQRepository>();
+
+// C?u h�nh Hangfire
+builder.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+builder.Services.AddHangfireServer();
 
 // Add Quartz job
 QuartzConfig.AddQuartzJobs(builder.Services);
 
 var app = builder.Build();
+
+// Middleware Hangfire Dashboard
+app.UseHangfireDashboard("/hangfire");
+
+// Th�m v�o pipeline
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -89,6 +107,13 @@ app.UseCors("AllowReactApp");
 app.MapControllers();
 
 app.Run();
+
+// ??ng k� job g?i email nh?c l?ch m?i 10 ph�t
+RecurringJob.AddOrUpdate<IAppointmentReminderService>(
+    "send-appointment-reminders",
+    service => service.SendAppointmentReminders(),
+    "*/1 * * * *"
+);
 
 // Quartz Configuration
 public static class QuartzConfig

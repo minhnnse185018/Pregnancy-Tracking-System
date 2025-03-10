@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "8vqNlpc6600=",
+  "dgSpecHash": "cKJOupPo3ds=",
   "success": true,
   "projectFilePath": "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
   "expectedPackageFiles": [
@@ -12,6 +12,12 @@
     "C:\\Users\\admin\\.nuget\\packages\\google.apis\\1.69.0\\google.apis.1.69.0.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\google.apis.auth\\1.69.0\\google.apis.auth.1.69.0.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\google.apis.core\\1.69.0\\google.apis.core.1.69.0.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\hangfire\\1.8.18\\hangfire.1.8.18.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\hangfire.aspnetcore\\1.8.18\\hangfire.aspnetcore.1.8.18.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\hangfire.core\\1.8.18\\hangfire.core.1.8.18.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\hangfire.memorystorage\\1.8.1.1\\hangfire.memorystorage.1.8.1.1.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\hangfire.netcore\\1.8.18\\hangfire.netcore.1.8.18.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\hangfire.sqlserver\\1.8.18\\hangfire.sqlserver.1.8.18.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\humanizer.core.af\\2.14.1\\humanizer.core.af.2.14.1.nupkg.sha512",
