@@ -4,6 +4,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Globalization;
 using backend.Models;
+using backend.Dtos.Payment;
 
 namespace PregnancyTrackingSystem.Libraries
 {
@@ -13,7 +14,7 @@ namespace PregnancyTrackingSystem.Libraries
         private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
         private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
 
-        public Payment GetFullResponseData(IQueryCollection collection, string hashSecret)
+        public PaymentResponseDto GetFullResponseData(IQueryCollection collection, string hashSecret)
         {
             var vnPay = new VnPayLibrary();
             foreach (var (key, value) in collection)
@@ -23,6 +24,7 @@ namespace PregnancyTrackingSystem.Libraries
                     vnPay.AddResponseData(key, value);
                 }
             }
+            var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
             var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
             var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
             var vnpSecureHash =
@@ -31,21 +33,22 @@ namespace PregnancyTrackingSystem.Libraries
             var checkSignature =
                 vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
             if (!checkSignature)
-                return new Payment()
+                return new PaymentResponseDto()
                 {
-                    PaymentStatus = false
+                    PaymentStatus = "fail"
                 };
-            return new Payment()
+            return new PaymentResponseDto()
             {
-                PaymentStatus = true,
+                PaymentStatus = "Success",
                 PaymentMethod = "VnPay",
                 PaymentDescription = orderInfo,
+                MembershipId = (int)orderId,
                 VnpayTransactionNo = vnPayTranId.ToString(),
                 VnpayToken = vnpSecureHash,
-                VnpayResponseCode = vnpResponseCode
+                VnpayResponseCode = vnpResponseCode,
+                
             };
         }
-
         public string GetIpAddress(HttpContext context)
         {
             var ipAddress = string.Empty;
@@ -73,7 +76,6 @@ namespace PregnancyTrackingSystem.Libraries
 
             return "127.0.0.1";
         }
-
         public void AddRequestData(string key, string value)
         {
             if (!string.IsNullOrEmpty(value))
@@ -89,7 +91,6 @@ namespace PregnancyTrackingSystem.Libraries
                 _responseData.Add(key, value);
             }
         }
-
         public string GetResponseData(string key)
         {
             return _responseData.TryGetValue(key, out var retValue) ? retValue : string.Empty;
@@ -140,7 +141,6 @@ namespace PregnancyTrackingSystem.Libraries
 
             return hash.ToString();
         }
-
         private string GetResponseData()
         {
             var data = new StringBuilder();
@@ -180,5 +180,6 @@ namespace PregnancyTrackingSystem.Libraries
             return vnpCompare.Compare(x, y, CompareOptions.Ordinal);
         }
     }
+
 
 }

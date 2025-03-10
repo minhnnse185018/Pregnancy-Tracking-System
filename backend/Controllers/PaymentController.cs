@@ -1,38 +1,41 @@
-﻿using Azure.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using backend.Dtos;
 using backend.Dtos.Payment;
-using backend.Repository.Implementation;
-using backend.Repository.Interface;
+using backend.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace backend.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/payment")]
     public class PaymentController : Controller
     {
 
-        private readonly IPaymentRepository _paymentRepository;
-        public PaymentController(IPaymentRepository paymentRepository)
+        private readonly IVnPayService _vnPayService;
+        public PaymentController(IVnPayService vnPayService)
         {
-            _paymentRepository = paymentRepository;
+
+            _vnPayService = vnPayService;
         }
-
-
         [HttpPost]
-        public IActionResult CreatePaymentUrlVnpay(CreatePaymentDTO model)
+        public IActionResult CreatePaymentUrlVnpay(PaymentRequestDto model)
         {
-            var url = _paymentRepository.CreatePaymentUrl(model, HttpContext);
+            var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
 
             return Ok(url);
         }
         [HttpGet]
         public IActionResult PaymentCallbackVnpay()
         {
-            var response = _paymentRepository.PaymentExecute(Request.Query);
+            var response = _vnPayService.PaymentExecute(Request.Query);
 
             return Json(response);
         }
 
 
     }
+
 }
