@@ -38,7 +38,6 @@ import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
 import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
-
 function App() {
   return (
     <div>
@@ -157,6 +156,7 @@ function App() {
               element={
                 <>
                   <Navbarr />
+                  
                   <UserProfile />
                   <Footer />
                 </>
