@@ -13,6 +13,8 @@
   padding: 20px;
   background-color: #fff8f8; /* Màu nền hồng nhạt ấm áp */
   min-height: 100vh;
+  margin-top: 100px;
+  margin-bottom: 50px;
 }
 
 /* Header styling */
@@ -163,6 +165,7 @@
   margin-bottom: 10px;
   background-color: #fef6f9; /* Nền hồng rất nhạt */
   border-radius: 5px;
+  margin-top: 20px;
   border-left: 4px solid #ff9cbb; /* Viền trái hồng nhạt */
 }
 

@@ -4,12 +4,9 @@ import './BookAppointment.css';
 
 const BookAppointment = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
-    examType: '',
+    title: '',
     appointmentDate: '',
-    address: '',
-    phoneNumber: '',
-    note: ''
+    description: ''
   });
   const [appointments, setAppointments] = useState([]);
   const [message, setMessage] = useState('');
@@ -20,39 +17,70 @@ const BookAppointment = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const userId = sessionStorage.getItem('userID');
+    if (!userId) {  
+      alert('Người dùng chưa đăng nhập. Vui lòng đăng nhập trước.');
+      return;
+    }
+    
     try {
-      const response = await axios.post('https://your-api-endpoint.com/schedule', formData);
+      // Xem nội dung request trong console
+      const requestData = {
+        userId: parseInt(userId),
+        appointmentDate: new Date(formData.appointmentDate).toISOString(),
+        title: formData.title,
+        description: formData.description
+      };
+      
+      console.log('Đang gửi dữ liệu:', requestData);
+      
+      // Thử với cấu trúc URL khác
+      const response = await axios.post('http://localhost:5254/api/appointments', requestData);
+      
+      console.log('Phản hồi từ server:', response.data);
+      
       setMessage('Đặt lịch thành công!');
-      setAppointments([...appointments, { ...formData, id: Date.now(), date: new Date().toLocaleDateString() }]);
+      setAppointments([...appointments, { 
+        ...formData, 
+        userId: parseInt(userId),
+        id: Date.now() 
+      }]);
+      
+      // Reset form
       setFormData({
-        fullName: '',
-        examType: '',
+        title: '',
         appointmentDate: '',
-        address: '',
-        phoneNumber: '',
-        note: ''
+        description: ''
       });
     } catch (error) {
-      setMessage('Đã có lỗi xảy ra. Vui lòng thử lại!');
-      console.error(error);
+      console.error('Error booking appointment:', error);
+      
+      // Hiển thị chi tiết lỗi nếu có
+      if (error.response && error.response.data) {
+        console.error('Chi tiết lỗi:', error.response.data);
+        setMessage(`Đã có lỗi xảy ra: ${JSON.stringify(error.response.data)}`);
+      } else {
+        setMessage('Đã có lỗi xảy ra. Vui lòng thử lại!');
+      }
     }
   };
 
   return (
     <div className="book-appointment">
       <header className="header">
-        <img src="https://via.placeholder.com/50" alt="Baby Icon" className="baby-icon" />
+        <img src="images/favicon.ico" alt="Baby Icon" className="baby-icon" />
         <h1>Đặt lịch hẹn bác sĩ</h1>
       </header>
       <div className="container">
         <div className="form-section">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Tên thông báo*</label>
+              <label>Tiêu đề lịch hẹn*</label>
               <input
                 type="text"
-                name="fullName"
-                value={formData.fullName}
+                name="title"
+                value={formData.title}
                 onChange={handleChange}
                 placeholder="VD: Hẹn khám với bác sĩ Nguyễn Văn A..."
                 required
@@ -61,7 +89,7 @@ const BookAppointment = () => {
             <div className="form-group">
               <label>Ngày hẹn*</label>
               <input
-                type="date"
+                type="datetime-local"
                 name="appointmentDate"
                 value={formData.appointmentDate}
                 onChange={handleChange}
@@ -69,55 +97,22 @@ const BookAppointment = () => {
               />
             </div>
             <div className="form-group">
-              <label>Địa chỉ*</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="..."
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Thông tin liên hệ</label>
-              <input
-                type="text"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                placeholder="VD: 0123456789"
-              />
-            </div>
-            <div className="form-group">
-              <label>Thông điền thêm</label>
+              <label>Mô tả chi tiết</label>
               <textarea
-                name="note"
-                value={formData.note}
+                name="description"
+                value={formData.description}
                 onChange={handleChange}
-                placeholder="Vào lúc điện ra siêu âm..."
+                placeholder="Thêm thông tin chi tiết về lịch hẹn..."
+                rows="4"
               />
             </div>
             <button type="submit" className="submit-btn">Tạo lịch hẹn</button>
           </form>
-          {message && <p className="message">{message}</p>}
+          {message && <p className={`message ${message.includes('thành công') ? 'success' : 'error'}`}>{message}</p>}
         </div>
         <div className="illustration">
           <img src="images/bookappointment.png" alt="Doctor and Pregnant Woman" />
         </div>
-      </div>
-      <div className="appointments-section">
-        <h2>Các cuộc hẹn sắp diễn ra</h2>
-        {appointments.length > 0 ? (
-          appointments.map((appointment) => (
-            <div key={appointment.id} className="appointment-item">
-              <p>{`Thứ 4, ngày 12 tháng 03 năm 2025 - Địa điểm khám: ${appointment.address}`}</p>
-              <button className="details-btn">Chi tiết</button>
-            </div>
-          ))
-        ) : (
-          <p>Không có cuộc hẹn nào sắp diễn ra.</p>
-        )}
       </div>
     </div>
   );
