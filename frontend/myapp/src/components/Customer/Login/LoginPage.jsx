@@ -230,7 +230,8 @@ function LoginPage() {
                 required
                 minLength={6}
               />
-              <Components.Anchor href="#">Forgot your password?</Components.Anchor>
+              <Components.Anchor href="/forgotPassword
+              ">Forgot your password?</Components.Anchor>
               {error && <p style={{ color: "red" }}>{error}</p>}
               <Components.Button type="submit" disabled={loading}>
                 {loading ? "Signing In..." : "Sign In"}

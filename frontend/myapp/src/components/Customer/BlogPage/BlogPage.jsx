@@ -52,9 +52,9 @@ function CommunityPosts() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5254/api/Comment", {
-        postId: selectedPostId,
+      const response = await axios.post("http://localhost:5254/api/Comment/post/", {
         userId,
+        postId: selectedPostId,
         content: commentText,
       });
       console.log("Server response:", response);
@@ -85,9 +85,9 @@ function CommunityPosts() {
 
     try {
       const response = await axios.post("http://localhost:5254/api/Post", {
+        userId,
         title: newPostTitle,
         content: newPostContent,
-        userId,
       });
       console.log("Server response:", response);
       alert("Post created successfully!");

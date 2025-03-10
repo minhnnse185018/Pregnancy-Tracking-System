@@ -38,6 +38,7 @@ import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
 import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
+import ForgotPasswordPage from "./components/Customer/Login/forgotPassword";
 function App() {
   return (
     <div>
@@ -148,7 +149,7 @@ function App() {
               </>
             }
           />
-
+                                    {/* profileCustommer */}
           {/* Protected Routes */}
           <Route path="/profile" element={<CustomerPrivateRoute />}>
             <Route
@@ -163,6 +164,7 @@ function App() {
               }
             />
           </Route>
+                                  {/* profilePregnancy */}
           <Route path="/profilePregnancy" element={<CustomerPrivateRoute />}>
             <Route
               path=""
@@ -175,6 +177,18 @@ function App() {
               }
             />
           </Route>
+                                   {/* //forgotPassword */}
+          <Route
+            path="/forgotPassword"
+            element={
+              <>
+                <Navbarr />
+                <ForgotPasswordPage />
+                <Footer />
+              </>
+            }
+          />
+
           {/* DASHBOARD ADMIN */}
           <Route path="/admin" element={<AdminPrivateRoute />}>
             <Route path="" element={<AdminLayout />}>

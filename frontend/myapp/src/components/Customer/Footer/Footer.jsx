@@ -12,7 +12,8 @@ const Footer = () => {
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '0 15px'
+        padding: '0 15px',
+        marginTop: '40px'
       }}>
         <div style={{
           display: 'flex',
