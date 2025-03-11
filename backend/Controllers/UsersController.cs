@@ -74,5 +74,15 @@ namespace backend.Controllers
             var result = await _userRepository.DeleteUser(id);
             return result>0? Ok():BadRequest();
         }
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        {
+            var result = await _userRepository.ForgotPasswordAsync(email);
+            if (!result)
+            {
+                return NotFound("Email not found.");
+            }
+            return Ok("A new password has been sent to your email.");
+        }
     }
 }
