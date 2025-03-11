@@ -6,8 +6,10 @@ using AutoMapper;
 using backend.Dtos;
 using backend.Models;
 using backend.Repository.Interface;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
@@ -17,6 +19,7 @@ namespace backend.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        
         public UsersController(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
@@ -84,10 +87,21 @@ namespace backend.Controllers
             }
             return Ok("A new password has been sent to your email.");
         }
+        [HttpPost("forgotpassrequest")]
+        public async Task<IActionResult> ForgotPasswordRequest([FromBody] ForgotPasswordRequestDto forgotPasswordRequestDto)
+        {
+            return await _userRepository.ForgotPasswordRequestAsync(forgotPasswordRequestDto)? Ok():NotFound();
+        }
+        [HttpPost("resetpassrequest")]
+        public async Task<IActionResult> ResetPasswordRequest([FromBody] ResetPasswordRequestDto resetPasswordRequestDto)
+        {
+            return await _userRepository.ResetPasswordRequest(resetPasswordRequestDto)? Ok():NotFound();
+        }
+
         [HttpPut("changepassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto changePasswordRequestDto)
         {
-            var result = await _userRepository.ChangePassword(changePasswordRequestDto);
+            var result = await _userRepository.ChangePasswordAsync(changePasswordRequestDto);
             return result? Ok():BadRequest();
         }
     }

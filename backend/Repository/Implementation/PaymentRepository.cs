@@ -1,4 +1,6 @@
-﻿using backend.Dtos.Payment;
+﻿using AutoMapper;
+using backend.Dtos.Payment;
+using backend.Mapper;
 using backend.Models;
 using backend.Repository.Interface;
 using PregnancyTrackingSystem.Libraries;
@@ -8,10 +10,12 @@ namespace backend.Repository.Implementation
     public class PaymentRepository : IPaymentRepository
     {
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public PaymentRepository(IConfiguration configuration)
+        public PaymentRepository(IConfiguration configuration, IMapper mapper)
         {
             _configuration = configuration;
+            _mapper=mapper;
         }
 
         public string CreatePaymentUrl(CreatePaymentDTO model, HttpContext context)
@@ -46,8 +50,8 @@ namespace backend.Repository.Implementation
         {
             var pay = new VnPayLibrary();
             var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
-
-            return response;
+            
+            return _mapper.Map<Payment>(response);
         }
     }
 }
