@@ -1,51 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import "./MembershipPage.css";
 import axios from "axios";
+import "./MembershipPage.css";
 
 function MembershipPage() {
+  const [error, setError] = useState(null);
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
-  const navigate = useNavigate();
 
-  const plans = [
-    {
-      id: 1,
-      name: "MẸ BẦU KHỎE MẠNH",
-      cost: 38000,
-      duration: "1 tháng",
-      benefits: [
-        "Truy cập hơn 2,000 bài viết về thai kỳ và chăm sóc bé",
-        "Xem tài liệu ẩn từ chuyên gia sản khoa",
-        "Tham gia hỏi đáp với cộng đồng mẹ bầu",
-      ],
-    },
-    {
-      id: 2,
-      name: "MẸ BẦU VIP",
-      cost: 200000,
-      duration: "3 tháng",
-      benefits: [
-        "Tất cả quyền lợi của gói “Mẹ Bầu Khỏe Mạnh”",
-        "Không quảng cáo, tập trung vào thông tin hữu ích",
-        "Cập nhật kiến thức mới nhất về thai kỳ và nuôi con",
-      ],
-    },
-    {
-      id: 3,
-      name: "MẸ BẦU TOÀN DIỆN",
-      cost: 650000,
-      duration: "8 tháng",
-      benefits: [
-        "Tất cả quyền lợi của gói VIP",
-        "Không quảng cáo, trải nghiệm liền mạch",
-        "Truy cập tài liệu độc quyền từ bác sĩ và chuyên gia",
-        "Hỗ trợ cá nhân hóa cho hành trình làm mẹ",
-      ],
-    },
-  ];
+  useEffect(() => {
+    fetchMembershipPlans();
+  }, []);
+
+  const fetchMembershipPlans = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5254/api/MembershipPlan/GetAllPlans"
+      );
+      const formattedPlans = response.data.map((plan) => ({
+        id: plan.id,
+        name: plan.planName,
+        price: plan.price,
+        duration: `${plan.duration} tháng`,
+        benefits: plan.description
+          .split('",\r\n') // Split based on how it's formatted in the API
+          .map((desc) => desc.replace(/["\r\n]/g, "").trim()) // Clean up unwanted characters
+          .filter((desc) => desc !== ""), // Remove any empty strings
+      }));
+      setPlans(formattedPlans);
+    } catch (err) {
+      setError("Failed to load membership plans");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleShowPaymentModal = (plan) => {
     setSelectedPlan(plan);
@@ -56,7 +47,6 @@ function MembershipPage() {
     setShowPaymentModal(false);
     setSelectedPaymentMethod("");
   };
-
 
   const handlePayment = async () => {
     const userId = sessionStorage.getItem("userID");
@@ -70,7 +60,7 @@ function MembershipPage() {
         membershipId: selectedPlan.id,
         amount: selectedPlan.price,
         paymentDescription: `Thanh toán gói ${selectedPlan.name}`,
-        paymentMethod: "qr",
+        paymentMethod: selectedPaymentMethod,
       });
 
       if (response.status === 200) {
@@ -93,24 +83,33 @@ function MembershipPage() {
         chuyên gia và kết nối với cộng đồng mẹ bầu!
       </p>
 
-      <div className="membership-plans">
-        {plans.map((plan, index) => (
-          <div key={index} className="membership-plan">
-            <h2>{plan.name}</h2>
-            <p>
-              {plan.cost.toLocaleString()}đ cho {plan.duration}
-            </p>
-            <ul>
-              {plan.benefits.map((benefit, i) => (
-                <li key={i}>{benefit}</li>
-              ))}
-            </ul>
-            <Button onClick={() => handleShowPaymentModal(plan)}>
-              Tham gia ngay
-            </Button>
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="error-message">{error}</p>
+      ) : (
+        <div className="membership-plans">
+          {plans.map((plan) => (
+            <div key={plan.id} className="membership-plan">
+              <h2>{plan.name}</h2>
+              <p>
+                <strong>Giá:</strong> {plan.price.toLocaleString()}đ
+              </p>
+              <p>
+                <strong>Thời gian:</strong> {plan.duration}
+              </p>
+              <ul>
+                {plan.benefits.map((benefit, i) => (
+                  <li key={i}>{benefit}</li>
+                ))}
+              </ul>
+              <Button onClick={() => handleShowPaymentModal(plan)}>
+                Tham gia ngay
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Payment Method Modal */}
       <Modal show={showPaymentModal} onHide={handleClosePaymentModal}>
@@ -122,7 +121,7 @@ function MembershipPage() {
             Bạn đang mua gói: <strong>{selectedPlan?.name}</strong>
           </p>
           <p>
-            Số tiền: <strong>{selectedPlan?.cost.toLocaleString()}đ</strong>
+            Số tiền: <strong>{selectedPlan?.price?.toLocaleString()}đ</strong>
           </p>
           <div className="payment-options">
             <label>
@@ -171,13 +170,12 @@ function MembershipPage() {
           <Button variant="secondary" onClick={handleClosePaymentModal}>
             Hủy
           </Button>
-          <Button variant="primary" onClick={handlePayment}>
+          <Button variant="primary" onClick={handlePayment} disabled={!selectedPaymentMethod}>
             Xác nhận thanh toán
           </Button>
         </Modal.Footer>
       </Modal>
     </div>
-    
   );
 }
 
