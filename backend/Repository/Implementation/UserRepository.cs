@@ -217,12 +217,22 @@ namespace backend.Repository.Implementation
             await _emailService.SendEmailAsync(user.Email, "Password Reset", $"Your new password is: {newPassword}");
             return true;
         }
+        
 
         private string GenerateRandomPassword(int length)
         {
             const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
             Random random = new Random();
             return new string(Enumerable.Repeat(validChars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public async Task<bool> ChangePassword(ChangePasswordRequestDto changePasswordRequestDto)
+        {
+            var user= await _context.Users.FirstOrDefaultAsync(x=>x.Id==changePasswordRequestDto.Id);
+            user.Password=changePasswordRequestDto.Password;
+            await _context.SaveChangesAsync();
+            return true;
+            
         }
     }
 }

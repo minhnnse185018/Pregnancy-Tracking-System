@@ -84,5 +84,11 @@ namespace backend.Controllers
             }
             return Ok("A new password has been sent to your email.");
         }
+        [HttpPut("changepassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto changePasswordRequestDto)
+        {
+            var result = await _userRepository.ChangePassword(changePasswordRequestDto);
+            return result? Ok():BadRequest();
+        }
     }
 }
