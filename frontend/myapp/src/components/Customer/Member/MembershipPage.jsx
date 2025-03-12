@@ -24,11 +24,11 @@ function MembershipPage() {
         id: plan.id,
         name: plan.planName,
         price: plan.price,
-        duration: `${plan.duration} tháng`,
+        duration: `${plan.duration} months`,
         benefits: plan.description
-          .split('",\r\n') // Split based on how it's formatted in the API
-          .map((desc) => desc.replace(/["\r\n]/g, "").trim()) // Clean up unwanted characters
-          .filter((desc) => desc !== ""), // Remove any empty strings
+          .split('",\r\n') // Split based on API formatting
+          .map((desc) => desc.replace(/["\r\n]/g, "").trim()) // Clean unwanted characters
+          .filter((desc) => desc !== ""), // Remove empty strings
       }));
       setPlans(formattedPlans);
     } catch (err) {
@@ -51,7 +51,7 @@ function MembershipPage() {
   const handlePayment = async () => {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
-      alert("Vui lòng đăng nhập để thanh toán!");
+      alert("Please log in to proceed with the payment!");
       return;
     }
     try {
@@ -59,28 +59,27 @@ function MembershipPage() {
         userId: userId,
         membershipId: selectedPlan.id,
         amount: selectedPlan.price,
-        paymentDescription: `Thanh toán gói ${selectedPlan.name}`,
+        paymentDescription: `Payment for ${selectedPlan.name} plan`,
         paymentMethod: selectedPaymentMethod,
       });
 
       if (response.status === 200) {
-        alert("Thanh toán thành công!");
+        alert("Payment successful!");
         setShowPaymentModal(false);
       } else {
-        alert("Thanh toán thất bại!");
+        alert("Payment failed!");
       }
     } catch (error) {
-      console.error("Lỗi thanh toán:", error);
-      alert("Có lỗi xảy ra, vui lòng thử lại!");
+      console.error("Payment error:", error);
+      alert("An error occurred, please try again!");
     }
   };
 
   return (
     <div className="membership-container">
-      <h1 className="membership-title">Đồng hành cùng mẹ bầu và bé yêu</h1>
+      <h1 className="membership-title">Join the Journey with Mom and Baby</h1>
       <p className="membership-description">
-        Chọn gói dịch vụ phù hợp để nhận tài liệu chuyên sâu, lời khuyên từ
-        chuyên gia và kết nối với cộng đồng mẹ bầu!
+        Choose a suitable membership plan to access exclusive materials, expert advice, and connect with the mom community!
       </p>
 
       {loading ? (
@@ -93,10 +92,10 @@ function MembershipPage() {
             <div key={plan.id} className="membership-plan">
               <h2>{plan.name}</h2>
               <p>
-                <strong>Giá:</strong> {plan.price.toLocaleString()}đ
+                <strong>Price:</strong> {plan.price.toLocaleString()}đ
               </p>
               <p>
-                <strong>Thời gian:</strong> {plan.duration}
+                <strong>Duration:</strong> {plan.duration}
               </p>
               <ul>
                 {plan.benefits.map((benefit, i) => (
@@ -104,7 +103,7 @@ function MembershipPage() {
                 ))}
               </ul>
               <Button onClick={() => handleShowPaymentModal(plan)}>
-                Tham gia ngay
+                Join Now
               </Button>
             </div>
           ))}
@@ -114,14 +113,14 @@ function MembershipPage() {
       {/* Payment Method Modal */}
       <Modal show={showPaymentModal} onHide={handleClosePaymentModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Chọn phương thức thanh toán</Modal.Title>
+          <Modal.Title>Select Payment Method</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>
-            Bạn đang mua gói: <strong>{selectedPlan?.name}</strong>
+            You are purchasing: <strong>{selectedPlan?.name}</strong>
           </p>
           <p>
-            Số tiền: <strong>{selectedPlan?.price?.toLocaleString()}đ</strong>
+            Amount: <strong>{selectedPlan?.price?.toLocaleString()}đ</strong>
           </p>
           <div className="payment-options">
             <label>
@@ -131,7 +130,7 @@ function MembershipPage() {
                 checked={selectedPaymentMethod === "bank"}
                 onChange={(e) => setSelectedPaymentMethod(e.target.value)}
               />
-              Chuyển khoản ngân hàng
+              Bank Transfer
             </label>
             <label>
               <input
@@ -140,38 +139,38 @@ function MembershipPage() {
                 checked={selectedPaymentMethod === "qr"}
                 onChange={(e) => setSelectedPaymentMethod(e.target.value)}
               />
-              Quét mã QR
+              Scan QR Code
             </label>
           </div>
           {selectedPaymentMethod === "bank" && (
             <div className="payment-details">
               <p>
-                <strong>CHỦ TÀI KHOẢN:</strong> NGUYEN VAN A
+                <strong>ACCOUNT HOLDER:</strong> NGUYEN VAN A
               </p>
               <p>
-                <strong>SỐ TK:</strong> babycare.com
+                <strong>ACCOUNT NUMBER:</strong> babycare.com
               </p>
               <p>
-                <strong>NGÂN HÀNG:</strong> MB
+                <strong>BANK:</strong> MB
               </p>
               <p>
-                <strong>NỘI DUNG:</strong> NAP306046MOM
+                <strong>TRANSFER NOTE:</strong> NAP306046MOM
               </p>
             </div>
           )}
           {selectedPaymentMethod === "qr" && (
             <div className="payment-details">
-              <p>Vui lòng quét mã QR để thanh toán:</p>
+              <p>Please scan the QR code to proceed with the payment:</p>
               <img src="images/QRCode.png" alt="QR Code" className="qr-code" />
             </div>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClosePaymentModal}>
-            Hủy
+            Cancel
           </Button>
           <Button variant="primary" onClick={handlePayment} disabled={!selectedPaymentMethod}>
-            Xác nhận thanh toán
+            Confirm Payment
           </Button>
         </Modal.Footer>
       </Modal>

@@ -47,6 +47,7 @@ builder.Services.AddCors(options =>
                 .AllowCredentials();
         });
 });
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 // Add JWT service for login only
 builder.Services.AddScoped<JwtService>();
@@ -69,7 +70,7 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAppointmentReminderService, AppointmentReminderService>();
 
-// C?u hình Hangfire
+// C?u hï¿½nh Hangfire
 builder.Services.AddHangfire(config => config
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
@@ -86,7 +87,7 @@ var app = builder.Build();
 // Middleware Hangfire Dashboard
 app.UseHangfireDashboard("/hangfire");
 
-// Thêm vào pipeline
+// Thï¿½m vï¿½o pipeline
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -106,7 +107,7 @@ app.MapControllers();
 
 app.Run();
 
-// ??ng ký job g?i email nh?c l?ch m?i 10 phút
+// ??ng kï¿½ job g?i email nh?c l?ch m?i 10 phï¿½t
 RecurringJob.AddOrUpdate<IAppointmentReminderService>(
     "send-appointment-reminders",
     service => service.SendAppointmentReminders(),
@@ -126,7 +127,7 @@ public static class QuartzConfig
                 .ForJob(jobKey)
                 .WithIdentity("AppointmentReminderTrigger")
                 .WithSimpleSchedule(s => s
-                    .WithIntervalInMinutes(1) // Ki?m tra m?i phút ?? test nhanh
+                    .WithIntervalInMinutes(1) // Ki?m tra m?i phï¿½t ?? test nhanh
                     .RepeatForever()));
         });
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

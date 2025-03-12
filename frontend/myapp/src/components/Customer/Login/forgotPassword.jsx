@@ -81,8 +81,7 @@ function ForgotPasswordPage() {
 
     // Generate a reset token and link
     // In a real app, this would be done on the backend
-    const resetLink = `http://yourwebsite.com/reset-password?token=SAMPLE_TOKEN&email=${encodeURIComponent(
-      email
+    const resetLink = `http://localhost:3000/forgotPassword
     )}`;
 
     // Create the HTML email template
