@@ -1,17 +1,10 @@
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using backend.Dtos.Payment;
 using backend.Services.Interface;
-using AutoMapper;
-using backend.Dtos.Payment;
-using backend.Mapper;
-using backend.Models;
-using backend.Repository.Interface;
-
 using PregnancyTrackingSystem.Libraries;
 
 namespace backend.Services.Implementation
@@ -19,14 +12,10 @@ namespace backend.Services.Implementation
     public class VnPayService : IVnPayService
     {
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
 
-
-        public VnPayService(IConfiguration configuration, IMapper mapper)
-
+        public VnPayService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _mapper=mapper;
         }
         public string CreatePaymentUrl(PaymentRequestDto model, HttpContext context)
         {
@@ -54,13 +43,13 @@ namespace backend.Services.Implementation
 
             return paymentUrl;
         }
-        // public PaymentResponseDto PaymentExecute(IQueryCollection collections)
-        // {
-        //     var pay = new VnPayLibrary();
-        //     var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
-            
-        //     return _mapper.Map<Payment>(response);
-        // }
+        public PaymentResponseDto PaymentExecute(IQueryCollection collections)
+        {
+            var pay = new VnPayLibrary();
+            var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
+
+            return response;
+        }
 
 
     }
