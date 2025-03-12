@@ -11,8 +11,6 @@ using backend.Helper;
 using Quartz;
 using Hangfire;
 using Hangfire.SqlServer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +34,6 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(connectionString);
 });
 
-
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
@@ -50,13 +47,12 @@ builder.Services.AddCors(options =>
                 .AllowCredentials();
         });
 });
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 // Add JWT service for login only
 builder.Services.AddScoped<JwtService>();
 
 // Email
-builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSetting"));
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -71,28 +67,10 @@ builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IAppointmentReminderService, AppointmentReminderService>();
-
-// C?u h�nh Hangfire
-builder.Services.AddHangfire(config => config
-    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-    .UseSimpleAssemblyNameTypeSerializer()
-    .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
-builder.Services.AddHangfireServer();
-
-// Add Quartz job
-QuartzConfig.AddQuartzJobs(builder.Services);
+builder.Services.AddScoped<AppointmentReminderService>();
+builder.Services.AddHostedService<ScheduledEmailService>();
 
 var app = builder.Build();
-
-// Middleware Hangfire Dashboard
-app.UseHangfireDashboard("/hangfire");
-
-// Th�m v�o pipeline
-app.UseAuthentication();
-app.UseAuthorization();
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -106,33 +84,12 @@ app.UseHttpsRedirection();
 // Enable CORS
 app.UseCors("AllowReactApp");
 
+app.UseRouting();
+app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
 
-// ??ng k� job g?i email nh?c l?ch m?i 10 ph�t
-RecurringJob.AddOrUpdate<IAppointmentReminderService>(
-    "send-appointment-reminders",
-    service => service.SendAppointmentReminders(),
-    "*/1 * * * *"
-);
 
-// Quartz Configuration
-public static class QuartzConfig
-{
-    public static void AddQuartzJobs(this IServiceCollection services)
-    {
-        services.AddQuartz(q =>
-        {
-            var jobKey = new JobKey("AppointmentReminderJob");
-            q.AddJob<AppointmentReminderJob>(opts => opts.WithIdentity(jobKey));
-            q.AddTrigger(t => t
-                .ForJob(jobKey)
-                .WithIdentity("AppointmentReminderTrigger")
-                .WithSimpleSchedule(s => s
-                    .WithIntervalInMinutes(1) // Ki?m tra m?i ph�t ?? test nhanh
-                    .RepeatForever()));
-        });
-        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-    }
-}
+

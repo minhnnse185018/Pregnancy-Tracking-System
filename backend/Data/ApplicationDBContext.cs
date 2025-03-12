@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Data
 {
     public class ApplicationDBContext : DbContext
-    
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
             : base(options)
@@ -30,6 +27,7 @@ namespace backend.Data
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<ScheduledEmail> ScheduledEmails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -266,7 +264,6 @@ namespace backend.Data
                     DisplayOrder = 2,
                     CreatedAt = DateTime.Now
                 }
-
             );
 
             // 5. Posts

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using AutoMapper;
 using backend.Data;
@@ -9,8 +8,6 @@ using backend.Dtos;
 using backend.Models;
 using backend.Repository.Interface;
 using backend.Services.Interface;
-using Humanizer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository.Implementation
@@ -20,7 +17,6 @@ namespace backend.Repository.Implementation
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
-
 
         public UserRepository(ApplicationDBContext context, IMapper mapper, IEmailService emailService)
         {
@@ -221,63 +217,12 @@ namespace backend.Repository.Implementation
             await _emailService.SendEmailAsync(user.Email, "Password Reset", $"Your new password is: {newPassword}");
             return true;
         }
-        
 
         private string GenerateRandomPassword(int length)
         {
             const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
             Random random = new Random();
             return new string(Enumerable.Repeat(validChars, length).Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
-        public async Task<bool> ChangePasswordAsync(ChangePasswordRequestDto changePasswordRequestDto)
-        {
-            var user= await _context.Users.FirstOrDefaultAsync(x=>x.Id==changePasswordRequestDto.Id);
-            user.Password=changePasswordRequestDto.Password;
-            await _context.SaveChangesAsync();
-            return true;
-            
-        }
-
-        public async Task<bool> ForgotPasswordRequestAsync(ForgotPasswordRequestDto forgotPasswordRequestDto)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == forgotPasswordRequestDto.Email);
-            if (user == null)
-            {
-                return false; 
-            }
-            string resetToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
-            user.ResetToken = resetToken;
-            user.ResetTokenExpired = DateTime.UtcNow.AddMinutes(10);
-            await _context.SaveChangesAsync();
-            var resetlink= $"https://localhost:3000/reset-password?token={Uri.EscapeDataString(resetToken)}&email={Uri.EscapeDataString(forgotPasswordRequestDto.Email)}";
-            var subject = "Password Reset Request";
-            var body = $"Click the link below to reset your password:\n\n{resetlink}";
-            
-            await _emailService.SendEmailAsync(user.Email, subject, body);
-            return true;
-
-        }
-
-        public async Task<bool> ResetPasswordRequest(ResetPasswordRequestDto resetPasswordRequestDto)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => 
-            u.Email == resetPasswordRequestDto.Email &&
-            u.ResetToken == resetPasswordRequestDto.Token &&
-            u.ResetTokenExpired > DateTime.UtcNow);
-            
-        if (user == null)
-        {
-            return false;
-        }
-        
-        // Update password
-        user.Password = resetPasswordRequestDto.NewPassword; // Ideally this should be hashed
-        user.ResetToken = null;
-        user.ResetTokenExpired = null;
-        
-        await _context.SaveChangesAsync();
-        return true;
         }
     }
 }
