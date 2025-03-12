@@ -11,6 +11,8 @@ using backend.Helper;
 using Quartz;
 using Hangfire;
 using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     options.UseSqlServer(connectionString);
 });
+
 
 // Add CORS policy
 builder.Services.AddCors(options =>
