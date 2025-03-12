@@ -1,18 +1,17 @@
-<<<<<<<< HEAD:backend/Services/Implementation/VnPayService.cs
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using backend.Dtos.Payment;
 using backend.Services.Interface;
-========
-﻿using AutoMapper;
+using AutoMapper;
 using backend.Dtos.Payment;
 using backend.Mapper;
 using backend.Models;
 using backend.Repository.Interface;
->>>>>>>> 65f6572b5dbe8740d7b348d7f29247296fb468de:backend/Repository/Implementation/PaymentRepository.cs
+
 using PregnancyTrackingSystem.Libraries;
 
 namespace backend.Services.Implementation
@@ -22,11 +21,9 @@ namespace backend.Services.Implementation
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-<<<<<<<< HEAD:backend/Services/Implementation/VnPayService.cs
-        public VnPayService(IConfiguration configuration)
-========
-        public PaymentRepository(IConfiguration configuration, IMapper mapper)
->>>>>>>> 65f6572b5dbe8740d7b348d7f29247296fb468de:backend/Repository/Implementation/PaymentRepository.cs
+
+        public VnPayService(IConfiguration configuration, IMapper mapper)
+
         {
             _configuration = configuration;
             _mapper=mapper;
@@ -57,13 +54,13 @@ namespace backend.Services.Implementation
 
             return paymentUrl;
         }
-        public PaymentResponseDto PaymentExecute(IQueryCollection collections)
-        {
-            var pay = new VnPayLibrary();
-            var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
+        // public PaymentResponseDto PaymentExecute(IQueryCollection collections)
+        // {
+        //     var pay = new VnPayLibrary();
+        //     var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
             
-            return _mapper.Map<Payment>(response);
-        }
+        //     return _mapper.Map<Payment>(response);
+        // }
 
 
     }

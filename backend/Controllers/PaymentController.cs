@@ -32,35 +32,35 @@ namespace backend.Controllers
 
             return Ok(url);
         }
-        [HttpGet]
-        public async Task<IActionResult> PaymentCallbackVnpay()
-        {
-            var response = _vnPayService.PaymentExecute(Request.Query);
+        // [HttpGet]
+        // public async Task<IActionResult> PaymentCallbackVnpay()
+        // {
+        //     var response = _vnPayService.PaymentExecute(Request.Query);
 
-            // Kiểm tra nếu có lỗi khi thanh toán
-            bool isSuccess = response.PaymentStatus == "Success";
+        //     // Kiểm tra nếu có lỗi khi thanh toán
+        //     bool isSuccess = response.PaymentStatus == "Success";
 
-            // Tạo đối tượng Payment để lưu vào database
-            var payment = new Payment
-            {
-                UserId = response.UserId,
-                MembershipId = response.MembershipId,
-                Amount = response.Amount,
-                PaymentDescription = response.PaymentDescription,
-                PaymentMethod = response.PaymentMethod,
-                VnpayToken = response.VnpayToken,
-                VnpayTransactionNo = response.VnpayTransactionNo,
-                VnpayResponseCode = response.VnpayResponseCode,
-                PaymentDate = DateTime.UtcNow,
-                PaymentStatus = isSuccess ? "Success" : "Failed"
-            };
+        //     // Tạo đối tượng Payment để lưu vào database
+        //     var payment = new Payment
+        //     {
+        //         UserId = response.UserId,
+        //         MembershipId = response.MembershipId,
+        //         Amount = response.Amount,
+        //         PaymentDescription = response.PaymentDescription,
+        //         PaymentMethod = response.PaymentMethod,
+        //         VnpayToken = response.VnpayToken,
+        //         VnpayTransactionNo = response.VnpayTransactionNo,
+        //         VnpayResponseCode = response.VnpayResponseCode,
+        //         PaymentDate = DateTime.UtcNow,
+        //         PaymentStatus = isSuccess ? "Success" : "Failed"
+        //     };
 
-            // Lưu vào database
-            await _context.Payments.AddAsync(payment);
-            await _context.SaveChangesAsync();
+        //     // Lưu vào database
+        //     await _context.Payments.AddAsync(payment);
+        //     await _context.SaveChangesAsync();
 
-            return Json(response);
-        }
+        //     return Json(response);
+        // }
 
 
     }
