@@ -27,6 +27,7 @@ namespace backend.Data
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<ScheduledEmail> ScheduledEmails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
