@@ -307,11 +307,22 @@ const FetalGrowthTracker = () => {
                   style={{ fontSize: '14px' }}
                 />
                 <Tooltip
-                  formatter={(value, name) =>
-                    name === 'weight' ? [`${value} g`, 'Weight'] : [`${value} cm`, 'Height']
-                  }
-                  contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #ddd' }}
-                />
+                      formatter={(value, name) => {
+                        if (name === 'weight') {
+                          return [`${value} g`, 'Weight'];
+                        }
+                        if (name === 'height') {
+                          return [`${value} cm`, 'Height'];
+                        }
+                        return [value, name]; // Default case
+                      }}
+                      contentStyle={{
+                        backgroundColor: '#fff',
+                        borderRadius: '8px',
+                        border: '1px solid #ddd',
+                      }}
+                    />
+
                 <Legend wrapperStyle={{ fontSize: '14px' }} />
                 <Bar dataKey="weight" name="Weight (grams)" fill="#FF9999" yAxisId="left" barSize={20} />
                 <Bar dataKey="height" name="Height (cm)" fill="#66B2B2" yAxisId="right" barSize={20} />
