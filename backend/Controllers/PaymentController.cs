@@ -45,8 +45,8 @@ namespace backend.Controllers
                 return Ok(new
                 {
                     transactionId = response.VnpayTransactionNo,
-                    membershipId = response.MembershipId,
                     amount = response.Amount,
+                    membershipId = response.MembershipId,
                     paymentDescription = response.PaymentDescription,
                     paymentMethod = "VNPay",
                     vnpayResponseCode = response.VnpayResponseCode,

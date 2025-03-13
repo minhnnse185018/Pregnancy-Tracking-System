@@ -3,7 +3,6 @@
     public class PaymentResponseDto
     {
         public int Id { get; set; } // ID thanh toán
-        public int UserId { get; set; } // Liên kết với Users
         public int MembershipId { get; set; } // Liên kết với Memberships
         public decimal Amount { get; set; } // Số tiền thanh toán
         public string PaymentDescription { get; set; } = string.Empty; // Mô tả thanh toán
