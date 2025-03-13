@@ -7,37 +7,46 @@ using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
+    using backend.Models;
+    using System;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using backend.Data;
+
     [Route("api/appointments")]
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly IAppointmentService _appointmentService;
-        public AppointmentController(IAppointmentService appointmentService)
+        private readonly ApplicationDBContext _context;
+
+        public AppointmentController(ApplicationDBContext context)
         {
-            _appointmentService = appointmentService;
+            _context = context;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateAppointment([FromBody] AppointmentDto dto)
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateAppointment([FromBody] AppointmentDto appointmentDto)
         {
-            var appointment = await _appointmentService.CreateAppointmentAsync(dto);
-            return Ok(appointment);
+            var appointment = new Appointment
+            {
+                UserId = appointmentDto.UserId,
+                Title = appointmentDto.Title,
+                AppointmentDate = appointmentDto.AppointmentDate,
+                Status = "Scheduled"
+            };
+
+            _context.Appointments.Add(appointment);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Appointment created successfully!" });
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> CancelAppointment(Guid id)
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAppointments()
         {
-            var success = await _appointmentService.CancelAppointmentAsync(id);
-            if (!success) return NotFound("Appointment not found");
-            return Ok("Appointment cancelled successfully, confirmation email sent.");
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAppointment(Guid id, [FromBody] AppointmentDto dto)
-        {
-            var updatedAppointment = await _appointmentService.UpdateAppointmentAsync(id, dto);
-            if (updatedAppointment == null) return NotFound("Appointment not found");
-            return Ok(updatedAppointment);
+            var appointments = await _context.Appointments.ToListAsync();
+            return Ok(appointments);
         }
     }
+
 }

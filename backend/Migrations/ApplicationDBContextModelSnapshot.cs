@@ -89,7 +89,7 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "Thank you for sharing your experience! It's very helpful.",
-                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8361),
+                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(191),
                             PostId = 1,
                             UserId = 2
                         },
@@ -97,7 +97,7 @@ namespace backend.Migrations
                         {
                             Id = 2,
                             Content = "I'm glad you found it helpful! Feel free to ask any questions.",
-                            CreatedAt = new DateTime(2025, 3, 10, 0, 18, 17, 978, DateTimeKind.Local).AddTicks(8363),
+                            CreatedAt = new DateTime(2025, 3, 13, 8, 49, 56, 980, DateTimeKind.Local).AddTicks(194),
                             PostId = 1,
                             UserId = 1
                         });
@@ -140,20 +140,20 @@ namespace backend.Migrations
                             Id = 1,
                             Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
                             Category = "Fetal Development",
-                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8307),
+                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(129),
                             DisplayOrder = 1,
                             Question = "What is the normal fetal weight at 12 weeks?",
-                            UpdatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8304)
+                            UpdatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(126)
                         },
                         new
                         {
                             Id = 2,
                             Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
                             Category = "Prenatal Care",
-                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8310),
+                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(133),
                             DisplayOrder = 2,
                             Question = "How often should I have prenatal check-ups?",
-                            UpdatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8308)
+                            UpdatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(131)
                         });
                 });
 
@@ -225,9 +225,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8176),
+                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(95),
                             HeightCm = 25.5m,
-                            MeasurementDate = new DateTime(2025, 3, 2, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8175),
+                            MeasurementDate = new DateTime(2025, 3, 6, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(94),
                             ProfileId = 1,
                             Week = 0,
                             WeightGrams = 500.00m
@@ -235,9 +235,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8180),
+                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(99),
                             HeightCm = 28.5m,
-                            MeasurementDate = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8179),
+                            MeasurementDate = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(98),
                             ProfileId = 1,
                             Week = 0,
                             WeightGrams = 650.00m
@@ -383,6 +383,9 @@ namespace backend.Migrations
                     b.Property<int>("MembershipId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PaymentDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -392,11 +395,9 @@ namespace backend.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("PaymentStatus")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("PaymentsDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -459,10 +460,10 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "I'm excited to share my journey through the first trimester...",
-                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8335),
+                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(165),
                             Status = "published",
                             Title = "My First Pregnancy Experience",
-                            UpdatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8331),
+                            UpdatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(160),
                             UserId = 1
                         });
                 });
@@ -503,11 +504,42 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            ConceptionDate = new DateTime(2024, 12, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8133),
-                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8141),
-                            DueDate = new DateTime(2025, 9, 5, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(8140),
+                            ConceptionDate = new DateTime(2024, 12, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(52),
+                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(59),
+                            DueDate = new DateTime(2025, 9, 9, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(58),
                             UserId = 1
                         });
+                });
+
+            modelBuilder.Entity("backend.Models.ScheduledEmail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSent")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RecipientEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ScheduledTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ScheduledEmails");
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>
@@ -563,7 +595,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(7888),
+                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 979, DateTimeKind.Local).AddTicks(9844),
                             Email = "1@gmail.com",
                             Password = "111111",
                             Status = "active",
@@ -572,7 +604,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 9, 23, 18, 17, 978, DateTimeKind.Local).AddTicks(7892),
+                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 979, DateTimeKind.Local).AddTicks(9849),
                             Email = "2@gmail.com",
                             Password = "222222",
                             Status = "active",

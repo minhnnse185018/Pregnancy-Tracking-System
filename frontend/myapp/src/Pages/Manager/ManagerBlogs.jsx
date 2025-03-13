@@ -41,10 +41,10 @@ const ManagerBlogs = () => {
   const [comments, setComments] = useState([]);
   const accountID = sessionStorage.getItem("userID"); // Fetch userID from sessionStorage
   const [newBlog, setNewBlog] = useState({
-    userId: accountID || "", // For POST request
+    userId: accountID || "",
     title: "",
     content: "",
-    image: "", // Include image field as per Swagger UI
+    image: "",
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [creating, setCreating] = useState(false);
@@ -154,7 +154,7 @@ const ManagerBlogs = () => {
       .required("Please enter content.")
       .min(20, "Content must be at least 20 characters long.")
       .max(5000, "Content must be less than 5000 characters."),
-    image: Yup.string().notRequired(), // Match Swagger UI, optional string
+    image: Yup.string().notRequired(),
   });
 
   const resetForm = () => {
@@ -169,12 +169,11 @@ const ManagerBlogs = () => {
       const sortedDate = response.data.sort(
         (a, b) => new Date(b.createDate) - new Date(a.createDate)
       );
-      // Log the fetched blogs to inspect id values
       console.log("Fetched blogs:", sortedDate);
       setBlogs(sortedDate);
       response.data.forEach((blog) => {
-        fetchLikeCount(blog.id); // Updated to use id
-        fetchCommentCount(blog.id); // Updated to use id
+        fetchLikeCount(blog.id);
+        fetchCommentCount(blog.id);
       });
     } catch (error) {
       console.error("Error fetching blogs:", error);
@@ -206,15 +205,23 @@ const ManagerBlogs = () => {
 
   const fetchComments = async (blogId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:5254/api/Post/comments/${blogId}`
-      );
-      const sortedComments = response.data.sort(
+      // Thay vì gọi /api/Post/comments/{blogId}, gọi API chi tiết bài viết
+      const response = await axios.get(`http://localhost:5254/api/Post/${blogId}`);
+      const postData = response.data;
+      console.log("Fetched post with comments:", postData);
+
+      // Giả sử comment nằm trong postData.comments
+      const sortedComments = (postData.comments || []).sort(
         (a, b) => new Date(b.createDate) - new Date(a.createDate)
       );
       setComments(sortedComments);
     } catch (error) {
-      console.error("Error fetching comments:", error);
+      console.error("Error fetching comments:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+      });
+      showSnackbar("Failed to fetch comments. Check console for details.", "error");
     }
   };
 
@@ -251,18 +258,16 @@ const ManagerBlogs = () => {
       let blogId = null;
 
       if (currentBlog) {
-        // Validate blogId for update
-        const blogIdToUpdate = parseInt(currentBlog.id, 10); // Updated to use id
+        const blogIdToUpdate = parseInt(currentBlog.id, 10);
         if (!blogIdToUpdate || blogIdToUpdate <= 0) {
           throw new Error("Invalid blog ID for update. Value received: " + currentBlog.id);
         }
 
-        // Update existing blog
         console.log("Updating blog with ID:", blogIdToUpdate, "Payload:", {
           title,
           content,
           image: selectedImage ? selectedImage.name : currentBlog.image || "",
-          status: "Published", // Match Swagger UI schema
+          status: "Published",
         });
         const response = await axios.put(
           `http://localhost:5254/api/Post/Update/${blogIdToUpdate}`,
@@ -270,12 +275,11 @@ const ManagerBlogs = () => {
             title,
             content,
             image: selectedImage ? selectedImage.name : currentBlog.image || "",
-            status: "Published", // Ensure this matches backend expectations
+            status: "Published",
           }
         );
-        blogId = response.data.id || currentBlog.id; // Updated to use id
+        blogId = response.data.id || currentBlog.id;
 
-        // Update image if a new one is selected
         if (selectedImage instanceof File) {
           const formData = new FormData();
           formData.append("image", selectedImage);
@@ -286,7 +290,6 @@ const ManagerBlogs = () => {
           );
         }
       } else {
-        // Create new blog
         console.log("Creating new blog with payload:", {
           userId: accountID,
           title,
@@ -299,9 +302,8 @@ const ManagerBlogs = () => {
           content,
           image: selectedImage ? selectedImage.name : "",
         });
-        blogId = response.data; // Adjust based on API response
+        blogId = response.data;
 
-        // Upload image if selected (optional)
         if (selectedImage instanceof File) {
           const formData = new FormData();
           formData.append("image", selectedImage);
@@ -352,7 +354,7 @@ const ManagerBlogs = () => {
 
   const handleCardClick = (blog) => {
     setSelectedBlog(blog);
-    fetchComments(blog.id); // Updated to use id
+    fetchComments(blog.id);
     setDetailModalOpen(true);
   };
 
@@ -362,26 +364,71 @@ const ManagerBlogs = () => {
       return;
     }
 
+    const userId = accountID || "manager";
+    if (!userId) {
+      showSnackbar("You are not logged in. Please log in first!", "warning");
+      return;
+    }
+
     const commentData = {
-      accountId: accountID || "manager",
-      blogId: selectedBlog.id, // Updated to use id
+      postId: parseInt(selectedBlog.id, 10),
+      userId: userId,
       content: newComment,
     };
 
+    console.log("Submitting comment with data:", JSON.stringify(commentData, null, 2));
+
     try {
-      await axios.post("http://localhost:5254/api/Post/comments", commentData);
+      const token = sessionStorage.getItem("token");
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      };
+
+      // Thử endpoint /api/Comments (thêm "s" vì /api/Comment không hoạt động)
+      const response = await axios.post(
+        "http://localhost:5254/api/Comments", // Thay đổi endpoint
+        commentData,
+        config
+      );
+      console.log("Comment creation response:", response.data);
       setNewComment("");
-      fetchComments(selectedBlog.id); // Updated to use id
+      fetchComments(selectedBlog.id);
       showSnackbar("Comment added successfully!", "success");
     } catch (error) {
-      console.error("Error adding comment:", error);
-      showSnackbar("Failed to add comment.", "error");
+      console.error("Error adding comment:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+        request: error.request,
+      });
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            showSnackbar("Bad request. Check the comment data or contact support.", "error");
+            break;
+          case 401:
+            showSnackbar("Unauthorized. Please log in and try again.", "error");
+            break;
+          case 404:
+            showSnackbar("Endpoint not found. Please verify the API with the backend team.", "error");
+            break;
+          default:
+            showSnackbar("Failed to add comment. Check console for details.", "error");
+        }
+      } else if (error.request) {
+        showSnackbar("No response from server. Check your network connection.", "error");
+      } else {
+        showSnackbar("Error setting up the request. See console for details.", "error");
+      }
     }
   };
 
   const openDeleteModal = (blog) => {
-    console.log("Blog object for deletion:", blog); // Debug the blog object
-    if (!blog || !blog.id || isNaN(parseInt(blog.id, 10))) { // Updated to use id
+    console.log("Blog object for deletion:", blog);
+    if (!blog || !blog.id || isNaN(parseInt(blog.id, 10))) {
       showSnackbar("Invalid blog selected for deletion.", "error");
       return;
     }
@@ -398,11 +445,8 @@ const ManagerBlogs = () => {
     if (!blogToDelete) return;
 
     try {
-      // Debug the blogToDelete object
       console.log("blogToDelete object:", blogToDelete);
-
-      // Validate blogId for delete
-      const blogIdToDelete = parseInt(blogToDelete.id, 10); // Updated to use id
+      const blogIdToDelete = parseInt(blogToDelete.id, 10);
       if (!blogIdToDelete || blogIdToDelete <= 0) {
         throw new Error("Invalid blog ID for deletion. Value received: " + blogToDelete.id);
       }
@@ -469,7 +513,7 @@ const ManagerBlogs = () => {
       />
       <Grid container spacing={2}>
         {filterBlogs.map((blog) => (
-          <Grid item xs={12} md={4} key={blog.id}> {/* Updated to use id */}
+          <Grid item xs={12} md={4} key={blog.id}>
             <Card
               sx={{
                 height: 350,
@@ -534,11 +578,11 @@ const ManagerBlogs = () => {
                 <Box display="flex" alignItems="center" mt={1}>
                   <ThumbUpAltIcon fontSize="small" sx={{ mr: 0.5 }} />
                   <Typography variant="body2" sx={{ mr: 2 }}>
-                    {likesCount[blog.id] || 0} {/* Updated to use id */}
+                    {likesCount[blog.id] || 0}
                   </Typography>
                   <CommentIcon fontSize="small" sx={{ mr: 0.5 }} />
                   <Typography variant="body2">
-                    {commentsCount[blog.id] || 0} {/* Updated to use id */}
+                    {commentsCount[blog.id] || 0}
                   </Typography>
                 </Box>
                 <Typography
@@ -654,11 +698,11 @@ const ManagerBlogs = () => {
               <Box display="flex" alignItems="center" mt={1}>
                 <ThumbUpAltIcon fontSize="small" sx={{ mr: 0.5 }} />
                 <Typography variant="body2" sx={{ mr: 2 }}>
-                  {likesCount[selectedBlog.id] || 0} {/* Updated to use id */}
+                  {likesCount[selectedBlog.id] || 0}
                 </Typography>
                 <CommentIcon fontSize="small" sx={{ mr: 0.5 }} />
                 <Typography variant="body2">
-                  {commentsCount[selectedBlog.id] || 0} {/* Updated to use id */}
+                  {commentsCount[selectedBlog.id] || 0}
                 </Typography>
               </Box>
               <Typography variant="subtitle1" sx={{ mb: 1 }}>
@@ -688,16 +732,16 @@ const ManagerBlogs = () => {
                 {comments.length > 0 ? (
                   comments.map((comment) => (
                     <ListItem
-                      key={comment.commentId}
+                      key={comment.id} // Thay commentId thành id để khớp với schema từ backend
                       alignItems="flex-start"
                       sx={{ display: "flex", justifyContent: "space-between" }}
                     >
                       <ListItemText
                         primary={`${
-                          comment.accountId === accountID
+                          comment.userId === accountID
                             ? "Me"
-                            : comment.accountName
-                        } (${comment.createDate})`}
+                            : comment.userName || "Unknown"
+                        } (${comment.createdAt ? new Date(comment.createdAt).toLocaleDateString() : "Unknown date"})`}
                         secondary={
                           <Box sx={{ maxHeight: 60, overflowY: "auto" }}>
                             {comment.content}
@@ -705,7 +749,7 @@ const ManagerBlogs = () => {
                         }
                       />
                       <Box sx={{ display: "flex", gap: 1 }}>
-                        {comment.accountId === accountID && (
+                        {comment.userId === accountID && (
                           <IconButton
                             edge="end"
                             aria-label="edit"
@@ -722,7 +766,7 @@ const ManagerBlogs = () => {
                           aria-label="delete"
                           onClick={(e) => {
                             e.stopPropagation();
-                            openDeleteConfirm(comment.commentId);
+                            openDeleteConfirm(comment.id); // Thay commentId thành id
                           }}
                         >
                           <DeleteIcon />
@@ -757,7 +801,7 @@ const ManagerBlogs = () => {
                 </DialogActions>
               </Dialog>
 
-              {commentToEdit && commentToEdit.accountId === accountID && (
+              {commentToEdit && commentToEdit.userId === accountID && (
                 <Dialog open={Boolean(commentToEdit)} onClose={closeEditModal}>
                   <DialogTitle>Edit Comment</DialogTitle>
                   <DialogContent>

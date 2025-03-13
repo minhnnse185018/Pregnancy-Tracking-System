@@ -1,212 +1,157 @@
-/* Pregnancy Profile Container */
-.pregnancy-profile-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #fdfdfd;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
+/* PregnancyProfile.css */
+.pregnancy-container {
+  max-width: 1200px;
+  margin: 100px auto 0;
+  padding: 30px;
+  background-color: #fff9fb;
+  min-height: 100vh;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(213, 63, 140, 0.1);
+  margin-top: 120px;
+  margin-bottom: 50px;
 }
 
-/* Profile Header */
-.profile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #ddd;
+.pregnancy-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #d53f8c;
+  position: relative;
   padding-bottom: 10px;
-  margin-bottom: 20px;
 }
 
-.profile-header h1 {
-  font-size: 24px;
-  color: #444;
+.pregnancy-title:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: #feb2b2;
+  border-radius: 3px;
 }
 
-.profile-status {
-  font-size: 16px;
-  font-weight: bold;
-  color: #fff;
-  background: #ff6b6b;
-  padding: 5px 10px;
-  border-radius: 8px;
-}
-
-/* Profile Card */
-.profile-card {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.profile-info-section,
-.pregnancy-progress-section,
-.fetal-measurements-section {
-  margin-bottom: 20px;
-}
-
-/* Chỉ áp dụng cho h2 bên trong .pregnancy-profile-container */
-.pregnancy-profile-container h2 {
-  font-size: 20px;
-  color: #333;
-  text-decoration: underline;
-  text-decoration-color: #ff6b6b; /* Giữ màu hồng đỏ cho gạch chân */
-  margin-bottom: 15px;
-}
-
-/* Info Grid */
-.info-grid {
+.profiles-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 25px;
 }
 
-.info-item {
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  background: #f9f9f9;
-  border-radius: 6px;
+@media (min-width: 768px) {
+  .profiles-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.info-label {
-  font-weight: bold;
-  font-size: 14px;
-  color: #666;
+@media (min-width: 1024px) {
+  .profiles-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-.info-value {
-  font-size: 16px;
-  color: #333;
-}
-
-/* Progress Section */
-.progress-info {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px 0;
-}
-
-.progress-item {
-  text-align: center;
-}
-
-.progress-value {
-  font-size: 22px;
-  font-weight: bold;
-  color: #ff6b6b;
-}
-
-.progress-label {
-  font-size: 14px;
-  color: #666;
-}
-
-.progress-bar-container {
-  margin-top: 15px;
-  text-align: center;
-}
-
-.progress-bar-label {
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.progress-bar-outer {
-  width: 100%;
-  height: 10px;
-  background: #ddd;
-  border-radius: 10px;
+.profile-card {
+  border: none;
+  border-radius: 15px;
+  padding: 24px;
+  background-color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
   overflow: hidden;
 }
 
-.progress-bar-inner {
+.profile-card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
   height: 100%;
-  background: #ff6b6b;
-  width: 0%;
-  transition: width 0.5s ease-in-out;
+  background: linear-gradient(to bottom, #f687b3, #d53f8c);
+  border-radius: 3px 0 0 3px;
 }
 
-.progress-percentage {
-  font-size: 14px;
-  margin-top: 5px;
-  color: #333;
+.profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(213, 63, 140, 0.15);
 }
 
-/* Fetal Measurements */
-.measurements-list {
+.profile-name {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #fed7e2;
+  color: #d53f8c;
+  position: relative;
+}
+
+.profile-field {
+  margin-bottom: 12px;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
-.measurement-item {
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  background: #fdfdfd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.field-label {
+  font-weight: 600;
+  color: #d53f8c;
+  margin-right: 5px;
+  width: 120px;
 }
 
-.measurement-date {
-  font-weight: bold;
-  font-size: 14px;
-  color: #ff6b6b;
+.status-ongoing {
+  color: #38a169;
+  font-weight: 600;
+  background-color: rgba(56, 161, 105, 0.1);
+  padding: 3px 8px;
+  border-radius: 12px;
+  display: inline-block;
 }
 
-.measurement-details {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 5px;
+.status-other {
+  color: #3182ce;
+  font-weight: 600;
+  background-color: rgba(49, 130, 206, 0.1);
+  padding: 3px 8px;
+  border-radius: 12px;
+  display: inline-block;
 }
 
-.measurement-detail {
-  font-size: 14px;
-  color: #444;
-}
-
-.detail-label {
-  font-weight: bold;
-  color: #555;
-}
-
-/* Loading and Error Messages */
-.loading,
-.error-message,
-.not-found {
+.loading-message {
   text-align: center;
-  font-size: 16px;
-  padding: 15px;
-  color: #fff;
-  border-radius: 8px;
-}
-
-.loading {
-  background: #ffcc00;
+  padding: 30px;
+  color: #d53f8c;
+  font-size: 18px;
+  font-weight: 500;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .error-message {
-  background: #ff4d4d;
+  text-align: center;
+  padding: 30px;
+  color: #e53e3e;
+  font-size: 18px;
+  font-weight: 500;
+  background-color: rgba(229, 62, 62, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.not-found {
-  background: #666;
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .progress-info {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .measurement-details {
-    flex-direction: column;
-  }
+.empty-message {
+  text-align: center;
+  padding: 40px;
+  color: #d53f8c;
+  font-size: 18px;
+  font-weight: 500;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23f687b3' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
 }

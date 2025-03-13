@@ -1,47 +1,42 @@
-import React, { useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import './MembershipPage.css';
+import React, { useEffect, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
+import axios from "axios";
+import "./MembershipPage.css";
 
 function MembershipPage() {
+  const [error, setError] = useState(null);
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
-  const navigate = useNavigate();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
 
-  const plans = [
-    {
-      name: 'MẸ BẦU KHỎE MẠNH',
-      cost: 38000,
-      duration: '1 tháng',
-      benefits: [
-        'Truy cập hơn 2,000 bài viết về thai kỳ và chăm sóc bé',
-        'Xem tài liệu ẩn từ chuyên gia sản khoa',
-        'Tham gia hỏi đáp với cộng đồng mẹ bầu',
-      ],
-    },
-    {
-      name: 'MẸ BẦU VIP',
-      cost: 200000,
-      duration: '3 tháng',
-      benefits: [
-        'Tất cả quyền lợi của gói “Mẹ Bầu Khỏe Mạnh”',
-        'Không quảng cáo, tập trung vào thông tin hữu ích',
-        'Cập nhật kiến thức mới nhất về thai kỳ và nuôi con',
-      ],
-    },
-    {
-      name: 'MẸ BẦU TOÀN DIỆN',
-      cost: 650000,
-      duration: '8 tháng',
-      benefits: [
-        'Tất cả quyền lợi của gói VIP',
-        'Không quảng cáo, trải nghiệm liền mạch',
-        'Truy cập tài liệu độc quyền từ bác sĩ và chuyên gia',
-        'Hỗ trợ cá nhân hóa cho hành trình làm mẹ',
-      ],
-    },
-  ];
+  useEffect(() => {
+    fetchMembershipPlans();
+  }, []);
+
+  const fetchMembershipPlans = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5254/api/MembershipPlan/GetAllPlans"
+      );
+      const formattedPlans = response.data.map((plan) => ({
+        id: plan.id,
+        name: plan.planName,
+        price: plan.price,
+        duration: `${plan.duration} months`,
+        benefits: plan.description
+          .split('",\r\n') // Split based on API formatting
+          .map((desc) => desc.replace(/["\r\n]/g, "").trim()) // Clean unwanted characters
+          .filter((desc) => desc !== ""), // Remove empty strings
+      }));
+      setPlans(formattedPlans);
+    } catch (err) {
+      setError("Failed to load membership plans");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleShowPaymentModal = (plan) => {
     setSelectedPlan(plan);
@@ -50,96 +45,132 @@ function MembershipPage() {
 
   const handleClosePaymentModal = () => {
     setShowPaymentModal(false);
-    setSelectedPaymentMethod('');
+    setSelectedPaymentMethod("");
   };
 
-  const handlePayment = () => {
-    if (!selectedPaymentMethod) {
-      alert('Vui lòng chọn phương thức thanh toán!');
+  const handlePayment = async () => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      alert("Please log in to proceed with the payment!");
       return;
     }
+    try {
+      const response = await axios.post("http://localhost:5254/api/payment", {
+        userId: userId,
+        membershipId: selectedPlan.id,
+        amount: selectedPlan.price,
+        paymentDescription: `Payment for ${selectedPlan.name} plan`,
+        paymentMethod: selectedPaymentMethod,
+      });
 
-    // Simulate payment process (replace with actual payment logic)
-    const userBalance = 500000; // Example balance
-    if (userBalance >= selectedPlan.cost) {
-      navigate('/payment-success', { state: { plan: selectedPlan } });
-    } else {
-      navigate('/payment-failure', { state: { plan: selectedPlan } });
+      if (response.status === 200) {
+        alert("Payment successful!");
+        setShowPaymentModal(false);
+      } else {
+        alert("Payment failed!");
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("An error occurred, please try again!");
     }
-    handleClosePaymentModal();
   };
 
   return (
     <div className="membership-container">
-      <h1 className="membership-title">Đồng hành cùng mẹ bầu và bé yêu</h1>
+      <h1 className="membership-title">Join the Journey with Mom and Baby</h1>
       <p className="membership-description">
-        Chọn gói dịch vụ phù hợp để nhận tài liệu chuyên sâu, lời khuyên từ chuyên gia và kết nối với cộng đồng mẹ bầu!
+        Choose a suitable membership plan to access exclusive materials, expert advice, and connect with the mom community!
       </p>
 
-      <div className="membership-plans">
-        {plans.map((plan, index) => (
-          <div key={index} className="membership-plan">
-            <h2>{plan.name}</h2>
-            <p>{plan.cost.toLocaleString()}đ cho {plan.duration}</p>
-            <ul>
-              {plan.benefits.map((benefit, i) => (
-                <li key={i}>{benefit}</li>
-              ))}
-            </ul>
-            <Button onClick={() => handleShowPaymentModal(plan)}>Tham gia ngay</Button>
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="error-message">{error}</p>
+      ) : (
+        <div className="membership-plans">
+          {plans.map((plan) => (
+            <div key={plan.id} className="membership-plan">
+              <h2>{plan.name}</h2>
+              <p>
+                <strong>Price:</strong> {plan.price.toLocaleString()}đ
+              </p>
+              <p>
+                <strong>Duration:</strong> {plan.duration}
+              </p>
+              <ul>
+                {plan.benefits.map((benefit, i) => (
+                  <li key={i}>{benefit}</li>
+                ))}
+              </ul>
+              <Button onClick={() => handleShowPaymentModal(plan)}>
+                Join Now
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Payment Method Modal */}
       <Modal show={showPaymentModal} onHide={handleClosePaymentModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Chọn phương thức thanh toán</Modal.Title>
+          <Modal.Title>Select Payment Method</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Bạn đang mua gói: <strong>{selectedPlan?.name}</strong></p>
-          <p>Số tiền: <strong>{selectedPlan?.cost.toLocaleString()}đ</strong></p>
+          <p>
+            You are purchasing: <strong>{selectedPlan?.name}</strong>
+          </p>
+          <p>
+            Amount: <strong>{selectedPlan?.price?.toLocaleString()}đ</strong>
+          </p>
           <div className="payment-options">
             <label>
               <input
                 type="radio"
                 value="bank"
-                checked={selectedPaymentMethod === 'bank'}
+                checked={selectedPaymentMethod === "bank"}
                 onChange={(e) => setSelectedPaymentMethod(e.target.value)}
               />
-              Chuyển khoản ngân hàng
+              Bank Transfer
             </label>
             <label>
               <input
                 type="radio"
                 value="qr"
-                checked={selectedPaymentMethod === 'qr'}
+                checked={selectedPaymentMethod === "qr"}
                 onChange={(e) => setSelectedPaymentMethod(e.target.value)}
               />
-              Quét mã QR
+              Scan QR Code
             </label>
           </div>
-          {selectedPaymentMethod === 'bank' && (
+          {selectedPaymentMethod === "bank" && (
             <div className="payment-details">
-              <p><strong>CHỦ TÀI KHOẢN:</strong> NGUYEN VAN A</p>
-              <p><strong>SỐ TK:</strong> babycare.com</p>
-              <p><strong>NGÂN HÀNG:</strong> MB</p>
-              <p><strong>NỘI DUNG:</strong> NAP306046MOM</p>
+              <p>
+                <strong>ACCOUNT HOLDER:</strong> NGUYEN VAN A
+              </p>
+              <p>
+                <strong>ACCOUNT NUMBER:</strong> babycare.com
+              </p>
+              <p>
+                <strong>BANK:</strong> MB
+              </p>
+              <p>
+                <strong>TRANSFER NOTE:</strong> NAP306046MOM
+              </p>
             </div>
           )}
-          {selectedPaymentMethod === 'qr' && (
+          {selectedPaymentMethod === "qr" && (
             <div className="payment-details">
-              <p>Vui lòng quét mã QR để thanh toán:</p>
+              <p>Please scan the QR code to proceed with the payment:</p>
               <img src="images/QRCode.png" alt="QR Code" className="qr-code" />
             </div>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClosePaymentModal}>
-            Hủy
+            Cancel
           </Button>
-          <Button variant="primary" onClick={handlePayment}>
-            Xác nhận thanh toán
+          <Button variant="primary" onClick={handlePayment} disabled={!selectedPaymentMethod}>
+            Confirm Payment
           </Button>
         </Modal.Footer>
       </Modal>
