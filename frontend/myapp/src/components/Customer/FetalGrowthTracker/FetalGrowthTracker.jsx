@@ -15,15 +15,14 @@ import './FetalGrowthTracker.css';
 
 const FetalGrowthTracker = () => {
   const [growthData, setGrowthData] = useState([]);
-  const [weight, setWeight] = useState(''); // kg
+  const [weight, setWeight] = useState(''); // gram
   const [height, setHeight] = useState(''); // cm
-  const [measurementDate, setMeasurementDate] = useState(''); // YYYY-MM-DD
+  const [week, setWeek] = useState(''); // Tuần thai
   const [notes, setNotes] = useState('');
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // API base URL and endpoints
   const API_BASE_URL = 'http://localhost:5254';
   const API_ENDPOINTS = {
     getAll: '/api/FetalMeasurement/GetAllGrowth',
@@ -32,10 +31,8 @@ const FetalGrowthTracker = () => {
     delete: (id) => `/api/FetalMeasurement/DeleteGrowth/${id}`,
   };
 
-  // Mock profileId (must be an integer, adjust based on your auth system)
-  const profileId = 1; // Changed to integer to match API expectation
+  const profileId = 1;
 
-  // Fetch all growth data
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -45,16 +42,18 @@ const FetalGrowthTracker = () => {
         const response = await axios.get(`${API_BASE_URL}${API_ENDPOINTS.getAll}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log('API GetAll Response:', response.data);
 
         const transformedData = response.data.map(item => ({
           id: item.id,
-          weight: item.weightGrams / 1000, // Convert grams to kg
+          weight: item.weightGrams, // Giữ nguyên gram
           height: item.heightCm,
-          measurementDate: item.measurementDate.split('T')[0], // Extract YYYY-MM-DD
+          week: item.week || Math.floor((new Date(item.measurementDate) - new Date('2025-01-01')) / (7 * 24 * 60 * 60 * 1000)), // Chuyển sang tuần
           notes: item.notes || 'No notes',
         }));
-        setGrowthData(transformedData);
+        
+        // Sắp xếp theo tuần tăng dần
+        const sortedData = transformedData.sort((a, b) => a.week - b.week);
+        setGrowthData(sortedData);
       } catch (err) {
         console.error('Fetch error:', err.response ? err.response.data : err.message);
         setError(`Error loading data: ${err.response?.status} - ${err.response?.data?.message || err.message}`);
@@ -66,47 +65,34 @@ const FetalGrowthTracker = () => {
     fetchData();
   }, []);
 
-  // Handle Create/Update
   const handleSave = async (e) => {
     e.preventDefault();
 
-    // Validate input
-    if (!weight || !height || !measurementDate) {
-      setError('Please fill in all required fields (weight, height, measurement date)!');
+    if (!weight || !height || !week) {
+      setError('Please fill in all required fields (weight, height, week)!');
       return;
     }
 
     const weightValue = parseFloat(weight);
     const heightValue = parseFloat(height);
-    if (isNaN(weightValue) || isNaN(heightValue)) {
-      setError('Weight and height must be valid numbers!');
+    const weekValue = parseInt(week);
+    
+    if (isNaN(weightValue) || isNaN(heightValue) || isNaN(weekValue)) {
+      setError('Weight, height must be valid numbers and week must be a valid integer!');
       return;
     }
 
-    // Validate measurementDate (ensure it's in YYYY-MM-DD format)
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(measurementDate)) {
-      setError('Measurement date must be in YYYY-MM-DD format!');
+    if (weekValue < 1 || weekValue > 42) {
+      setError('Week must be between 1 and 42!');
       return;
     }
 
-    // Convert measurementDate to ISO format
-    let isoDate;
-    try {
-      const [year, month, day] = measurementDate.split('-');
-      isoDate = new Date(year, month - 1, day).toISOString(); // month is 0-based in JS
-    } catch (err) {
-      setError('Invalid measurement date!');
-      return;
-    }
-
-    // Prepare data for API
     const data = {
       profileId,
-      weightGrams: weightValue * 1000, // Convert kg to grams
+      weightGrams: weightValue,
       heightCm: heightValue,
-      measurementDate: isoDate, // Send in ISO format
-      notes: notes || '', // Send empty string if no notes, instead of null
+      week: weekValue,
+      notes: notes || '',
     };
 
     setLoading(true);
@@ -114,7 +100,6 @@ const FetalGrowthTracker = () => {
     try {
       const token = sessionStorage.getItem('token');
       if (editId) {
-        // Update
         await axios.put(`${API_BASE_URL}${API_ENDPOINTS.update(editId)}`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -122,25 +107,24 @@ const FetalGrowthTracker = () => {
           },
         });
         setGrowthData(growthData.map(item =>
-          item.id === editId ? { ...item, weight: weightValue, height: heightValue, measurementDate, notes } : item
+          item.id === editId ? { ...item, weight: weightValue, height: heightValue, week: weekValue, notes } : item
         ));
         setEditId(null);
       } else {
-        // Create
         const response = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.create}`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json-patch+json',
           },
         });
-        console.log('Create Response:', response.data);
-        setGrowthData([...growthData, { 
+        const newData = [...growthData, { 
           id: response.data.id, 
           weight: weightValue, 
           height: heightValue, 
-          measurementDate: response.data.measurementDate.split('T')[0], // Extract YYYY-MM-DD
+          week: weekValue,
           notes: response.data.notes 
-        }]);
+        }];
+        setGrowthData(newData.sort((a, b) => a.week - b.week));
       }
       resetForm();
     } catch (err) {
@@ -151,7 +135,6 @@ const FetalGrowthTracker = () => {
     }
   };
 
-  // Handle Delete
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this record?')) {
       setLoading(true);
@@ -171,27 +154,24 @@ const FetalGrowthTracker = () => {
     }
   };
 
-  // Handle Edit
   const handleEdit = (item) => {
     setEditId(item.id);
     setWeight(item.weight.toString());
     setHeight(item.height.toString());
-    setMeasurementDate(item.measurementDate);
+    setWeek(item.week.toString());
     setNotes(item.notes);
   };
 
-  // Reset form
   const resetForm = () => {
     setWeight('');
     setHeight('');
-    setMeasurementDate('');
+    setWeek('');
     setNotes('');
     setEditId(null);
   };
 
-  // Prepare chart data
   const chartData = growthData.map(item => ({
-    date: item.measurementDate,
+    week: `Week ${item.week}`,
     weight: item.weight,
     height: item.height,
   }));
@@ -201,19 +181,18 @@ const FetalGrowthTracker = () => {
       <h1 className="tracker-title">Fetal Growth Tracker</h1>
       <p className="tracker-description">Easily input and manage your baby’s growth data!</p>
 
-      {/* Data Entry Form */}
       <div className="data-entry-form">
         {error && <p className="error-message">{error}</p>}
         <Form onSubmit={handleSave} className="growth-form">
           <div className="form-row">
             <Form.Group controlId="weight" className="mb-3">
-              <Form.Label>Weight (kg)</Form.Label>
+              <Form.Label>Weight (grams)</Form.Label>
               <Form.Control
                 type="number"
-                step="0.01"
+                step="1"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
-                placeholder="Enter weight (kg)"
+                placeholder="Enter weight (grams)"
                 disabled={loading}
                 className="form-control"
               />
@@ -230,13 +209,14 @@ const FetalGrowthTracker = () => {
                 className="form-control"
               />
             </Form.Group>
-            <Form.Group controlId="measurementDate" className="mb-3">
-              <Form.Label>Measurement Date (YYYY-MM-DD)</Form.Label>
+            <Form.Group controlId="week" className="mb-3">
+              <Form.Label>Week</Form.Label>
               <Form.Control
-                type="date"
-                value={measurementDate}
-                onChange={(e) => setMeasurementDate(e.target.value)}
-                placeholder="Select date (YYYY-MM-DD)"
+                type="number"
+                step="1"
+                value={week}
+                onChange={(e) => setWeek(e.target.value)}
+                placeholder="Enter week (1-42)"
                 disabled={loading}
                 className="form-control"
               />
@@ -275,14 +255,13 @@ const FetalGrowthTracker = () => {
         </div>
       ) : growthData.length > 0 ? (
         <>
-          {/* Data Management Table */}
           <Table striped bordered hover responsive className="growth-table mt-4">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Weight (kg)</th>
+                <th>Weight (grams)</th>
                 <th>Height (cm)</th>
-                <th>Measurement Date (YYYY-MM-DD)</th>
+                <th>Week</th>
                 <th>Notes</th>
                 <th>Actions</th>
               </tr>
@@ -291,9 +270,9 @@ const FetalGrowthTracker = () => {
               {growthData.map((item) => (
                 <tr key={item.id}>
                   <td>{item.id}</td>
-                  <td>{item.weight.toFixed(2)}</td>
+                  <td>{item.weight}</td>
                   <td>{item.height}</td>
-                  <td>{item.measurementDate}</td>
+                  <td>{item.week}</td>
                   <td>{item.notes}</td>
                   <td>
                     <Button variant="warning" size="sm" onClick={() => handleEdit(item)} className="me-2 action-button">
@@ -308,18 +287,17 @@ const FetalGrowthTracker = () => {
             </tbody>
           </Table>
 
-          {/* Chart */}
           <div className="chart-container mt-4">
             <h2 className="chart-title">Growth Chart</h2>
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                <XAxis dataKey="date" label={{ value: 'Measurement Date', position: 'insideBottomRight', offset: -10 }} style={{ fontSize: '14px' }} />
+                <XAxis dataKey="week" label={{ value: 'Week', position: 'insideBottomRight', offset: -10 }} style={{ fontSize: '14px' }} />
                 <YAxis
-                  label={{ value: 'Value (kg/cm)', angle: -90, position: 'insideLeft' }}
+                  label={{ value: 'Value (g/cm)', angle: -90, position: 'insideLeft' }}
                   yAxisId="left"
                   orientation="left"
-                  tickFormatter={(value) => (value ? `${value} kg` : '')}
+                  tickFormatter={(value) => (value ? `${value} g` : '')}
                   style={{ fontSize: '14px' }}
                 />
                 <YAxis
@@ -330,12 +308,12 @@ const FetalGrowthTracker = () => {
                 />
                 <Tooltip
                   formatter={(value, name) =>
-                    name === 'weight' ? [`${value} kg`, 'Weight'] : [`${value} cm`, 'Height']
+                    name === 'weight' ? [`${value} g`, 'Weight'] : [`${value} cm`, 'Height']
                   }
                   contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #ddd' }}
                 />
                 <Legend wrapperStyle={{ fontSize: '14px' }} />
-                <Bar dataKey="weight" name="Weight (kg)" fill="#FF9999" yAxisId="left" barSize={20} />
+                <Bar dataKey="weight" name="Weight (grams)" fill="#FF9999" yAxisId="left" barSize={20} />
                 <Bar dataKey="height" name="Height (cm)" fill="#66B2B2" yAxisId="right" barSize={20} />
               </BarChart>
             </ResponsiveContainer>
