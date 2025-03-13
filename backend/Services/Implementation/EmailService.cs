@@ -1,50 +1,56 @@
 ﻿using backend.Services.Interface;
-using System.Net;
-using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
+using backend.Helper;
+using Microsoft.Extensions.Options;
+using MimeKit;
+using MailKit.Net.Smtp;
+using backend.Dtos;
+using backend.Models;
+using backend.Data;
 
 namespace backend.Services.Implementation
 {
     public class EmailService : IEmailService
     {
-        private readonly IConfiguration _config;
+        private readonly EmailSettings _emailSettings;
+        private readonly ApplicationDBContext _context;
 
-        public EmailService(IConfiguration config)
+        public EmailService(IOptions<EmailSettings> emailSettings, ApplicationDBContext context)
         {
-            _config = config;
+            _emailSettings = emailSettings.Value;
+            _context = context;
         }
 
-        public async Task SendEmailAsync(string toEmail, string subject, string body)
+        public async Task SendEmailAsync(string to, string subject, string body)
         {
-            try
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Admin", _emailSettings.SenderEmail));
+            message.To.Add(new MailboxAddress("", to));
+            message.Subject = subject;
+            message.Body = new TextPart("html") { Text = body };
+
+            using var client = new SmtpClient();
+            await client.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.Port, _emailSettings.UseSSL);
+            await client.AuthenticateAsync(_emailSettings.SenderEmail, _emailSettings.SenderPassword);
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
+        }
+
+        public async Task ScheduleEmailAsync(ScheduledEmailDto emailDto)
+        {
+            var email = new ScheduledEmail
             {
-                using (var client = new SmtpClient(_config["Smtp:Host"]))
-                {
-                    client.Port = int.Parse(_config["Smtp:Port"]);
-                    client.Credentials = new NetworkCredential(_config["Smtp:Username"], _config["Smtp:Password"]);
-                    client.EnableSsl = true;
+                RecipientEmail = emailDto.RecipientEmail,
+                Subject = emailDto.Subject,
+                Body = emailDto.Body,
+                ScheduledTime = emailDto.ScheduledTime,
+                IsSent = false
+            };
 
-                    var mailMessage = new MailMessage
-                    {
-                        From = new MailAddress(_config["Smtp:Username"]),
-                        Subject = subject,
-                        Body = body,
-                        IsBodyHtml = true
-                    };
-                    mailMessage.To.Add(toEmail);
-
-                    await client.SendMailAsync(mailMessage);
-
-                    // Thêm log thông báo khi gửi email thành công
-                    Console.WriteLine($"📧 Email đã gửi đến: {toEmail}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Lỗi khi gửi email: {ex.Message}");
-            }
+            _context.ScheduledEmails.Add(email);
+            await _context.SaveChangesAsync();
         }
     }
 }
