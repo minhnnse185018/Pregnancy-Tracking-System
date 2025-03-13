@@ -36,7 +36,7 @@ const BookAppointment = () => {
       console.log('Đang gửi dữ liệu:', requestData);
       
       // Thử với cấu trúc URL khác
-      const response = await axios.post('http://localhost:5254/api/appointments', requestData);
+      const response = await axios.post('http://localhost:5254/api/appointments/create', requestData);
       
       console.log('Phản hồi từ server:', response.data);
       
