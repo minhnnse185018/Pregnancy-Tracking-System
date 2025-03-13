@@ -1,36 +1,37 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
+import CommentIcon from "@mui/icons-material/Comment";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import {
+  Alert,
   Box,
+  Button,
   Card,
   CardContent,
   CardMedia,
-  Typography,
-  Button,
-  Modal,
-  TextField,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
   Grid,
   IconButton,
   List,
   ListItem,
   ListItemText,
-  Divider,
-  DialogContent,
-  DialogContentText,
-  Dialog,
-  DialogTitle,
-  DialogActions,
+  Modal,
   Snackbar,
-  Alert,
+  TextField,
+  Typography,
 } from "@mui/material";
-import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
-import CommentIcon from "@mui/icons-material/Comment";
-import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import axios from "axios";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+
 const ManagerBlogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [open, setOpen] = useState(false);
@@ -38,19 +39,20 @@ const ManagerBlogs = () => {
   const [currentBlog, setCurrentBlog] = useState(null);
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [comments, setComments] = useState([]);
+  const accountID = sessionStorage.getItem("userID"); // Fetch userID from sessionStorage
   const [newBlog, setNewBlog] = useState({
-    accountId: "manager",
+    userId: accountID || "",
     title: "",
     content: "",
-    image: null,
+    image: "",
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [creating, setCreating] = useState(false);
   const [likesCount, setLikesCount] = useState({});
   const [commentsCount, setCommentsCount] = useState({});
-  const [newComment, setNewComment] = useState(""); // Thêm state cho comment mới
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false); // Modal xác nhận xóa
-  const [blogToDelete, setBlogToDelete] = useState(null); // Blog sẽ bị xóa
+  const [newComment, setNewComment] = useState("");
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [blogToDelete, setBlogToDelete] = useState(null);
   const [editedComment, setEditedComment] = useState("");
   const [commentToEdit, setCommentToEdit] = useState(null);
   const [commentToDelete, setCommentToDelete] = useState(null);
@@ -60,20 +62,21 @@ const ManagerBlogs = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [currentImage, setCurrentImage] = useState(null);
-  const accountID = sessionStorage.getItem("userID");
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     resetForm();
   };
+
   const showSnackbar = (message, severity = "success") => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
+
   const handleDetailModalClose = () => setDetailModalOpen(false);
-  // -----------------------------------------------------------------------
-  // Mở modal chỉnh sửa bình luận
+
   const openEditModal = (comment) => {
     if (comment.accountId === accountID) {
       setCommentToEdit(comment);
@@ -82,16 +85,12 @@ const ManagerBlogs = () => {
       showSnackbar("You can only edit your own comments.", "warning");
     }
   };
-  const filterBlogs = blogs.filter((blog) =>
-    blog.title.toLowerCase().includes(searchKeyword.toLowerCase())
-  );
 
-  // Đóng modal chỉnh sửa bình luận
   const closeEditModal = () => {
     setCommentToEdit(null);
     setEditedComment("");
   };
-  // Chỉnh sửa bình luận
+
   const handleEditComment = async () => {
     if (!editedComment.trim()) {
       showSnackbar("Please enter a comment.", "warning");
@@ -100,10 +99,8 @@ const ManagerBlogs = () => {
 
     try {
       await axios.put(
-        `http://localhost:8080/api/cmt/${commentToEdit.commentId}`,
-        {
-          content: editedComment,
-        }
+        `http://localhost:5254/api/Post/comments/${commentToEdit.commentId}`,
+        { content: editedComment }
       );
       setComments((prevComments) =>
         prevComments.map((comment) =>
@@ -119,24 +116,24 @@ const ManagerBlogs = () => {
       showSnackbar("Failed to edit comment.", "error");
     }
   };
-  // Mở popup xác nhận xóa
+
   const openDeleteConfirm = (commentId) => {
     setCommentToDelete(commentId);
     setDeleteConfirmOpen(true);
   };
 
-  // Đóng popup xác nhận xóa
   const closeDeleteConfirm = () => {
     setCommentToDelete(null);
     setDeleteConfirmOpen(false);
   };
 
-  // Xóa bình luận
   const handleDeleteComment = async () => {
     if (!commentToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:8080/api/cmt/${commentToDelete}`);
+      await axios.delete(
+        `http://localhost:5254/api/Post/comments/${commentToDelete}`
+      );
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.commentId !== commentToDelete)
       );
@@ -147,52 +144,47 @@ const ManagerBlogs = () => {
       showSnackbar("Failed to delete comment.", "error");
     }
   };
-  // const BlogSchema = Yup.object().shape({
-  //   title: Yup.string().required("Please enter a title."),
-  //   content: Yup.string().required("Please enter content."),
-  //   image: Yup.mixed().required("Please upload an image."),
-  // });
+
   const BlogSchema = Yup.object().shape({
     title: Yup.string()
       .required("Please enter a title.")
       .min(5, "Title must be at least 5 characters long.")
       .max(100, "Title must be less than 100 characters."),
-
     content: Yup.string()
       .required("Please enter content.")
       .min(20, "Content must be at least 20 characters long.")
       .max(5000, "Content must be less than 5000 characters."),
-
-    image: Yup.mixed().required("Please upload an image."), // Chỉ kiểm tra rằng ảnh đã được tải lên
+    image: Yup.string().notRequired(),
   });
 
-  //------------------------------------------------------------------------
   const resetForm = () => {
-    setNewBlog({ accountId: accountID, title: "", content: "", image: null });
+    setNewBlog({ userId: accountID || "", title: "", content: "", image: "" });
     setCurrentBlog(null);
     setSelectedImage(null);
   };
 
   const fetchBlogs = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/blog");
+      const response = await axios.get("http://localhost:5254/api/Post/GetAll");
       const sortedDate = response.data.sort(
         (a, b) => new Date(b.createDate) - new Date(a.createDate)
       );
+      console.log("Fetched blogs:", sortedDate);
       setBlogs(sortedDate);
       response.data.forEach((blog) => {
-        fetchLikeCount(blog.blogId);
-        fetchCommentCount(blog.blogId);
+        fetchLikeCount(blog.id);
+        fetchCommentCount(blog.id);
       });
     } catch (error) {
       console.error("Error fetching blogs:", error);
+      showSnackbar("Failed to fetch blogs.", "error");
     }
   };
 
   const fetchLikeCount = async (blogId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/like/${blogId}`
+        `http://localhost:5254/api/Post/like/${blogId}`
       );
       setLikesCount((prev) => ({ ...prev, [blogId]: response.data }));
     } catch (error) {
@@ -203,7 +195,7 @@ const ManagerBlogs = () => {
   const fetchCommentCount = async (blogId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/cmt/count/${blogId}`
+        `http://localhost:5254/api/Post/comments/count/${blogId}`
       );
       setCommentsCount((prev) => ({ ...prev, [blogId]: response.data }));
     } catch (error) {
@@ -213,15 +205,23 @@ const ManagerBlogs = () => {
 
   const fetchComments = async (blogId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/cmt/${blogId}`
-      );
-      const sortedComments = response.data.sort(
+      // Thay vì gọi /api/Post/comments/{blogId}, gọi API chi tiết bài viết
+      const response = await axios.get(`http://localhost:5254/api/Post/${blogId}`);
+      const postData = response.data;
+      console.log("Fetched post with comments:", postData);
+
+      // Giả sử comment nằm trong postData.comments
+      const sortedComments = (postData.comments || []).sort(
         (a, b) => new Date(b.createDate) - new Date(a.createDate)
       );
       setComments(sortedComments);
     } catch (error) {
-      console.error("Error fetching comments:", error);
+      console.error("Error fetching comments:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+      });
+      showSnackbar("Failed to fetch comments. Check console for details.", "error");
     }
   };
 
@@ -232,16 +232,24 @@ const ManagerBlogs = () => {
   const handleSearchChange = (e) => {
     setSearchKeyword(e.target.value);
   };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setSelectedImage(file);
   };
+
   const handleSaveBlog = async (values) => {
     setCreating(true);
     const { title, content } = values;
 
-    if (!title || !content || (!currentBlog && !selectedImage)) {
-      showSnackbar("Please fill in all fields and upload an image.", "error");
+    if (!title || !content) {
+      showSnackbar("Please fill in title and content fields.", "error");
+      setCreating(false);
+      return;
+    }
+
+    if (!accountID && !currentBlog) {
+      showSnackbar("User not authenticated. Please log in.", "error");
       setCreating(false);
       return;
     }
@@ -249,46 +257,79 @@ const ManagerBlogs = () => {
     try {
       let blogId = null;
 
-      // Trường hợp chỉnh sửa blog
       if (currentBlog) {
-        const response = await axios.put(
-          `http://localhost:8080/api/blog/${currentBlog.blogId}`,
-          {
-            accountId: currentBlog.accountId,
-            title,
-            content,
-          }
-        );
-        blogId = response.data.blogId || currentBlog.blogId;
-      }
-      // Trường hợp thêm mới blog
-      else {
-        const response = await axios.post("http://localhost:8080/api/blog", {
-          accountId: newBlog.accountId,
+        const blogIdToUpdate = parseInt(currentBlog.id, 10);
+        if (!blogIdToUpdate || blogIdToUpdate <= 0) {
+          throw new Error("Invalid blog ID for update. Value received: " + currentBlog.id);
+        }
+
+        console.log("Updating blog with ID:", blogIdToUpdate, "Payload:", {
           title,
           content,
+          image: selectedImage ? selectedImage.name : currentBlog.image || "",
+          status: "Published",
+        });
+        const response = await axios.put(
+          `http://localhost:5254/api/Post/Update/${blogIdToUpdate}`,
+          {
+            title,
+            content,
+            image: selectedImage ? selectedImage.name : currentBlog.image || "",
+            status: "Published",
+          }
+        );
+        blogId = response.data.id || currentBlog.id;
+
+        if (selectedImage instanceof File) {
+          const formData = new FormData();
+          formData.append("image", selectedImage);
+          await axios.put(
+            `http://localhost:5254/api/Post/image/upload/${blogId}`,
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+        }
+      } else {
+        console.log("Creating new blog with payload:", {
+          userId: accountID,
+          title,
+          content,
+          image: selectedImage ? selectedImage.name : "",
+        });
+        const response = await axios.post("http://localhost:5254/api/Post", {
+          userId: accountID,
+          title,
+          content,
+          image: selectedImage ? selectedImage.name : "",
         });
         blogId = response.data;
-      }
 
-      // Kiểm tra nếu người dùng đã chọn một ảnh mới để tải lên
-      if (selectedImage instanceof File) {
-        const formData = new FormData();
-        formData.append("image", selectedImage);
-
-        await axios.put(
-          `http://localhost:8080/api/blog/image/upload/${blogId}`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+        if (selectedImage instanceof File) {
+          const formData = new FormData();
+          formData.append("image", selectedImage);
+          await axios.put(
+            `http://localhost:5254/api/Post/image/upload/${blogId}`,
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+        }
       }
 
       fetchBlogs();
       handleClose();
       showSnackbar("Blog saved successfully!", "success");
     } catch (error) {
-      console.error("Error saving blog:", error);
-      showSnackbar("Failed to save blog.", "error");
+      console.error("Error saving blog:", error.response?.data || error.message);
+      if (error.response?.status === 400) {
+        showSnackbar(
+          "Invalid request. Please check the data and try again.",
+          "error"
+        );
+      } else if (error.response?.status === 404) {
+        showSnackbar("Blog not found. It may have been deleted.", "error");
+      } else {
+        showSnackbar("Failed to save blog. Check console for details.", "error");
+      }
     } finally {
       setCreating(false);
     }
@@ -297,24 +338,23 @@ const ManagerBlogs = () => {
   const handleEditBlog = (blog) => {
     setCurrentBlog(blog);
     setNewBlog({
-      accountId: blog.accountId,
+      userId: blog.userId,
       title: blog.title,
       content: blog.content,
+      image: blog.image || "",
     });
-
-    // Đặt currentImage là URL ảnh hiện tại của blog nếu có
     setCurrentImage(
       blog.imageName
-        ? `http://localhost:8080/api/blog/image/${blog.imageName}`
+        ? `http://localhost:5254/api/Post/image/${blog.imageName}`
         : null
     );
-    setSelectedImage(null); // Reset selected image
+    setSelectedImage(null);
     setOpen(true);
   };
 
   const handleCardClick = (blog) => {
     setSelectedBlog(blog);
-    fetchComments(blog.blogId);
+    fetchComments(blog.id);
     setDetailModalOpen(true);
   };
 
@@ -324,51 +364,128 @@ const ManagerBlogs = () => {
       return;
     }
 
+    const userId = accountID || "manager";
+    if (!userId) {
+      showSnackbar("You are not logged in. Please log in first!", "warning");
+      return;
+    }
+
     const commentData = {
-      accountId: "manager",
-      blogId: selectedBlog.blogId,
+      postId: parseInt(selectedBlog.id, 10),
+      userId: userId,
       content: newComment,
     };
 
+    console.log("Submitting comment with data:", JSON.stringify(commentData, null, 2));
+
     try {
-      await axios.post("http://localhost:8080/api/cmt", commentData);
+      const token = sessionStorage.getItem("token");
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      };
+
+      // Thử endpoint /api/Comments (thêm "s" vì /api/Comment không hoạt động)
+      const response = await axios.post(
+        "http://localhost:5254/api/Comments", // Thay đổi endpoint
+        commentData,
+        config
+      );
+      console.log("Comment creation response:", response.data);
       setNewComment("");
-      fetchComments(selectedBlog.blogId);
+      fetchComments(selectedBlog.id);
       showSnackbar("Comment added successfully!", "success");
     } catch (error) {
-      console.error("Error adding comment:", error);
-      showSnackbar("Failed to add comment.", "error");
+      console.error("Error adding comment:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+        request: error.request,
+      });
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            showSnackbar("Bad request. Check the comment data or contact support.", "error");
+            break;
+          case 401:
+            showSnackbar("Unauthorized. Please log in and try again.", "error");
+            break;
+          case 404:
+            showSnackbar("Endpoint not found. Please verify the API with the backend team.", "error");
+            break;
+          default:
+            showSnackbar("Failed to add comment. Check console for details.", "error");
+        }
+      } else if (error.request) {
+        showSnackbar("No response from server. Check your network connection.", "error");
+      } else {
+        showSnackbar("Error setting up the request. See console for details.", "error");
+      }
     }
   };
-  // Mở modal xác nhận xóa
+
   const openDeleteModal = (blog) => {
+    console.log("Blog object for deletion:", blog);
+    if (!blog || !blog.id || isNaN(parseInt(blog.id, 10))) {
+      showSnackbar("Invalid blog selected for deletion.", "error");
+      return;
+    }
     setBlogToDelete(blog);
     setDeleteModalOpen(true);
   };
 
-  // Đóng modal xác nhận xóa
   const closeDeleteModal = () => {
     setBlogToDelete(null);
     setDeleteModalOpen(false);
   };
 
-  // Xử lý xóa blog
   const handleDeleteBlog = async () => {
     if (!blogToDelete) return;
 
     try {
-      await axios.delete(
-        `http://localhost:8080/api/blog/${blogToDelete.blogId}`
-      );
-      setDeleteModalOpen(false);
-      setBlogToDelete(null);
-      fetchBlogs(); // Làm mới danh sách blog
-      showSnackbar("Blog deleted successfully!", "success");
+      console.log("blogToDelete object:", blogToDelete);
+      const blogIdToDelete = parseInt(blogToDelete.id, 10);
+      if (!blogIdToDelete || blogIdToDelete <= 0) {
+        throw new Error("Invalid blog ID for deletion. Value received: " + blogToDelete.id);
+      }
+
+      console.log("Deleting blog with ID:", blogIdToDelete);
+      const response = await axios.delete(`http://localhost:5254/api/Post/${blogIdToDelete}`);
+      if (response.status === 200) {
+        setDeleteModalOpen(false);
+        setBlogToDelete(null);
+        fetchBlogs();
+        showSnackbar("Blog deleted successfully!", "success");
+      }
     } catch (error) {
-      console.error("Error deleting blog:", error);
-      showSnackbar("Failed to delete blog.", "error");
+      console.error("Error deleting blog:", error.response?.data || error.message);
+      if (error.response?.status === 404) {
+        showSnackbar("Blog not found. It may have been deleted.", "error");
+      } else if (error.response?.status === 400) {
+        showSnackbar("Invalid request. Please check the blog ID and try again.", "error");
+      } else {
+        showSnackbar("Failed to delete blog. Check console for details.", "error");
+      }
     }
   };
+
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5254/api/Post/search?keyword=${searchKeyword}`
+      );
+      setBlogs(response.data);
+    } catch (error) {
+      console.error("Error searching blogs:", error);
+      showSnackbar("Failed to search blogs.", "error");
+    }
+  };
+
+  const filterBlogs = blogs.filter((blog) =>
+    blog.title.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
 
   return (
     <Box sx={{ padding: 4, backgroundColor: "#fff", minHeight: "100vh" }}>
@@ -389,11 +506,14 @@ const ManagerBlogs = () => {
         variant="outlined"
         value={searchKeyword}
         onChange={handleSearchChange}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") handleSearch();
+        }}
         sx={{ mb: 2 }}
       />
       <Grid container spacing={2}>
         {filterBlogs.map((blog) => (
-          <Grid item xs={12} md={4} key={blog.blogId}>
+          <Grid item xs={12} md={4} key={blog.id}>
             <Card
               sx={{
                 height: 350,
@@ -414,7 +534,7 @@ const ManagerBlogs = () => {
                 <CardMedia
                   component="img"
                   height="190"
-                  image={`http://localhost:8080/api/blog/image/${blog.imageName}`}
+                  image={`http://localhost:5254/api/Post/image/${blog.imageName}`}
                   alt={blog.title}
                   sx={{ objectFit: "cover" }}
                 />
@@ -458,11 +578,11 @@ const ManagerBlogs = () => {
                 <Box display="flex" alignItems="center" mt={1}>
                   <ThumbUpAltIcon fontSize="small" sx={{ mr: 0.5 }} />
                   <Typography variant="body2" sx={{ mr: 2 }}>
-                    {likesCount[blog.blogId] || 0}
+                    {likesCount[blog.id] || 0}
                   </Typography>
                   <CommentIcon fontSize="small" sx={{ mr: 0.5 }} />
                   <Typography variant="body2">
-                    {commentsCount[blog.blogId] || 0}
+                    {commentsCount[blog.id] || 0}
                   </Typography>
                 </Box>
                 <Typography
@@ -489,7 +609,7 @@ const ManagerBlogs = () => {
                       "&:hover": { backgroundColor: "#388E3C" },
                     }}
                     onClick={(e) => {
-                      e.stopPropagation(); // Ngăn việc mở modal chi tiết
+                      e.stopPropagation();
                       handleEditBlog(blog);
                     }}
                   >
@@ -498,7 +618,7 @@ const ManagerBlogs = () => {
                   <IconButton
                     color="error"
                     onClick={(e) => {
-                      e.stopPropagation(); // Ngăn việc mở modal chi tiết
+                      e.stopPropagation();
                       openDeleteModal(blog);
                     }}
                   >
@@ -563,7 +683,7 @@ const ManagerBlogs = () => {
                 <CardMedia
                   component="img"
                   height="500"
-                  image={`http://localhost:8080/api/blog/image/${selectedBlog.imageName}`}
+                  image={`http://localhost:5254/api/Post/image/${selectedBlog.imageName}`}
                   alt={selectedBlog.title}
                   sx={{ objectFit: "contain", mb: 2, borderRadius: 2 }}
                 />
@@ -578,11 +698,11 @@ const ManagerBlogs = () => {
               <Box display="flex" alignItems="center" mt={1}>
                 <ThumbUpAltIcon fontSize="small" sx={{ mr: 0.5 }} />
                 <Typography variant="body2" sx={{ mr: 2 }}>
-                  {likesCount[selectedBlog.blogId] || 0}
+                  {likesCount[selectedBlog.id] || 0}
                 </Typography>
                 <CommentIcon fontSize="small" sx={{ mr: 0.5 }} />
                 <Typography variant="body2">
-                  {commentsCount[selectedBlog.blogId] || 0}
+                  {commentsCount[selectedBlog.id] || 0}
                 </Typography>
               </Box>
               <Typography variant="subtitle1" sx={{ mb: 1 }}>
@@ -608,38 +728,28 @@ const ManagerBlogs = () => {
                 Submit Comment
               </Button>
 
-              <List
-                sx={{
-                  maxHeight: 300, // Giới hạn chiều cao của danh sách (300px là ví dụ)
-                  overflowY: "auto", // Thêm thanh cuộn dọc nếu danh sách dài
-                }}
-              >
+              <List sx={{ maxHeight: 300, overflowY: "auto" }}>
                 {comments.length > 0 ? (
                   comments.map((comment) => (
                     <ListItem
-                      key={comment.commentId}
+                      key={comment.id} // Thay commentId thành id để khớp với schema từ backend
                       alignItems="flex-start"
                       sx={{ display: "flex", justifyContent: "space-between" }}
                     >
                       <ListItemText
                         primary={`${
-                          comment.accountId === accountID
+                          comment.userId === accountID
                             ? "Me"
-                            : comment.accountName
-                        } (${comment.createDate})`}
+                            : comment.userName || "Unknown"
+                        } (${comment.createdAt ? new Date(comment.createdAt).toLocaleDateString() : "Unknown date"})`}
                         secondary={
-                          <Box
-                            sx={{
-                              maxHeight: 60, // Giới hạn chiều cao của nội dung comment (60px là ví dụ)
-                              overflowY: "auto", // Thêm thanh cuộn dọc nếu nội dung dài
-                            }}
-                          >
+                          <Box sx={{ maxHeight: 60, overflowY: "auto" }}>
                             {comment.content}
                           </Box>
                         }
                       />
                       <Box sx={{ display: "flex", gap: 1 }}>
-                        {comment.accountId === accountID && (
+                        {comment.userId === accountID && (
                           <IconButton
                             edge="end"
                             aria-label="edit"
@@ -656,7 +766,7 @@ const ManagerBlogs = () => {
                           aria-label="delete"
                           onClick={(e) => {
                             e.stopPropagation();
-                            openDeleteConfirm(comment.commentId);
+                            openDeleteConfirm(comment.id); // Thay commentId thành id
                           }}
                         >
                           <DeleteIcon />
@@ -671,8 +781,10 @@ const ManagerBlogs = () => {
                 )}
               </List>
 
-              {/* Popup xác nhận xóa */}
-              <Dialog open={deleteConfirmOpen} onClose={closeDeleteConfirm}>
+              <Dialog
+                open={deleteConfirmOpen}
+                onClose={closeDeleteConfirm}
+              >
                 <DialogTitle>Confirm Delete</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
@@ -689,8 +801,7 @@ const ManagerBlogs = () => {
                 </DialogActions>
               </Dialog>
 
-              {/* Modal chỉnh sửa bình luận */}
-              {commentToEdit && commentToEdit.accountId === accountID && (
+              {commentToEdit && commentToEdit.userId === accountID && (
                 <Dialog open={Boolean(commentToEdit)} onClose={closeEditModal}>
                   <DialogTitle>Edit Comment</DialogTitle>
                   <DialogContent>
@@ -719,7 +830,6 @@ const ManagerBlogs = () => {
         </Box>
       </Modal>
 
-      {/* Modal Thêm hoặc Chỉnh sửa Blog */}
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
@@ -741,11 +851,9 @@ const ManagerBlogs = () => {
             initialValues={{
               title: newBlog.title || "",
               content: newBlog.content || "",
-              image: selectedImage || null,
+              image: newBlog.image || "",
             }}
-            validationSchema={
-              currentBlog ? BlogSchema.omit(["image"]) : BlogSchema
-            } // Không yêu cầu ảnh khi chỉnh sửa
+            validationSchema={BlogSchema}
             onSubmit={async (values, { setSubmitting }) => {
               setSubmitting(true);
               await handleSaveBlog(values);
@@ -783,7 +891,7 @@ const ManagerBlogs = () => {
                   component="div"
                   style={{ color: "red" }}
                 />
-                {/* Hiển thị ảnh hiện tại nếu có */}
+
                 {currentImage && (
                   <img
                     src={currentImage}
@@ -794,9 +902,11 @@ const ManagerBlogs = () => {
                 <input
                   type="file"
                   onChange={(e) => {
-                    setFieldValue("image", e.target.files[0]);
-                    handleImageChange(e);
+                    const file = e.target.files[0];
+                    setFieldValue("image", file ? file.name : "");
+                    setSelectedImage(file);
                   }}
+                  placeholder="Optional image"
                 />
                 <ErrorMessage
                   name="image"
@@ -808,9 +918,7 @@ const ManagerBlogs = () => {
                   type="submit"
                   variant="contained"
                   sx={{ mt: 2, backgroundColor: "#4CAF50" }}
-                  disabled={
-                    isSubmitting || (!currentBlog && (!dirty || !isValid))
-                  }
+                  disabled={isSubmitting || (!dirty && !currentBlog) || !isValid}
                 >
                   {creating ? <CircularProgress size={24} /> : "Save"}
                 </Button>
@@ -819,6 +927,7 @@ const ManagerBlogs = () => {
           </Formik>
         </Box>
       </Modal>
+
       <Dialog open={deleteModalOpen} onClose={closeDeleteModal}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
@@ -835,6 +944,7 @@ const ManagerBlogs = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
@@ -854,4 +964,3 @@ const ManagerBlogs = () => {
 };
 
 export default ManagerBlogs;
-// ĐÃ XONG TẤT CẢ
