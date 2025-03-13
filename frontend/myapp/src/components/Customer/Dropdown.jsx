@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
+import { FaBaby } from "react-icons/fa";
 import { HiOutlineLogout } from "react-icons/hi";
 import { RiVipDiamondLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
@@ -45,7 +46,7 @@ const UserIconDropdown = () => {
           src="images/user.png"
           alt="User"
           style={{
-            width: "30px",
+            width: "25px",
             borderRadius: "50%",
             verticalAlign: "middle",
           }}
@@ -64,6 +65,9 @@ const UserIconDropdown = () => {
         >
           <Link className="dropdown-item" to="/profile">
             <FaRegUserCircle /> View Profile
+          </Link>
+          <Link className="dropdown-item" to="/profilePregnancy">
+            <FaBaby /> View Profile Pregnancy
           </Link>
           <Link className="dropdown-item" to="/viewappointment">
             <RiVipDiamondLine /> View Appointments

@@ -106,7 +106,7 @@ const AdminPersonnel = () => {
     const fetchEmployees = async () => {
       try {
         const employeeResponse = await axios.get(
-          "http://localhost:8080/user/fetchAllEmployees"
+          "http://localhost:5254/api/Users/FilterRSts"
         );
         setEmployees(employeeResponse.data);
       } catch (error) {
@@ -117,7 +117,7 @@ const AdminPersonnel = () => {
     const fetchSalons = async () => {
       try {
         const salonResponse = await axios.get(
-          "http://localhost:8080/salon/salon-active"
+          "http://localhost:5254/api/Users/FilterRSts"
         );
         setSalons(salonResponse.data);
         console.log("🚀 ~ salonResponse:", salonResponse.data);
@@ -157,7 +157,7 @@ const AdminPersonnel = () => {
       );
       if (response.status === 200) {
         const employeeResponse = await axios.get(
-          "http://localhost:8080/user/fetchAllEmployees"
+          "http://localhost:5254/api/Users/FilterRSts"
         );
         setEmployees(employeeResponse.data);
         handleClose();
