@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import EditIcon from "@mui/icons-material/Edit";
 import {
-  Box,
-  Typography,
+  Alert,
   Avatar,
+  Box,
+  Button,
+  Container,
   IconButton,
   Paper,
-  Container,
   Snackbar,
-  Alert,
-  Button,
   TextField,
+  Typography,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 const ManagerProfilePage = () => {
@@ -33,7 +33,7 @@ const ManagerProfilePage = () => {
       if (accountID) {
         try {
           const response = await axios.get(
-            `http://localhost:8080/user/profile/${accountID}`
+            `http://localhost:5254/api/Users/GetById/${accountID}`
           );
           const { name, email, phone, profileImage } = response.data;
           setProfile({
@@ -100,7 +100,7 @@ const ManagerProfilePage = () => {
     try {
       const accountID = sessionStorage.getItem("userID");
       await axios.put(
-        `http://localhost:8080/user/update-profile/${accountID}`,
+        `http://localhost:5254/api/Users/Update/${accountID}`,
         values
       );
       setSnackbarMessage("Profile updated successfully!");

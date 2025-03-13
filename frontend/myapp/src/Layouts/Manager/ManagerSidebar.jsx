@@ -1,11 +1,9 @@
+import { Quiz } from "@mui/icons-material";
 import BarChartIcon from "@mui/icons-material/BarChart"; // Icon for Manage Revenue
 import DescriptionIcon from "@mui/icons-material/Description"; // Icon for Manage Blog
 import EventIcon from "@mui/icons-material/Event"; // Icon for View Appointments
 import GroupIcon from "@mui/icons-material/Group"; // Icon for Profile
 import PaymentIcon from "@mui/icons-material/Payment"; // Icon for Manage Payroll
-import PeopleIcon from "@mui/icons-material/People"; // Icon for Manage Personnel
-import ScheduleIcon from "@mui/icons-material/Schedule"; // Icon for Manager Schedule
-import StoreIcon from "@mui/icons-material/Store"; // Icon for Manage Services
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -24,15 +22,15 @@ const ManagerSidebar = () => {
           </Link>
         </li>
         <li style={listItemStyle}>
-          <Link to="manager-personnel" style={linkStyle}>
-            <PeopleIcon /> Manage Personnel
+          <Link to="manager-faq" style={linkStyle}>
+            <Quiz /> Manage FAQs
           </Link>
         </li>
-        <li style={listItemStyle}>
+        {/* <li style={listItemStyle}>
           <Link to="manager-services" style={linkStyle}>
             <StoreIcon /> Manage Services
           </Link>
-        </li>
+        </li> */}
         <li style={listItemStyle}>
           <Link to="manager-blog" style={linkStyle}>
             <DescriptionIcon /> Manage Blog
@@ -48,11 +46,11 @@ const ManagerSidebar = () => {
             <EventIcon /> View Appointments
           </Link>
         </li>
-        <li style={listItemStyle}>
+        {/* <li style={listItemStyle}>
           <Link to="manager-schedule" style={linkStyle}>
             <ScheduleIcon /> Manager Schedule
           </Link>
-        </li>
+        </li> */}
       </ul>
     </div>
   );
