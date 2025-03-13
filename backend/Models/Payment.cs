@@ -39,7 +39,7 @@ namespace backend.Models
         [ForeignKey("UserId")]
         public User User { get; set; }
 
-        [ForeignKey("MembershipId")]
-        public Membership Membership { get; set; }
+        
+        public virtual Membership Membership { get; set; }
     }
 }
