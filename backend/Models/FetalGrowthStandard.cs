@@ -1,12 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace backend.Models
 {
     public class FetalGrowthStandard
     {
         public int Id { get; set; }
+        
+        [Range(0, 42)]
         public int WeekNumber { get; set; }
-        public string? MeasurementType { get; set; }
-        public decimal MinValue { get; set; }
-        public decimal MedianValue { get; set; }
-        public decimal MaxValue { get; set; }
+        public decimal WeightGrams { get; set; }
+        public decimal HeightCm { get; set; }
     }
-} 
+}
