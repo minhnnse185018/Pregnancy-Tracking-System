@@ -38,10 +38,8 @@ namespace backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     WeekNumber = table.Column<int>(type: "int", nullable: false),
-                    MeasurementType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    MinValue = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    MedianValue = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    MaxValue = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    WeightGrams = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    HeightCm = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,7 +94,9 @@ namespace backend.Migrations
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResetTokenExpired = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -241,7 +241,6 @@ namespace backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     MembershipId = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     PaymentDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -259,12 +258,6 @@ namespace backend.Migrations
                         name: "FK_Payments_Memberships_MembershipId",
                         column: x => x.MembershipId,
                         principalTable: "Memberships",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Payments_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -306,7 +299,6 @@ namespace backend.Migrations
                     ProfileId = table.Column<int>(type: "int", nullable: false),
                     WeightGrams = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     HeightCm = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    MeasurementDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Week = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -330,7 +322,6 @@ namespace backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MeasurementId = table.Column<int>(type: "int", nullable: false),
                     AlertMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -349,45 +340,85 @@ namespace backend.Migrations
                 columns: new[] { "Id", "Answer", "Category", "CreatedAt", "DisplayOrder", "Question", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(129), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(126) },
-                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(133), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(131) }
+                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3507), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3504) },
+                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3511), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3510) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "FetalGrowthStandards",
+                columns: new[] { "Id", "HeightCm", "WeekNumber", "WeightGrams" },
+                values: new object[,]
+                {
+                    { 1, 1.6m, 8, 1m },
+                    { 2, 2.3m, 9, 2m },
+                    { 3, 3.1m, 10, 4m },
+                    { 4, 4.1m, 11, 7m },
+                    { 5, 5.4m, 12, 14m },
+                    { 6, 7.4m, 13, 23m },
+                    { 7, 8.7m, 14, 43m },
+                    { 8, 10.1m, 15, 70m },
+                    { 9, 11.6m, 16, 100m },
+                    { 10, 13.0m, 17, 140m },
+                    { 11, 14.2m, 18, 190m },
+                    { 12, 15.3m, 19, 240m },
+                    { 13, 16.4m, 20, 300m },
+                    { 14, 25.6m, 21, 360m },
+                    { 15, 27.8m, 22, 430m },
+                    { 16, 28.9m, 23, 501m },
+                    { 17, 30.0m, 24, 600m },
+                    { 18, 34.6m, 25, 660m },
+                    { 19, 35.6m, 26, 760m },
+                    { 20, 36.6m, 27, 875m },
+                    { 21, 37.6m, 28, 1005m },
+                    { 22, 38.6m, 29, 1153m },
+                    { 23, 39.9m, 30, 1319m },
+                    { 24, 41.1m, 31, 1502m },
+                    { 25, 42.4m, 32, 1702m },
+                    { 26, 43.7m, 33, 1918m },
+                    { 27, 45.0m, 34, 2146m },
+                    { 28, 46.2m, 35, 2383m },
+                    { 29, 47.4m, 36, 2622m },
+                    { 30, 48.6m, 37, 2859m },
+                    { 31, 49.8m, 38, 3083m },
+                    { 32, 50.7m, 39, 3288m },
+                    { 33, 51.2m, 40, 3462m }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "CreatedAt", "DateOfBirth", "Email", "FirstName", "Gender", "LastName", "Password", "Phone", "Status", "UserType" },
+                columns: new[] { "Id", "CreatedAt", "DateOfBirth", "Email", "FirstName", "Gender", "LastName", "Password", "Phone", "ResetToken", "ResetTokenExpired", "Status", "UserType" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 13, 7, 49, 56, 979, DateTimeKind.Local).AddTicks(9844), null, "1@gmail.com", null, null, null, "111111", null, "active", "1" },
-                    { 2, new DateTime(2025, 3, 13, 7, 49, 56, 979, DateTimeKind.Local).AddTicks(9849), null, "2@gmail.com", null, null, null, "222222", null, "active", "5" }
+                    { 1, new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3202), null, "1@gmail.com", null, null, null, "111111", null, null, null, "active", "1" },
+                    { 2, new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3206), null, "2@gmail.com", null, null, null, "222222", null, null, null, "active", "5" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "CreatedAt", "Image", "Status", "Title", "UpdatedAt", "UserId" },
-                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(165), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(160), 1 });
+                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3535), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3532), 1 });
 
             migrationBuilder.InsertData(
                 table: "PregnancyProfiles",
                 columns: new[] { "Id", "ConceptionDate", "CreatedAt", "DueDate", "UserId" },
-                values: new object[] { 1, new DateTime(2024, 12, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(52), new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(59), new DateTime(2025, 9, 9, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(58), 1 });
+                values: new object[] { 1, new DateTime(2024, 12, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3438), new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3447), new DateTime(2025, 9, 10, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3446), 1 });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "CreatedAt", "PostId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(191), 1, 2 },
-                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 13, 8, 49, 56, 980, DateTimeKind.Local).AddTicks(194), 1, 1 }
+                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3557), 1, 2 },
+                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 14, 23, 19, 14, 719, DateTimeKind.Local).AddTicks(3559), 1, 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "FetalMeasurements",
-                columns: new[] { "Id", "CreatedAt", "HeightCm", "MeasurementDate", "Notes", "ProfileId", "Week", "WeightGrams" },
+                columns: new[] { "Id", "CreatedAt", "HeightCm", "Notes", "ProfileId", "Week", "WeightGrams" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(95), 25.5m, new DateTime(2025, 3, 6, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(94), null, 1, 0, 500.00m },
-                    { 2, new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(99), 28.5m, new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(98), null, 1, 0, 650.00m }
+                    { 1, new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3480), 25.5m, null, 1, 12, 500.00m },
+                    { 2, new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3483), 28.5m, null, 1, 16, 650.00m }
                 });
 
             migrationBuilder.CreateIndex(
@@ -438,12 +469,8 @@ namespace backend.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_MembershipId",
                 table: "Payments",
-                column: "MembershipId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Payments_UserId",
-                table: "Payments",
-                column: "UserId");
+                column: "MembershipId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",

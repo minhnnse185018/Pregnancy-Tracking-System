@@ -89,7 +89,7 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "Thank you for sharing your experience! It's very helpful.",
-                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(191),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3557),
                             PostId = 1,
                             UserId = 2
                         },
@@ -97,7 +97,7 @@ namespace backend.Migrations
                         {
                             Id = 2,
                             Content = "I'm glad you found it helpful! Feel free to ask any questions.",
-                            CreatedAt = new DateTime(2025, 3, 13, 8, 49, 56, 980, DateTimeKind.Local).AddTicks(194),
+                            CreatedAt = new DateTime(2025, 3, 14, 23, 19, 14, 719, DateTimeKind.Local).AddTicks(3559),
                             PostId = 1,
                             UserId = 1
                         });
@@ -140,20 +140,20 @@ namespace backend.Migrations
                             Id = 1,
                             Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
                             Category = "Fetal Development",
-                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(129),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3507),
                             DisplayOrder = 1,
                             Question = "What is the normal fetal weight at 12 weeks?",
-                            UpdatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(126)
+                            UpdatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3504)
                         },
                         new
                         {
                             Id = 2,
                             Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
                             Category = "Prenatal Care",
-                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(133),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3511),
                             DisplayOrder = 2,
                             Question = "How often should I have prenatal check-ups?",
-                            UpdatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(131)
+                            UpdatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3510)
                         });
                 });
 
@@ -165,25 +165,251 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("MaxValue")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("MeasurementType")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<decimal>("MedianValue")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal>("MinValue")
+                    b.Property<decimal>("HeightCm")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("WeekNumber")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("WeightGrams")
+                        .HasColumnType("decimal(10,2)");
+
                     b.HasKey("Id");
 
                     b.ToTable("FetalGrowthStandards");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            HeightCm = 1.6m,
+                            WeekNumber = 8,
+                            WeightGrams = 1m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            HeightCm = 2.3m,
+                            WeekNumber = 9,
+                            WeightGrams = 2m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            HeightCm = 3.1m,
+                            WeekNumber = 10,
+                            WeightGrams = 4m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            HeightCm = 4.1m,
+                            WeekNumber = 11,
+                            WeightGrams = 7m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            HeightCm = 5.4m,
+                            WeekNumber = 12,
+                            WeightGrams = 14m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            HeightCm = 7.4m,
+                            WeekNumber = 13,
+                            WeightGrams = 23m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            HeightCm = 8.7m,
+                            WeekNumber = 14,
+                            WeightGrams = 43m
+                        },
+                        new
+                        {
+                            Id = 8,
+                            HeightCm = 10.1m,
+                            WeekNumber = 15,
+                            WeightGrams = 70m
+                        },
+                        new
+                        {
+                            Id = 9,
+                            HeightCm = 11.6m,
+                            WeekNumber = 16,
+                            WeightGrams = 100m
+                        },
+                        new
+                        {
+                            Id = 10,
+                            HeightCm = 13.0m,
+                            WeekNumber = 17,
+                            WeightGrams = 140m
+                        },
+                        new
+                        {
+                            Id = 11,
+                            HeightCm = 14.2m,
+                            WeekNumber = 18,
+                            WeightGrams = 190m
+                        },
+                        new
+                        {
+                            Id = 12,
+                            HeightCm = 15.3m,
+                            WeekNumber = 19,
+                            WeightGrams = 240m
+                        },
+                        new
+                        {
+                            Id = 13,
+                            HeightCm = 16.4m,
+                            WeekNumber = 20,
+                            WeightGrams = 300m
+                        },
+                        new
+                        {
+                            Id = 14,
+                            HeightCm = 25.6m,
+                            WeekNumber = 21,
+                            WeightGrams = 360m
+                        },
+                        new
+                        {
+                            Id = 15,
+                            HeightCm = 27.8m,
+                            WeekNumber = 22,
+                            WeightGrams = 430m
+                        },
+                        new
+                        {
+                            Id = 16,
+                            HeightCm = 28.9m,
+                            WeekNumber = 23,
+                            WeightGrams = 501m
+                        },
+                        new
+                        {
+                            Id = 17,
+                            HeightCm = 30.0m,
+                            WeekNumber = 24,
+                            WeightGrams = 600m
+                        },
+                        new
+                        {
+                            Id = 18,
+                            HeightCm = 34.6m,
+                            WeekNumber = 25,
+                            WeightGrams = 660m
+                        },
+                        new
+                        {
+                            Id = 19,
+                            HeightCm = 35.6m,
+                            WeekNumber = 26,
+                            WeightGrams = 760m
+                        },
+                        new
+                        {
+                            Id = 20,
+                            HeightCm = 36.6m,
+                            WeekNumber = 27,
+                            WeightGrams = 875m
+                        },
+                        new
+                        {
+                            Id = 21,
+                            HeightCm = 37.6m,
+                            WeekNumber = 28,
+                            WeightGrams = 1005m
+                        },
+                        new
+                        {
+                            Id = 22,
+                            HeightCm = 38.6m,
+                            WeekNumber = 29,
+                            WeightGrams = 1153m
+                        },
+                        new
+                        {
+                            Id = 23,
+                            HeightCm = 39.9m,
+                            WeekNumber = 30,
+                            WeightGrams = 1319m
+                        },
+                        new
+                        {
+                            Id = 24,
+                            HeightCm = 41.1m,
+                            WeekNumber = 31,
+                            WeightGrams = 1502m
+                        },
+                        new
+                        {
+                            Id = 25,
+                            HeightCm = 42.4m,
+                            WeekNumber = 32,
+                            WeightGrams = 1702m
+                        },
+                        new
+                        {
+                            Id = 26,
+                            HeightCm = 43.7m,
+                            WeekNumber = 33,
+                            WeightGrams = 1918m
+                        },
+                        new
+                        {
+                            Id = 27,
+                            HeightCm = 45.0m,
+                            WeekNumber = 34,
+                            WeightGrams = 2146m
+                        },
+                        new
+                        {
+                            Id = 28,
+                            HeightCm = 46.2m,
+                            WeekNumber = 35,
+                            WeightGrams = 2383m
+                        },
+                        new
+                        {
+                            Id = 29,
+                            HeightCm = 47.4m,
+                            WeekNumber = 36,
+                            WeightGrams = 2622m
+                        },
+                        new
+                        {
+                            Id = 30,
+                            HeightCm = 48.6m,
+                            WeekNumber = 37,
+                            WeightGrams = 2859m
+                        },
+                        new
+                        {
+                            Id = 31,
+                            HeightCm = 49.8m,
+                            WeekNumber = 38,
+                            WeightGrams = 3083m
+                        },
+                        new
+                        {
+                            Id = 32,
+                            HeightCm = 50.7m,
+                            WeekNumber = 39,
+                            WeightGrams = 3288m
+                        },
+                        new
+                        {
+                            Id = 33,
+                            HeightCm = 51.2m,
+                            WeekNumber = 40,
+                            WeightGrams = 3462m
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.FetalMeasurement", b =>
@@ -199,9 +425,6 @@ namespace backend.Migrations
 
                     b.Property<decimal>("HeightCm")
                         .HasColumnType("decimal(10,2)");
-
-                    b.Property<DateTime>("MeasurementDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
@@ -225,21 +448,19 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(95),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3480),
                             HeightCm = 25.5m,
-                            MeasurementDate = new DateTime(2025, 3, 6, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(94),
                             ProfileId = 1,
-                            Week = 0,
+                            Week = 12,
                             WeightGrams = 500.00m
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(99),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3483),
                             HeightCm = 28.5m,
-                            MeasurementDate = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(98),
                             ProfileId = 1,
-                            Week = 0,
+                            Week = 16,
                             WeightGrams = 650.00m
                         });
                 });
@@ -260,9 +481,6 @@ namespace backend.Migrations
 
                     b.Property<int>("MeasurementId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -399,9 +617,6 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("VnpayResponseCode")
                         .HasColumnType("nvarchar(max)");
 
@@ -413,9 +628,8 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MembershipId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("MembershipId")
+                        .IsUnique();
 
                     b.ToTable("Payments");
                 });
@@ -460,10 +674,10 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "I'm excited to share my journey through the first trimester...",
-                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(165),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3535),
                             Status = "published",
                             Title = "My First Pregnancy Experience",
-                            UpdatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(160),
+                            UpdatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3532),
                             UserId = 1
                         });
                 });
@@ -504,9 +718,9 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            ConceptionDate = new DateTime(2024, 12, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(52),
-                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(59),
-                            DueDate = new DateTime(2025, 9, 9, 7, 49, 56, 980, DateTimeKind.Local).AddTicks(58),
+                            ConceptionDate = new DateTime(2024, 12, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3438),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3447),
+                            DueDate = new DateTime(2025, 9, 10, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3446),
                             UserId = 1
                         });
                 });
@@ -576,6 +790,12 @@ namespace backend.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ResetToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResetTokenExpired")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -595,7 +815,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 979, DateTimeKind.Local).AddTicks(9844),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3202),
                             Email = "1@gmail.com",
                             Password = "111111",
                             Status = "active",
@@ -604,7 +824,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 13, 7, 49, 56, 979, DateTimeKind.Local).AddTicks(9849),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3206),
                             Email = "2@gmail.com",
                             Password = "222222",
                             Status = "active",
@@ -705,20 +925,12 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Payment", b =>
                 {
                     b.HasOne("backend.Models.Membership", "Membership")
-                        .WithMany("Payments")
-                        .HasForeignKey("MembershipId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("Payments")
-                        .HasForeignKey("UserId")
+                        .WithOne("Payment")
+                        .HasForeignKey("backend.Models.Payment", "MembershipId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Membership");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("backend.Models.Post", b =>
@@ -750,7 +962,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Membership", b =>
                 {
-                    b.Navigation("Payments");
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("backend.Models.MembershipPlan", b =>
@@ -775,8 +987,6 @@ namespace backend.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Memberships");
-
-                    b.Navigation("Payments");
 
                     b.Navigation("Posts");
 
