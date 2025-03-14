@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 
-
 namespace backend.Dtos.FetalGrowth
 {
     public class CreateFetalMeasurementDto
@@ -9,9 +8,9 @@ namespace backend.Dtos.FetalGrowth
         public decimal WeightGrams { get; set; }
         public decimal HeightCm { get; set; }
         
- 
-        public DateTime MeasurementDate { get; set; }
+        // Removed MeasurementDate
+        public int Week { get; set; } // Added Week property
         
         public string? Notes { get; set; }
     }
-} 
+}

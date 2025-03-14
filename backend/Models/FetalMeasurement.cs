@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace backend.Models
 {
@@ -10,25 +10,17 @@ namespace backend.Models
         public decimal WeightGrams { get; set; }
         public decimal HeightCm { get; set; }
         
-        public DateTime MeasurementDate { get; set; }
+        // Removed MeasurementDate
         
         public string? Notes { get; set; }
-        public int Week { get; protected set; }
+        [Range(0, 42)]
+        public int Week { get; set; } // Changed to public set to allow direct input
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
         public virtual PregnancyProfile Profile { get; set; } = null!;
         public virtual ICollection<GrowthAlert> GrowthAlerts { get; set; } = new List<GrowthAlert>();
 
-        // Method to calculate week
-        public void CalculateWeek()
-        {
-            if (Profile != null)
-            {
-                TimeSpan difference = MeasurementDate - Profile.ConceptionDate;
-                Week = (int)Math.Floor(difference.TotalDays / 7.0) + 1;
-                if (Week < 1) Week = 1;
-            }
-        }
+        // No longer need CalculateWeek method since Week is set directly
     }
-} 
+}

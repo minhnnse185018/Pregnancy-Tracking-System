@@ -28,8 +28,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 // Configure Database
-builder.Services.AddDbContext<ApplicationDBContext>(options =>
-{
+builder.Services.AddDbContext<ApplicationDBContext>(options => {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     options.UseSqlServer(connectionString);

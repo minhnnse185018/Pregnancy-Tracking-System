@@ -55,19 +55,27 @@ function MembershipPage() {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:5254/api/payment", {
-        userId: userId,
-        membershipId: selectedPlan.id,
-        amount: selectedPlan.price,
-        paymentDescription: `Payment for ${selectedPlan.name} plan`,
-        paymentMethod: selectedPaymentMethod,
-      });
-
-      if (response.status === 200) {
-        alert("Payment successful!");
-        setShowPaymentModal(false);
+      const response = await axios.post(
+        "http://localhost:5254/api/payment",
+        {
+          userId: userId,
+          membershipId: 2,  
+          amount: selectedPlan.price,
+          paymentDescription: `Payment for ${selectedPlan.name}`,
+          paymentMethod: selectedPaymentMethod,
+        }
+      );
+    
+      console.log("Response data:", response.data);
+      
+      if (response.data && typeof response.data === 'string' && response.data.includes('vnpayment.vn')) {
+        // Nếu response.data là một chuỗi URL, sử dụng nó trực tiếp
+        window.location.href = response.data;
+      } else if (response.data && response.data.vnpayUrl) {
+        // Nếu response.data là một đối tượng có thuộc tính vnpayUrl
+        window.location.href = response.data.vnpayUrl;
       } else {
-        alert("Payment failed!");
+        alert("Failed to get payment URL!");
       }
     } catch (error) {
       console.error("Payment error:", error);
@@ -79,7 +87,8 @@ function MembershipPage() {
     <div className="membership-container">
       <h1 className="membership-title">Join the Journey with Mom and Baby</h1>
       <p className="membership-description">
-        Choose a suitable membership plan to access exclusive materials, expert advice, and connect with the mom community!
+        Choose a suitable membership plan to access exclusive materials, expert
+        advice, and connect with the mom community!
       </p>
 
       {loading ? (
@@ -142,22 +151,6 @@ function MembershipPage() {
               Scan QR Code
             </label>
           </div>
-          {selectedPaymentMethod === "bank" && (
-            <div className="payment-details">
-              <p>
-                <strong>ACCOUNT HOLDER:</strong> NGUYEN VAN A
-              </p>
-              <p>
-                <strong>ACCOUNT NUMBER:</strong> babycare.com
-              </p>
-              <p>
-                <strong>BANK:</strong> MB
-              </p>
-              <p>
-                <strong>TRANSFER NOTE:</strong> NAP306046MOM
-              </p>
-            </div>
-          )}
           {selectedPaymentMethod === "qr" && (
             <div className="payment-details">
               <p>Please scan the QR code to proceed with the payment:</p>
@@ -169,7 +162,11 @@ function MembershipPage() {
           <Button variant="secondary" onClick={handleClosePaymentModal}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={handlePayment} disabled={!selectedPaymentMethod}>
+          <Button
+            variant="primary"
+            onClick={handlePayment}
+            disabled={!selectedPaymentMethod}
+          >
             Confirm Payment
           </Button>
         </Modal.Footer>

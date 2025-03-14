@@ -103,11 +103,30 @@ namespace backend.Controllers
         {
             try
             {
-                
-
-                
                 var result = await _userRepository.Register(request);
-                if (result > 0)
+                if (result)
+                {
+                    return Ok(new { 
+                        message = "Registration successful. Please check your email to verify your account.",
+                        
+                    });
+                }
+
+                return BadRequest(new { message = "Registration failed" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred during registration", error = ex.Message });
+            }
+        }
+
+        [HttpPost("verify-registration")]
+        public async Task<IActionResult> VerifyRegistration([FromBody] VerificationRequest request)
+        {
+            try
+            {
+                var result = await _userRepository.VerifyRegistration(request.Email, request.Token);
+                if (result)
                 {
                     // Get the registered user
                     var user = await _userRepository.GetUserByEmailAsync(request.Email);
@@ -116,18 +135,19 @@ namespace backend.Controllers
                         // Generate token
                         var token = _jwtService.GenerateToken(user);
                         return Ok(new 
-                        { token,
-                            userID=user.Id,
-                            userRole=user.UserType
-                         });
+                        { 
+                            token,
+                            userID = user.Id,
+                            userRole = user.UserType
+                        });
                     }
                 }
 
-                return BadRequest(new { message = "Registration failed" });
+                return BadRequest(new { message = "Verification failed. The link may have expired or is invalid." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred during registration", error = ex.Message });
+                return StatusCode(500, new { message = "An error occurred during verification", error = ex.Message });
             }
         }
 
@@ -170,7 +190,7 @@ namespace backend.Controllers
                         Email = email,
                         FirstName = firstName ?? "",
                         LastName = lastName ?? "",
-                        UserType = "Customer",
+                        UserType = "1",
                         Status = "active",
                         CreatedAt = DateTime.Now,
                         Password = "" // Set empty password for Google users
@@ -213,7 +233,9 @@ namespace backend.Controllers
         public string Password { get; set; } = null!;
     }
 
-    
-
-    
+    public class VerificationRequest
+    {
+        public string Email { get; set; } = null!;
+        public string Token { get; set; } = null!;
+    }
 }

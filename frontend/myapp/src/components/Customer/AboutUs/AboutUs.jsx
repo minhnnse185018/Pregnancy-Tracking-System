@@ -124,25 +124,25 @@ export default function AboutUs() {
                 title: "Thông Tin Hữu Ích",
                 description:
                   "Cung cấp kiến thức về mang thai, sinh nở và chăm sóc bé một cách khoa học và cập nhật nhất.",
-                image: "images/home-icon1.png",
+                image: "images/about2.png",
               },
               {
                 title: "Theo Dõi Thai Kỳ",
                 description:
                   "Công cụ theo dõi sự phát triển của thai nhi, nhắc nhở lịch khám thai và tiêm phòng.",
-                image: "images/home-icon2.png",
+                image: "images/icon4.png",
               },
               {
                 title: "Cộng Đồng Mẹ Bầu",
                 description:
                   "Nơi chia sẻ kinh nghiệm, tâm sự và kết nối với các bà mẹ khác trong hành trình làm mẹ.",
-                image: "images/home-icon3.png",
+                image: "images/about-1.png",
               },
               {
                 title: "Dịch Vụ Tư Vấn",
                 description:
                   "Hỗ trợ tư vấn từ các chuyên gia về dinh dưỡng, sức khỏe và tâm lý cho mẹ và bé.",
-                image: "images/home-icon4.png",
+                image: "images/icon3.png",
               },
             ].map((service, index) => (
               <div key={index} className="col-md-6" style={serviceItem}>

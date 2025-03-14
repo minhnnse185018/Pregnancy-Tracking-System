@@ -16,6 +16,8 @@ namespace backend.Models
         public string? Phone { get; set; }
         public string Status { get; set; } = "active";
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public string? ResetToken { get; set; }
+         public DateTime? ResetTokenExpired { get; set; }
 
         // Navigation properties
         public virtual ICollection<PregnancyProfile>? PregnancyProfiles { get; set; }
@@ -24,7 +26,6 @@ namespace backend.Models
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<Membership> Memberships { get; set; } = new List<Membership>();
-        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
         public virtual ICollection<Message> ReceivedMessages { get; set; } = new List<Message>();
         public virtual ICollection<Message> SentMessages { get; set; } = new List<Message>();
