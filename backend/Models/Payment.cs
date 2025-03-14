@@ -34,6 +34,7 @@ namespace backend.Models
 
         [Required]
         public string PaymentStatus { get; set; } = "Pending"; // Trạng thái thanh toán (Pending, Success, Failed)
+      
 
         // Khóa ngoại
         [ForeignKey("UserId")]
