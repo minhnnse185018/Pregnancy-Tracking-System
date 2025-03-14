@@ -175,13 +175,9 @@ namespace backend.Data
             modelBuilder.Entity<Payment>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasOne(p => p.User)
-                    .WithMany(u => u.Payments)
-                    .HasForeignKey(p => p.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.Membership)
-                    .WithMany(m => m.Payments)
-                    .HasForeignKey(p => p.MembershipId)
+                    .WithOne(m => m.Payment)
+                    .HasForeignKey<Payment>(p => p.MembershipId)
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.PaymentMethod).IsRequired().HasMaxLength(50);

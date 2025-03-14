@@ -68,7 +68,6 @@ function MembershipPage() {
     
       console.log("Response data:", response.data);
       
-      // Kiểm tra xem response.data có phải là một chuỗi URL không
       if (response.data && typeof response.data === 'string' && response.data.includes('vnpayment.vn')) {
         // Nếu response.data là một chuỗi URL, sử dụng nó trực tiếp
         window.location.href = response.data;

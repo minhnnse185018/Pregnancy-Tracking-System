@@ -13,6 +13,6 @@ namespace backend.Models
         // Navigation properties
         public virtual User User { get; set; } = null!;
         public virtual MembershipPlan Plan { get; set; } = null!;
-        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public virtual Payment? Payment { get; set; }
     }
 } 
