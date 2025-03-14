@@ -55,6 +55,8 @@ const HealthTipComponent = () => {
       border-radius: 15px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
       overflow: hidden;
+      margin-bottom: 50px;
+      margin-top: 150px;
     }
 
     .main-title {
