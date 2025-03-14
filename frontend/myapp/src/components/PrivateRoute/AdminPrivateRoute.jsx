@@ -11,7 +11,7 @@ const AdminPrivateRoute = () => {
     const token = sessionStorage.getItem('token');
     const userRole = sessionStorage.getItem('userRole');
 
-    if (token && userRole === '5') {
+    if (token && userRole === '4') {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);

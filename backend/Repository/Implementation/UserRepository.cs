@@ -95,6 +95,9 @@ namespace backend.Repository.Implementation
         {
             var query = _context.Users.AsQueryable();
 
+            // Exclude users with UserType 3 and 4
+            query = query.Where(u => u.UserType != "3" && u.UserType != "4");
+
             if (!string.IsNullOrEmpty(role))
             {
                 query = query.Where(u => u.UserType == role);
@@ -133,23 +136,24 @@ namespace backend.Repository.Implementation
 
         }
 
-        public async Task<int> Register(RegisterRequest register)
+        public async Task<bool> Register(RegisterRequest register)
         {
             try 
             {
                 if (await IsEmailExists(register.Email))
                 {
-                    return -1;
+                    return false;
                 }
 
                 var user = _mapper.Map<User>(register);
                 
-                // Set default values
                 user.CreatedAt = DateTime.Now;
-                user.Status = "active";
+                user.Status = "inactive"; 
                 user.UserType = "1";
+                string verificationToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+                user.ResetToken = verificationToken;
+                user.ResetTokenExpired = DateTime.UtcNow.AddHours(2); 
 
-                // Explicitly set Phone and DateOfBirth
                 if (!string.IsNullOrWhiteSpace(register.Phone))
                 {
                     user.Phone = register.Phone.Trim();
@@ -160,12 +164,21 @@ namespace backend.Repository.Implementation
                 }
 
                 await _context.Users.AddAsync(user);
-                return await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+
+                // Send verification email
+                var verificationLink = $"http://localhost:3000/verify-account?token={Uri.EscapeDataString(verificationToken)}&email={Uri.EscapeDataString(register.Email)}";
+                var subject = "Account Verification(Valid for 2 hours)";
+                var body = $"Please click the link below to verify your account:\n\n{verificationLink}";
+                
+                await _emailService.SendEmailAsync(register.Email, subject, body);
+                
+                return true; // Return the user ID
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Registration error: {ex.Message}");
-                return 0;
+                return false;
             }
         }
 
@@ -246,8 +259,8 @@ namespace backend.Repository.Implementation
              user.ResetToken = resetToken;
              user.ResetTokenExpired = DateTime.UtcNow.AddMinutes(10);
              await _context.SaveChangesAsync();
-             var resetlink= $"https://localhost:3000/reset-password?token={Uri.EscapeDataString(resetToken)}&email={Uri.EscapeDataString(forgotPasswordRequestDto.Email)}";
-             var subject = "Password Reset Request";
+             var resetlink= $"http://localhost:3000/reset-password?token={Uri.EscapeDataString(resetToken)}&email={Uri.EscapeDataString(forgotPasswordRequestDto.Email)}";
+             var subject = "Password Reset Request(Valid for 10 minutes)";
              var body = $"Click the link below to reset your password:\n\n{resetlink}";
              
              await _emailService.SendEmailAsync(user.Email, subject, body);
@@ -275,5 +288,37 @@ namespace backend.Repository.Implementation
          await _context.SaveChangesAsync();
          return true;
          }
+
+        public async Task<bool> VerifyRegistration(string email, string token)
+        {
+            // First, check if there's a pending user with this email
+            var user = await _context.Users.FirstOrDefaultAsync(u => 
+                u.Email == email && 
+                u.Status.ToLower() == "inactive");
+                
+            if (user == null)
+            {
+                return false;
+            }
+            
+            // If token is valid and not expired
+            if (user.ResetToken == token && user.ResetTokenExpired > DateTime.UtcNow) 
+            {
+                // Activate the account
+                user.Status = "active";
+                user.ResetToken = null;
+                user.ResetTokenExpired = null;
+                
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                // Token is invalid or expired - delete the unverified account
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return false;
+            }
+        }
     }
 }

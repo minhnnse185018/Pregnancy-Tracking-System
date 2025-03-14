@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
-import { AuthContext } from "../AuthContext"; // Import AuthContext
+import { AuthContext } from "../AuthContext";
 import * as Components from "./Components";
 
 const PageContainer = styled.div`
@@ -25,16 +25,20 @@ function LoginPage() {
   const [signIn, toggle] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // Thêm state cho Confirm Password
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setHasToken } = useContext(AuthContext); // Lấy setHasToken từ AuthContext
+  const { setHasToken } = useContext(AuthContext);
 
   const validateEmail = (email) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
   };
 
+  // Xử lý đăng nhập
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -49,10 +53,9 @@ function LoginPage() {
     try {
       const response = await axios.post("http://localhost:5254/api/Login", {
         email,
-        password
-      },
-      {
-        headers: { "Content-Type": "application/json" }
+        password,
+      }, {
+        headers: { "Content-Type": "application/json" },
       });
 
       const { token, userID, userRole } = response.data;
@@ -60,7 +63,7 @@ function LoginPage() {
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
-        setHasToken(true); // Cập nhật trạng thái đăng nhập trong AuthContext
+        setHasToken(true);
         navigate("/");
         toast.success("Login successful!");
       } else {
@@ -73,16 +76,42 @@ function LoginPage() {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
+  // Xử lý đăng ký (thêm kiểm tra Confirm Password)
+  const handleRegister = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setError("");
 
+    if (!validateEmail(signUpEmail)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
+    if (signUpPassword.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      setLoading(false);
+      return;
+    }
+
+    if (signUpPassword !== confirmPassword) {
+      setError("Passwords do not match.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.post("http://localhost:5254/api/Login/google-login", {
-        credential: credentialResponse.credential
-      },
-      {
-        headers: { "Content-Type": "application/json" }
+      const response = await axios.post("http://localhost:5254/api/Login/register", {
+        email: signUpEmail,
+        password: signUpPassword,
+        firstname: " ",
+        lastName:" ",
+        phone:"",
+        dateOfBirth:"",
+        gender:"",
+        image:"",
+      }, {
+        headers: { "Content-Type": "application/json" },
       });
 
       const { token, userID, userRole } = response.data;
@@ -90,14 +119,45 @@ function LoginPage() {
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
-        setHasToken(true); // Cập nhật trạng thái đăng nhập trong AuthContext
-        toast.success("Google login successful!");
+        setHasToken(true);
+        toast.success("Registration successful! You are now logged in.");
         navigate("/");
       } else {
-        setError("Google login failed. Please try again.");
+        setError("Registration failed. Please try again.");
       }
     } catch (error) {
-      setError("Google login failed. Please try again.");
+      setError(error.response?.data?.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Xử lý đăng nhập/đăng ký Google
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError("");
+
+    const endpoint = signIn ? "http://localhost:5254/api/Login/google-login" : "http://localhost:5254/api/Register/google-register";
+    try {
+      const response = await axios.post(endpoint, {
+        credential: credentialResponse.credential,
+      }, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const { token, userID, userRole } = response.data;
+      if (token) {
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("userID", userID);
+        sessionStorage.setItem("userRole", userRole);
+        setHasToken(true);
+        toast.success(`${signIn ? "Google login" : "Google registration"} successful!`);
+        navigate("/");
+      } else {
+        setError(`Google ${signIn ? "login" : "registration"} failed. Please try again.`);
+      }
+    } catch (error) {
+      setError(`Google ${signIn ? "login" : "registration"} failed. Please try again.`);
     } finally {
       setLoading(false);
     }
@@ -108,19 +168,41 @@ function LoginPage() {
       <PageContainer>
         <Components.Container>
           <Components.SignUpContainer signinIn={signIn}>
-            <Components.Form>
+            <Components.Form onSubmit={handleRegister}>
               <Components.Title>Create Account</Components.Title>
               <GoogleButtonContainer>
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
-                  onError={() => toast.error("Google login failed")}
+                  onError={() => toast.error("Google registration failed")}
                   text="signup_with"
                 />
               </GoogleButtonContainer>
-              <Components.Input type="text" placeholder="Name" />
-              <Components.Input type="email" placeholder="Email" />
-              <Components.Input type="password" placeholder="Password" />
-              <Components.Button>Sign Up</Components.Button>
+              <Components.Input
+                type="email"
+                placeholder="Email"
+                value={signUpEmail}
+                onChange={(e) => setSignUpEmail(e.target.value)}
+              />
+              <Components.Input
+                type="password"
+                placeholder="Password"
+                value={signUpPassword}
+                onChange={(e) => setSignUpPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+              <Components.Input
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+              {error && <p style={{ color: "red" }}>{error}</p>}
+              <Components.Button type="submit" disabled={loading}>
+                {loading ? "Signing Up..." : "Sign Up"}
+              </Components.Button>
             </Components.Form>
           </Components.SignUpContainer>
 
@@ -145,10 +227,11 @@ function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
               />
-              <Components.Anchor href="#">
-                Forgot your password?
-              </Components.Anchor>
+              <Components.Anchor href="/forgotPassword
+              ">Forgot your password?</Components.Anchor>
               {error && <p style={{ color: "red" }}>{error}</p>}
               <Components.Button type="submit" disabled={loading}>
                 {loading ? "Signing In..." : "Sign In"}

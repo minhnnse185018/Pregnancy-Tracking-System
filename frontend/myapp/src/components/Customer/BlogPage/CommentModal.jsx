@@ -1,7 +1,9 @@
 import React from "react";
 import "./CommentModal.css";
 
-function CommentModal({ commentText, setCommentText, handleAddComment, setShowModal }) {
+const CommentModal = ({ showModal, setShowModal, commentText, setCommentText, handleAddComment }) => {
+  if (!showModal) return null;
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -12,12 +14,12 @@ function CommentModal({ commentText, setCommentText, handleAddComment, setShowMo
           placeholder="Write your comment here..."
         />
         <div className="modal-actions">
-          <button onClick={handleAddComment}>Submit</button>
-          <button onClick={() => setShowModal(false)}>Cancel</button>
+          <button onClick={handleAddComment} className="submit-comment-btn">Submit</button>
+          <button onClick={() => setShowModal(false)} className="cancel-comment-btn">Cancel</button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default CommentModal;

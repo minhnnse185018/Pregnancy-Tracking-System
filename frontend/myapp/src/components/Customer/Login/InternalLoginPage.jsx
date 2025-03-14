@@ -11,7 +11,7 @@ const InternalLoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
+
   const validateEmail = (email) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
@@ -36,49 +36,42 @@ const InternalLoginPage = () => {
 
       const { token, userID, userRole } = response.data;
 
-      if (userRole === 1) {
-        setError('Your account does not have internal login permissions. Please select customer login.');
+      if (!token || !userID || !userRole) {
+        setError('Access Denied: Invalid login response');
         setLoading(false);
         return;
       }
 
-      if (token && userID && userRole) {
-        sessionStorage.setItem('token', token);
-        sessionStorage.setItem('userID', userID);
-        sessionStorage.setItem('userRole', userRole);
-        window.dispatchEvent(new Event('storage'));
+      const validRoles = {
+        2: 'doctor',
+        3: 'manager',
+        4: 'admin'
+      };
 
-        const closeButton = document.querySelector("#internalLoginModal .btn-close");
-        if (closeButton) {
-          closeButton.click();
-        }
-
+      if (!validRoles[userRole]) {
+        setError('Access Denied: This login is for internal staff only');
         setLoading(false);
-        toast.success("Login Successfully!");
-          switch (userRole) {
-          case 2:
-            navigate('/stylist');
-            window.location.reload();
-            break;
-          case 3:
-            navigate('/staff');
-            window.location.reload();
-            break;
-          case 4:
-            navigate('/manager');
-            window.location.reload();
-            break;
-          case 5:
-            navigate('/admin');
-            window.location.reload();
-            break;
-          default:
-            setError('Access Denied: Invalid role for internal login.');
-        }
-      } else {
-        setError('Access Denied: This login is for internal staff only.');
-        setLoading(false);
+        return;
       }
+
+      // Store authentication data
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('userID', userID);
+      sessionStorage.setItem('userRole', userRole);
+      window.dispatchEvent(new Event('storage'));
+
+      toast.success("Login Successful!");
+      
+      // Navigate immediately after successful login
+      const redirectTo = {
+        2: '/doctor',
+        3: '/manager',
+        4: '/admin'
+      }[userRole];
+      
+      setLoading(false);
+      navigate(redirectTo, { replace: true });
+      
     } catch (error) {
       setError('Username or Password Incorrect.');
       setLoading(false);
@@ -91,28 +84,22 @@ const InternalLoginPage = () => {
         <div className="modal-content login-box">
           <div className="modal-header">
             <h5 className="modal-title text-center w-100">
-              <img src="images/logo.png" alt="salon icon" className="logo" />
-              Internal Staff Login
+              <img src="images/logo.png" alt="baby icon" className="logo" />
+              Staff Pregnancy Care Portal
             </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
           </div>
           <div className="modal-body">
-            <p className="info-text">This Login Only For Internal Staff!!</p>
+            <p className="info-text">Supporting our prenatal care team</p>
             <form onSubmit={handleInternalLogin}>
               <div className="mb-3">
                 <label htmlFor="internalUsername" className="form-label">
-                  Username
+                  Email
                 </label>
                 <input
-                  type="text"
+                  type="email"
                   className="form-control"
                   id="internalUsername"
-                  placeholder="Enter your username"
+                  placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -144,7 +131,7 @@ const InternalLoginPage = () => {
               </div>
               {error && <p className="error-text">{error}</p>}
               <div className="d-flex justify-content-between">
-                <Link to="#" className="text-decoration-none">
+                <Link to="/forgot-password" className="text-decoration-none">
                   Forgot Password?
                 </Link>
               </div>
@@ -155,8 +142,6 @@ const InternalLoginPage = () => {
             <div className="text-center mt-3">
               <p>or sign in with</p>
               <div className="d-flex justify-content-center">
-              <button onClick={() => navigate('/admin')}>Go to Admin</button>
-
                 <Link to="#" className="google-btn">
                   <FaGoogle />
                 </Link>
@@ -171,65 +156,112 @@ const InternalLoginPage = () => {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #FFF0F5 0%, #F8E1E9 100%);
+            padding: 20px;
           }
 
           .login-box {
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            max-width: 400px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(244, 164, 188, 0.2);
+            padding: 40px;
+            max-width: 450px;
             width: 100%;
+            background: white;
           }
 
           .logo {
-            width: 50px;
-            margin-right: 10px;
+            width: 60px;
+            margin-right: 15px;
+            border-radius: 50%;
+          }
+
+          .modal-title {
+            color: #F472B6;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
 
           .info-text {
             text-align: center;
+            color: #F9A8D4;
             font-style: italic;
             font-size: 16px;
+            margin-bottom: 25px;
+          }
+
+          .form-label {
+            color: #F472B6;
+            font-weight: 500;
+          }
+
+          .form-control {
+            border: 2px solid #FCE7F3;
+            border-radius: 10px;
+            padding: 10px;
+            transition: border-color 0.3s;
+          }
+
+          .form-control:focus {
+            border-color: #F9A8D4;
+            box-shadow: 0 0 0 0.2rem rgba(244, 114, 182, 0.25);
           }
 
           .error-text {
-            color: red;
+            color: #F43F5E;
             text-align: center;
-            font-weight: bold;
+            font-weight: 500;
+            margin: 15px 0;
           }
 
           .login-btn {
             width: 100%;
-            border-radius: 10px;
-            background-color: #D569D6;
-            border-color: #D569D6;
+            border-radius: 12px;
+            background: linear-gradient(to right, #F472B6, #F9A8D4);
+            border: none;
             color: white;
-            padding: 10px;
-            font-weight: bold;
-            transition: 0.3s;
+            padding: 12px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
           }
 
           .login-btn:hover {
-            background-color: #c254c2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.4);
+          }
+
+          .login-btn:disabled {
+            background: #E5E7EB;
+            cursor: not-allowed;
           }
 
           .google-btn {
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #db4437;
+            background: #F472B6;
             border-radius: 50%;
             width: 50px;
             height: 50px;
             color: white;
             font-size: 20px;
-            transition: 0.3s;
+            transition: transform 0.3s;
           }
 
           .google-btn:hover {
-            background-color: #c1351d;
+            transform: scale(1.1);
+            background: #F9A8D4;
+          }
+
+          .text-decoration-none {
+            color: #F472B6;
+            transition: color 0.3s;
+          }
+
+          .text-decoration-none:hover {
+            color: #F9A8D4;
           }
         `}
       </style>

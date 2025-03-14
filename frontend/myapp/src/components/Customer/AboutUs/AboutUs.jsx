@@ -1,9 +1,8 @@
 import React from "react";
-
 export default function AboutUs() {
   // Define styles as JavaScript objects
   const heroSection = {
-    padding: "60px 0",
+    padding: "160px 0",
   };
 
   const heroImage = {
