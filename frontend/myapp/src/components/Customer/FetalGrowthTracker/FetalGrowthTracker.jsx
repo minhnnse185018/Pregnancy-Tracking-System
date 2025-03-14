@@ -15,7 +15,7 @@ import './FetalGrowthTracker.css';
 
 const FetalGrowthTracker = () => {
   const [growthData, setGrowthData] = useState([]);
-  const [weight, setWeight] = useState(''); // kg
+  const [weight, setWeight] = useState(''); // grams
   const [height, setHeight] = useState(''); // cm
   const [measurementDate, setMeasurementDate] = useState(''); // YYYY-MM-DD
   const [notes, setNotes] = useState('');
@@ -49,7 +49,7 @@ const FetalGrowthTracker = () => {
 
         const transformedData = response.data.map(item => ({
           id: item.id,
-          weight: item.weightGrams / 1000, // Convert grams to kg
+          weight: item.weightGrams, // Keep weight in grams
           height: item.heightCm,
           measurementDate: item.measurementDate.split('T')[0], // Extract YYYY-MM-DD
           notes: item.notes || 'No notes',
@@ -103,7 +103,7 @@ const FetalGrowthTracker = () => {
     // Prepare data for API
     const data = {
       profileId,
-      weightGrams: weightValue * 1000, // Convert kg to grams
+      weightGrams: weightValue, // Keep weight in grams
       heightCm: heightValue,
       measurementDate: isoDate, // Send in ISO format
       notes: notes || '', // Send empty string if no notes, instead of null
@@ -207,13 +207,13 @@ const FetalGrowthTracker = () => {
         <Form onSubmit={handleSave} className="growth-form">
           <div className="form-row">
             <Form.Group controlId="weight" className="mb-3">
-              <Form.Label>Weight (kg)</Form.Label>
+              <Form.Label>Weight (grams)</Form.Label>
               <Form.Control
                 type="number"
-                step="0.01"
+                step="1"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
-                placeholder="Enter weight (kg)"
+                placeholder="Enter weight (grams)"
                 disabled={loading}
                 className="form-control"
               />
@@ -280,7 +280,7 @@ const FetalGrowthTracker = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Weight (kg)</th>
+                <th>Weight (grams)</th>
                 <th>Height (cm)</th>
                 <th>Measurement Date (YYYY-MM-DD)</th>
                 <th>Notes</th>
@@ -291,7 +291,7 @@ const FetalGrowthTracker = () => {
               {growthData.map((item) => (
                 <tr key={item.id}>
                   <td>{item.id}</td>
-                  <td>{item.weight.toFixed(2)}</td>
+                  <td>{item.weight.toFixed(0)}</td>
                   <td>{item.height}</td>
                   <td>{item.measurementDate}</td>
                   <td>{item.notes}</td>
@@ -316,10 +316,10 @@ const FetalGrowthTracker = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                 <XAxis dataKey="date" label={{ value: 'Measurement Date', position: 'insideBottomRight', offset: -10 }} style={{ fontSize: '14px' }} />
                 <YAxis
-                  label={{ value: 'Value (kg/cm)', angle: -90, position: 'insideLeft' }}
+                  label={{ value: 'Value (grams/cm)', angle: -90, position: 'insideLeft' }}
                   yAxisId="left"
                   orientation="left"
-                  tickFormatter={(value) => (value ? `${value} kg` : '')}
+                  tickFormatter={(value) => (value ? `${value} grams` : '')}
                   style={{ fontSize: '14px' }}
                 />
                 <YAxis
@@ -330,12 +330,12 @@ const FetalGrowthTracker = () => {
                 />
                 <Tooltip
                   formatter={(value, name) =>
-                    name === 'weight' ? [`${value} kg`, 'Weight'] : [`${value} cm`, 'Height']
+                    name === 'weight' ? [`${value} grams`, 'Weight'] : [`${value} cm`, 'Height']
                   }
                   contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #ddd' }}
                 />
                 <Legend wrapperStyle={{ fontSize: '14px' }} />
-                <Bar dataKey="weight" name="Weight (kg)" fill="#FF9999" yAxisId="left" barSize={20} />
+                <Bar dataKey="weight" name="Weight (grams)" fill="#FF9999" yAxisId="left" barSize={20} />
                 <Bar dataKey="height" name="Height (cm)" fill="#66B2B2" yAxisId="right" barSize={20} />
               </BarChart>
             </ResponsiveContainer>
