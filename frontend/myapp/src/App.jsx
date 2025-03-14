@@ -39,6 +39,7 @@ import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
 import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
 import ForgotPasswordPage from "./components/Customer/Login/forgotPassword";
+import ResetPasswordPage from "./components/Customer/Login/resetPassword";
 function App() {
   return (
     <div>
@@ -149,7 +150,7 @@ function App() {
               </>
             }
           />
-                                    {/* profileCustommer */}
+          {/* profileCustommer */}
           {/* Protected Routes */}
           <Route path="/profile" element={<CustomerPrivateRoute />}>
             <Route
@@ -157,14 +158,14 @@ function App() {
               element={
                 <>
                   <Navbarr />
-                  
+
                   <UserProfile />
                   <Footer />
                 </>
               }
             />
           </Route>
-                                  {/* profilePregnancy */}
+          {/* profilePregnancy */}
           <Route path="/profilePregnancy" element={<CustomerPrivateRoute />}>
             <Route
               path=""
@@ -177,7 +178,7 @@ function App() {
               }
             />
           </Route>
-                                   {/* //forgotPassword */}
+          {/* //forgotPassword */}
           <Route
             path="/forgotPassword"
             element={
@@ -188,6 +189,14 @@ function App() {
               </>
             }
           />
+          <Route 
+          path="/reset-password" 
+          element={
+          <>
+          <ResetPasswordPage /> 
+          /</>
+        } 
+        />
 
           {/* DASHBOARD ADMIN */}
           <Route path="/admin" element={<AdminPrivateRoute />}>
