@@ -10,9 +10,6 @@ namespace backend.Models
         public int Id { get; set; }
 
         [Required]
-        public int UserId { get; set; } // Liên kết với Users
-
-        [Required]
         public int MembershipId { get; set; } // Liên kết với Memberships
 
         [Required]
@@ -37,10 +34,9 @@ namespace backend.Models
       
 
         // Khóa ngoại
-        [ForeignKey("UserId")]
-        public User User { get; set; }
+    
 
-        [ForeignKey("MembershipId")]
-        public Membership Membership { get; set; }
+        
+        public virtual Membership Membership { get; set; }
     }
 }

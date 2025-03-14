@@ -174,10 +174,6 @@ namespace backend.Data
             modelBuilder.Entity<Payment>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasOne(p => p.User)
-                    .WithMany(u => u.Payments)
-                    .HasForeignKey(p => p.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.Membership)
                     .WithOne(m => m.Payment)
                     .HasForeignKey<Payment>(p => p.MembershipId)

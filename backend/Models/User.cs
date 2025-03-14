@@ -26,7 +26,6 @@ namespace backend.Models
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<Membership> Memberships { get; set; } = new List<Membership>();
-        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
         public virtual ICollection<Message> ReceivedMessages { get; set; } = new List<Message>();
         public virtual ICollection<Message> SentMessages { get; set; } = new List<Message>();
