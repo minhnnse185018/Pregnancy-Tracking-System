@@ -69,6 +69,7 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<AppointmentReminderService>();
 builder.Services.AddHostedService<ScheduledEmailService>();
+builder.Services.AddScoped<IFAQRepository, FAQRepository>();
 
 var app = builder.Build();
 

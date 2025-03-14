@@ -23,7 +23,6 @@ namespace backend.Repository.Implementation
         {
             var standards = await _context.FetalGrowthStandards
                 .OrderBy(s => s.WeekNumber)
-                .ThenBy(s => s.MeasurementType)
                 .ToListAsync();
 
             return _mapper.Map<List<FetalGrowthStandardDto>>(standards);
@@ -41,7 +40,6 @@ namespace backend.Repository.Implementation
         {
             var standards = await _context.FetalGrowthStandards
                 .Where(s => s.WeekNumber == week)
-                .OrderBy(s => s.MeasurementType)
                 .ToListAsync();
 
             return _mapper.Map<List<FetalGrowthStandardDto>>(standards);
@@ -78,4 +76,4 @@ namespace backend.Repository.Implementation
             return true;
         }
     }
-} 
+}

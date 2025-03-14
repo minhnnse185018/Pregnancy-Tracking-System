@@ -106,19 +106,18 @@ namespace backend.Data
 
 
 
+            
+
             // FetalGrowthStandard configuration
             modelBuilder.Entity<FetalGrowthStandard>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.WeekNumber).IsRequired();
-                entity.Property(e => e.MeasurementType).HasMaxLength(20);
-
-                // Add decimal precision
-                entity.Property(e => e.MinValue)
+                
+                // Add decimal precision for the simplified model
+                entity.Property(e => e.WeightGrams)
                     .HasColumnType("decimal(10,2)");
-                entity.Property(e => e.MedianValue)
-                    .HasColumnType("decimal(10,2)");
-                entity.Property(e => e.MaxValue)
+                entity.Property(e => e.HeightCm)
                     .HasColumnType("decimal(10,2)");
             });
 
@@ -230,7 +229,7 @@ namespace backend.Data
                     ProfileId = 1,
                     WeightGrams = 500.00M,
                     HeightCm = 25.5M,
-                    MeasurementDate = DateTime.Now.AddDays(-7),
+                    Week = 12,
                     CreatedAt = DateTime.Now
                 },
                 new FetalMeasurement
@@ -239,7 +238,7 @@ namespace backend.Data
                     ProfileId = 1,
                     WeightGrams = 650.00M,
                     HeightCm = 28.5M,
-                    MeasurementDate = DateTime.Now,
+                    Week = 16,
                     CreatedAt = DateTime.Now
                 }
             );
@@ -297,6 +296,43 @@ namespace backend.Data
                     Content = "I'm glad you found it helpful! Feel free to ask any questions.",
                     CreatedAt = DateTime.Now.AddHours(1)
                 }
+            );
+
+            // Seed Fetal Growth Standards Data
+            modelBuilder.Entity<FetalGrowthStandard>().HasData(
+                new FetalGrowthStandard { Id = 1, WeekNumber = 8, HeightCm = 1.6m, WeightGrams = 1m },
+                new FetalGrowthStandard { Id = 2, WeekNumber = 9, HeightCm = 2.3m, WeightGrams = 2m },
+                new FetalGrowthStandard { Id = 3, WeekNumber = 10, HeightCm = 3.1m, WeightGrams = 4m },
+                new FetalGrowthStandard { Id = 4, WeekNumber = 11, HeightCm = 4.1m, WeightGrams = 7m },
+                new FetalGrowthStandard { Id = 5, WeekNumber = 12, HeightCm = 5.4m, WeightGrams = 14m },
+                new FetalGrowthStandard { Id = 6, WeekNumber = 13, HeightCm = 7.4m, WeightGrams = 23m },
+                new FetalGrowthStandard { Id = 7, WeekNumber = 14, HeightCm = 8.7m, WeightGrams = 43m },
+                new FetalGrowthStandard { Id = 8, WeekNumber = 15, HeightCm = 10.1m, WeightGrams = 70m },
+                new FetalGrowthStandard { Id = 9, WeekNumber = 16, HeightCm = 11.6m, WeightGrams = 100m },
+                new FetalGrowthStandard { Id = 10, WeekNumber = 17, HeightCm = 13.0m, WeightGrams = 140m },
+                new FetalGrowthStandard { Id = 11, WeekNumber = 18, HeightCm = 14.2m, WeightGrams = 190m },
+                new FetalGrowthStandard { Id = 12, WeekNumber = 19, HeightCm = 15.3m, WeightGrams = 240m },
+                new FetalGrowthStandard { Id = 13, WeekNumber = 20, HeightCm = 16.4m, WeightGrams = 300m },
+                new FetalGrowthStandard { Id = 14, WeekNumber = 21, HeightCm = 25.6m, WeightGrams = 360m },
+                new FetalGrowthStandard { Id = 15, WeekNumber = 22, HeightCm = 27.8m, WeightGrams = 430m },
+                new FetalGrowthStandard { Id = 16, WeekNumber = 23, HeightCm = 28.9m, WeightGrams = 501m },
+                new FetalGrowthStandard { Id = 17, WeekNumber = 24, HeightCm = 30.0m, WeightGrams = 600m },
+                new FetalGrowthStandard { Id = 18, WeekNumber = 25, HeightCm = 34.6m, WeightGrams = 660m },
+                new FetalGrowthStandard { Id = 19, WeekNumber = 26, HeightCm = 35.6m, WeightGrams = 760m },
+                new FetalGrowthStandard { Id = 20, WeekNumber = 27, HeightCm = 36.6m, WeightGrams = 875m },
+                new FetalGrowthStandard { Id = 21, WeekNumber = 28, HeightCm = 37.6m, WeightGrams = 1005m },
+                new FetalGrowthStandard { Id = 22, WeekNumber = 29, HeightCm = 38.6m, WeightGrams = 1153m },
+                new FetalGrowthStandard { Id = 23, WeekNumber = 30, HeightCm = 39.9m, WeightGrams = 1319m },
+                new FetalGrowthStandard { Id = 24, WeekNumber = 31, HeightCm = 41.1m, WeightGrams = 1502m },
+                new FetalGrowthStandard { Id = 25, WeekNumber = 32, HeightCm = 42.4m, WeightGrams = 1702m },
+                new FetalGrowthStandard { Id = 26, WeekNumber = 33, HeightCm = 43.7m, WeightGrams = 1918m },
+                new FetalGrowthStandard { Id = 27, WeekNumber = 34, HeightCm = 45.0m, WeightGrams = 2146m },
+                new FetalGrowthStandard { Id = 28, WeekNumber = 35, HeightCm = 46.2m, WeightGrams = 2383m },
+                new FetalGrowthStandard { Id = 29, WeekNumber = 36, HeightCm = 47.4m, WeightGrams = 2622m },
+                new FetalGrowthStandard { Id = 30, WeekNumber = 37, HeightCm = 48.6m, WeightGrams = 2859m },
+                new FetalGrowthStandard { Id = 31, WeekNumber = 38, HeightCm = 49.8m, WeightGrams = 3083m },
+                new FetalGrowthStandard { Id = 32, WeekNumber = 39, HeightCm = 50.7m, WeightGrams = 3288m },
+                new FetalGrowthStandard { Id = 33, WeekNumber = 40, HeightCm = 51.2m, WeightGrams = 3462m }
             );
         }
     }
