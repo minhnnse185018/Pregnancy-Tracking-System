@@ -52,16 +52,10 @@ function PregnancyProfileList() {
       <div key={profile.id} className="profile-card">
         <h2 className="profile-name">{profile.userName}</h2>
         <div className="profile-field">
-          <span className="field-label">Profile ID: </span> {profile.id}
+          <span className="field-label">Pregnancy Date: </span> {formatDate(profile.conceptionDate)}
         </div>
         <div className="profile-field">
-          <span className="field-label">User ID: </span> {profile.userId}
-        </div>
-        <div className="profile-field">
-          <span className="field-label">Conception Date: </span> {formatDate(profile.conceptionDate)}
-        </div>
-        <div className="profile-field">
-          <span className="field-label">Due Date: </span> {formatDate(profile.dueDate)}
+          <span className="field-label">Expected Date of birth: </span> {formatDate(profile.dueDate)}
         </div>
         <div className="profile-field">
           <span className="field-label">Created At: </span> {formatDate(profile.createdAt)}
