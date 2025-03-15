@@ -94,19 +94,19 @@ namespace backend.Repository.Implementation
                 string heightCategory = CategorizeGrowth(heightPercentile);
                 
                 // Only create alert if either weight or height is outside normal range
-                if (weightCategory != "Bình thường" || heightCategory != "Bình thường")
+                if (weightCategory != "Normal")
                 {
-                    // Create alert message with percentile information in Vietnamese
-                    string alertMessage = "Đánh giá phần trăm tăng trưởng: ";
+                    // Create alert message with percentile information in English
+                    string alertMessage = "Growth percentile assessment: ";
                     
-                    if (weightCategory != "Bình thường")
+                    if (weightCategory != "Normal")
                     {
-                        alertMessage += $"Cân nặng ở mức {weightPercentile:F1}% ({weightCategory}). ";
+                        alertMessage += $"Weight is at {weightPercentile:F1}% ({weightCategory}). ";
                     }
                     
-                    if (heightCategory != "Bình thường")
+                    if (heightCategory != "Normal")
                     {
-                        alertMessage += $"Chiều cao ở mức {heightPercentile:F1}% ({heightCategory}).";
+                        alertMessage += $"Height is at {heightPercentile:F1}% ({heightCategory}).";
                     }
                     
                     var alert = new GrowthAlert
@@ -149,15 +149,15 @@ namespace backend.Repository.Implementation
             return sign * erf;
         }
         
-        // Categorize growth based on percentile value with Vietnamese responses
+        // Categorize growth based on percentile value in English
         private string CategorizeGrowth(double percentile)
         {
             if (percentile < 10)
-                return "IUGR (Thai chậm phát triển trong tử cung)";
+                return "IUGR (Intrauterine Growth Restriction)";
             else if (percentile > 90)
-                return "Thai to (Macrosomia)";
+                return "Macrosomia (Large Baby)";
             else
-                return "Bình thường";
+                return "Normal";
         }
 
         public async Task<FetalMeasurementDto?> UpdateMeasurementAsync(int id, UpdateFetalMeasurementDto measurementDto)
