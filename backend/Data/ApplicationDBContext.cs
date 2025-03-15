@@ -28,6 +28,7 @@ namespace backend.Data
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<ScheduledEmail> ScheduledEmails { get; set; }
+        public DbSet<Reminder> Reminders { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -180,6 +181,10 @@ namespace backend.Data
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.PaymentMethod).IsRequired().HasMaxLength(50);
+            });
+            modelBuilder.Entity<Reminder>(entity =>
+            {
+                entity.HasKey(e => e.Id);
             });
 
             // Seed Data
