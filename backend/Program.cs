@@ -70,6 +70,25 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<AppointmentReminderService>();
 builder.Services.AddHostedService<ScheduledEmailService>();
 builder.Services.AddScoped<IFAQRepository, FAQRepository>();
+builder.Services.AddScoped<IReminderServices, ReminderServices>();
+builder.Services.AddScoped<RemiderServicesJob>();
+
+// Register GrowthAlert services
+builder.Services.AddScoped<IGrowthAlertRepository, GrowthAlertRepository>();
+builder.Services.AddScoped<IGrowthAlertService, GrowthAlertService>();
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("ReminderServicesJob");
+    q.AddJob<RemiderServicesJob>(opts=>opts.WithIdentity(jobKey));
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("ReminderServicesJob-trigger")
+        .WithCronSchedule(CronScheduleBuilder.DailyAtHourAndMinute(6,0)));//Fire at 6:00 AM every day
+});
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+});
 
 var app = builder.Build();
 

@@ -296,3 +296,14 @@ D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\tr-TR\Hangfire.Core.resources.dll
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\zh-TW\Hangfire.Core.resources.dll
 D:\FPT University\Ki5_HocNVH\SWP391\ProjectSWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\zh\Hangfire.Core.resources.dll
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.csproj.AssemblyReference.cache
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.AssemblyInfoInputs.cache
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.AssemblyInfo.cs
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.csproj.CoreCompileInputs.cache
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.sourcelink.json
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.dll
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\refint\backend.dll
+C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.pdb
