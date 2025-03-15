@@ -14,7 +14,7 @@ import Footer from "./components/Customer/Footer/Footer";
 import ForgotPasswordPage from "./components/Customer/Login/forgotPassword";
 import InternalLoginPage from "./components/Customer/Login/InternalLoginPage";
 import LoginPage from "./components/Customer/Login/LoginPage";
-import ResetPasswordPage from "./components/Customer/Login/resetPassword";
+import ResetPasswordPage from "./components/Customer/Login/ResetPasswordPage";
 import MembershipPage from "./components/Customer/Member/MembershipPage";
 import Navbarr from "./components/Customer/Navbarr/Navbarr";
 import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
@@ -44,6 +44,7 @@ import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
+import RegisterAccount from "./components/Customer/Login/RegisterAccout";
 function App() {
   return (
     <div>
@@ -198,6 +199,14 @@ function App() {
           element={
           <>
           <ResetPasswordPage /> 
+          /</>
+        } 
+        />
+                  <Route 
+          path="/verify-account" 
+          element={
+          <>
+          <RegisterAccount /> 
           /</>
         } 
         />
