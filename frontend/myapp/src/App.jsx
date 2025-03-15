@@ -11,35 +11,39 @@ import Contact from "./components/Customer/Contact/Contact";
 import UserProfile from "./components/Customer/CustomerProfile/CustomerProfile";
 import FetalGrowthTracker from "./components/Customer/FetalGrowthTracker/FetalGrowthTracker";
 import Footer from "./components/Customer/Footer/Footer";
+import ForgotPasswordPage from "./components/Customer/Login/forgotPassword";
 import InternalLoginPage from "./components/Customer/Login/InternalLoginPage";
 import LoginPage from "./components/Customer/Login/LoginPage";
+import ResetPasswordPage from "./components/Customer/Login/resetPassword";
 import MembershipPage from "./components/Customer/Member/MembershipPage";
 import Navbarr from "./components/Customer/Navbarr/Navbarr";
+import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
 import PaymentFailure from "./components/Dashboard/PaymentFailure";
 import PaymentSuccess from "./components/Dashboard/PaymentSuccess";
 import HealthTipComponent from "./components/HealthTipComponent/HealthTipComponent";
 import MainContent from "./components/HomePage/Maincontent/Maincontent";
 import AdminPrivateRoute from "./components/PrivateRoute/AdminPrivateRoute";
 import CustomerPrivateRoute from "./components/PrivateRoute/CustomerPrivateRoute";
+import DoctorPrivateRoute from "./components/PrivateRoute/DoctorPrivateRoute";
 import ManagerPrivateRoute from "./components/PrivateRoute/ManagerPrivateRoute";
 import AdminLayout from "./Layouts/Admin/AdminLayout";
+import DoctorLayout from "./Layouts/Doctor/DoctorLayout";
 import ManagerLayout from "./Layouts/Manager/ManagerLayout";
 import AdminSalon from "./Pages/Admin/AdminBlog";
 import AdminPersonnel from "./Pages/Admin/AdminPersonnel";
 import AdminProfilePage from "./Pages/Admin/AdminProfilePage";
 import ManageCustomer from "./Pages/Admin/ManagerCustomer";
+import DoctorChat from "./Pages/Doctor/DoctorChat";
+import DoctorProfile from "./Pages/Doctor/DoctorProfile";
 import ManagerAppointments from "./Pages/Manager/ManagerAppointments";
 import ManagerBlogs from "./Pages/Manager/ManagerBlogs";
+import ManagerFAQs from "./Pages/Manager/ManagerFAQs";
 import ManagerPayroll from "./Pages/Manager/ManagerPayroll";
-import ManagerPersonnel from "./Pages/Manager/ManagerPersonnel";
 import ManagerProfilePage from "./Pages/Manager/ManagerProfilePage";
 import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
-import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
-import ForgotPasswordPage from "./components/Customer/Login/forgotPassword";
-import ResetPasswordPage from "./components/Customer/Login/resetPassword";
 function App() {
   return (
     <div>
@@ -207,12 +211,20 @@ function App() {
               <Route path="admin-customer" element={<ManageCustomer />} />
             </Route>
           </Route>
+          {/* DASHBOARD DOCTOR */}
+          <Route path="/doctor" element={<DoctorPrivateRoute />}>
+            <Route path="" element={<DoctorLayout />}>
+              <Route path="/doctor/profile" element={<DoctorProfile />} />
+              <Route path="/doctor/chat" element={<DoctorChat />} />
+            </Route>
+          </Route>
           {/* DASHBOARD MANAGER */}
           <Route path="/manager" element={<ManagerPrivateRoute />}>
             <Route path="" element={<ManagerLayout />}>
               <Route path="manager-services" element={<ManagerServices />} />
               <Route path="manager-profile" element={<ManagerProfilePage />} />
-              <Route path="manager-personnel" element={<ManagerPersonnel />} />
+              {/* <Route path="manager-personnel" element={<ManagerPersonnel />} /> */}
+              <Route path="manager-faq" element={<ManagerFAQs />} />
               <Route path="manager-revenue" element={<ManageRevenuePage />} />
               <Route path="manager-payroll" element={<ManagerPayroll />} />
               <Route

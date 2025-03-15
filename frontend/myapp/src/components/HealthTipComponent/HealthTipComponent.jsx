@@ -3,14 +3,15 @@ import React, { useEffect, useState } from 'react';
 const HealthTipComponent = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [faqs, setFaqs] = useState([]);
+  const [filteredFaqs, setFilteredFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Hàm fetch FAQs
   const fetchFaqs = async () => {
     try {
       setLoading(true);
-      setError(null); // Xóa lỗi cũ khi thử lại
+      setError(null);
       const response = await fetch('http://localhost:5254/api/FAQ/GetAllFAQs', {
         method: 'GET',
         headers: {
@@ -21,12 +22,12 @@ const HealthTipComponent = () => {
         throw new Error(`Không thể tải FAQs: ${response.status} - ${response.statusText}`);
       }
       const data = await response.json();
-      // Kiểm tra dữ liệu trả về có hợp lệ không
       if (!Array.isArray(data)) {
         throw new Error('Dữ liệu trả về không đúng định dạng');
       }
       const sortedFaqs = data.sort((a, b) => a.displayOrder - b.displayOrder);
       setFaqs(sortedFaqs);
+      setFilteredFaqs(sortedFaqs);
       setLoading(false);
     } catch (err) {
       console.error('Lỗi khi tải FAQs:', err);
@@ -35,10 +36,21 @@ const HealthTipComponent = () => {
     }
   };
 
-  // Gọi fetch khi component mount
   useEffect(() => {
     fetchFaqs();
   }, []);
+
+  const handleSearch = (event) => {
+    const term = event.target.value.toLowerCase();
+    setSearchTerm(term);
+    
+    const filtered = faqs.filter(faq => 
+      faq.question.toLowerCase().includes(term) ||
+      faq.answer.toLowerCase().includes(term) ||
+      (faq.category && faq.category.toLowerCase().includes(term))
+    );
+    setFilteredFaqs(filtered);
+  };
 
   const handleToggle = (index) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -177,6 +189,33 @@ const HealthTipComponent = () => {
     .retry-btn:hover {
       background-color: #d81b60;
     }
+
+    /* CSS cho thanh tìm kiếm từ phiên bản đầu tiên */
+    .search-container {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .search-input {
+      width: 60%;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: 2px solid #ad1457;
+      border-radius: 25px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-input:focus {
+      border-color: #d81b60;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .search-input::placeholder {
+      color: #888;
+      font-style: italic;
+    }
   `;
 
   return (
@@ -188,6 +227,16 @@ const HealthTipComponent = () => {
         <h1>Câu Hỏi Thường Gặp Về Thai Kỳ</h1>
       </header>
 
+      <div className="search-container">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Tìm kiếm câu hỏi hoặc câu trả lời..."
+          value={searchTerm}
+          onChange={handleSearch}
+        />
+      </div>
+
       <section className="faq-section">
         {loading ? (
           <div className="loading">Đang tải dữ liệu...</div>
@@ -198,10 +247,12 @@ const HealthTipComponent = () => {
               Thử lại
             </button>
           </div>
-        ) : faqs.length === 0 ? (
-          <div className="error">Không có dữ liệu để hiển thị</div>
+        ) : filteredFaqs.length === 0 ? (
+          <div className="error">
+            {searchTerm ? 'Không tìm thấy kết quả phù hợp' : 'Không có dữ liệu để hiển thị'}
+          </div>
         ) : (
-          faqs.map((faq, index) => (
+          filteredFaqs.map((faq, index) => (
             <div className="faq-item" key={faq.id}>
               <div className="faq-question" onClick={() => handleToggle(index)}>
                 <span>{faq.question}</span>
