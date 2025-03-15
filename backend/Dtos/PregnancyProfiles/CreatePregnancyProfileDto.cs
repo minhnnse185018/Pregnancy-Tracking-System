@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+
 
 namespace backend.Dtos.PregnancyProfiles
 {
@@ -7,9 +7,9 @@ namespace backend.Dtos.PregnancyProfiles
     {
         public int UserId { get; set; }
         
-        [Range(1, 42, ErrorMessage = "Pregnancy week must be between 1 and 42")]
-        public int WeekOfPregnancy { get; set; }
+        public DateTime ConceptionDate { get; set; }
         
+
         public DateTime DueDate { get; set; }
     }
-}
+} 

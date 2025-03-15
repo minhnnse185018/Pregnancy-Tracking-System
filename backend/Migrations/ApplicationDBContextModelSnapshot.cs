@@ -89,7 +89,7 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "Thank you for sharing your experience! It's very helpful.",
-                            CreatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5491),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3557),
                             PostId = 1,
                             UserId = 2
                         },
@@ -97,7 +97,7 @@ namespace backend.Migrations
                         {
                             Id = 2,
                             Content = "I'm glad you found it helpful! Feel free to ask any questions.",
-                            CreatedAt = new DateTime(2025, 3, 15, 20, 10, 40, 807, DateTimeKind.Local).AddTicks(5492),
+                            CreatedAt = new DateTime(2025, 3, 14, 23, 19, 14, 719, DateTimeKind.Local).AddTicks(3559),
                             PostId = 1,
                             UserId = 1
                         });
@@ -140,20 +140,20 @@ namespace backend.Migrations
                             Id = 1,
                             Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
                             Category = "Fetal Development",
-                            CreatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5444),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3507),
                             DisplayOrder = 1,
                             Question = "What is the normal fetal weight at 12 weeks?",
-                            UpdatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5442)
+                            UpdatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3504)
                         },
                         new
                         {
                             Id = 2,
                             Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
                             Category = "Prenatal Care",
-                            CreatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5446),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3511),
                             DisplayOrder = 2,
                             Question = "How often should I have prenatal check-ups?",
-                            UpdatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5445)
+                            UpdatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3510)
                         });
                 });
 
@@ -448,7 +448,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5423),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3480),
                             HeightCm = 25.5m,
                             ProfileId = 1,
                             Week = 12,
@@ -457,7 +457,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5425),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3483),
                             HeightCm = 28.5m,
                             ProfileId = 1,
                             Week = 16,
@@ -674,10 +674,10 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "I'm excited to share my journey through the first trimester...",
-                            CreatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5472),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3535),
                             Status = "published",
                             Title = "My First Pregnancy Experience",
-                            UpdatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5471),
+                            UpdatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3532),
                             UserId = 1
                         });
                 });
@@ -718,35 +718,11 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            ConceptionDate = new DateTime(2024, 12, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5397),
-                            CreatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5401),
-                            DueDate = new DateTime(2025, 9, 11, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5401),
+                            ConceptionDate = new DateTime(2024, 12, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3438),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3447),
+                            DueDate = new DateTime(2025, 9, 10, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3446),
                             UserId = 1
                         });
-                });
-
-            modelBuilder.Entity("backend.Models.Reminder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Week")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Reminders");
                 });
 
             modelBuilder.Entity("backend.Models.ScheduledEmail", b =>
@@ -839,7 +815,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5197),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3202),
                             Email = "1@gmail.com",
                             Password = "111111",
                             Status = "active",
@@ -848,7 +824,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 15, 19, 10, 40, 807, DateTimeKind.Local).AddTicks(5200),
+                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3206),
                             Email = "2@gmail.com",
                             Password = "222222",
                             Status = "active",

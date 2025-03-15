@@ -90,8 +90,7 @@ namespace backend.Mapper
                         ? $"{src.User.FirstName} {src.User.LastName}"
                         : "Deleted User"));
 
-            CreateMap<CreatePregnancyProfileDto, PregnancyProfile>()
-                .ForMember(dest => dest.ConceptionDate, opt => opt.Ignore());
+            CreateMap<CreatePregnancyProfileDto, PregnancyProfile>();
             CreateMap<UpdatePregnancyProfileDto, PregnancyProfile>();
 
             // FetalGrowthStandard mappings
