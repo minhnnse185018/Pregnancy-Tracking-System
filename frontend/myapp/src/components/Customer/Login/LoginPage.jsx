@@ -69,7 +69,7 @@ function LoginPage() {
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
         setHasToken(true);
-        navigate("/");
+        navigate("/profile");
         toast.success("Login successful!");
       } else {
         setError("Email or Password Incorrect. Please try again.");
