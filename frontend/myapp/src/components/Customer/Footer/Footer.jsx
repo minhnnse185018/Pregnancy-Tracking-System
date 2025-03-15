@@ -213,7 +213,7 @@ const Footer = () => {
                       fontSize: '18px', // Increased from 16px to 18px
                       color: '#4A4A4A'
                     }} className="icon fas fa-phone"></span>
-                    <span style={{ fontSize: '16px' }}>1900 74 74 79</span> {/* Increased from 14px to 16px */}
+                    <span style={{ fontSize: '16px' }}>+84 702 290 548</span> {/* Increased from 14px to 16px */}
                   </Link>
                 </li>
                 <li style={{
@@ -232,7 +232,7 @@ const Footer = () => {
                       fontSize: '18px', // Increased from 16px to 18px
                       color: '#4A4A4A'
                     }} className="icon fas fa-paper-plane"></span>
-                    <span style={{ fontSize: '16px' }}>mombabycaretracking@gmail.com</span> {/* Increased from 14px to 16px */}
+                    <span style={{ fontSize: '16px' }}>babycenter8386@gmail.com</span> {/* Increased from 14px to 16px */}
                   </Link>
                 </li>
                 <li style={{

@@ -373,7 +373,36 @@ const UserProfile = () => {
 
         
           {/* //tạm thời không cần */}
+        {/* <div className="col-md-12">
+          <label className="form-label label-upload" htmlFor="labelUpload">
+            <FcPlus /> Upload File Image
+          </label>
+          <input
+            type="file"
+            id="labelUpload"
+            hidden
+            accept="image/png, image/jpeg, image/jpg"
+            onChange={handleUploadFile} // ✅ Now defined
+          />
+        </div>
 
+        <div className="col-md-12 img-preview">
+          {previewImage ? (
+            <img
+              src={previewImage}
+              alt="Uploaded preview"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "300px",
+                borderRadius: "8px",
+                marginTop: "10px",
+                marginBottom: "10px",
+              }}
+            />
+          ) : (
+            <span>Preview Image</span>
+          )}
+        </div> */}
         <br />
         <button
           onClick={toggleEditMode}
