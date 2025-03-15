@@ -45,6 +45,7 @@ import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
 import RegisterAccount from "./components/Customer/Login/RegisterAccout";
+import CreatePregnancyProfile from "./components/Customer/PregnancyProfile/CreatePregnancyProfile";
 function App() {
   return (
     <div>
@@ -163,7 +164,6 @@ function App() {
               element={
                 <>
                   <Navbarr />
-
                   <UserProfile />
                   <Footer />
                 </>
@@ -194,22 +194,30 @@ function App() {
               </>
             }
           />
-          <Route 
-          path="/reset-password" 
-          element={
-          <>
-          <ResetPasswordPage /> 
-          /</>
-        } 
-        />
-                  <Route 
-          path="/verify-account" 
-          element={
-          <>
-          <RegisterAccount /> 
-          /</>
-        } 
-        />
+          <Route
+            path="/reset-password"
+            element={
+              <>
+                <ResetPasswordPage />/
+              </>
+            }
+          />
+          <Route
+            path="/verify-account"
+            element={
+              <>
+                <RegisterAccount />/
+              </>
+            }
+          />
+                    <Route
+            path="/create-pregnancy-profile"
+            element={
+              <>
+                <CreatePregnancyProfile />/
+              </>
+            }
+          />
 
           {/* DASHBOARD ADMIN */}
           <Route path="/admin" element={<AdminPrivateRoute />}>
