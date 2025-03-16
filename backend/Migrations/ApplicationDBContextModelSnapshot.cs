@@ -89,7 +89,7 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "Thank you for sharing your experience! It's very helpful.",
-                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3557),
+                            CreatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8818),
                             PostId = 1,
                             UserId = 2
                         },
@@ -97,7 +97,7 @@ namespace backend.Migrations
                         {
                             Id = 2,
                             Content = "I'm glad you found it helpful! Feel free to ask any questions.",
-                            CreatedAt = new DateTime(2025, 3, 14, 23, 19, 14, 719, DateTimeKind.Local).AddTicks(3559),
+                            CreatedAt = new DateTime(2025, 3, 16, 9, 36, 54, 563, DateTimeKind.Local).AddTicks(8820),
                             PostId = 1,
                             UserId = 1
                         });
@@ -140,20 +140,20 @@ namespace backend.Migrations
                             Id = 1,
                             Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
                             Category = "Fetal Development",
-                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3507),
+                            CreatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8766),
                             DisplayOrder = 1,
                             Question = "What is the normal fetal weight at 12 weeks?",
-                            UpdatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3504)
+                            UpdatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8762)
                         },
                         new
                         {
                             Id = 2,
                             Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
                             Category = "Prenatal Care",
-                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3511),
+                            CreatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8769),
                             DisplayOrder = 2,
                             Question = "How often should I have prenatal check-ups?",
-                            UpdatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3510)
+                            UpdatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8767)
                         });
                 });
 
@@ -448,7 +448,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3480),
+                            CreatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8734),
                             HeightCm = 25.5m,
                             ProfileId = 1,
                             Week = 12,
@@ -457,7 +457,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3483),
+                            CreatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8738),
                             HeightCm = 28.5m,
                             ProfileId = 1,
                             Week = 16,
@@ -674,10 +674,10 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "I'm excited to share my journey through the first trimester...",
-                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3535),
+                            CreatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8795),
                             Status = "published",
                             Title = "My First Pregnancy Experience",
-                            UpdatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3532),
+                            UpdatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8791),
                             UserId = 1
                         });
                 });
@@ -718,10 +718,85 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            ConceptionDate = new DateTime(2024, 12, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3438),
-                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3447),
-                            DueDate = new DateTime(2025, 9, 10, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3446),
+                            ConceptionDate = new DateTime(2024, 12, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8697),
+                            CreatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8705),
+                            DueDate = new DateTime(2025, 9, 12, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8704),
                             UserId = 1
+                        });
+                });
+
+            modelBuilder.Entity("backend.Models.Reminder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Week")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reminders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Body = "It's time for your prenatal check-up! At this stage, the goal is to confirm the presence of a fetal heartbeat, measure the embryo's length, and check the size of the amniotic sac. Make sure to complete the blood and urine tests to assess your health, including iron and calcium levels, and screen for gestational diabetes or thyroid disorders.",
+                            Subject = "Reminder: Prenatal Check-up at Week 7 or 8",
+                            Week = 7
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Body = "Don't miss your important prenatal screening! This check-up screens for fetal abnormalities, especially Down syndrome. If you haven't had basic blood tests done earlier, now is the time to complete them.",
+                            Subject = "Reminder: Prenatal Screening at Week 11 to 13",
+                            Week = 11
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Body = "It’s time for your anomaly scan! At this check-up, the doctor will detect any structural abnormalities in the fetus, such as cleft palate or cleft lip. Schedule your appointment to ensure all is progressing well.",
+                            Subject = "Reminder: Anomaly Scan at Week 16 to 18",
+                            Week = 16
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Body = "Your detailed ultrasound is due! The doctor will check for abnormalities in the lungs, heart, and other organs. They will check your baby’s weight, umbilical cord, and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from now until delivery.",
+                            Subject = "Reminder: Detailed Ultrasound at Week 20 to 22",
+                            Week = 20
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Body = "At this point, it is crucial to undergo tests for gestational diabetes and preeclampsia, including urine tests and liver and kidney function assessments. You will also receive a tetanus vaccination at this time. Consult with your doctor for a suitable dietary plan based on your results.",
+                            Subject = "Reminder: Glucose Test and Screening at Week 24 to 28",
+                            Week = 24
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Body = "It's time for your 4D ultrasound! This scan can help detect any late-developing abnormalities in the baby. The doctor will also monitor your overall health and the baby's position, along with blood flow in the uterine and umbilical arteries. You will receive your second tetanus shot around this time.",
+                            Subject = "Reminder: 4D Ultrasound at Week 32",
+                            Week = 32
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Body = "Now it's time for fetal monitoring (cardiotocography) to assess uterine contractions and the fetal heart rate. The doctor will estimate the baby's weight, and check the umbilical cord and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from this point onward. Make sure to complete all required tests, including beta-strep screening.",
+                            Subject = "Reminder: Prenatal Monitoring at Week 35 or 36",
+                            Week = 35
                         });
                 });
 
@@ -815,7 +890,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3202),
+                            CreatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8510),
                             Email = "1@gmail.com",
                             Password = "111111",
                             Status = "active",
@@ -824,7 +899,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3206),
+                            CreatedAt = new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8514),
                             Email = "2@gmail.com",
                             Password = "222222",
                             Status = "active",

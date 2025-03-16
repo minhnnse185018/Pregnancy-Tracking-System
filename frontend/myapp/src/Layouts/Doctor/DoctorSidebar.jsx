@@ -17,7 +17,11 @@ const DoctorSidebar = () => {
             <PregnantWomanIcon /> Chat with Patients
           </Link>
         </li>
-        
+        <li style={listItemStyle}>
+          <Link to="/doctor/alert" style={linkStyle}>
+            <PregnantWomanIcon /> Growth Tracker & Alerts
+          </Link>
+        </li>
       </ul>
     </div>
   );

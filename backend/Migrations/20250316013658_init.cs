@@ -63,6 +63,21 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reminders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Week = table.Column<int>(type: "int", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reminders", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ScheduledEmails",
                 columns: table => new
                 {
@@ -340,8 +355,8 @@ namespace backend.Migrations
                 columns: new[] { "Id", "Answer", "Category", "CreatedAt", "DisplayOrder", "Question", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3507), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3504) },
-                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3511), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3510) }
+                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8766), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8762) },
+                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8769), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8767) }
                 });
 
             migrationBuilder.InsertData(
@@ -385,31 +400,45 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Reminders",
+                columns: new[] { "Id", "Body", "Subject", "Week" },
+                values: new object[,]
+                {
+                    { 1, "It's time for your prenatal check-up! At this stage, the goal is to confirm the presence of a fetal heartbeat, measure the embryo's length, and check the size of the amniotic sac. Make sure to complete the blood and urine tests to assess your health, including iron and calcium levels, and screen for gestational diabetes or thyroid disorders.", "Reminder: Prenatal Check-up at Week 7 or 8", 7 },
+                    { 2, "Don't miss your important prenatal screening! This check-up screens for fetal abnormalities, especially Down syndrome. If you haven't had basic blood tests done earlier, now is the time to complete them.", "Reminder: Prenatal Screening at Week 11 to 13", 11 },
+                    { 3, "It’s time for your anomaly scan! At this check-up, the doctor will detect any structural abnormalities in the fetus, such as cleft palate or cleft lip. Schedule your appointment to ensure all is progressing well.", "Reminder: Anomaly Scan at Week 16 to 18", 16 },
+                    { 4, "Your detailed ultrasound is due! The doctor will check for abnormalities in the lungs, heart, and other organs. They will check your baby’s weight, umbilical cord, and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from now until delivery.", "Reminder: Detailed Ultrasound at Week 20 to 22", 20 },
+                    { 5, "At this point, it is crucial to undergo tests for gestational diabetes and preeclampsia, including urine tests and liver and kidney function assessments. You will also receive a tetanus vaccination at this time. Consult with your doctor for a suitable dietary plan based on your results.", "Reminder: Glucose Test and Screening at Week 24 to 28", 24 },
+                    { 6, "It's time for your 4D ultrasound! This scan can help detect any late-developing abnormalities in the baby. The doctor will also monitor your overall health and the baby's position, along with blood flow in the uterine and umbilical arteries. You will receive your second tetanus shot around this time.", "Reminder: 4D Ultrasound at Week 32", 32 },
+                    { 7, "Now it's time for fetal monitoring (cardiotocography) to assess uterine contractions and the fetal heart rate. The doctor will estimate the baby's weight, and check the umbilical cord and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from this point onward. Make sure to complete all required tests, including beta-strep screening.", "Reminder: Prenatal Monitoring at Week 35 or 36", 35 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedAt", "DateOfBirth", "Email", "FirstName", "Gender", "LastName", "Password", "Phone", "ResetToken", "ResetTokenExpired", "Status", "UserType" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3202), null, "1@gmail.com", null, null, null, "111111", null, null, null, "active", "1" },
-                    { 2, new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3206), null, "2@gmail.com", null, null, null, "222222", null, null, null, "active", "5" }
+                    { 1, new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8510), null, "1@gmail.com", null, null, null, "111111", null, null, null, "active", "1" },
+                    { 2, new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8514), null, "2@gmail.com", null, null, null, "222222", null, null, null, "active", "5" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "CreatedAt", "Image", "Status", "Title", "UpdatedAt", "UserId" },
-                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3535), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3532), 1 });
+                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8795), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8791), 1 });
 
             migrationBuilder.InsertData(
                 table: "PregnancyProfiles",
                 columns: new[] { "Id", "ConceptionDate", "CreatedAt", "DueDate", "UserId" },
-                values: new object[] { 1, new DateTime(2024, 12, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3438), new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3447), new DateTime(2025, 9, 10, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3446), 1 });
+                values: new object[] { 1, new DateTime(2024, 12, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8697), new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8705), new DateTime(2025, 9, 12, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8704), 1 });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "CreatedAt", "PostId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3557), 1, 2 },
-                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 14, 23, 19, 14, 719, DateTimeKind.Local).AddTicks(3559), 1, 1 }
+                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8818), 1, 2 },
+                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 16, 9, 36, 54, 563, DateTimeKind.Local).AddTicks(8820), 1, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -417,8 +446,8 @@ namespace backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "HeightCm", "Notes", "ProfileId", "Week", "WeightGrams" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3480), 25.5m, null, 1, 12, 500.00m },
-                    { 2, new DateTime(2025, 3, 14, 22, 19, 14, 719, DateTimeKind.Local).AddTicks(3483), 28.5m, null, 1, 16, 650.00m }
+                    { 1, new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8734), 25.5m, null, 1, 12, 500.00m },
+                    { 2, new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8738), 28.5m, null, 1, 16, 650.00m }
                 });
 
             migrationBuilder.CreateIndex(
@@ -512,6 +541,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Payments");
+
+            migrationBuilder.DropTable(
+                name: "Reminders");
 
             migrationBuilder.DropTable(
                 name: "ScheduledEmails");
