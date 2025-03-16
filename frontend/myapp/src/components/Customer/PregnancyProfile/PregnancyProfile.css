@@ -1,5 +1,3 @@
-/* PregnancyProfile.css */
-
 /* Container styles */
 .pregnancy-container {
   max-width: 1200px;
@@ -329,7 +327,6 @@
   .profile-card {
     padding: 20px;
   }
-
 }
 
 /* Edit button styling */
@@ -366,7 +363,7 @@
 }
 
 /* Modal Styles */
-.modal-overlay {
+.preg-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -385,7 +382,7 @@
   to { opacity: 1; }
 }
 
-.modal-container {
+.preg-modal-container {
   background-color: white;
   border-radius: 12px;
   width: 90%;
@@ -401,7 +398,7 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
-.modal-header {
+.preg-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -411,14 +408,14 @@
   border-radius: 12px 12px 0 0;
 }
 
-.modal-header h2 {
+.preg-modal-header h2 {
   margin: 0;
   font-size: 1.3rem;
   color: #333;
   font-weight: 600;
 }
 
-.close-button {
+.preg-close-button {
   background: none;
   border: none;
   font-size: 28px;
@@ -435,12 +432,12 @@
   margin: 0;
 }
 
-.close-button:hover {
+.preg-close-button:hover {
   color: #ff4d4f;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.modal-body {
+.preg-modal-body {
   padding: 24px;
 }
 
@@ -516,7 +513,7 @@
 
 /* Responsive adjustments for modal */
 @media (max-width: 600px) {
-  .modal-container {
+  .preg-modal-container {
     width: 95%;
   }
   
@@ -530,6 +527,7 @@
     margin-top: 8px;
   }
 }
+
 /* Delete button styling */
 .delete-button {
   margin-top: 15px;
@@ -572,7 +570,7 @@
 }
 
 /* Delete modal specific styles */
-.delete-modal {
+.preg-delete-modal {
   max-width: 450px;
 }
 

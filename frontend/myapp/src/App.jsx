@@ -17,6 +17,7 @@ import LoginPage from "./components/Customer/Login/LoginPage";
 import ResetPasswordPage from "./components/Customer/Login/resetPassword";
 import MembershipPage from "./components/Customer/Member/MembershipPage";
 import Navbarr from "./components/Customer/Navbarr/Navbarr";
+import CreatePregnancyProfile from "./components/Customer/PregnancyProfile/CreatePregnancyProfile";
 import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
 import UserGrowthAlert from "./components/Customer/UserGrowthAlert/UserGrowthAlert";
 import PaymentFailure from "./components/Dashboard/PaymentFailure";
@@ -176,6 +177,18 @@ function App() {
                 <>
                   <Navbarr />
                   <PregnancyProfile />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
+          <Route path="/create-pregnancy-profile" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <CreatePregnancyProfile />
                   <Footer />
                 </>
               }
