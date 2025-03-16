@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from "react";
-import "./PregnancyProfile.css"; // Import the CSS file
-import { useNavigate } from "react-router-dom"; // Import to handle navigation
-import { toast } from "react-toastify"; // Import toast (you'll need to install react-toastify)
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "./PregnancyProfile.css"; // Giữ nguyên tên file CSS
 
 function PregnancyProfileList() {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   
-  // State for the edit modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentEditProfile, setCurrentEditProfile] = useState(null);
   
-  // State for the delete confirmation modal
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [profileToDelete, setProfileToDelete] = useState(null);
 
@@ -62,35 +60,29 @@ function PregnancyProfileList() {
   }
 
   function handleCreateProfile() {
-    // Navigate to the create profile page
     navigate("/create-pregnancy-profile");
   }
   
-  // Function to open the edit modal
   function handleOpenEditModal(profile) {
     setCurrentEditProfile(profile);
     setIsEditModalOpen(true);
   }
   
-  // Function to close the edit modal
   function handleCloseEditModal() {
     setIsEditModalOpen(false);
     setCurrentEditProfile(null);
   }
   
-  // Function to open the delete confirmation modal
   function handleOpenDeleteModal(profile) {
     setProfileToDelete(profile);
     setIsDeleteModalOpen(true);
   }
   
-  // Function to close the delete confirmation modal
   function handleCloseDeleteModal() {
     setIsDeleteModalOpen(false);
     setProfileToDelete(null);
   }
   
-  // Function to handle deleting the profile
   async function handleDeleteProfile() {
     try {
       const response = await fetch(
@@ -104,11 +96,8 @@ function PregnancyProfileList() {
       );
       
       if (response.ok) {
-        // Show success toast
         toast.success("Profile deleted successfully!");
-        // Refresh profiles
         fetchProfiles();
-        // Close modal
         handleCloseDeleteModal();
       } else {
         throw new Error("Failed to delete profile");
@@ -119,19 +108,16 @@ function PregnancyProfileList() {
     }
   }
   
-  // Function to handle saving the edited profile
   async function handleSaveEdit(updatedData) {
     try {
       const userId = sessionStorage.getItem("userID");
       
-      // Prepare the data to be sent to the API
       const dataToUpdate = {
         id: currentEditProfile.id,
         userId: parseInt(userId),
         conceptionDate: updatedData.conceptionDate,
         dueDate: updatedData.dueDate,
         pregnancyStatus: updatedData.pregnancyStatus || currentEditProfile.pregnancyStatus
-        // Add any other fields that need to be updated
       };
       
       const response = await fetch(
@@ -146,11 +132,8 @@ function PregnancyProfileList() {
       );
       
       if (response.ok) {
-        // Show success toast
         toast.success("Profile updated successfully!");
-        // Refresh profiles
         fetchProfiles();
-        // Close modal
         handleCloseEditModal();
       } else {
         throw new Error("Failed to update profile");
@@ -235,18 +218,18 @@ function PregnancyProfileList() {
       
       {/* Edit Modal Popup */}
       {isEditModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <div className="modal-header">
+        <div className="preg-modal-overlay">
+          <div className="preg-modal-container">
+            <div className="preg-modal-header">
               <h2>Edit Pregnancy Profile</h2>
               <button 
-                className="close-button"
+                className="preg-close-button"
                 onClick={handleCloseEditModal}
               >
-                &times;
+                ×
               </button>
             </div>
-            <div className="modal-body">
+            <div className="preg-modal-body">
               <EditProfileForm 
                 profile={currentEditProfile}
                 onSave={handleSaveEdit}
@@ -259,18 +242,18 @@ function PregnancyProfileList() {
       
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-container delete-modal">
-            <div className="modal-header">
+        <div className="preg-modal-overlay">
+          <div className="preg-modal-container preg-delete-modal">
+            <div className="preg-modal-header">
               <h2>Confirm Deletion</h2>
               <button 
-                className="close-button"
+                className="preg-close-button"
                 onClick={handleCloseDeleteModal}
               >
-                &times;
+                ×
               </button>
             </div>
-            <div className="modal-body">
+            <div className="preg-modal-body">
               <p className="delete-warning">
                 Are you sure you want to delete this pregnancy profile? This action cannot be undone.
               </p>
@@ -296,9 +279,7 @@ function PregnancyProfileList() {
   );
 }
 
-// EditProfileForm component
 function EditProfileForm({ profile, onSave, onCancel }) {
-  // Initialize with current profile values or defaults
   const [conceptionDate, setConceptionDate] = useState(
     profile?.conceptionDate ? new Date(profile.conceptionDate).toISOString().split('T')[0] : ""
   );
