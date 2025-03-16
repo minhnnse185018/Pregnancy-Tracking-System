@@ -49,6 +49,18 @@ namespace backend.Controllers
             return Ok(appointmentDtos);
         }
 
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetAppointmentById(int id)
+        {
+            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
+            if (appointment == null)
+                return NotFound(new { Message = "Appointment not found" });
+
+            var appointmentDto = _mapper.Map<AppointmentDto>(appointment);
+            return Ok(appointmentDto);
+        }
+        
+
         [HttpGet("status/{status}")]
         public async Task<IActionResult> GetAppointmentsByStatus(string status)
         {
