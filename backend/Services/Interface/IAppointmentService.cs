@@ -5,11 +5,14 @@ namespace backend.Services.Interface
 {
     public interface IAppointmentService
     {
-        Task<Appointment> CreateAppointmentAsync(AppointmentDto appointmentDto);
-        Task<bool> CancelAppointmentAsync(Guid id);
-        Task<Appointment> UpdateAppointmentAsync(Guid id, AppointmentDto appointmentDto);
+        Task<Appointment> CreateAppointmentAsync(CreateAppointmentDto appointmentDto);
+        Task<List<Appointment>> GetAllAppointmentsAsync(); 
+        Task<Appointment?> GetAppointmentByIdAsync(int id); 
+        Task<List<Appointment>> GetAppointmentsByStatusAsync(string status); 
+        Task<bool> CancelAppointmentAsync(int id);
+        Task<Appointment?> UpdateAppointmentAsync(int id, AppointmentDto appointmentDto);
         Task SendAppointmentRemindersAsync();
-
+        Task UpdateCompletedAppointmentsAsync(); 
+        Task <List<Appointment>> GetAppointmentsByUserIdAsync(int userId);
     }
-
 }

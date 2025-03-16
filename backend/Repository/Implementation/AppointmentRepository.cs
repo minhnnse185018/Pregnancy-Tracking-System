@@ -12,6 +12,7 @@ namespace backend.Repository.Implementation
     public class AppointmentRepository : IAppointmentRepository
     {
         private readonly ApplicationDBContext _context;
+
         public AppointmentRepository(ApplicationDBContext context)
         {
             _context = context;
@@ -23,13 +24,30 @@ namespace backend.Repository.Implementation
             await _context.SaveChangesAsync();
             return appointment;
         }
+        
 
-        public async Task<Appointment> GetAppointmentByIdAsync(Guid id)
+        public async Task<Appointment?> GetAppointmentByIdAsync(int id)
         {
-            return await _context.Appointments.FindAsync(id);
+            return await _context.Appointments
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+        public async Task<List<Appointment>> GetAllAppointmentsAsync()
+        {
+            return await _context.Appointments
+                .Include(a => a.User) // Bao gồm thông tin User nếu cần
+                .ToListAsync();
         }
 
-        public async Task<bool> CancelAppointmentAsync(Guid id)
+        public async Task<List<Appointment>> GetAppointmentsByStatusAsync(string status)
+        {
+            return await _context.Appointments
+                .Where(a => a.Status == status)
+                .Include(a => a.User) // Bao gồm thông tin User nếu cần
+                .ToListAsync();
+        }
+
+        public async Task<bool> CancelAppointmentAsync(int id)
         {
             var appointment = await _context.Appointments.FindAsync(id);
             if (appointment == null) return false;
@@ -38,34 +56,32 @@ namespace backend.Repository.Implementation
             return true;
         }
 
-        public async Task<Appointment> UpdateAppointmentAsync(Guid id, AppointmentDto appointmentDto)
+        public async Task<Appointment?> UpdateAppointmentAsync(int id, AppointmentDto appointmentDto)
         {
             var appointment = await _context.Appointments.FindAsync(id);
             if (appointment == null) return null;
 
+            appointment.Title = appointmentDto.Title;
             appointment.Description = appointmentDto.Description;
             appointment.AppointmentDate = appointmentDto.AppointmentDate;
             await _context.SaveChangesAsync();
             return appointment;
         }
 
-        public async Task<List<Appointment>> GetAppointmentsInTimeRange(DateTime from, DateTime to)
+        public async Task<List<Appointment>> GetUpcomingAppointmentsAsync(DateTime reminderTime)
         {
             return await _context.Appointments
-                .Where(a => a.AppointmentDate >= from && a.AppointmentDate <= to)
-                .Include(a => a.User) // Nếu cần thông tin user
+                .Where(a => a.Status == "Scheduled" && !a.ReminderSent && a.AppointmentDate > DateTime.UtcNow && a.AppointmentDate <= reminderTime)
+                .Include(a => a.User)
                 .ToListAsync();
         }
 
-
-        public Task<List<Appointment>> GetUpcomingAppointmentsAsync()
+        public Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Appointment>> GetUpcomingAppointmentsAsync(DateTime reminderTime)
-        {
-            throw new NotImplementedException();
+            return _context.Appointments
+                .Where(a => a.UserId == userId)
+                .Include(a => a.User)
+                .ToListAsync();
         }
     }
 }

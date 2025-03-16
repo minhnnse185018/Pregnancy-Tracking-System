@@ -245,26 +245,7 @@ namespace backend.Data
             );
 
             // 4. FAQs
-            modelBuilder.Entity<FAQ>().HasData(
-                new FAQ
-                {
-                    Id = 1,
-                    Question = "What is the normal fetal weight at 12 weeks?",
-                    Answer = "At 12 weeks, the average fetal weight is between 14 and 20 grams.",
-                    Category = "Fetal Development",
-                    DisplayOrder = 1,
-                    CreatedAt = DateTime.Now
-                },
-                new FAQ
-                {
-                    Id = 2,
-                    Question = "How often should I have prenatal check-ups?",
-                    Answer = "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.",
-                    Category = "Prenatal Care",
-                    DisplayOrder = 2,
-                    CreatedAt = DateTime.Now
-                }
-            );
+            
 
             // 5. Posts
             modelBuilder.Entity<Post>().HasData(
@@ -386,6 +367,90 @@ namespace backend.Data
                     Body = "Now it's time for fetal monitoring (cardiotocography) to assess uterine contractions and the fetal heart rate. The doctor will estimate the baby's weight, and check the umbilical cord and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from this point onward. Make sure to complete all required tests, including beta-strep screening."
                 }
             );
+
+            //FAQs
+            modelBuilder.Entity<FAQ>().HasData(
+        new FAQ { Id = 1, Category = "System Introduction", Question = "What is the pregnancy tracking system?", Answer = "It’s a software that helps pregnant women track their baby’s development, manage appointments, receive alerts, and share experiences.", DisplayOrder = 1, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 2, Category = "System Introduction", Question = "Who can use this system?", Answer = "Pregnant women, family members, or anyone interested in pregnancy can sign up and use it.", DisplayOrder = 2, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 3, Category = "System Introduction", Question = "How do I start using the system?", Answer = "Register as a member, choose a membership plan, and make a payment to activate features.", DisplayOrder = 3, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 4, Category = "System Introduction", Question = "Is there a mobile app for the system?", Answer = "Currently, there’s a web version; a mobile app is under development and will launch soon.", DisplayOrder = 4, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 5, Category = "System Introduction", Question = "Does the system support multiple languages?", Answer = "It currently supports Vietnamese; English will be added in the future.", DisplayOrder = 5, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 6, Category = "System Introduction", Question = "Can I try it for free?", Answer = "Yes, you get a 7-day free trial with the Basic plan before purchasing.", DisplayOrder = 6, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 7, Category = "System Introduction", Question = "Is the system secure?", Answer = "Yes, we use data encryption to protect your personal information.", DisplayOrder = 7, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 8, Category = "System Introduction", Question = "Does the system connect with doctors?", Answer = "Not directly yet, but you can schedule appointments with doctors through it.", DisplayOrder = 8, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 9, Category = "System Introduction", Question = "Who developed this system?", Answer = "A team of pregnancy experts and technology professionals created this software.", DisplayOrder = 9, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 10, Category = "System Introduction", Question = "Is the system updated regularly?", Answer = "Yes, we periodically update features and information.", DisplayOrder = 10, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 11, Category = "Membership Plans", Question = "What membership plans are available?", Answer = "Basic, Advanced, and Premium plans with different pricing and features. Check details on the 'Plans' page.", DisplayOrder = 1, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 12, Category = "Membership Plans", Question = "How do I upgrade my membership plan?", Answer = "Log in, go to 'Account Management,' select a new plan, and complete the payment.", DisplayOrder = 2, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 13, Category = "Membership Plans", Question = "Can I get a refund if I’m not satisfied?", Answer = "Yes, you can get a refund within 7 days if no features have been used.", DisplayOrder = 3, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 14, Category = "Membership Plans", Question = "What features does the Basic plan include?", Answer = "Basic tracking, appointment scheduling, and key milestone reminders.", DisplayOrder = 4, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 15, Category = "Membership Plans", Question = "How does the Premium plan differ from the Advanced plan?", Answer = "The Premium plan includes detailed charts, community sharing, and 24/7 support.", DisplayOrder = 5 },
+        new FAQ { Id = 16, Category = "Membership Plans", Question = "Can I switch plans mid-term?", Answer = "Yes, you can upgrade or downgrade anytime; fees are adjusted based on remaining time.", DisplayOrder = 6, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 17, Category = "Membership Plans", Question = "Are there discounts on membership plans?", Answer = "Yes, periodic discounts are available—check the 'Promotions' page.", DisplayOrder = 7, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 18, Category = "Membership Plans", Question = "How often do I need to pay for the plan?", Answer = "Payments are monthly or yearly, depending on your chosen plan.", DisplayOrder = 8, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 19, Category = "Membership Plans", Question = "Do membership plans include doctor consultations?", Answer = "Not yet, but we’re working on adding this to the Premium plan.", DisplayOrder = 9, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 20, Category = "Membership Plans", Question = "How do I check my current membership plan?", Answer = "Go to 'Account Management' to view your active plan details.", DisplayOrder = 10, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 21, Category = "Registration and Payment", Question = "How do I register as a member?", Answer = "Visit the homepage, click 'Register,' fill in your details, and confirm via email.", DisplayOrder = 1, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 22, Category = "Registration and Payment", Question = "What payment methods are accepted?", Answer = "Bank cards, e-wallets (Momo, ZaloPay), and bank transfers.", DisplayOrder = 2, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 23, Category = "Registration and Payment", Question = "How long after payment is my account activated?", Answer = "Your account is activated immediately after successful payment.", DisplayOrder = 3, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 24, Category = "Registration and Payment", Question = "What if I forget my password?", Answer = "Click 'Forgot Password' on the login page and receive a reset link via email.", DisplayOrder = 4, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 25, Category = "Registration and Payment", Question = "Is payment secure?", Answer = "Yes, we use SSL encryption to protect payment information.", DisplayOrder = 5, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 26, Category = "Registration and Payment", Question = "Can I pay for someone else’s account?", Answer = "Yes, enter their email when making the payment for the plan.", DisplayOrder = 6, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 27, Category = "Registration and Payment", Question = "Is a phone number required for registration?", Answer = "It’s not mandatory but recommended for notifications.", DisplayOrder = 7, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 28, Category = "Registration and Payment", Question = "What if I don’t receive a confirmation email?", Answer = "Check your Spam folder or contact support.", DisplayOrder = 8, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 29, Category = "Registration and Payment", Question = "Can I use one email for multiple accounts?", Answer = "No, each email is linked to a single account.", DisplayOrder = 9, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 30, Category = "Registration and Payment", Question = "What if my payment fails?", Answer = "Check your internet connection or contact your bank, then try again.", DisplayOrder = 10, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 31, Category = "Tracking Baby’s Growth", Question = "How do I update my baby’s weight and height?", Answer = "Go to 'Pregnancy Tracking,' enter data from ultrasounds or measurements.", DisplayOrder = 1, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 32, Category = "Tracking Baby’s Growth", Question = "How is the growth chart generated?", Answer = "The system automatically creates a chart based on the data you input by week.", DisplayOrder = 2, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 33, Category = "Tracking Baby’s Growth", Question = "Can I view past growth records?", Answer = "Yes, charts and history are available in 'Pregnancy Tracking.'", DisplayOrder = 3, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 34, Category = "Tracking Baby’s Growth", Question = "What measurements are considered normal?", Answer = "Based on WHO standards for weight and height by pregnancy week.", DisplayOrder = 4, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 35, Category = "Tracking Baby’s Growth", Question = "What if I enter incorrect data?", Answer = "You can edit or delete entries in the input history section.", DisplayOrder = 5, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 36, Category = "Tracking Baby’s Growth", Question = "Can I track multiple babies at once?", Answer = "Currently, only one baby is supported; multi-baby tracking is coming soon.", DisplayOrder = 6, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 37, Category = "Tracking Baby’s Growth", Question = "Can I download the growth chart?", Answer = "Yes, download it as a PDF or image from the 'Chart' section.", DisplayOrder = 7, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 38, Category = "Tracking Baby’s Growth", Question = "What if I don’t have ultrasound data?", Answer = "You can input manual measurements or skip if unavailable.", DisplayOrder = 8, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 39, Category = "Tracking Baby’s Growth", Question = "Does the system predict growth?", Answer = "Not yet, but we’re developing this feature.", DisplayOrder = 9, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 40, Category = "Tracking Baby’s Growth", Question = "Can I add notes to growth data?", Answer = "Yes, you can add notes when entering data for detailed tracking.", DisplayOrder = 10, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 41, Category = "Alerts and Reminders", Question = "How does the system alert me about abnormalities?", Answer = "If measurements fall below standards, you’ll get an email or app notification.", DisplayOrder = 1, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 42, Category = "Alerts and Reminders", Question = "What reminders will I receive?", Answer = "Prenatal checkups, tests, vaccinations, and key milestones 7 hours in advance.", DisplayOrder = 2, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 43, Category = "Alerts and Reminders", Question = "Can I turn off alerts?", Answer = "Yes, customize or disable them in 'Settings.'", DisplayOrder = 3, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 44, Category = "Alerts and Reminders", Question = "Are reminders sent via SMS?", Answer = "Currently only via email; SMS will be added to the Premium plan later.", DisplayOrder = 4, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 45, Category = "Alerts and Reminders", Question = "What if I don’t receive reminders?", Answer = "Check your Spam folder or contact support to verify settings.", DisplayOrder = 5, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 46, Category = "Alerts and Reminders", Question = "Can I add custom reminders?", Answer = "Yes, create them in the 'Appointments' section.", DisplayOrder = 6, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 47, Category = "Alerts and Reminders", Question = "Are alerts detailed?", Answer = "Yes, they specify which measurement is abnormal and suggest actions.", DisplayOrder = 7, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 48, Category = "Alerts and Reminders", Question = "How far in advance are reminders sent?", Answer = "Default is 7 hours; you can adjust this in settings.", DisplayOrder = 8, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 49, Category = "Alerts and Reminders", Question = "Can I get reminders through the app?", Answer = "Currently only via email; app support will come after launch.", DisplayOrder = 9, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 50, Category = "Alerts and Reminders", Question = "Are alerts saved?", Answer = "Yes, view alert history in the 'Notifications' section.", DisplayOrder = 10, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 51, Category = "Appointment Management", Question = "How do I schedule an appointment with a doctor?", Answer = "Go to 'Appointments,' pick a date and time, enter doctor details, and confirm.", DisplayOrder = 1, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 52, Category = "Appointment Management", Question = "Can I edit an appointment?", Answer = "Yes, go to the appointment list, select it, and update the details.", DisplayOrder = 2, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 53, Category = "Appointment Management", Question = "What happens if I cancel an appointment?", Answer = "You’ll receive a cancellation email, and it’s removed from the system.", DisplayOrder = 3, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 54, Category = "Appointment Management", Question = "Can I book an appointment for someone else?", Answer = "Yes, enter their details when creating the appointment.", DisplayOrder = 4, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 55, Category = "Appointment Management", Question = "Does it sync with Google Calendar?", Answer = "Not yet, but this feature will be added soon.", DisplayOrder = 5, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 56, Category = "Appointment Management", Question = "What if I forget an appointment?", Answer = "The system sends a reminder 7 hours beforehand so you won’t miss it.", DisplayOrder = 6, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 57, Category = "Appointment Management", Question = "Can I view past appointments?", Answer = "Yes, old appointments are listed in the 'Appointments' section.", DisplayOrder = 7, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 58, Category = "Appointment Management", Question = "Can I book multiple appointments at once?", Answer = "Yes, as long as the times don’t overlap to avoid conflicts.", DisplayOrder = 8, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 59, Category = "Appointment Management", Question = "Do appointments come with a confirmation?", Answer = "Yes, you’ll get an email confirmation right after booking.", DisplayOrder = 9, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 60, Category = "Appointment Management", Question = "Can I add notes to appointments?", Answer = "Yes, add notes when creating or editing an appointment.", DisplayOrder = 10, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 61, Category = "Sharing Experiences", Question = "How do I share my baby’s growth chart?", Answer = "Go to 'Share,' select the chart, add a note, and post it to the community.", DisplayOrder = 1, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 62, Category = "Sharing Experiences", Question = "Can I comment on others’ experiences?", Answer = "Yes, comment directly under other members’ posts.", DisplayOrder = 2, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 63, Category = "Sharing Experiences", Question = "How do I view the experience-sharing blog?", Answer = "Visit the 'Blog' section on the homepage to read posts.", DisplayOrder = 3, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 64, Category = "Sharing Experiences", Question = "Can I delete my shared posts?", Answer = "Yes, go to your post list and choose to delete.", DisplayOrder = 4, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 65, Category = "Sharing Experiences", Question = "Are shared posts public?", Answer = "Yes, but you can set them visible only to system members.", DisplayOrder = 5, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 66, Category = "Sharing Experiences", Question = "Can I upload photos to the community?", Answer = "Currently only charts and text are supported; photos will be added later.", DisplayOrder = 6, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 67, Category = "Sharing Experiences", Question = "Is the blog updated regularly?", Answer = "Yes, new posts are added weekly by the community and experts.", DisplayOrder = 7, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 68, Category = "Sharing Experiences", Question = "Can I search posts by topic?", Answer = "Yes, the blog has filters for topics like nutrition and health.", DisplayOrder = 8, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 69, Category = "Sharing Experiences", Question = "Are shared posts moderated?", Answer = "Yes, inappropriate content is removed by administrators.", DisplayOrder = 9, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 70, Category = "Sharing Experiences", Question = "Can I follow other members?", Answer = "Not yet, but this feature is in development.", DisplayOrder = 10, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 71, Category = "Support and Management", Question = "Where can I contact support?", Answer = "Call the hotline at 123-456-789 or email support@pregnancytrack.com.", DisplayOrder = 1, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 72, Category = "Support and Management", Question = "How do I view my member profile?", Answer = "Log in, go to 'Account Management' to view and edit your info.", DisplayOrder = 2, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 73, Category = "Support and Management", Question = "What are the dashboard and reports for?", Answer = "They provide an overview of your pregnancy, appointments, and growth reports.", DisplayOrder = 3, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 74, Category = "Support and Management", Question = "Can I delete my account?", Answer = "Yes, contact support to request permanent account deletion.", DisplayOrder = 4, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 75, Category = "Support and Management", Question = "Is my profile secure?", Answer = "Yes, your data is encrypted and accessible only to you.", DisplayOrder = 5, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 76, Category = "Support and Management", Question = "Is support available 24/7?", Answer = "Yes for Premium members; other plans get support during business hours.", DisplayOrder = 6, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 77, Category = "Support and Management", Question = "Can I change my account email?", Answer = "Yes, update it in 'Account Management.'", DisplayOrder = 7, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 78, Category = "Support and Management", Question = "Can I export reports?", Answer = "Yes, export them as PDFs from the 'Dashboard' section.", DisplayOrder = 8, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 79, Category = "Support and Management", Question = "How long is my data stored?", Answer = "Data is kept for up to 5 years after your account expires.", DisplayOrder = 9, CreatedAt = DateTime.UtcNow },
+        new FAQ { Id = 80, Category = "Support and Management", Question = "Can I contact a doctor through the system?", Answer = "Not yet, but you can schedule appointments with doctors.", DisplayOrder = 10, CreatedAt = DateTime.UtcNow }
+    );
         }
     }
 }

@@ -25,7 +25,6 @@ namespace backend.Repository.Implementation
                 .Include(m => m.Plan)
                 .OrderByDescending(m => m.CreatedAt)
                 .ToListAsync();
-
             return _mapper.Map<List<MembershipDto>>(memberships);
         }
 
@@ -35,7 +34,6 @@ namespace backend.Repository.Implementation
                 .Include(m => m.User)
                 .Include(m => m.Plan)
                 .FirstOrDefaultAsync(m => m.Id == id);
-
             return membership == null ? null : _mapper.Map<MembershipDto>(membership);
         }
 
@@ -47,7 +45,6 @@ namespace backend.Repository.Implementation
                 .Where(m => m.UserId == userId)
                 .OrderByDescending(m => m.CreatedAt)
                 .ToListAsync();
-
             return _mapper.Map<List<MembershipDto>>(memberships);
         }
 
@@ -55,14 +52,13 @@ namespace backend.Repository.Implementation
         {
             try
             {
-                // Get plan to calculate end date
                 var plan = await _context.MembershipPlans.FindAsync(membershipDto.PlanId);
                 if (plan == null) return -1;
 
                 var membership = _mapper.Map<Membership>(membershipDto);
-                membership.EndDate = membershipDto.StartDate.AddDays(plan.Duration*7);
-                membership.Status = "active";
-                membership.CreatedAt = DateTime.Now;
+                membership.EndDate = membershipDto.StartDate.AddDays(plan.Duration * 7);
+                membership.Status = "Pending"; // ??i thành Pending thay vì Active
+                membership.CreatedAt = DateTime.UtcNow;
 
                 await _context.Memberships.AddAsync(membership);
                 return await _context.SaveChangesAsync();
@@ -73,14 +69,13 @@ namespace backend.Repository.Implementation
             }
         }
 
-        public async Task<MembershipDto?> UpdateMembershipAsync(int id, string Status)
+        public async Task<MembershipDto?> UpdateMembershipAsync(int id, string status)
         {
             try
             {
                 var membership = await _context.Memberships.FindAsync(id);
                 if (membership == null) return null;
-                membership.Status=Status;
-
+                membership.Status = status;
                 await _context.SaveChangesAsync();
                 return await GetMembershipByIdAsync(id);
             }
@@ -94,18 +89,8 @@ namespace backend.Repository.Implementation
         {
             var membership = await _context.Memberships.FindAsync(id);
             if (membership == null) return -1;
-
             _context.Memberships.Remove(membership);
-            
-            return await _context.SaveChangesAsync();;
-        }
-
-        public async Task<bool> IsMembershipActiveAsync(int userId)
-        {
-            return await _context.Memberships
-                .AnyAsync(m => m.UserId == userId 
-                    && m.Status == "active" 
-                    && m.EndDate > DateTime.Now);
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> ExtendMemberShipAsync(int id)
@@ -114,13 +99,32 @@ namespace backend.Repository.Implementation
             if (membership == null) return -1;
             var plan = await _context.MembershipPlans.FindAsync(membership.PlanId);
             if (plan == null) return -1;
-            membership.Status="Active";
+            membership.Status = "Active";
             membership.StartDate = membership.EndDate;
             membership.EndDate = membership.StartDate.AddDays(plan.Duration * 7);
-            
-
-            return await _context.SaveChangesAsync();; 
+            return await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> IsMembershipActiveAsync(int userId)
+        {
+            return await _context.Memberships
+                .AnyAsync(m => m.UserId == userId && m.Status == "Active" && m.EndDate > DateTime.UtcNow);
+        }
+
+        // Thêm các ph??ng th?c m?i
+        public async Task<Membership> AddAsync(Membership membership)
+        {
+            _context.Memberships.Add(membership);
+            await _context.SaveChangesAsync();
+            return membership;
+        }
+
+        public async Task<Membership> GetByIdAsync(int id)
+        {
+            return await _context.Memberships
+                .Include(m => m.User)
+                .Include(m => m.Plan)
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
     }
-} 
+}

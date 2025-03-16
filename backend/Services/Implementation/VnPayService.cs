@@ -33,7 +33,7 @@ namespace backend.Services.Implementation
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{model.PaymentMethod} {model.PaymentDescription} {model.Amount}");
+            pay.AddRequestData("vnp_OrderInfo", $"{model.PaymentDescription} {model.MembershipId}");
             pay.AddRequestData("vnp_OrderType", "other");
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", tick);
@@ -47,7 +47,11 @@ namespace backend.Services.Implementation
         {
             var pay = new VnPayLibrary();
             var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
-
+            string[] descParts = response.PaymentDescription.Split(' ');
+            if (descParts.Length > 0 && int.TryParse(descParts[descParts.Length - 1], out int membershipId))
+            {
+                response.MembershipId = membershipId;
+            }
             return response;
         }
 
