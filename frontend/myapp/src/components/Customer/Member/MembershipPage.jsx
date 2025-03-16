@@ -58,11 +58,9 @@ function MembershipPage() {
       const response = await axios.post(
         "http://localhost:5254/api/payment",
         {
-          userId: userId,
-          membershipId: 2,  
+          membershipId: 1,  
           amount: selectedPlan.price,
           paymentDescription: `Payment for ${selectedPlan.name}`,
-          paymentMethod: selectedPaymentMethod,
         }
       );
     

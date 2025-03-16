@@ -52,7 +52,7 @@ function CommunityPosts() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5254/api/Comment/post/", {
+      const response = await axios.post("http://localhost:5254/api/Comment", {
         userId,
         postId: selectedPostId,
         content: commentText,
