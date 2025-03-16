@@ -58,7 +58,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
           return;
         }
         const response = await axios.get(
-          `http://localhost:5254/api/GrowthAlert/customer/${customerId}`,
+          `http://localhost:5254/api/GrowthAlert/customer/${customerId}/week`,
           {
             headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
           }
