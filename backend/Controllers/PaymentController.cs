@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using backend.Data;
 using backend.Dtos;
 using backend.Dtos.Payment;
+using backend.Models;
+using backend.Services.Implementation;
 using backend.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,61 +14,75 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/payment")]
-    public class PaymentController : Controller
+    public class PaymentController : ControllerBase
     {
-
         private readonly IVnPayService _vnPayService;
-        public PaymentController(IVnPayService vnPayService)
-        {
+        private readonly IMembershipService _membershipService;
+        private readonly ApplicationDBContext _context;
 
+        public PaymentController(
+            IVnPayService vnPayService,
+            IMembershipService membershipService,
+            ApplicationDBContext context)
+        {
             _vnPayService = vnPayService;
+            _membershipService = membershipService;
+            _context = context;
         }
+
         [HttpPost]
-        public IActionResult CreatePaymentUrlVnpay(PaymentRequestDto model)
+        public async Task<IActionResult> CreatePaymentUrlVnpay([FromBody] PaymentRequestDto model)
         {
+            var membership = await _context.Memberships.FindAsync(model.MembershipId);
+            if (membership == null)
+                return NotFound("Membership không tồn tại.");
+
+            if (membership.Status != "Pending")
+                return BadRequest("Membership không ở trạng thái Pending.");
+
             var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
-
             return Ok(url);
-        }
-        [HttpGet]
-        public IActionResult PaymentCallbackVnpay()
-        {
-            var response = _vnPayService.PaymentExecute(Request.Query);
-
-            return Json(response);
         }
 
         [HttpGet("return")]
-        public IActionResult PaymentCallback()
+        public async Task<IActionResult> PaymentCallbackVnpay()
         {
             var response = _vnPayService.PaymentExecute(Request.Query);
 
-            if (response.VnpayResponseCode == "00") // 00 = Thành công
+            if (response.VnpayResponseCode == "00") // Giao dịch thành công
             {
-                return Ok(new
-                {
-                    transactionId = response.VnpayTransactionNo,
-                    amount = response.Amount,
-                    membershipId = response.MembershipId,
-                    paymentDescription = response.PaymentDescription,
-                    paymentMethod = "VNPay",
-                    vnpayResponseCode = response.VnpayResponseCode,
-                    paymentStatus = "Sucess!",
-                    paymentDate = DateTime.UtcNow
+                var membership = await _context.Memberships.FindAsync(response.MembershipId);
+                if (membership == null)
+                    return NotFound("Membership không tồn tại.");
 
-                });
+                var newPayment = new Payment
+                {
+                    MembershipId = response.MembershipId,
+                    Amount = response.Amount,
+                    PaymentDescription = response.PaymentDescription,
+                    PaymentMethod = response.PaymentMethod,
+                    VnpayToken = response.VnpayToken,
+                    VnpayTransactionNo = response.VnpayTransactionNo,
+                    VnpayResponseCode = response.VnpayResponseCode,
+                    PaymentDate = DateTime.UtcNow,
+                    PaymentStatus = "Success"
+                };
+
+                _context.Payments.Add(newPayment);
+                await _context.SaveChangesAsync();
+
+                // Kích hoạt Membership
+                var updatedMembership = await _membershipService.ActivateMembershipAsync(response.MembershipId);
+                response.PaymentStatus = "Success";
             }
             else
             {
-                return BadRequest(new
-                {
-                    message = "Thanh toán thất bại!",
-                    responseCode = response.VnpayResponseCode
-                });
+                response.PaymentStatus = "Failed";
             }
+
+            // Sử dụng Ok() để trả về JSON
+            return Ok(response);
         }
-
-
     }
 
 }

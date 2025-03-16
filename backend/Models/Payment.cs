@@ -9,16 +9,17 @@ namespace backend.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
+        [ForeignKey("Membership")]
         public int MembershipId { get; set; } // Liên kết với Memberships
 
         [Required]
+        [Range(0, double.MaxValue, ErrorMessage = "Amount must be positive")]
         public decimal Amount { get; set; } // Số tiền thanh toán
 
         public string PaymentDescription { get; set; } = string.Empty; // Mô tả thanh toán
 
         [Required]
-        public string PaymentMethod { get; set; } = string.Empty; // Phương thức thanh toán (VNPay, Visa, MasterCard, ...)
+        public string PaymentMethod { get; set; } = "VnPay";
 
         public string? VnpayToken { get; set; } // Mã token giao dịch VNPay
 
@@ -31,12 +32,9 @@ namespace backend.Models
 
         [Required]
         public string PaymentStatus { get; set; } = "Pending"; // Trạng thái thanh toán (Pending, Success, Failed)
-      
+
 
         // Khóa ngoại
-    
-
-        
-        public virtual Membership Membership { get; set; }
+        public virtual Membership Membership { get; set; } = null;
     }
 }
