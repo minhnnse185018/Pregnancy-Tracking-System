@@ -24,7 +24,6 @@ namespace PregnancyTrackingSystem.Libraries
                     vnPay.AddResponseData(key, value);
                 }
             }
-            var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
             var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
             var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
             var vnpSecureHash =
@@ -42,7 +41,6 @@ namespace PregnancyTrackingSystem.Libraries
                 PaymentStatus = "Success",
                 PaymentMethod = "VnPay",
                 PaymentDescription = orderInfo,
-                MembershipId = (int)orderId,
                 VnpayTransactionNo = vnPayTranId.ToString(),
                 VnpayToken = vnpSecureHash,
                 VnpayResponseCode = vnpResponseCode,

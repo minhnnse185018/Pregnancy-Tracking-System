@@ -12,40 +12,74 @@ namespace backend.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using backend.Data;
+    using AutoMapper;
 
     [Route("api/appointments")]
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
+        private readonly IAppointmentService _appointmentService;
+        private readonly IMapper _mapper; // Thêm IMapper nếu dùng AutoMapper
 
-        public AppointmentController(ApplicationDBContext context)
+        public AppointmentController(IAppointmentService appointmentService, IMapper mapper)
         {
-            _context = context;
+            _appointmentService = appointmentService;
+            _mapper = mapper;
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateAppointment([FromBody] AppointmentDto appointmentDto)
+        public async Task<IActionResult> CreateAppointment([FromBody] CreateAppointmentDto appointmentDto)
         {
-            var appointment = new Appointment
+            try
             {
-                UserId = appointmentDto.UserId,
-                Title = appointmentDto.Title,
-                AppointmentDate = appointmentDto.AppointmentDate,
-                Status = "Scheduled"
-            };
-
-            _context.Appointments.Add(appointment);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { Message = "Appointment created successfully!" });
+                var appointment = await _appointmentService.CreateAppointmentAsync(appointmentDto);
+                var appointmentResponse = _mapper.Map<AppointmentDto>(appointment); // Chuyển thành DTO
+                return Ok(new { Message = "Appointment created successfully!", Appointment = appointmentResponse });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllAppointments()
+        {
+            var appointments = await _appointmentService.GetAllAppointmentsAsync();
+            var appointmentDtos = _mapper.Map<List<AppointmentDto>>(appointments);
+            return Ok(appointmentDtos);
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAppointments()
+        [HttpGet("status/{status}")]
+        public async Task<IActionResult> GetAppointmentsByStatus(string status)
         {
-            var appointments = await _context.Appointments.ToListAsync();
-            return Ok(appointments);
+            var validStatuses = new[] { "Scheduled", "Reminded", "Completed" };
+            if (!validStatuses.Contains(status))
+                return BadRequest(new { Message = "Invalid status value" });
+
+            var appointments = await _appointmentService.GetAppointmentsByStatusAsync(status);
+            var appointmentDtos = _mapper.Map<List<AppointmentDto>>(appointments);
+            return Ok(appointmentDtos);
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateAppointment(int id, [FromBody] AppointmentDto appointmentDto)
+        {
+            var appointment = await _appointmentService.UpdateAppointmentAsync(id, appointmentDto);
+            if (appointment == null)
+                return NotFound(new { Message = "Appointment not found" });
+
+            var appointmentResponse = _mapper.Map<AppointmentDto>(appointment); // Chuyển thành DTO
+            return Ok(new { Message = "Appointment updated successfully!", Appointment = appointmentResponse });
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteAppointment(int id)
+        {
+            var success = await _appointmentService.CancelAppointmentAsync(id);
+            if (!success)
+                return NotFound(new { Message = "Appointment not found" });
+
+            return Ok(new { Message = "Appointment cancelled successfully!" });
         }
     }
 

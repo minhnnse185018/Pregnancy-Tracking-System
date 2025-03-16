@@ -1,4 +1,6 @@
-﻿namespace backend.Dtos.Payment
+﻿using backend.Models;
+
+namespace backend.Dtos.Payment
 {
     public class PaymentResponseDto
     {
@@ -12,5 +14,6 @@
         public string? VnpayResponseCode { get; set; } // Mã phản hồi từ VNPay
         public DateTime PaymentDate { get; set; } // Ngày thanh toán
         public string PaymentStatus { get; set; } = "Pending"; // Trạng thái thanh toán
+
     }
 }

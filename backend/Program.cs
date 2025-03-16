@@ -54,6 +54,8 @@ builder.Services.AddScoped<JwtService>();
 // Email
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
+//Add logging
+builder.Services.AddLogging(logging => logging.AddConsole());
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
@@ -61,6 +63,7 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IPregnancyProfileRepository, PregnancyProfileRepository>();
 builder.Services.AddScoped<IFetalGrowthStandardRepository, FetalGrowthStandardRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
+builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IMembershipPlanRepository, MembershipPlanRepository>();
 builder.Services.AddScoped<IFetalMeasurementRepository, FetalMeasurementRepository>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();

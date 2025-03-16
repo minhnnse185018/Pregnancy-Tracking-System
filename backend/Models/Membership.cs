@@ -7,7 +7,7 @@ namespace backend.Models
         public int PlanId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; } = "active";
+        public string Status { get; set; } = "Pending";
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
