@@ -2,6 +2,8 @@
 
 /* Background overlay with a soft pattern */
 .modal-overlay {
+  margin-top: 20px;
+  
 }
 
 /* Modal content with baby theme colors */
