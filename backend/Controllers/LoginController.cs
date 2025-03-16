@@ -112,7 +112,7 @@ namespace backend.Controllers
                     });
                 }
 
-                return BadRequest(new { message = "Registration failed" });
+                return BadRequest(new { message = "Please check your email to verify your account " });
             }
             catch (Exception ex)
             {
