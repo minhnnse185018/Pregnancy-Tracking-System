@@ -21,7 +21,8 @@ const GoogleButtonContainer = styled.div`
 `;
 
 function LoginPage() {
-  const clientId = "157843865023-45o3ncemhfk5n348ee0kdrmn9cq02u9b.apps.googleusercontent.com";
+  const clientId =
+    "157843865023-45o3ncemhfk5n348ee0kdrmn9cq02u9b.apps.googleusercontent.com";
   const [signIn, toggle] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,12 +52,16 @@ function LoginPage() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5254/api/Login", {
-        email,
-        password,
-      }, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        "http://localhost:5254/api/Login",
+        {
+          email,
+          password,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       const { token, userID, userRole } = response.data;
       if (token) {
@@ -64,7 +69,7 @@ function LoginPage() {
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
         setHasToken(true);
-        navigate("/");
+        navigate("/profile");
         toast.success("Login successful!");
       } else {
         setError("Email or Password Incorrect. Please try again.");
@@ -101,18 +106,22 @@ function LoginPage() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5254/api/Login/register", {
-        email: signUpEmail,
-        password: signUpPassword,
-        firstname: " ",
-        lastName:" ",
-        phone:"",
-        dateOfBirth:"",
-        gender:"",
-        image:"",
-      }, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        "http://localhost:5254/api/Login/register",
+        {
+          email: signUpEmail,
+          password: signUpPassword,
+          firstname: " ",
+          lastName: " ",
+          phone: "",
+          dateOfBirth: "",
+          gender: "",
+          image: "",
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       const { token, userID, userRole } = response.data;
       if (token) {
@@ -120,13 +129,16 @@ function LoginPage() {
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
         setHasToken(true);
-        toast.success("Registration successful! You are now logged in.");
         navigate("/");
       } else {
-        setError("Registration failed. Please try again.");
+        toast.success(
+          "A confirmation email has been sent to your email address. Please check your inbox."
+        );
       }
     } catch (error) {
-      setError(error.response?.data?.message || "Registration failed. Please try again.");
+      setError(
+        error.response?.data?.message
+      );
     } finally {
       setLoading(false);
     }
@@ -137,13 +149,19 @@ function LoginPage() {
     setLoading(true);
     setError("");
 
-    const endpoint = signIn ? "http://localhost:5254/api/Login/google-login" : "http://localhost:5254/api/Register/google-register";
+    const endpoint = signIn
+      ? "http://localhost:5254/api/Login/google-login"
+      : "http://localhost:5254/api/Register/google-register";
     try {
-      const response = await axios.post(endpoint, {
-        credential: credentialResponse.credential,
-      }, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        endpoint,
+        {
+          credential: credentialResponse.credential,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       const { token, userID, userRole } = response.data;
       if (token) {
@@ -151,13 +169,21 @@ function LoginPage() {
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
         setHasToken(true);
-        toast.success(`${signIn ? "Google login" : "Google registration"} successful!`);
+        toast.success(
+          `${signIn ? "Google login" : "Google registration"} successful!`
+        );
         navigate("/");
       } else {
-        setError(`Google ${signIn ? "login" : "registration"} failed. Please try again.`);
+        setError(
+          `Google ${
+            signIn ? "login" : "registration"
+          } failed. Please try again.`
+        );
       }
     } catch (error) {
-      setError(`Google ${signIn ? "login" : "registration"} failed. Please try again.`);
+      setError(
+        `Google ${signIn ? "login" : "registration"} failed. Please try again.`
+      );
     } finally {
       setLoading(false);
     }
@@ -230,8 +256,12 @@ function LoginPage() {
                 required
                 minLength={6}
               />
-              <Components.Anchor href="/forgotPassword
-              ">Forgot your password?</Components.Anchor>
+              <Components.Anchor
+                href="/forgotPassword
+              "
+              >
+                Forgot your password?
+              </Components.Anchor>
               {error && <p style={{ color: "red" }}>{error}</p>}
               <Components.Button type="submit" disabled={loading}>
                 {loading ? "Signing In..." : "Sign In"}

@@ -58,7 +58,7 @@ function RegisterAccount() {
           setMessage("Account verified successfully! Redirecting to login...");
           setSuccess(true);
           toast.success("Account verified successfully!");
-          setTimeout(() => navigate("/login"), 2000); // Điều hướng sau 2 giây
+          setTimeout(() => navigate("/"), 2000); // Điều hướng sau 2 giây
         } else {
           setMessage("Verification failed. The link may be expired.");
           setSuccess(false);
