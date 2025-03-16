@@ -3,7 +3,6 @@ using System.Net;
 using System.Text;
 using System.Security.Cryptography;
 using System.Globalization;
-using backend.Models;
 using backend.Dtos.Payment;
 
 namespace PregnancyTrackingSystem.Libraries
@@ -24,18 +23,55 @@ namespace PregnancyTrackingSystem.Libraries
                     vnPay.AddResponseData(key, value);
                 }
             }
-            var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
+
+            // Kiểm tra và lấy vnPayTranId
+            long vnPayTranId = 0;
+            var transactionNoStr = vnPay.GetResponseData("vnp_TransactionNo");
+            if (!string.IsNullOrEmpty(transactionNoStr))
+            {
+                vnPayTranId = Convert.ToInt64(transactionNoStr);
+            }
+
+            // Xử lý Amount
+            decimal amount = 0;
+            var amountStr = vnPay.GetResponseData("vnp_Amount");
+            if (!string.IsNullOrEmpty(amountStr) && decimal.TryParse(amountStr, out decimal parsedAmount))
+            {
+                amount = parsedAmount / 100;
+            }
+
             var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
-            var vnpSecureHash =
-                collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
+            var vnpSecureHash = collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value;
             var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
-            var checkSignature =
-                vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
+
+            var checkSignature = vnPay.ValidateSignature(vnpSecureHash, hashSecret);
+
             if (!checkSignature)
                 return new PaymentResponseDto()
                 {
                     PaymentStatus = "fail"
                 };
+            // Xử lý PayDate
+            DateTime paymentDate = DateTime.Now;
+            var payDateStr = vnPay.GetResponseData("vnp_PayDate");
+            if (!string.IsNullOrEmpty(payDateStr) && payDateStr.Length >= 14)
+            {
+                try
+                {
+                    paymentDate = DateTime.ParseExact(
+                        payDateStr,
+                        "yyyyMMddHHmmss",
+                        CultureInfo.InvariantCulture
+                    );
+                }
+                catch
+                {
+
+                }
+            }
+
+            // Và thêm vào khi return
+
             return new PaymentResponseDto()
             {
                 PaymentStatus = "Success",
@@ -44,8 +80,11 @@ namespace PregnancyTrackingSystem.Libraries
                 VnpayTransactionNo = vnPayTranId.ToString(),
                 VnpayToken = vnpSecureHash,
                 VnpayResponseCode = vnpResponseCode,
-                
+                Amount = amount,
+                PaymentDate = DateTime.Now
             };
+
+
         }
         public string GetIpAddress(HttpContext context)
         {
