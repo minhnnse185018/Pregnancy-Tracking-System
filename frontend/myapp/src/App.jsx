@@ -195,7 +195,7 @@ function App() {
               }
             />
           </Route>
-          <Route path="/viewappointment" element={<CustomerPrivateRoute />}>
+          <Route path="/view-appointment" element={<CustomerPrivateRoute />}>
             <Route
               path=""
               element={
