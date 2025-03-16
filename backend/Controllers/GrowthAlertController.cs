@@ -44,16 +44,9 @@ namespace backend.Controllers
             return Ok(alerts);
         }
 
-        // GET: api/GrowthAlert/customer/5
-        [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<IEnumerable<GrowthAlert>>> GetAlertsByUserId(int userId)
-        {
-            var alerts = await _service.GetAlertsByUserIdAsync(userId);
-            return Ok(alerts);
-        }
 
         // GET: api/GrowthAlert/customer/5/week
-        [HttpGet("customer/{userId}/week")]
+        [HttpGet("{userId}/week")]
         public async Task<ActionResult<IEnumerable<GrowthAlertDto>>> GetAlertsByUserIdWithWeek(int userId)
         {
             var alerts = await _service.GetAlertsByUserIdWithWeekAsync(userId);
