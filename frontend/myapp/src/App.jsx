@@ -7,6 +7,7 @@ import AboutUs from "./components/Customer/AboutUs/AboutUs";
 import { AuthProvider } from "./components/Customer/AuthContext";
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import BookAppointment from "./components/Customer/BookAppointment/BookAppointment";
+import ViewAppointment from "./components/Customer/BookAppointment/ViewAppointment";
 import Contact from "./components/Customer/Contact/Contact";
 import UserProfile from "./components/Customer/CustomerProfile/CustomerProfile";
 import FetalGrowthTracker from "./components/Customer/FetalGrowthTracker/FetalGrowthTracker";
@@ -189,6 +190,18 @@ function App() {
                 <>
                   <Navbarr />
                   <CreatePregnancyProfile />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
+          <Route path="/viewappointment" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <ViewAppointment />
                   <Footer />
                 </>
               }
