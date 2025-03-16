@@ -78,23 +78,6 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ScheduledEmails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RecipientEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ScheduledTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsSent = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ScheduledEmails", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -129,6 +112,7 @@ namespace backend.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReminderSent = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -251,6 +235,30 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ScheduledEmails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppointmentId = table.Column<int>(type: "int", nullable: false),
+                    RecipientEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ScheduledTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSent = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScheduledEmails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ScheduledEmails_Appointments_AppointmentId",
+                        column: x => x.AppointmentId,
+                        principalTable: "Appointments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -355,8 +363,8 @@ namespace backend.Migrations
                 columns: new[] { "Id", "Answer", "Category", "CreatedAt", "DisplayOrder", "Question", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8766), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8762) },
-                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8769), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8767) }
+                    { 1, "At 12 weeks, the average fetal weight is between 14 and 20 grams.", "Fetal Development", new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8931), 1, "What is the normal fetal weight at 12 weeks?", new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8928) },
+                    { 2, "During the first 28 weeks, visits are typically scheduled every 4 weeks. Between 28-36 weeks, every 2-3 weeks. After 36 weeks, weekly visits are recommended.", "Prenatal Care", new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8935), 2, "How often should I have prenatal check-ups?", new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8933) }
                 });
 
             migrationBuilder.InsertData(
@@ -418,27 +426,27 @@ namespace backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "DateOfBirth", "Email", "FirstName", "Gender", "LastName", "Password", "Phone", "ResetToken", "ResetTokenExpired", "Status", "UserType" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8510), null, "1@gmail.com", null, null, null, "111111", null, null, null, "active", "1" },
-                    { 2, new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8514), null, "2@gmail.com", null, null, null, "222222", null, null, null, "active", "5" }
+                    { 1, new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8691), null, "1@gmail.com", null, null, null, "111111", null, null, null, "active", "1" },
+                    { 2, new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8695), null, "2@gmail.com", null, null, null, "222222", null, null, null, "active", "5" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Posts",
                 columns: new[] { "Id", "Content", "CreatedAt", "Image", "Status", "Title", "UpdatedAt", "UserId" },
-                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8795), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8791), 1 });
+                values: new object[] { 1, "I'm excited to share my journey through the first trimester...", new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(9004), null, "published", "My First Pregnancy Experience", new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(9001), 1 });
 
             migrationBuilder.InsertData(
                 table: "PregnancyProfiles",
                 columns: new[] { "Id", "ConceptionDate", "CreatedAt", "DueDate", "UserId" },
-                values: new object[] { 1, new DateTime(2024, 12, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8697), new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8705), new DateTime(2025, 9, 12, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8704), 1 });
+                values: new object[] { 1, new DateTime(2024, 12, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8866), new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8872), new DateTime(2025, 9, 12, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8871), 1 });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "CreatedAt", "PostId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8818), 1, 2 },
-                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 16, 9, 36, 54, 563, DateTimeKind.Local).AddTicks(8820), 1, 1 }
+                    { 1, "Thank you for sharing your experience! It's very helpful.", new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(9026), 1, 2 },
+                    { 2, "I'm glad you found it helpful! Feel free to ask any questions.", new DateTime(2025, 3, 16, 16, 18, 51, 910, DateTimeKind.Local).AddTicks(9029), 1, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -446,8 +454,8 @@ namespace backend.Migrations
                 columns: new[] { "Id", "CreatedAt", "HeightCm", "Notes", "ProfileId", "Week", "WeightGrams" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8734), 25.5m, null, 1, 12, 500.00m },
-                    { 2, new DateTime(2025, 3, 16, 8, 36, 54, 563, DateTimeKind.Local).AddTicks(8738), 28.5m, null, 1, 16, 650.00m }
+                    { 1, new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8902), 25.5m, null, 1, 12, 500.00m },
+                    { 2, new DateTime(2025, 3, 16, 15, 18, 51, 910, DateTimeKind.Local).AddTicks(8905), 28.5m, null, 1, 16, 650.00m }
                 });
 
             migrationBuilder.CreateIndex(
@@ -512,6 +520,12 @@ namespace backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ScheduledEmails_AppointmentId",
+                table: "ScheduledEmails",
+                column: "AppointmentId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
@@ -521,9 +535,6 @@ namespace backend.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Appointments");
-
             migrationBuilder.DropTable(
                 name: "Comments");
 
@@ -556,6 +567,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Memberships");
+
+            migrationBuilder.DropTable(
+                name: "Appointments");
 
             migrationBuilder.DropTable(
                 name: "PregnancyProfiles");
