@@ -12,6 +12,7 @@ namespace backend.Repository.Interface
         Task<bool> CancelAppointmentAsync(int id);
         Task<Appointment?> UpdateAppointmentAsync(int id, AppointmentDto appointmentDto);
         Task<List<Appointment>> GetUpcomingAppointmentsAsync(DateTime reminderTime);
+        Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId);
     }
 
 }
