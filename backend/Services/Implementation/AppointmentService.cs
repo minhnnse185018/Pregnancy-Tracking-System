@@ -168,5 +168,10 @@ namespace backend.Services.Implementation
             _logger.LogInformation("Retrieved {Count} appointments with Status {Status}", appointments.Count, status);
             return appointments;
         }
+
+        public Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
+        {
+            return _appointmentRepo.GetAppointmentsByUserIdAsync(userId);
+        }
     }
 }

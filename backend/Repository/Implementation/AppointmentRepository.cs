@@ -24,6 +24,7 @@ namespace backend.Repository.Implementation
             await _context.SaveChangesAsync();
             return appointment;
         }
+        
 
         public async Task<Appointment?> GetAppointmentByIdAsync(int id)
         {
@@ -71,6 +72,14 @@ namespace backend.Repository.Implementation
         {
             return await _context.Appointments
                 .Where(a => a.Status == "Scheduled" && !a.ReminderSent && a.AppointmentDate > DateTime.UtcNow && a.AppointmentDate <= reminderTime)
+                .Include(a => a.User)
+                .ToListAsync();
+        }
+
+        public Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
+        {
+            return _context.Appointments
+                .Where(a => a.UserId == userId)
                 .Include(a => a.User)
                 .ToListAsync();
         }

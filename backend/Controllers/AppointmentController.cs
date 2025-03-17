@@ -52,12 +52,12 @@ namespace backend.Controllers
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetAppointmentById(int id)
         {
-            var appointment = await _appointmentService.GetAppointmentByIdAsync(id);
-            if (appointment == null)
-                return NotFound(new { Message = "Appointment not found" });
+            var appointments = await _appointmentService.GetAppointmentsByUserIdAsync(id);
+            if (appointments == null || !appointments.Any())
+                return NotFound();
 
-            var appointmentDto = _mapper.Map<AppointmentDto>(appointment);
-            return Ok(appointmentDto);
+            var appointmentDtos = _mapper.Map<List<AppointmentDto>>(appointments);
+            return Ok(appointmentDtos);
         }
         
 
