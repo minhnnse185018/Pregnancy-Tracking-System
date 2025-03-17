@@ -14,5 +14,6 @@ namespace backend.Services.Interface
         Task SendAppointmentRemindersAsync();
         Task UpdateCompletedAppointmentsAsync(); 
         Task <List<Appointment>> GetAppointmentsByUserIdAsync(int userId);
+        Task<bool> DeleteAppointmentAsync(int id);
     }
 }

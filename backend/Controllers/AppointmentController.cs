@@ -87,11 +87,11 @@ namespace backend.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteAppointment(int id)
         {
-            var success = await _appointmentService.CancelAppointmentAsync(id);
+            var success = await _appointmentService.DeleteAppointmentAsync(id);
             if (!success)
                 return NotFound(new { Message = "Appointment not found" });
 
-            return Ok(new { Message = "Appointment cancelled successfully!" });
+            return Ok(new { Message = "Appointment deleted successfully!" });
         }
     }
 

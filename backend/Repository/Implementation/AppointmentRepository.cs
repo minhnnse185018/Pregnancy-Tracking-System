@@ -5,6 +5,7 @@ using backend.Models;
 using backend.Repository.Interface;
 using backend.Services.Interface;
 using Google;
+using Hangfire.States;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository.Implementation
@@ -82,6 +83,13 @@ namespace backend.Repository.Implementation
                 .Where(a => a.UserId == userId)
                 .Include(a => a.User)
                 .ToListAsync();
+        }
+
+        public async Task<bool> DeleteAppointmentAsync(int id)
+        {
+            var appointment = await _context.Appointments.FindAsync(id);
+            _context.Appointments.Remove(appointment);
+            return await _context.SaveChangesAsync()>0?true:false;
         }
     }
 }

@@ -169,9 +169,14 @@ namespace backend.Services.Implementation
             return appointments;
         }
 
-        public Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
+        public async Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
         {
-            return _appointmentRepo.GetAppointmentsByUserIdAsync(userId);
+            return await _appointmentRepo.GetAppointmentsByUserIdAsync(userId);
+        }
+
+        public async Task<bool> DeleteAppointmentAsync(int id)
+        {
+            return await _appointmentRepo.DeleteAppointmentAsync(id);
         }
     }
 }
