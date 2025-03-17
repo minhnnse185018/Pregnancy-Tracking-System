@@ -73,25 +73,32 @@ namespace backend.Controllers
             return Ok(appointmentDtos);
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateAppointment(int id, [FromBody] AppointmentDto appointmentDto)
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateAppointment([FromBody] UpdateAppointmentDto appointmentDto)
         {
-            var appointment = await _appointmentService.UpdateAppointmentAsync(id, appointmentDto);
-            if (appointment == null)
-                return NotFound(new { Message = "Appointment not found" });
+            try 
+            {
+                var appointment = await _appointmentService.UpdateAppointmentAsync(appointmentDto);
+                if (appointment == null)
+                    return NotFound(new { Message = "Appointment not found" });
 
-            var appointmentResponse = _mapper.Map<AppointmentDto>(appointment); // Chuyển thành DTO
-            return Ok(new { Message = "Appointment updated successfully!", Appointment = appointmentResponse });
+                var appointmentResponse = _mapper.Map<AppointmentDto>(appointment);
+                return Ok(new { Message = "Appointment updated successfully!", Appointment = appointmentResponse });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteAppointment(int id)
         {
-            var success = await _appointmentService.CancelAppointmentAsync(id);
+            var success = await _appointmentService.DeleteAppointmentAsync(id);
             if (!success)
                 return NotFound(new { Message = "Appointment not found" });
 
-            return Ok(new { Message = "Appointment cancelled successfully!" });
+            return Ok(new { Message = "Appointment deleted successfully!" });
         }
     }
 

@@ -54,24 +54,54 @@ function MembershipPage() {
       alert("Please log in to proceed with the payment!");
       return;
     }
+    
     try {
-      const response = await axios.post("http://localhost:5254/api/payment", {
-        userId: userId,
-        membershipId: selectedPlan.id,
-        amount: selectedPlan.price,
-        paymentDescription: `Payment for ${selectedPlan.name} plan`,
-        paymentMethod: selectedPaymentMethod,
-      });
-
-      if (response.status === 200) {
-        alert("Payment successful!");
-        setShowPaymentModal(false);
+      // Step 1: Create a pending membership
+      const currentDate = new Date().toISOString();
+      const membershipResponse = await axios.post(
+        "http://localhost:5254/api/Membership/purchase",
+        {
+          userId: parseInt(userId),
+          planId: selectedPlan.id,
+          startDate: currentDate
+        }
+      );
+      
+      console.log("Membership created:", membershipResponse.data);
+      
+      // Step 2: Create payment after membership is created
+      const membershipId = membershipResponse.data.id || membershipResponse.data.membershipId;
+      
+      if (!membershipId) {
+        console.error("Failed to get membership ID from response:", membershipResponse.data);
+        alert("Error creating membership. Please try again.");
+        return;
+      }
+      
+      const paymentResponse = await axios.post(
+        "http://localhost:5254/api/payment",
+        {
+          membershipId: membershipId,
+          amount: selectedPlan.price,
+          paymentDescription: `Payment for ${selectedPlan.name}`
+        }
+      );
+      
+      console.log("Payment response:", paymentResponse.data);
+      
+      // Handle the payment URL response
+      if (paymentResponse.data && typeof paymentResponse.data === 'string' && paymentResponse.data.includes('vnpayment.vn')) {
+        // If response.data is a URL string, use it directly
+        window.location.href = paymentResponse.data;
+      } else if (paymentResponse.data && paymentResponse.data.vnpayUrl) {
+        // If response.data is an object with vnpayUrl property
+        window.location.href = paymentResponse.data.vnpayUrl;
       } else {
-        alert("Payment failed!");
+        alert("Failed to get payment URL!");
       }
     } catch (error) {
-      console.error("Payment error:", error);
-      alert("An error occurred, please try again!");
+      console.error("Payment process error:", error);
+      alert("An error occurred during the payment process. Please try again!");
     }
   };
 
@@ -79,7 +109,8 @@ function MembershipPage() {
     <div className="membership-container">
       <h1 className="membership-title">Join the Journey with Mom and Baby</h1>
       <p className="membership-description">
-        Choose a suitable membership plan to access exclusive materials, expert advice, and connect with the mom community!
+        Choose a suitable membership plan to access exclusive materials, expert
+        advice, and connect with the mom community!
       </p>
 
       {loading ? (
@@ -142,22 +173,6 @@ function MembershipPage() {
               Scan QR Code
             </label>
           </div>
-          {selectedPaymentMethod === "bank" && (
-            <div className="payment-details">
-              <p>
-                <strong>ACCOUNT HOLDER:</strong> NGUYEN VAN A
-              </p>
-              <p>
-                <strong>ACCOUNT NUMBER:</strong> babycare.com
-              </p>
-              <p>
-                <strong>BANK:</strong> MB
-              </p>
-              <p>
-                <strong>TRANSFER NOTE:</strong> NAP306046MOM
-              </p>
-            </div>
-          )}
           {selectedPaymentMethod === "qr" && (
             <div className="payment-details">
               <p>Please scan the QR code to proceed with the payment:</p>
@@ -169,7 +184,11 @@ function MembershipPage() {
           <Button variant="secondary" onClick={handleClosePaymentModal}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={handlePayment} disabled={!selectedPaymentMethod}>
+          <Button
+            variant="primary"
+            onClick={handlePayment}
+            disabled={!selectedPaymentMethod}
+          >
             Confirm Payment
           </Button>
         </Modal.Footer>

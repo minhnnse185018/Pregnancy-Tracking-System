@@ -48,8 +48,8 @@ namespace backend.Services.Implementation
             if (user != null)
             {
                 // Gửi email xác nhận
-                string confirmSubject = "Xác nhận đặt lịch hẹn";
-                string confirmBody = $"Chào {user.LastName}, bạn có lịch '{appointment.Title}' vào {appointment.AppointmentDate}. Vui lòng có mặt đúng giờ.";
+                string confirmSubject = "Confirm appointment";
+                string confirmBody = $"Hello {user.LastName}, you have a '{appointment.Title}' appointment at {appointment.AppointmentDate}. Please be on time!";
                 await _emailService.SendEmailAsync(user.Email, confirmSubject, confirmBody);
 
                 // Tạo ScheduledEmail
@@ -58,8 +58,8 @@ namespace backend.Services.Implementation
                 {
                     AppointmentId = createdAppointment.Id,
                     RecipientEmail = user.Email,
-                    Subject = "Nhắc nhở lịch hẹn",
-                    Body = $"Chào {user.LastName}, bạn có lịch '{appointment.Title}' vào {appointment.AppointmentDate}. Hãy chuẩn bị sẵn sàng!",
+                    Subject = "Appointment Reminder",
+                    Body = $"Hello {user.LastName}, you have a '{appointment.Title}' appointment at {appointment.AppointmentDate}. Be prepared!",
                     ScheduledTime = reminderTime,
                     IsSent = false
                 };
@@ -81,17 +81,18 @@ namespace backend.Services.Implementation
             var user = await _userRepo.GetUserByIdAsync(appointment.UserId);
             if (user != null)
             {
-                string subject = "Xác nhận hủy lịch hẹn";
-                string body = $"Chào {user.LastName}, bạn đã hủy '{appointment.Title}' vào {appointment.AppointmentDate}. Nếu cần đặt lại, vui lòng liên hệ.";
+                string subject = "Confirm appointment cancellation";
+                string body = $"Hello {user.LastName}, you have cancelled '{appointment.Title}' appointment at {appointment.AppointmentDate}. If you need to reset, please contact us!";
                 await _emailService.SendEmailAsync(user.Email, subject, body);
             }
             return true;
         }
 
-        public async Task<Appointment?> UpdateAppointmentAsync(int id, AppointmentDto appointmentDto)
+        public async Task<Appointment?> UpdateAppointmentAsync(UpdateAppointmentDto appointmentDto)
         {
-            return await _appointmentRepo.UpdateAppointmentAsync(id, appointmentDto);
+            return await _appointmentRepo.UpdateAppointmentAsync(appointmentDto);
         }
+        
 
         public async Task SendAppointmentRemindersAsync()
         {
@@ -169,9 +170,14 @@ namespace backend.Services.Implementation
             return appointments;
         }
 
-        public Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
+        public async Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
         {
-            return _appointmentRepo.GetAppointmentsByUserIdAsync(userId);
+            return await _appointmentRepo.GetAppointmentsByUserIdAsync(userId);
+        }
+
+        public async Task<bool> DeleteAppointmentAsync(int id)
+        {
+            return await _appointmentRepo.DeleteAppointmentAsync(id);
         }
     }
 }

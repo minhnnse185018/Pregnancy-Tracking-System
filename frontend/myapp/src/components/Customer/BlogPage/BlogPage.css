@@ -36,95 +36,80 @@
 }
 
 /* Posts Container & Cards */
-.posts-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+:root {
+  --pastel-pink: #f8c6d1;
+  --pastel-blue: #c6def8;
+  --pastel-purple: #e6c6f8;
+  --light-gray: #f5f5f5;
+  --medium-gray: #e0e0e0;
+  --dark-gray: #666666;
+  --font-main: 'Quicksand', 'Nunito', sans-serif;
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --border-radius: 12px;
 }
 
-.posts-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #1e293b;
-}
-
+/* Post Card */
 .post-card {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  padding: 24px;
-  border: 1px solid #eef2f6;
-  transition: all 0.2s ease;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  border: 2px solid var(--pastel-blue);
+  transition: transform 0.2s ease;
 }
 
 .post-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transform: translateY(-1px);
+  transform: translateY(-5px);
+}
+
+.post-content {
+  padding: 1.5rem;
+}
+
+/* Post Title */
+.post-title {
+  font-size: 1.4rem;
+  margin: 0.5rem 0;
+  color: #36304a;
+  border-bottom: 2px dotted var(--pastel-pink);
+  padding-bottom: 0.5rem;
+  font-family: var(--font-main);
+  font-weight: 600;
 }
 
 /* Post Content */
-.post-content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.post-user {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.user-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.post-info {
-  flex: 1;
-}
-
-.post-metadata {
-  font-size: 14px;
-  color: #64748b;
-  margin: 0 0 4px 0;
-}
-
-.author-name {
-  color: #1e293b;
-  font-weight: 600;
-}
-
-.group-name {
-  color: #ff69b4;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.group-name:hover {
-  text-decoration: underline;
-}
-
-.post-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #1e293b;
-  line-height: 1.4;
-}
-
 .post-text {
-  color: #475569;
-  line-height: 1.6;
-  margin: 0;
-  font-size: 15px;
+  margin: 1rem 0;
+  line-height: 1.8;
+  color: #333;
+  font-family: var(--font-main);
+  font-size: 1rem;
 }
 
+/* Baby/Mom Care Specific Elements */
+.post-card:nth-child(odd) {
+  border-color: var(--pastel-pink);
+}
+
+.post-card:nth-child(even) {
+  border-color: var(--pastel-blue);
+}
+
+.post-card:nth-child(3n) {
+  border-color: var(--pastel-purple);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .post-title {
+    font-size: 1.2rem;
+  }
+  
+  .post-text {
+    font-size: 0.95rem;
+  }
+}
 /* Post Stats & Interactions */
 .post-stats {
   display: flex;
@@ -430,4 +415,107 @@
 
 .view-comments-btn:hover {
   background-color: #5a6268;
+}
+
+/* Add this to your BlogPage.css file */
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.custom-toast {
+  min-width: 300px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+  animation: bounce-in 0.5s;
+  margin-bottom: 10px;
+}
+
+.toast-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.toast-icon {
+  font-size: 1.3rem;
+  margin-right: 10px;
+}
+
+.toast-title {
+  flex-grow: 1;
+  font-weight: 600;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+}
+
+.toast-body {
+  padding: 12px 15px;
+}
+
+/* Toast types */
+.custom-toast.success {
+  background-color: #f0f9eb;
+  border-left: 4px solid #67c23a;
+}
+
+.custom-toast.success .toast-icon {
+  color: #67c23a;
+}
+
+.custom-toast.error {
+  background-color: #fef0f0;
+  border-left: 4px solid #f56c6c;
+}
+
+.custom-toast.error .toast-icon {
+  color: #f56c6c;
+}
+
+.custom-toast.warning {
+  background-color: #fdf6ec;
+  border-left: 4px solid #e6a23c;
+}
+
+.custom-toast.warning .toast-icon {
+  color: #e6a23c;
+}
+
+.custom-toast.info {
+  background-color: #f4f4f5;
+  border-left: 4px solid #909399;
+}
+
+.custom-toast.info .toast-icon {
+  color: #909399;
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateX(20px);
+  }
+  70% {
+    transform: scale(1.05) translateX(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
 }

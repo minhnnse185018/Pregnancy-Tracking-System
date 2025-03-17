@@ -79,120 +79,18 @@ function ForgotPasswordPage() {
     setLoading(true);
     setError("");
 
-    // Generate a reset token and link
-    // In a real app, this would be done on the backend
-    const resetLink = `http://localhost:3000/forgotPassword
-    )}`;
-
-    // Create the HTML email template
-    const emailTemplate = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Reset</title>
-    <style type="text/css">
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.5;
-            color: #333333;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .message {
-            margin-bottom: 25px;
-        }
-        
-        .button-container {
-            text-align: center;
-            margin: 25px 0;
-        }
-        
-        .button {
-            display: inline-block;
-            background-color: #ff69b4;
-            color: #ffffff !important;
-            text-decoration: none;
-            padding: 12px 30px;
-            border-radius: 4px;
-            font-weight: bold;
-            text-align: center;
-            font-size: 14px;
-        }
-        
-        .footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #777777;
-            border-top: 1px solid #eeeeee;
-            padding-top: 20px;
-        }
-        
-        .footer p {
-            margin: 5px 0;
-        }
-        
-        .small-text {
-            font-size: 11px;
-        }
-    </style>
-</head>
-<body>
-    <div class="email-container">
-        <div class="title">Password reset request</div>
-        
-        <div class="message">
-            On the journey of life, passwords often get lost. Click below to create a new one.
-        </div>
-        
-        <div class="button-container">
-            <a href="${resetLink}" class="button">RESET YOUR PASSWORD</a>
-        </div>
-        
-        <div class="footer">
-            <p>Have any questions? <a href="mailto:mombabycaretracking@gmail.com">Contact us</a>. If you didn't ask for a password reset, kindly ignore this.</p>
-            
-            <p><strong>Get the Mom & Baby app</strong></p>
-            
-            <p class="small-text">© 2025 Mom & Baby, E2a-7, D1 Street, Long Thanh My, Thu Duc City, Ho Chi Minh City 700000.</p>
-            <p class="small-text">Terms of Use • Privacy Policy</p>
-            <p class="small-text">This email is for informational purposes only.</p>
-            <p class="small-text">Unsubscribe • Manage your subscriptions</p>
-        </div>
-    </div>
-</body>
-</html>
-    `;
-
     try {
+      // Gửi yêu cầu đặt lại mật khẩu với chỉ email
       await axios.post(
-        "http://localhost:5254/api/email/send",
-        {
-          toEmail: email,
-          subject: "Password Reset Request",
-          body: emailTemplate,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        "http://localhost:5254/api/Users/forgotpassrequest",
+        { email: email },
+        { headers: { "Content-Type": "application/json" } }
       );
-      toast.success("Password reset email sent!");
+      
+      toast.success("Đã gửi email đặt lại mật khẩu! Vui lòng kiểm tra hộp thư của bạn.");
     } catch (error) {
-      setError("Failed to send password reset email. Please try again.");
+      setError("Không thể gửi email đặt lại mật khẩu. Vui lòng thử lại.");
+      console.error("Error:", error);
     } finally {
       setLoading(false);
     }

@@ -1,93 +1,36 @@
-import { Star, StarOutline } from "@mui/icons-material";
-import {
-  Alert,
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  Divider,
-  Grid,
-  Modal,
-  Paper,
-  Snackbar,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, Box, Button, Modal, Divider } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-// Hàm render nhãn trạng thái
+// Hàm render trạng thái
 const renderStatusChip = (status) => {
   switch (status) {
-    case "Pending":
-      return (
-        <Chip label="Pending" sx={{ bgcolor: "#FFEB3B", color: "#333" }} />
-      );
-    case "Ready":
-      return <Chip label="Ready" sx={{ bgcolor: "#2196F3", color: "#fff" }} />;
+    case "Scheduled":
+      return <Chip label="Scheduled" sx={{ bgcolor: "#2196F3", color: "#fff" }} />;
     case "Cancelled":
-      return (
-        <Chip label="Cancelled" sx={{ bgcolor: "#F44336", color: "#fff" }} />
-      );
-    case "Processing":
-      return (
-        <Chip label="Processing" sx={{ bgcolor: "#FFA500", color: "#fff" }} />
-      );
+      return <Chip label="Cancelled" sx={{ bgcolor: "#F44336", color: "#fff" }} />;
     case "Completed":
-      return (
-        <Chip label="Completed" sx={{ bgcolor: "#4CAF50", color: "#fff" }} />
-      );
+      return <Chip label="Completed" sx={{ bgcolor: "#4CAF50", color: "#fff" }} />;
     default:
       return <Chip label={status} sx={{ bgcolor: "#9E9E9E", color: "#fff" }} />;
   }
 };
 
-// Hàm render sao dựa trên rating, làm tròn lên
-const renderStars = (rating, size = 24) => {
-  const roundedRating = Math.ceil(rating); // Làm tròn lên số sao
-  const stars = [];
-
-  for (let i = 1; i <= 5; i++) {
-    if (i <= roundedRating) {
-      stars.push(<Star key={i} sx={{ color: "#FFD700", fontSize: size }} />);
-    } else {
-      stars.push(
-        <StarOutline key={i} sx={{ color: "#FFD700", fontSize: size }} />
-      );
-    }
-  }
-  return stars;
-};
-
 const ManagerAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  const [loading, setLoading] = useState(true);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const accountID = sessionStorage.getItem("userID");
-
-  // Fetch dữ liệu từ API
+  // Gọi API để lấy danh sách cuộc hẹn
   useEffect(() => {
     const fetchAppointments = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:8080/api/appointment/manage/${accountID}`
-          // `http://localhost:8080/appointment`
-        );
+        const response = await axios.get(`http://localhost:5254/api/appointments/all`);
         setAppointments(response.data);
       } catch (error) {
-        console.error("Failed to fetch appointments:", error);
-        setSnackbarMessage("Failed to load appointments");
-        setSnackbarOpen(true);
+        console.error("Lỗi khi lấy danh sách cuộc hẹn:", error);
       } finally {
         setLoading(false);
       }
@@ -107,104 +50,58 @@ const ManagerAppointments = () => {
   };
 
   return (
-    <Box
-      sx={{
-        padding: 4,
-        backgroundColor: "#fff",
-        minHeight: "100vh",
-        color: "#333",
-      }}
-    >
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        sx={{ mb: 2, color: "#4CAF50" }}
-      >
+    <Box sx={{ padding: 4, backgroundColor: "#fff", minHeight: "100vh", color: "#333" }}>
+      <Typography variant="h4" fontWeight="bold" sx={{ mb: 2, color: "#4CAF50" }}>
         Appointments Management
       </Typography>
 
-      {/* Table của danh sách cuộc hẹn */}
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Paper
-            sx={{
-              padding: 2,
-              backgroundColor: "#f5f5f5",
-              borderRadius: "8px",
-            }}
-          >
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow
-                    sx={{
-                      backgroundColor: "#4caf50",
-                      color: "#fff",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    <TableCell sx={{ color: "#fff" }}>No</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Customer Name</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Stylist Name</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Date</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Time</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Total</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Services</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Status</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Feedback</TableCell>
-                  </TableRow>
-                </TableHead>
+      <TableContainer component={Paper} sx={{ padding: 2, backgroundColor: "#f5f5f5", borderRadius: "8px" }}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "#4CAF50" }}>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>ID</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Title</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Appointment Date</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Status</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Created At</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
 
-                <TableBody>
-                  {loading ? (
-                    <TableRow>
-                      <TableCell colSpan={9} align="center">
-                        <CircularProgress />
-                      </TableCell>
-                    </TableRow>
-                  ) : appointments.length > 0 ? (
-                    appointments.map((appointment, index) => (
-                      <TableRow key={appointment.appointmentId}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{appointment.customerName}</TableCell>
-                        <TableCell>{appointment.stylistName}</TableCell>
-                        <TableCell>{appointment.date}</TableCell>
-                        <TableCell>{`${appointment.startTime} - ${appointment.endTime}`}</TableCell>
-                        <TableCell>{`${appointment.totalPrice} VNĐ`}</TableCell>
-                        <TableCell>
-                          {appointment.serviceName.join(", ")}
-                        </TableCell>
-                        <TableCell>
-                          {renderStatusChip(appointment.status)}
-                        </TableCell>
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  <CircularProgress />
+                </TableCell>
+              </TableRow>
+            ) : appointments.length > 0 ? (
+              appointments.map((appointment) => (
+                <TableRow key={appointment.id}>
+                  <TableCell>{appointment.id}</TableCell>
+                  <TableCell>{appointment.title}</TableCell>
+                  <TableCell>{appointment.appointmentDate}</TableCell>
+                  <TableCell>{renderStatusChip(appointment.status)}</TableCell>
+                  <TableCell>{appointment.createdAt}</TableCell>
+                  <TableCell>
+                    <Button variant="contained" sx={{ backgroundColor: "#4CAF50" }} onClick={() => handleViewAppointment(appointment)}>
+                      View
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  No appointments available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-                        <TableCell>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            sx={{ backgroundColor: "#4CAF50" }}
-                            onClick={() => handleViewAppointment(appointment)}
-                          >
-                            View
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={9} align="center">
-                        No appointments available
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </Grid>
-      </Grid>
-
-      {/* Modal hiển thị thông tin chi tiết */}
+      {/* Modal xem chi tiết cuộc hẹn */}
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box
           sx={{
@@ -212,7 +109,7 @@ const ManagerAppointments = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500,
+            width: 400,
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
@@ -223,12 +120,8 @@ const ManagerAppointments = () => {
             alignItems: "center",
           }}
         >
-          <Typography
-            variant="h5"
-            fontWeight="bold"
-            sx={{ mb: 2, color: "#4CAF50", textAlign: "center" }}
-          >
-            Appointment's Feedback
+          <Typography variant="h5" fontWeight="bold" sx={{ mb: 2, color: "#4CAF50", textAlign: "center" }}>
+            Appointment Details
           </Typography>
           <Divider sx={{ mb: 2, width: "100%" }} />
 
@@ -236,37 +129,27 @@ const ManagerAppointments = () => {
             <>
               <Box sx={{ mb: 2, textAlign: "center" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  Rating:
+                  Title:
                 </Typography>
-                {selectedAppointment.rating !== undefined &&
-                selectedAppointment.rating !== -1 ? (
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", gap: 1 }}
-                  >
-                    {renderStars(selectedAppointment.rating, 40)}
-                  </Box>
-                ) : (
-                  <Typography color="text.secondary">
-                    No rating available
-                  </Typography>
-                )}
+                <Typography>{selectedAppointment.title}</Typography>
               </Box>
 
               <Box sx={{ mb: 2, textAlign: "center" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  Feedback:
+                  Description:
                 </Typography>
-                <Typography>
-                  {selectedAppointment.feedback || "No feedback provided"}
+                <Typography>{selectedAppointment.description || "No description provided"}</Typography>
+              </Box>
+
+              <Box sx={{ mb: 2, textAlign: "center" }}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Appointment Date:
                 </Typography>
+                <Typography>{selectedAppointment.appointmentDate}</Typography>
               </Box>
 
               <Box sx={{ textAlign: "center", mt: 4 }}>
-                <Button
-                  variant="contained"
-                  sx={{ backgroundColor: "#4CAF50", color: "#fff" }}
-                  onClick={handleCloseModal}
-                >
+                <Button variant="contained" sx={{ backgroundColor: "#4CAF50", color: "#fff" }} onClick={handleCloseModal}>
                   Close
                 </Button>
               </Box>
@@ -274,20 +157,8 @@ const ManagerAppointments = () => {
           )}
         </Box>
       </Modal>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={2000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert severity="error" sx={{ width: "100%" }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };
 
 export default ManagerAppointments;
-//  ĐÃ XONG TẤT CẢ
