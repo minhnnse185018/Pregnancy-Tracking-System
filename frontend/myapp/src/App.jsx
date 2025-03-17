@@ -78,18 +78,21 @@ function App() {
               </>
             }
           />
+          <Route path="/appointment" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <BookAppointment />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
+          <Route path="/blog" element={<CustomerPrivateRoute />}>
           <Route
-            path="/appointment"
-            element={
-              <>
-                <Navbarr />
-                <BookAppointment />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/blog"
+            path=""
             element={
               <>
                 <Navbarr />
@@ -98,6 +101,7 @@ function App() {
               </>
             }
           />
+          </Route>
           <Route
             path="/contact"
             element={
@@ -108,8 +112,9 @@ function App() {
               </>
             }
           />
+          <Route path="/membership" element={<CustomerPrivateRoute />}>
           <Route
-            path="/membership"
+            path=""
             element={
               <>
                 <Navbarr />
@@ -118,6 +123,7 @@ function App() {
               </>
             }
           />
+          </Route>
           <Route
             path="/payment-success"
             element={
@@ -138,8 +144,9 @@ function App() {
               </>
             }
           />
+          <Route path="/growth-tracker" element={<CustomerPrivateRoute />}>
           <Route
-            path="/growth-tracker"
+            path=""
             element={
               <>
                 <Navbarr />
@@ -148,6 +155,7 @@ function App() {
               </>
             }
           />
+          </Route>
           <Route
             path="/health-tips"
             element={
