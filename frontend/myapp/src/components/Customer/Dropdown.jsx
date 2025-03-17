@@ -69,7 +69,7 @@ const UserIconDropdown = () => {
           <Link className="dropdown-item" to="/profilePregnancy">
             <FaBaby /> View Profile Pregnancy
           </Link>
-          <Link className="dropdown-item" to="/viewAppointment">
+          <Link className="dropdown-item" to="/viewappointment">
             <RiVipDiamondLine /> View Appointments
           </Link>
           <button className="dropdown-item" onClick={handleLogout}>
