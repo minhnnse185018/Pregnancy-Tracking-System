@@ -57,17 +57,30 @@ namespace backend.Repository.Implementation
             return true;
         }
 
-        public async Task<Appointment?> UpdateAppointmentAsync(int id, AppointmentDto appointmentDto)
+        public async Task<Appointment?> UpdateAppointmentAsync(UpdateAppointmentDto appointmentDto)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
+            var appointment = await _context.Appointments
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.Id == appointmentDto.Id);
+
             if (appointment == null) return null;
 
+            // Update only allowed fields
             appointment.Title = appointmentDto.Title;
             appointment.Description = appointmentDto.Description;
             appointment.AppointmentDate = appointmentDto.AppointmentDate;
-            await _context.SaveChangesAsync();
-            return appointment;
+            
+            try
+            {
+                await _context.SaveChangesAsync();
+                return appointment;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
+        
 
         public async Task<List<Appointment>> GetUpcomingAppointmentsAsync(DateTime reminderTime)
         {

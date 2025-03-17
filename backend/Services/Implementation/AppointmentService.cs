@@ -88,10 +88,11 @@ namespace backend.Services.Implementation
             return true;
         }
 
-        public async Task<Appointment?> UpdateAppointmentAsync(int id, AppointmentDto appointmentDto)
+        public async Task<Appointment?> UpdateAppointmentAsync(UpdateAppointmentDto appointmentDto)
         {
-            return await _appointmentRepo.UpdateAppointmentAsync(id, appointmentDto);
+            return await _appointmentRepo.UpdateAppointmentAsync(appointmentDto);
         }
+        
 
         public async Task SendAppointmentRemindersAsync()
         {

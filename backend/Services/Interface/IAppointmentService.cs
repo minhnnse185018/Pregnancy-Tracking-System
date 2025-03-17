@@ -10,7 +10,7 @@ namespace backend.Services.Interface
         Task<Appointment?> GetAppointmentByIdAsync(int id); 
         Task<List<Appointment>> GetAppointmentsByStatusAsync(string status); 
         Task<bool> CancelAppointmentAsync(int id);
-        Task<Appointment?> UpdateAppointmentAsync(int id, AppointmentDto appointmentDto);
+        Task<Appointment?> UpdateAppointmentAsync(UpdateAppointmentDto appointmentDto);
         Task SendAppointmentRemindersAsync();
         Task UpdateCompletedAppointmentsAsync(); 
         Task <List<Appointment>> GetAppointmentsByUserIdAsync(int userId);
