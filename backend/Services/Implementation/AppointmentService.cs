@@ -88,10 +88,11 @@ namespace backend.Services.Implementation
             return true;
         }
 
-        public async Task<Appointment?> UpdateAppointmentAsync(int id, AppointmentDto appointmentDto)
+        public async Task<Appointment?> UpdateAppointmentAsync(UpdateAppointmentDto appointmentDto)
         {
-            return await _appointmentRepo.UpdateAppointmentAsync(id, appointmentDto);
+            return await _appointmentRepo.UpdateAppointmentAsync(appointmentDto);
         }
+        
 
         public async Task SendAppointmentRemindersAsync()
         {
@@ -169,9 +170,14 @@ namespace backend.Services.Implementation
             return appointments;
         }
 
-        public Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
+        public async Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
         {
-            return _appointmentRepo.GetAppointmentsByUserIdAsync(userId);
+            return await _appointmentRepo.GetAppointmentsByUserIdAsync(userId);
+        }
+
+        public async Task<bool> DeleteAppointmentAsync(int id)
+        {
+            return await _appointmentRepo.DeleteAppointmentAsync(id);
         }
     }
 }
