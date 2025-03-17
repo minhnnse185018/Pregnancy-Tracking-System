@@ -17,6 +17,7 @@ import InternalLoginPage from "./components/Customer/Login/InternalLoginPage";
 import LoginPage from "./components/Customer/Login/LoginPage";
 import ResetPasswordPage from "./components/Customer/Login/resetPassword";
 import MembershipPage from "./components/Customer/Member/MembershipPage";
+import PaymentReturnHandler from "./components/Customer/Member/PaymentReturnHandler";
 import Navbarr from "./components/Customer/Navbarr/Navbarr";
 import CreatePregnancyProfile from "./components/Customer/PregnancyProfile/CreatePregnancyProfile";
 import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
@@ -48,7 +49,6 @@ import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
-
 function App() {
   return (
     <div>
@@ -183,25 +183,16 @@ function App() {
               }
             />
           </Route>
-          <Route path="/create-pregnancy-profile" element={<CustomerPrivateRoute />}>
+          <Route
+            path="/create-pregnancy-profile"
+            element={<CustomerPrivateRoute />}
+          >
             <Route
               path=""
               element={
                 <>
                   <Navbarr />
                   <CreatePregnancyProfile />
-                  <Footer />
-                </>
-              }
-            />
-          </Route>
-          <Route path="/view-appointment" element={<CustomerPrivateRoute />}>
-            <Route
-              path=""
-              element={
-                <>
-                  <Navbarr />
-                  <ViewAppointment />
                   <Footer />
                 </>
               }
@@ -229,13 +220,32 @@ function App() {
               </>
             }
           />
-          <Route 
-            path="/reset-password" 
+          <Route
+            path="/reset-password"
             element={
               <>
-                <ResetPasswordPage /> 
+                <ResetPasswordPage />
               </>
-            } 
+            }
+          />
+          <Route
+            path="/return"
+            element={
+              <>
+                <PaymentReturnHandler />/
+              </>
+            }
+          />
+
+          <Route
+            path="/viewappointment"
+            element={
+              <>
+                <Navbarr />
+                <ViewAppointment />/
+                <Footer />
+              </>
+            }
           />
 
           {/* DASHBOARD ADMIN */}
@@ -263,9 +273,15 @@ function App() {
               <Route path="manager-faq" element={<ManagerFAQs />} />
               <Route path="manager-revenue" element={<ManageRevenuePage />} />
               <Route path="manager-payroll" element={<ManagerPayroll />} />
-              <Route path="manager-transaction" element={<ManagerTransaction />} />
+              <Route
+                path="manager-transaction"
+                element={<ManagerTransaction />}
+              />
               <Route path="manager-blog" element={<ManagerBlogs />} />
-              <Route path="view-appointments" element={<ManagerAppointments />} />
+              <Route
+                path="view-appointments"
+                element={<ManagerAppointments />}
+              />
               <Route path="manager-schedule" element={<ManagerSchedule />} />
             </Route>
           </Route>

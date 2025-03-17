@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./BlogPage.css";
-import CommentModal from "./CommentModal"; // Import the CommentModal component
+import CommentModal from "./CommentModal";
 
 function CommunityPosts() {
   const [posts, setPosts] = useState([]);
@@ -16,15 +16,36 @@ function CommunityPosts() {
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
+  
+  // Toast state
+  const [toasts, setToasts] = useState([]);
 
   useEffect(() => {
     fetchPosts();
   }, []);
-  //handle post
+
+  // Show toast notification function
+  const showToast = (message, type = "success", icon = "✅") => {
+    const id = Date.now();
+    const newToast = {
+      id,
+      message,
+      type,
+      icon
+    };
+
+    setToasts(prev => [...prev, newToast]);
+    
+    // Auto hide toast after 3 seconds
+    setTimeout(() => {
+      setToasts(prev => prev.filter(toast => toast.id !== id));
+    }, 3000);
+  };
+
   const fetchPosts = async () => {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
-      alert("User not logged in. Please log in first.");
+      showToast("User not logged in. Please log in first.", "error", "❌");
       return;
     }
     try {
@@ -32,54 +53,55 @@ function CommunityPosts() {
       setPosts(response.data);
     } catch (err) {
       setError("Failed to load posts.");
+      showToast("Failed to load posts.", "error", "❌");
     } finally {
       setLoading(false);
     }
   };
-  //handleComment function
+
   const handleAddComment = async () => {
     console.log("Selected Post ID:", selectedPostId);
     console.log("Comment content:", commentText);
 
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
-      alert("You are not logged in. Please log in first!");
+      showToast("You are not logged in. Please log in first!", "warning", "⚠️");
       return;
     }
     if (!commentText.trim()) {
-      alert("Comment content cannot be empty!");
+      showToast("Comment content cannot be empty!", "warning", "⚠️");
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:5254/api/Comment/post/", {
+      const response = await axios.post("http://localhost:5254/api/Comment", {
         userId,
         postId: selectedPostId,
         content: commentText,
       });
       console.log("Server response:", response);
-      alert("Comment added successfully!");
+      showToast("Comment added successfully!", "success", "💬");
       setShowModal(false);
       setCommentText("");
       fetchPosts();
     } catch (error) {
       console.error("Error adding comment:", error);
+      showToast("Error adding comment. Please try again.", "error", "❌");
     }
   };
 
-                                  //function create post
   const handleCreatePost = async () => {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
-      alert("You are not logged in. Please log in first!");
+      showToast("You are not logged in. Please log in first!", "warning", "⚠️");
       return;
     }
     if (!newPostTitle.trim()) {
-      alert("Post title cannot be empty!");
+      showToast("Post title cannot be empty!", "warning", "⚠️");
       return;
     }
     if (!newPostContent.trim()) {
-      alert("Post content cannot be empty!");
+      showToast("Post content cannot be empty!", "warning", "⚠️");
       return;
     }
 
@@ -90,14 +112,14 @@ function CommunityPosts() {
         content: newPostContent,
       });
       console.log("Server response:", response);
-      alert("Post created successfully!");
+      showToast("Post created successfully!", "success", "✍️");
       setShowCreatePostModal(false);
       setNewPostTitle("");
       setNewPostContent("");
       fetchPosts();
     } catch (error) {
       console.error("Error creating post:", error);
-      alert("Failed to create post. Please try again.");
+      showToast("Failed to create post. Please try again.", "error", "❌");
     }
   };
 
@@ -106,6 +128,27 @@ function CommunityPosts() {
 
   return (
     <div className="community-container pregnant-theme">
+      {/* Toast Container */}
+      <div className="toast-container">
+        {toasts.map(toast => (
+          <div key={toast.id} className={`custom-toast ${toast.type}`}>
+            <div className="toast-header">
+              <span className="toast-icon">{toast.icon}</span>
+              <span className="toast-title">Notification</span>
+              <button 
+                className="toast-close" 
+                onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}
+              >
+                ×
+              </button>
+            </div>
+            <div className="toast-body">
+              {toast.message}
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="posts-header">
         <h1 className="posts-title">Posts in my group</h1>
       </div>
@@ -193,6 +236,7 @@ function CommunityPosts() {
         setCommentText={setCommentText}
         handleAddComment={handleAddComment}
       />
+      
       {/* Create Post Modal */}
       {showCreatePostModal && (
         <div className="modal-overlay">

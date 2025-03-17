@@ -54,32 +54,54 @@ function MembershipPage() {
       alert("Please log in to proceed with the payment!");
       return;
     }
+    
     try {
-      const response = await axios.post(
-        "http://localhost:5254/api/payment",
+      // Step 1: Create a pending membership
+      const currentDate = new Date().toISOString();
+      const membershipResponse = await axios.post(
+        "http://localhost:5254/api/Membership/purchase",
         {
-          userId: userId,
-          membershipId: 2,  
-          amount: selectedPlan.price,
-          paymentDescription: `Payment for ${selectedPlan.name}`,
-          paymentMethod: selectedPaymentMethod,
+          userId: parseInt(userId),
+          planId: selectedPlan.id,
+          startDate: currentDate
         }
       );
-    
-      console.log("Response data:", response.data);
       
-      if (response.data && typeof response.data === 'string' && response.data.includes('vnpayment.vn')) {
-        // Nếu response.data là một chuỗi URL, sử dụng nó trực tiếp
-        window.location.href = response.data;
-      } else if (response.data && response.data.vnpayUrl) {
-        // Nếu response.data là một đối tượng có thuộc tính vnpayUrl
-        window.location.href = response.data.vnpayUrl;
+      console.log("Membership created:", membershipResponse.data);
+      
+      // Step 2: Create payment after membership is created
+      const membershipId = membershipResponse.data.id || membershipResponse.data.membershipId;
+      
+      if (!membershipId) {
+        console.error("Failed to get membership ID from response:", membershipResponse.data);
+        alert("Error creating membership. Please try again.");
+        return;
+      }
+      
+      const paymentResponse = await axios.post(
+        "http://localhost:5254/api/payment",
+        {
+          membershipId: membershipId,
+          amount: selectedPlan.price,
+          paymentDescription: `Payment for ${selectedPlan.name}`
+        }
+      );
+      
+      console.log("Payment response:", paymentResponse.data);
+      
+      // Handle the payment URL response
+      if (paymentResponse.data && typeof paymentResponse.data === 'string' && paymentResponse.data.includes('vnpayment.vn')) {
+        // If response.data is a URL string, use it directly
+        window.location.href = paymentResponse.data;
+      } else if (paymentResponse.data && paymentResponse.data.vnpayUrl) {
+        // If response.data is an object with vnpayUrl property
+        window.location.href = paymentResponse.data.vnpayUrl;
       } else {
         alert("Failed to get payment URL!");
       }
     } catch (error) {
-      console.error("Payment error:", error);
-      alert("An error occurred, please try again!");
+      console.error("Payment process error:", error);
+      alert("An error occurred during the payment process. Please try again!");
     }
   };
 
