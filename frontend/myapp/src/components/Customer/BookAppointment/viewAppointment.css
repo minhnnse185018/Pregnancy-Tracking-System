@@ -370,197 +370,222 @@
     }
   }
   /* Edit Appointment Popup Styles */
-.edit-popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px);
-}
-
-.edit-popup {
-  background-color: #fff;
-  border-radius: 15px;
-  padding: 30px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
-  position: relative;
-  animation: popup-fade 0.3s ease-out;
-  border: 1px solid #f0f0f0;
-}
-
-.edit-popup::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: linear-gradient(to right, #ff69b4, #87cefa);
-  border-radius: 15px 15px 0 0;
-}
-
-.edit-popup-title {
-  color: #ff69b4;
-  text-align: center;
-  margin-bottom: 25px;
-  font-size: 24px;
-  padding-bottom: 10px;
-  border-bottom: 2px dashed #ffcce5;
-  position: relative;
-}
-
-.edit-popup-title::before {
-  content: "✏️";
-  margin-right: 10px;
-}
-
-.edit-form-group {
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.edit-form-label {
-  font-weight: bold;
-  color: #666;
-  display: block;
-  margin-bottom: 8px;
-  font-size: 15px;
-}
-
-.edit-form-input,
-.edit-form-select,
-.edit-form-textarea {
-  width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #f0f0f0;
-  border-radius: 8px;
-  font-size: 15px;
-  transition: all 0.3s;
-  background-color: #fcf8ff;
-}
-
-.edit-form-input:focus,
-.edit-form-select:focus,
-.edit-form-textarea:focus {
-  border-color: #ff69b4;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
-}
-
-.edit-form-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.edit-popup-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-}
-
-.save-button {
-  background-color: #ff69b4;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  transition: all 0.3s;
-  box-shadow: 0 4px 8px rgba(255, 105, 180, 0.3);
-}
-
-.save-button:before {
-  content: "💾";
-  margin-right: 8px;
-}
-
-.save-button:hover {
-  background-color: #e05a9e;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(255, 105, 180, 0.4);
-}
-
-.cancel-button {
-  background-color: #f5f5f5;
-  color: #666;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  transition: all 0.3s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.cancel-button:before {
-  content: "❌";
-  margin-right: 8px;
-  font-size: 14px;
-}
-
-.cancel-button:hover {
-  background-color: #e6e6e6;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.datetime-input-wrapper {
-  position: relative;
-}
-
-.datetime-input-wrapper:before {
-  content: "🗓️";
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.form-error {
-  color: #dc2626;
-  font-size: 13px;
-  margin-top: 5px;
-  display: block;
-}
-
-@keyframes popup-fade {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
+  .edit-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    overflow: auto; /* Added to handle content overflow on small screens */
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive adjustments for popup */
-@media (max-width: 576px) {
+  
   .edit-popup {
-    width: 95%;
-    padding: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: popup-fade 0.3s ease-out;
+    border: 1px solid #f0f0f0;
+    box-sizing: border-box; /* Added to prevent padding from increasing width */
+  }
+  
+  .edit-popup::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right, #ff69b4, #87cefa);
+    border-radius: 15px 15px 0 0;
+  }
+  
+  .edit-popup-title {
+    color: #ff69b4;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    padding-bottom: 10px;
+    border-bottom: 2px dashed #ffcce5;
+    position: relative;
+    display: flex; /* Changed to flex for better alignment of ::before content */
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .edit-popup-title::before {
+    content: "✏️";
+    margin-right: 10px;
+    display: inline-block; /* Ensures emoji aligns properly */
+  }
+  
+  .edit-form-group { /* Renamed from .edit-form-group for consistency */
+    margin-bottom: 20px;
+    position: relative;
+  }
+  
+  .edit-form-label {
+    font-weight: bold;
+    color: #666;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  
+  .edit-form-input,
+  .edit-form-select,
+  .edit-form-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #f0f0f0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s ease; /* Added ease for smoother transitions */
+    background-color: #fcf8ff;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+  }
+  
+  .edit-form-input:focus,
+  .edit-form-select:focus,
+  .edit-form-textarea:focus {
+    border-color: #ff69b4;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+  }
+  
+  .edit-form-textarea {
+    min-height: 100px;
+    resize: vertical;
   }
   
   .edit-popup-buttons {
-    flex-direction: column;
-    gap: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 10px; /* Added for consistent spacing */
   }
   
-  .save-button,
-  .cancel-button {
-    width: 100%;
+  .save-button {
+    background-color: #ff69b4;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(255, 105, 180, 0.3);
+    display: flex; /* Added for ::before alignment */
+    align-items: center;
+    justify-content: center;
   }
-}
+  
+  .save-button::before {
+    content: "💾";
+    margin-right: 8px;
+  }
+  
+  .save-button:hover {
+    background-color: #e05a9e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(255, 105, 180, 0.4);
+  }
+  
+  .cancel-button {
+    background-color: #f5f5f5;
+    color: #666;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex; /* Added for ::before alignment */
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .cancel-button::before {
+    content: "❌";
+    margin-right: 8px;
+    font-size: 14px;
+  }
+  
+  .cancel-button:hover {
+    background-color: #e6e6e6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .datetime-input-wrapper {
+    position: relative;
+  }
+  
+  .datetime-input-wrapper::before {
+    content: "🗓️";
+    position: absolute;
+    right: 15px; /* Adjusted for better spacing */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    pointer-events: none;
+    color: #666; /* Added for better visibility */
+  }
+  
+  .form-error {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 5px;
+    display: block;
+  }
+  
+  @keyframes popup-fade {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .edit-popup {
+      width: 95%;
+      padding: 20px;
+    }
+    
+    .edit-popup-buttons {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .save-button,
+    .cancel-button {
+      width: 100%;
+    }
+    
+    .edit-popup-title {
+      font-size: 20px; /* Reduced for smaller screens */
+    }
+    
+    .edit-form-input,
+    .edit-form-select,
+    .edit-form-textarea {
+      font-size: 14px; /* Adjusted for readability */
+    }
+  }
