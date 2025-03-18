@@ -37,14 +37,14 @@ namespace backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePostAsync([FromBody] CreatePostDto postDto)
+        public async Task<IActionResult> CreatePostAsync([FromForm] CreatePostDto postDto)
         {
             
             return await _postRepository.CreatePostAsync(postDto)>0?Ok():BadRequest();
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> UpdatePostAsync(int id, [FromBody] UpdatePostDto postDto)
+        public async Task<IActionResult> UpdatePostAsync(int id, [FromForm] UpdatePostDto postDto)
         {
             var post = await _postRepository.UpdatePostAsync(id, postDto);
             return post == null ? NotFound() : Ok(post);

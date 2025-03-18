@@ -893,4 +893,3 @@ F:\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.pdb
 F:\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 F:\SWP\Pregnancy-Tracking-System\backend\obj\Debug\net8.0\ref\backend.dll
 F:\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\CloudinaryDotNet.dll
-C:\Users\ADMIN\Desktop\SWP\Pregnancy-Tracking-System\backend\bin\Debug\net8.0\CloudinaryDotNet.dll
