@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
-        options.SerializerSettings.DateFormatString = "yyyy-MM-dd";
+        options.SerializerSettings.DateFormatString = "yyyy-MM-dd'T'HH:mm:ss";
     });
 
 builder.Services.AddEndpointsApiExplorer();
