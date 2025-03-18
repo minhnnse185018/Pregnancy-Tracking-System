@@ -1,25 +1,23 @@
-﻿using backend.Dtos.Appointments;
+﻿using AutoMapper;
+using backend.Dtos.Appointments;
+using backend.Models;
 using backend.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
-    using backend.Models;
-    using System;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using backend.Data;
-    using AutoMapper;
-
     [Route("api/appointments")]
     [ApiController]
     public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
-        private readonly IMapper _mapper; // Thêm IMapper nếu dùng AutoMapper
+        private readonly IMapper _mapper;
 
         public AppointmentController(IAppointmentService appointmentService, IMapper mapper)
         {
@@ -41,6 +39,7 @@ namespace backend.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+        
         [HttpGet]
         public async Task<IActionResult> GetAllAppointments()
         {
@@ -60,7 +59,6 @@ namespace backend.Controllers
             return Ok(appointmentDtos);
         }
         
-
         [HttpGet("status/{status}")]
         public async Task<IActionResult> GetAppointmentsByStatus(string status)
         {
@@ -101,5 +99,4 @@ namespace backend.Controllers
             return Ok(new { Message = "Appointment deleted successfully!" });
         }
     }
-
 }
