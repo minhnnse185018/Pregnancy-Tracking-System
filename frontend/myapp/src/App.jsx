@@ -49,6 +49,7 @@ import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
 import PaymentReturnHandler from "./components/Customer/Member/PaymentReturnHandler";
 import MedicalAppointments from "./components/Customer/BookAppointment/viewAppointment";
+import RegisterAccount from "./components/Customer/Login/RegisterAccout";
 function App() {
   return (
     <div>
@@ -244,6 +245,14 @@ function App() {
                 <Navbarr />
                 <MedicalAppointments />/
                 <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/verify-account"
+            element={
+              <>
+                <RegisterAccount />/
               </>
             }
           />

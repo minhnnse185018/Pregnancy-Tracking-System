@@ -277,6 +277,7 @@ const MedicalAppointments = () => {
                 appointment={editingAppointment}
                 onSave={handleSaveEdit}
                 onCancel={handleCloseEditModal}
+                onChange={handleEditChange} // This line is missing
               />
             </div>
           </div>
