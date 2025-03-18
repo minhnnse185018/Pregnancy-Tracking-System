@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./CreatePregnancyProfile.css"; // We'll create this CSS file
+import "./CreatePregnancyProfile.css";
 import { toast } from "react-toastify";
+
 function CreatePregnancyProfile() {
+  const [babyName, setBabyName] = useState(""); // New state for baby name
   const [weekOfPregnancy, setWeekOfPregnancy] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(""); // Thông báo thành công
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const imageData = {
@@ -24,6 +26,7 @@ function CreatePregnancyProfile() {
       },
     ],
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -44,9 +47,9 @@ function CreatePregnancyProfile() {
           headers: {
             "Content-Type": "application/json",
           },
-
           body: JSON.stringify({
             userId: parseInt(userId),
+            name: babyName, // Add the baby name to the request
             weekOfPregnancy: parseInt(weekOfPregnancy),
             dueDate: dueDate,
           }),
@@ -114,6 +117,22 @@ function CreatePregnancyProfile() {
             <div className="baby-illustration">👶</div>
           </div>
 
+          {/* New Baby Name Field */}
+          <div className="form-group">
+            <label htmlFor="babyName">Baby Name (optional)</label>
+            <input
+              type="text"
+              id="name"
+              value={babyName}
+              onChange={(e) => setBabyName(e.target.value)}
+              placeholder="Enter your baby's name or nickname"
+              className="form-control"
+            />
+            <div className="name-info">
+              Choose a name or nickname for your baby profile
+            </div>
+          </div>
+
           <div className="form-group">
             <label htmlFor="weekOfPregnancy">Current Week of Pregnancy</label>
             <input
@@ -134,7 +153,7 @@ function CreatePregnancyProfile() {
               <span className="week-label">{weekOfPregnancy} / 42 weeks</span>
             </div>
           </div>
-          <div></div>
+
           <div className="form-group">
             <label htmlFor="dueDate">Expected Due Date</label>
             <input
@@ -151,6 +170,7 @@ function CreatePregnancyProfile() {
           </div>
 
           {error && <div className="error-message">{error}</div>}
+          {successMessage && <div className="success-message">{successMessage}</div>}
 
           <div className="form-actions">
             <button

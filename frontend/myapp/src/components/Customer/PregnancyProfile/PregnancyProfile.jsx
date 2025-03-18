@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "./PregnancyProfile.css"; // Giữ nguyên tên file CSS
+import "./PregnancyProfile.css";
 
 function PregnancyProfileList() {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentEditProfile, setCurrentEditProfile] = useState(null);
-  
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [profileToDelete, setProfileToDelete] = useState(null);
 
@@ -62,27 +62,27 @@ function PregnancyProfileList() {
   function handleCreateProfile() {
     navigate("/create-pregnancy-profile");
   }
-  
+
   function handleOpenEditModal(profile) {
     setCurrentEditProfile(profile);
     setIsEditModalOpen(true);
   }
-  
+
   function handleCloseEditModal() {
     setIsEditModalOpen(false);
     setCurrentEditProfile(null);
   }
-  
+
   function handleOpenDeleteModal(profile) {
     setProfileToDelete(profile);
     setIsDeleteModalOpen(true);
   }
-  
+
   function handleCloseDeleteModal() {
     setIsDeleteModalOpen(false);
     setProfileToDelete(null);
   }
-  
+
   async function handleDeleteProfile() {
     try {
       const response = await fetch(
@@ -91,10 +91,10 @@ function PregnancyProfileList() {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-          }
+          },
         }
       );
-      
+
       if (response.ok) {
         toast.success("Profile deleted successfully!");
         fetchProfiles();
@@ -107,19 +107,20 @@ function PregnancyProfileList() {
       toast.error(err.message || "Failed to delete profile");
     }
   }
-  
+
   async function handleSaveEdit(updatedData) {
     try {
       const userId = sessionStorage.getItem("userID");
-      
+
       const dataToUpdate = {
         id: currentEditProfile.id,
-        userId: parseInt(userId),
+        name: updatedData.name,
         conceptionDate: updatedData.conceptionDate,
         dueDate: updatedData.dueDate,
-        pregnancyStatus: updatedData.pregnancyStatus || currentEditProfile.pregnancyStatus
+        pregnancyStatus:
+          updatedData.pregnancyStatus || currentEditProfile.pregnancyStatus,
       };
-      
+
       const response = await fetch(
         `http://localhost:5254/api/PregnancyProfile/UpdateProfile/${currentEditProfile.id}`,
         {
@@ -130,7 +131,7 @@ function PregnancyProfileList() {
           body: JSON.stringify(dataToUpdate),
         }
       );
-      
+
       if (response.ok) {
         toast.success("Profile updated successfully!");
         fetchProfiles();
@@ -143,11 +144,15 @@ function PregnancyProfileList() {
       toast.error(err.message || "Failed to update profile");
     }
   }
-
+  
   function renderProfileCard(profile) {
     return (
       <div key={profile.id} className="profile-card">
         <h2 className="profile-name">{profile.userName}</h2>
+        <div className="profile-field">
+          <span className="field-label">Baby Name: </span>{" "}
+          {profile.name || "Not specified"}
+        </div>
         <div className="profile-field">
           <span className="field-label">Pregnancy Date: </span>{" "}
           {formatDate(profile.conceptionDate)}
@@ -173,13 +178,13 @@ function PregnancyProfileList() {
           </span>
         </div>
         <div className="profile-actions">
-          <button 
+          <button
             className="edit-button"
             onClick={() => handleOpenEditModal(profile)}
           >
             Edit Profile
           </button>
-          <button 
+          <button
             className="delete-button"
             onClick={() => handleOpenDeleteModal(profile)}
           >
@@ -215,14 +220,14 @@ function PregnancyProfileList() {
       <div className="profiles-grid">
         {profiles.map((profile) => renderProfileCard(profile))}
       </div>
-      
+
       {/* Edit Modal Popup */}
       {isEditModalOpen && (
         <div className="preg-modal-overlay">
           <div className="preg-modal-container">
             <div className="preg-modal-header">
               <h2>Edit Pregnancy Profile</h2>
-              <button 
+              <button
                 className="preg-close-button"
                 onClick={handleCloseEditModal}
               >
@@ -230,7 +235,7 @@ function PregnancyProfileList() {
               </button>
             </div>
             <div className="preg-modal-body">
-              <EditProfileForm 
+              <EditProfileForm
                 profile={currentEditProfile}
                 onSave={handleSaveEdit}
                 onCancel={handleCloseEditModal}
@@ -239,14 +244,14 @@ function PregnancyProfileList() {
           </div>
         </div>
       )}
-      
+
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
         <div className="preg-modal-overlay">
           <div className="preg-modal-container preg-delete-modal">
             <div className="preg-modal-header">
               <h2>Confirm Deletion</h2>
-              <button 
+              <button
                 className="preg-close-button"
                 onClick={handleCloseDeleteModal}
               >
@@ -255,17 +260,18 @@ function PregnancyProfileList() {
             </div>
             <div className="preg-modal-body">
               <p className="delete-warning">
-                Are you sure you want to delete this pregnancy profile? This action cannot be undone.
+                Are you sure you want to delete this pregnancy profile? This
+                action cannot be undone.
               </p>
               <div className="form-actions">
-                <button 
-                  className="cancel-button" 
+                <button
+                  className="cancel-button"
                   onClick={handleCloseDeleteModal}
                 >
                   Cancel
                 </button>
-                <button 
-                  className="delete-confirm-button" 
+                <button
+                  className="delete-confirm-button"
                   onClick={handleDeleteProfile}
                 >
                   Delete Profile
@@ -281,22 +287,39 @@ function PregnancyProfileList() {
 
 function EditProfileForm({ profile, onSave, onCancel }) {
   const [conceptionDate, setConceptionDate] = useState(
-    profile?.conceptionDate ? new Date(profile.conceptionDate).toISOString().split('T')[0] : ""
+    profile?.conceptionDate
+      ? new Date(profile.conceptionDate).toISOString().split("T")[0]
+      : ""
   );
   const [dueDate, setDueDate] = useState(
-    profile?.dueDate ? new Date(profile.dueDate).toISOString().split('T')[0] : ""
+    profile?.dueDate
+      ? new Date(profile.dueDate).toISOString().split("T")[0]
+      : ""
   );
-  
+  const [name, setName] = useState(profile?.name || "");
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave({
       conceptionDate,
       dueDate,
+      name,
     });
   };
-  
+
   return (
     <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="name">Baby Name:</label>
+        <input
+          type="text"
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter baby name (optional)"
+        />
+      </div>
+
       <div className="form-group">
         <label htmlFor="conceptionDate">Pregnancy Date:</label>
         <input
@@ -307,7 +330,7 @@ function EditProfileForm({ profile, onSave, onCancel }) {
           required
         />
       </div>
-      
+
       <div className="form-group">
         <label htmlFor="dueDate">Expected Date of Birth:</label>
         <input
@@ -318,7 +341,7 @@ function EditProfileForm({ profile, onSave, onCancel }) {
           required
         />
       </div>
-      
+
       <div className="form-actions">
         <button type="button" className="cancel-button" onClick={onCancel}>
           Cancel

@@ -216,3 +216,8 @@
     font-weight: bold;
   }
 }
+.name-info {
+  font-size: 14px;
+  color: #888;
+  font-style: italic;
+}
