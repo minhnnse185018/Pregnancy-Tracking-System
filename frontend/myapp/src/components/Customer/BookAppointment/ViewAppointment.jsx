@@ -1,179 +1,299 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const ViewAppointment = () => {
-  const location = useLocation();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [formData, setFormData] = useState({
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    id: '',
     title: '',
     appointmentDate: '',
+    selectedSlot: '',
     description: '',
+    status: 'Scheduled',
   });
-  const [editId, setEditId] = useState(null);
+  const [message, setMessage] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     fetchAppointments();
-  }, [location.state?.refresh]); // Re-fetch only when refresh state is true
+  }, []);
 
   const fetchAppointments = async () => {
-    const userId = sessionStorage.getItem('userID');
-    if (!userId) {
-      setError('Please log in to view your appointments');
-      setLoading(false);
+    try {
+      const userId = sessionStorage.getItem('userID');
+      if (!userId) {
+        setMessage('User not logged in. Please log in first.');
+        return;
+      }
+
+      const response = await axios.get(`http://localhost:5254/api/appointments/get/${userId}`, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log('Fetched appointments:', response.data);
+      if (Array.isArray(response.data)) {
+        setAppointments(response.data);
+      } else {
+        setAppointments([]);
+        setMessage('Invalid response format from appointments API.');
+      }
+    } catch (error) {
+      setMessage(`Error fetching appointments: ${error.message}`);
+      console.error('Fetch error:', error);
+    }
+  };
+
+  const handleEditClick = (appointment) => {
+    if (!appointment || !appointment.id || !appointment.appointmentDate) {
+      console.error('Invalid appointment data:', appointment);
+      setMessage('Invalid appointment selected.');
+      return;
+    }
+    setSelectedAppointment(appointment);
+    const dateTime = new Date(appointment.appointmentDate);
+    if (isNaN(dateTime.getTime())) {
+      setMessage('Invalid appointment date format.');
+      return;
+    }
+    const formattedDate = dateTime.toISOString().split('T')[0];
+    const hours = dateTime.getUTCHours().toString().padStart(2, '0');
+    const minutes = dateTime.getUTCMinutes().toString().padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}`;
+
+    setEditFormData({
+      id: appointment.id,
+      title: appointment.title || '',
+      appointmentDate: formattedDate,
+      selectedSlot: formattedTime,
+      description: appointment.description || '',
+      status: appointment.status || 'Scheduled',
+    });
+    setShowEditModal(true);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSlotClick = (slot) => {
+    setEditFormData((prev) => ({
+      ...prev,
+      selectedSlot: slot,
+    }));
+  };
+
+  const generateTimeSlots = () => {
+    const slots = [];
+    for (let hour = 8; hour <= 22; hour++) {
+      slots.push(`${hour.toString().padStart(2, '0')}:00`);
+    }
+    return slots;
+  };
+
+  const timeSlots = generateTimeSlots();
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedAppointment) {
+      setMessage('No appointment selected for update.');
+      return;
+    }
+
+    if (!editFormData.appointmentDate || !editFormData.selectedSlot) {
+      setMessage('Please select both a date and a time slot.');
+      return;
+    }
+
+    const [hours, minutes] = editFormData.selectedSlot.split(':');
+    const selectedDateTime = new Date(`${editFormData.appointmentDate}T${hours}:${minutes}:00Z`);
+    if (isNaN(selectedDateTime.getTime())) {
+      setMessage('Invalid date or time. Please check your selection.');
       return;
     }
 
     try {
-      const response = await axios.get(`http://localhost:5254/api/appointments/get/${userId}`);
-      // Handle both single object and array response
-      const appointmentData = Array.isArray(response.data) ? response.data : [response.data].filter(Boolean);
-      setAppointments(appointmentData);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching appointments:', err.response ? err.response.data : err.message);
-      setError('Unable to load your appointments. Please try again later!');
-      setLoading(false);
-      setAppointments([]);
-    }
-  };
-
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    const userId = sessionStorage.getItem('userID');
-    const selectedDateTime = formData.appointmentDate
-      ? new Date(`${formData.appointmentDate}T${new Date().toTimeString().split(' ')[0]}`).toISOString()
-      : null;
-
-    const data = {
-      userId: parseInt(userId),
-      appointmentDate: selectedDateTime,
-      title: formData.title,
-      description: formData.description,
-    };
-
-    try {
-      await axios.put(`http://localhost:5254/api/appointments/update/${editId}`, data, {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      setFormData({ title: '', appointmentDate: '', description: '' });
-      setEditId(null);
-      fetchAppointments();
-    } catch (err) {
-      console.error('Error updating appointment:', err);
-      setError('Unable to update the appointment. Please try again!');
+      const response = await axios.put(
+        `http://localhost:5254/api/appointments/update`,
+        {
+          id: parseInt(editFormData.id),
+          appointmentDate: selectedDateTime.toISOString(),
+          title: editFormData.title,
+          description: editFormData.description,
+          status: editFormData.status,
+        },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      console.log('Update response:', response.data);
+      if (response.status === 200) {
+        setMessage('Appointment updated successfully!');
+        fetchAppointments();
+        setShowEditModal(false);
+      } else {
+        setMessage('Unexpected response from server.');
+      }
+    } catch (error) {
+      setMessage(`Error updating appointment: ${error.response?.data?.message || error.message}`);
+      console.error('Update error:', error.response?.data || error);
     }
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this appointment?')) {
       try {
-        await axios.delete(`http://localhost:5254/api/appointments/delete/${id}`);
-        fetchAppointments();
-      } catch (err) {
-        console.error('Error deleting appointment:', err);
-        setError('Unable to delete the appointment. Please try again!');
+        const response = await axios.delete(`http://localhost:5254/api/appointments/delete/${id}`, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        console.log('Delete response:', response.data);
+        if (response.status === 200) {
+          setMessage('Appointment deleted successfully!');
+          fetchAppointments();
+        } else {
+          setMessage('Unexpected response from server.');
+        }
+      } catch (error) {
+        setMessage(`Error deleting appointment: ${error.response?.data?.message || error.message}`);
+        console.error('Delete error:', error.response?.data || error);
       }
     }
   };
 
-  const handleEdit = (appointment) => {
-    setEditId(appointment.userId);
-    setFormData({
-      title: appointment.title,
-      appointmentDate: new Date(appointment.appointmentDate).toISOString().split('T')[0],
-      description: appointment.description || '',
-    });
-  };
-
-  const formatDateTime = (dateString) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    });
-  };
+  const closeToast = () => setMessage('');
 
   return (
     <div className="va-wrapper">
       <div className="va-top-section">
         <img src="images/favicon.ico" alt="Baby Icon" className="va-baby-icon" />
-        <div className="va-title">Your Pregnancy Appointments</div>
+        <div className="va-title">View Your Appointments</div>
       </div>
       <div className="va-content">
-        {loading ? (
-          <div className="va-loading">Loading your appointments...</div>
-        ) : error ? (
-          <div className="va-error">{error}</div>
-        ) : !appointments.length ? (
-          <div className="va-empty">
-            <img src="images/pregnant-icon.png" alt="Pregnant Icon" className="va-empty-icon" />
-            <p>You have no appointments. Book one now!</p>
-          </div>
-        ) : (
-          <>
-            {editId && (
-              <div className="va-form">
-                <h3>Edit Appointment</h3>
-                <form onSubmit={handleUpdate}>
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    required
-                  />
-                  <input
-                    type="date"
-                    value={formData.appointmentDate}
-                    onChange={(e) => setFormData({ ...formData, appointmentDate: e.target.value })}
-                    required
-                  />
-                  <textarea
-                    placeholder="Details"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  />
-                  <button type="submit">Update</button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditId(null);
-                      setFormData({ title: '', appointmentDate: '', description: '' });
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </form>
-              </div>
-            )}
-            <div className="va-appointments">
-              {appointments.map((appointment) => (
-                <div key={appointment.userId} className="va-card">
-                  <div className="va-card-top">
-                    <span className="va-card-icon">🤰</span>
-                    <div className="va-card-title">{appointment.title}</div>
-                  </div>
-                  <p className="va-card-time">
-                    <strong>Time:</strong> {formatDateTime(appointment.appointmentDate)}
-                  </p>
-                  <p className="va-card-desc">
-                    <strong>Details:</strong> {appointment.description || 'No details provided'}
-                  </p>
-                  <div className="va-card-actions">
-                    <button onClick={() => handleEdit(appointment)}>Edit</button>
-                    <button onClick={() => handleDelete(appointment.userId)}>Delete</button>
-                  </div>
+        <div className="va-list">
+          {appointments.length > 0 ? (
+            appointments.map((appointment) => (
+              <div key={appointment.id} className="va-appointment-item">
+                <div>
+                  <strong>Title:</strong> {appointment.title || 'N/A'}
                 </div>
-              ))}
-            </div>
-            <button className="va-refresh-btn" onClick={fetchAppointments}>
-              Refresh Appointments
-            </button>
-          </>
-        )}
+                <div>
+                  <strong>Date:</strong>{' '}
+                  {appointment.appointmentDate
+                    ? new Date(appointment.appointmentDate).toLocaleDateString()
+                    : 'N/A'}
+                </div>
+                <div>
+                  <strong>Time:</strong>{' '}
+                  {appointment.appointmentDate
+                    ? new Date(appointment.appointmentDate).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : 'N/A'}
+                </div>
+                <div>
+                  <strong>Details:</strong> {appointment.description || 'N/A'}
+                </div>
+                <div>
+                  <strong>Status:</strong> {appointment.status || 'N/A'}
+                </div>
+                <div className="va-actions">
+                  <button onClick={() => handleEditClick(appointment)}>Edit</button>
+                  <button onClick={() => handleDelete(appointment.id)}>Delete</button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No appointments found.</p>
+          )}
+        </div>
       </div>
+
+      {showEditModal && (
+        <div className="va-modal">
+          <div className="va-modal-content">
+            <h2>Edit Appointment</h2>
+            <form onSubmit={handleEditSubmit}>
+              <div className="va-form-group">
+                <label>Appointment Title*</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={editFormData.title}
+                  onChange={handleEditChange}
+                  required
+                />
+              </div>
+              <div className="va-form-group">
+                <label>Appointment Date*</label>
+                <input
+                  type="date"
+                  name="appointmentDate"
+                  value={editFormData.appointmentDate}
+                  onChange={handleEditChange}
+                  min={new Date().toISOString().split('T')[0]}
+                  required
+                />
+              </div>
+              <div className="va-form-group">
+                <label>Appointment Time*</label>
+                <div className="va-time-slots">
+                  {timeSlots.map((slot) => (
+                    <button
+                      key={slot}
+                      type="button"
+                      className={editFormData.selectedSlot === slot ? 'selected' : ''}
+                      onClick={() => handleSlotClick(slot)}
+                      disabled={!editFormData.appointmentDate}
+                    >
+                      {slot}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="va-form-group">
+                <label>Details</label>
+                <textarea
+                  name="description"
+                  value={editFormData.description}
+                  onChange={handleEditChange}
+                  rows="4"
+                />
+              </div>
+              <div className="va-form-group">
+                <label>Status*</label>
+                <select name="status" value={editFormData.status} onChange={handleEditChange} required>
+                  <option value="Scheduled">Scheduled</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Ready">Ready</option>
+                </select>
+              </div>
+              <button type="submit" className="va-modal-btn va-save-btn">
+                Save Changes
+              </button>
+              <button
+                type="button"
+                className="va-modal-btn va-cancel-btn"
+                onClick={() => setShowEditModal(false)}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <div className={`va-toast ${message.includes('successfully') ? 'success' : 'error'}`}>
+          {message}
+          <button onClick={closeToast}>Close</button>
+        </div>
+      )}
 
       <style jsx>{`
         .va-wrapper {
@@ -183,6 +303,7 @@ const ViewAppointment = () => {
           margin-top: 100px;
           font-family: 'Georgia', serif;
           background: #fff7f9;
+          border-radius: 20px;
         }
 
         .va-top-section {
@@ -220,178 +341,210 @@ const ViewAppointment = () => {
           border: 1px solid #fce4ec;
         }
 
-        .va-loading {
-          text-align: center;
-          color: #f06292;
-          font-size: 18px;
-          padding: 35px;
-          font-style: italic;
-          background: #fff1f5;
-          border-radius: 15px;
+        .va-list {
+          max-height: 600px;
+          overflow-y: auto;
         }
 
-        .va-error {
-          text-align: center;
-          color: #d81b60;
-          font-size: 18px;
-          padding: 35px;
-          background: #ffebee;
-          border-radius: 15px;
-          border: 1px dashed #f48fb1;
-        }
-
-        .va-empty {
-          text-align: center;
-          padding: 50px;
-          color: #f06292;
-        }
-
-        .va-empty-icon {
-          width: 90px;
-          height: 90px;
-          margin-bottom: 20px;
-          opacity: 0.7;
-          filter: drop-shadow(0 2px 4px rgba(240, 98, 146, 0.2));
-        }
-
-        .va-empty p {
-          font-size: 18px;
-          margin: 0;
-          font-style: italic;
-          color: #ec407a;
-        }
-
-        .va-appointments {
-          display: grid;
-          gap: 25px;
-          grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-        }
-
-        .va-card {
-          padding: 25px;
-          border: 2px solid #f8bbd0;
-          border-radius: 20px;
-          background: #fffafc;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .va-card:hover {
-          transform: scale(1.02);
-          box-shadow: 0 6px 18px rgba(248, 187, 208, 0.25);
-        }
-
-        .va-card-top {
-          display: flex;
-          align-items: center;
-          gap: 12px;
+        .va-appointment-item {
+          border: 1px solid #f8bbd0;
+          padding: 15px;
           margin-bottom: 15px;
+          border-radius: 10px;
+          background: #fffafc;
+          transition: transform 0.2s ease;
         }
 
-        .va-card-icon {
-          font-size: 28px;
-          background: #fce4ec;
-          padding: 8px;
-          border-radius: 50%;
+        .va-appointment-item:hover {
+          transform: scale(1.02);
+          box-shadow: 0 2px 6px rgba(248, 187, 208, 0.3);
         }
 
-        .va-card-title {
-          margin: 0;
-          color: #ec407a;
-          font-size: 20px;
-          font-weight: 500;
-        }
-
-        .va-card-time {
-          margin: 10px 0;
-          color: #f06292;
-          font-size: 16px;
-        }
-
-        .va-card-desc {
-          margin: 10px 0;
-          color: #880e4f;
-          font-size: 16px;
-          line-height: 1.5;
-        }
-
-        .va-card strong {
-          color: #d81b60;
-          font-weight: 600;
-        }
-
-        .va-card-actions {
-          margin-top: 15px;
+        .va-actions {
           display: flex;
           gap: 10px;
+          margin-top: 10px;
         }
 
-        .va-card-actions button {
+        .va-actions button {
           padding: 8px 15px;
           border: none;
-          border-radius: 10px;
+          border-radius: 20px;
           cursor: pointer;
+          font-family: 'Georgia', serif;
           font-size: 14px;
+          transition: background-color 0.3s ease;
         }
 
-        .va-card-actions button:first-child {
+        .va-actions button:first-child {
           background: #ffca28;
           color: #fff;
         }
 
-        .va-card-actions button:last-child {
-          background: #ef5350;
+        .va-actions button:first-child:hover {
+          background: #e0b124;
+        }
+
+        .va-actions button:last-child {
+          background: #d81b60;
           color: #fff;
         }
 
-        .va-form {
-          margin-bottom: 30px;
-          padding: 20px;
-          background: #fff1f5;
-          border-radius: 15px;
-          border: 1px solid #f8bbd0;
+        .va-actions button:last-child:hover {
+          background: #b01550;
         }
 
-        .va-form h3 {
-          color: #ec407a;
-          margin-bottom: 15px;
-        }
-
-        .va-form input,
-        .va-form textarea {
-          display: block;
+        .va-modal {
+          position: fixed;
+          top: 0;
+          left: 0;
           width: 100%;
-          margin-bottom: 10px;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+        }
+
+        .va-modal-content {
+          background: #fff;
+          padding: 30px;
+          border-radius: 20px;
+          width: 450px;
+          box-shadow: 0 4px 12px rgba(248, 187, 208, 0.2);
+          border: 1px solid #f8bbd0;
+          background: linear-gradient(to bottom, #fceff2, #fff7f9);
+        }
+
+        .va-modal-content h2 {
+          color: #ec407a;
+          font-size: 24px;
+          margin-bottom: 20px;
+          text-align: center;
+          text-shadow: 1px 1px 2px rgba(236, 64, 122, 0.1);
+        }
+
+        .va-form-group {
+          margin-bottom: 20px;
+        }
+
+        .va-form-group label {
+          display: block;
+          margin-bottom: 8px;
+          color: #ec407a;
+          font-size: 16px;
+          font-weight: 500;
+        }
+
+        .va-form-group input,
+        .va-form-group select,
+        .va-form-group textarea {
+          width: 100%;
           padding: 10px;
           border: 1px solid #f8bbd0;
           border-radius: 10px;
           font-family: 'Georgia', serif;
+          font-size: 14px;
+          background: #fffafc;
+          color: #880e4f;
+          transition: border-color 0.3s ease;
         }
 
-        .va-form button {
-          padding: 10px 20px;
-          border: none;
+        .va-form-group input:focus,
+        .va-form-group select:focus,
+        .va-form-group textarea:focus {
+          border-color: #ec407a;
+          outline: none;
+        }
+
+        .va-time-slots {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+          gap: 10px;
+        }
+
+        .va-time-slots button {
+          padding: 8px;
+          border: 1px solid #f8bbd0;
           border-radius: 10px;
+          background: #fffafc;
+          color: #880e4f;
+          cursor: pointer;
+          font-family: 'Georgia', serif;
+          font-size: 14px;
+          transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .va-time-slots button:hover {
+          background: #f8bbd0;
+          color: #fff;
+        }
+
+        .va-time-slots button.selected {
           background: #ec407a;
           color: #fff;
+          border-color: #ec407a;
+        }
+
+        .va-modal-btn {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 20px;
           cursor: pointer;
+          font-family: 'Georgia', serif;
+          font-size: 14px;
+          transition: background-color 0.3s ease;
+        }
+
+        .va-save-btn {
+          background: #ec407a;
+          color: #fff;
           margin-right: 10px;
         }
 
-        .va-form button:last-child {
-          background: #ef5350;
+        .va-save-btn:hover {
+          background: #d1356b;
         }
 
-        .va-refresh-btn {
+        .va-cancel-btn {
+          background: #d81b60;
+          color: #fff;
+        }
+
+        .va-cancel-btn:hover {
+          background: #b01550;
+        }
+
+        .va-toast {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
           padding: 10px 20px;
-          border: none;
           border-radius: 10px;
-          background: #ffca28;
+          color: #fff;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          z-index: 1000;
+          font-family: 'Georgia', serif;
+        }
+
+        .va-toast.success {
+          background: #2e7d32;
+        }
+
+        .va-toast.error {
+          background: #d81b60;
+        }
+
+        .va-toast button {
+          background: none;
+          border: none;
           color: #fff;
           cursor: pointer;
-          font-size: 16px;
-          margin-top: 15px;
-          display: block;
-          width: 100%;
+          margin-left: 10px;
+          font-size: 14px;
         }
       `}</style>
     </div>

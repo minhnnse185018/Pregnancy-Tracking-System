@@ -89,7 +89,7 @@ const BookAppointment = () => {
   };
 
   const handleRedirectToView = () => {
-    navigate('/view-appointment', { state: { refresh: true } });
+    navigate('/viewappointment', { state: { refresh: true } });
   };
 
   return (

@@ -42,7 +42,7 @@ namespace backend.Repository.Implementation
             var memberships = await _context.Memberships
                 .Include(m => m.User)
                 .Include(m => m.Plan)
-                .Where(m => m.UserId == userId)
+                .Where(m => m.UserId == userId && m.Status == "Active")
                 .OrderByDescending(m => m.CreatedAt)
                 .ToListAsync();
             return _mapper.Map<List<MembershipDto>>(memberships);
