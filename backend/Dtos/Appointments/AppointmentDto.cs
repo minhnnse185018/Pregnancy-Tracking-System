@@ -8,11 +8,8 @@ namespace backend.Dtos.Appointments
         public int Id { get; set; }
         public int UserId { get; set; }
         
-        [JsonProperty(PropertyName = "appointmentDate")]
-        public DateTime AppointmentDate { get; set; }
         
-        [JsonProperty(PropertyName = "appointmentDateDisplay")]
-        public string AppointmentDateDisplay => AppointmentDate.ToString("yyyy-MM-dd");
+        public DateTime AppointmentDate { get; set; }
         
         public string? Title { get; set; }
         public string Status { get; set; }

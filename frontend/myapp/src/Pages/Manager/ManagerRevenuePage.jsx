@@ -1,31 +1,25 @@
-import React, { useEffect, useState } from "react";
 import {
   Box,
   Grid,
   Paper,
-  Typography,
   TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Typography
 } from "@mui/material";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import axios from "axios";
+import {
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+} from "chart.js";
+import React, { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
 
 // Register Chart.js components
 ChartJS.register(
@@ -59,7 +53,7 @@ const ManageRevenuePage = () => {
   const fetchTotalRevenue = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/revenue/total-revenue"
+        "http://localhost:5254/api/Users/GetAll"
       );
       setTotalRevenue(response.data);
     } catch (error) {
