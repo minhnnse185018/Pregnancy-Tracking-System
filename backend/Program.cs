@@ -24,6 +24,8 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
 // Improve AutoMapper registration
 builder.Services.AddAutoMapper(cfg => {
     cfg.AddProfile<MappingProfile>();
@@ -86,6 +88,8 @@ builder.Services.AddScoped<IGrowthAlertService, GrowthAlertService>();
 // Add Revenue tracking services
 builder.Services.AddScoped<IRevenueRepository, RevenueRepository>();
 builder.Services.AddScoped<IRevenueService, RevenueService>();
+
+builder.Services.AddScoped<ICloudinaryServices, CloudinaryServices>();
 
 builder.Services.AddQuartz(q =>
 {
