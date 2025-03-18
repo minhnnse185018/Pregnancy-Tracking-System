@@ -9,29 +9,23 @@ const BookAppointment = () => {
     appointmentDate: '',
     selectedSlot: '',
     description: '',
-    status: 'Scheduled',
   });
   const [message, setMessage] = useState('');
+  const [showRedirectButton, setShowRedirectButton] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSlotClick = (slot) => {
-    setFormData((prev) => ({
-      ...prev,
-      selectedSlot: slot,
-    }));
+    setFormData({ ...formData, selectedSlot: slot });
   };
 
+  // Generate time slots from 8:00 to 22:00
   const generateTimeSlots = () => {
     const slots = [];
     for (let hour = 8; hour <= 22; hour++) {
-      slots.push(`${hour.toString().padStart(2, '0')}:00`);
+      slots.push(`${hour}:00`);
     }
     return slots;
   };
@@ -40,131 +34,138 @@ const BookAppointment = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.appointmentDate || !formData.selectedSlot) {
+
+    const userId = sessionStorage.getItem('userID');
+    if (!userId) {
+      alert('User not logged in. Please log in first.');
+      return;
+    }
+
+    const selectedDateTime = formData.appointmentDate && formData.selectedSlot
+      ? new Date(`${formData.appointmentDate}T${formData.selectedSlot}:00`).toISOString()
+      : null;
+
+    if (!selectedDateTime) {
       setMessage('Please select both a date and a time slot.');
       return;
     }
 
-    const [hours, minutes] = formData.selectedSlot.split(':');
-    const selectedDateTime = new Date(`${formData.appointmentDate}T${hours}:${minutes}:00Z`);
-    if (isNaN(selectedDateTime.getTime())) {
-      setMessage('Invalid date or time. Please check your selection.');
-      return;
-    }
-
     try {
-      const userId = sessionStorage.getItem('userID');
-      if (!userId) {
-        setMessage('User not logged in. Please log in first.');
-        return;
+      const requestData = {
+        userId: parseInt(userId),
+        appointmentDate: selectedDateTime,
+        title: formData.title,
+        description: formData.description,
+      };
+
+      console.log('Sending data:', JSON.stringify(requestData, null, 2));
+
+      const response = await axios.post('http://localhost:5254/api/appointments/create', requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Server response:', response.data);
+
+      if (response.status === 200 && response.data.message === 'Appointment created successfully!') {
+        setMessage('Appointment booked successfully!');
+        setShowRedirectButton(true);
+      } else {
+        setMessage('Unexpected response from server. Please try again.');
       }
 
-      const response = await axios.post(
-        `http://localhost:5254/api/appointments`,
-        {
-          userId: parseInt(userId),
-          appointmentDate: selectedDateTime.toISOString(),
-          title: formData.title,
-          description: formData.description,
-          status: formData.status,
-        },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-      console.log('Book response:', response.data);
-      if (response.status === 200 || response.status === 201) {
-        setMessage('Appointment booked successfully!');
-        setFormData({
-          title: '',
-          appointmentDate: '',
-          selectedSlot: '',
-          description: '',
-          status: 'Scheduled',
-        });
-      } else {
-        setMessage('Unexpected response from server.');
-      }
+      // Reset form
+      setFormData({
+        title: '',
+        appointmentDate: '',
+        selectedSlot: '',
+        description: '',
+      });
     } catch (error) {
-      setMessage(`Error booking appointment: ${error.response?.data?.message || error.message}`);
-      console.error('Book error:', error.response?.data || error);
+      console.error('Error booking appointment:', error.response ? error.response.data : error.message);
+      setMessage(`An error occurred: ${error.response ? JSON.stringify(error.response.data) : error.message}`);
     }
   };
 
-  const closeToast = () => setMessage('');
+  const handleRedirectToView = () => {
+    navigate('/viewappointment', { state: { refresh: true } });
+  };
 
   return (
     <div className="ba-wrapper">
       <div className="ba-top-section">
         <img src="images/favicon.ico" alt="Baby Icon" className="ba-baby-icon" />
-        <div className="ba-title">Book an Appointment</div>
+        <div className="ba-title">Book a Doctor's Appointment</div>
       </div>
       <div className="ba-content">
-        <form onSubmit={handleSubmit} className="ba-form">
-          <div className="ba-form-group">
-            <label>Appointment Title*</label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="ba-form-group">
-            <label>Appointment Date*</label>
-            <input
-              type="date"
-              name="appointmentDate"
-              value={formData.appointmentDate}
-              onChange={handleChange}
-              min={new Date().toISOString().split('T')[0]}
-              required
-            />
-          </div>
-          <div className="ba-form-group">
-            <label>Appointment Time*</label>
-            <div className="ba-time-slots">
-              {timeSlots.map((slot) => (
-                <button
-                  key={slot}
-                  type="button"
-                  className={formData.selectedSlot === slot ? 'selected' : ''}
-                  onClick={() => handleSlotClick(slot)}
-                  disabled={!formData.appointmentDate}
-                >
-                  {slot}
-                </button>
-              ))}
+        <div className="ba-form">
+          <form onSubmit={handleSubmit}>
+            <div className="ba-form-group">
+              <label>Appointment Title*</label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="E.g., Appointment with Dr. John Smith..."
+                required
+              />
             </div>
-          </div>
-          <div className="ba-form-group">
-            <label>Details</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="4"
-            />
-          </div>
-          <div className="ba-form-group">
-            <label>Status*</label>
-            <select name="status" value={formData.status} onChange={handleChange} required>
-              <option value="Scheduled">Scheduled</option>
-              <option value="Pending">Pending</option>
-              <option value="Ready">Ready</option>
-            </select>
-          </div>
-          <button type="submit" className="ba-submit-btn">
-            Book Appointment
-          </button>
-        </form>
-      </div>
-
-      {message && (
-        <div className={`ba-toast ${message.includes('successfully') ? 'success' : 'error'}`}>
-          {message}
-          <button onClick={closeToast}>Close</button>
+            <div className="ba-form-group">
+              <label>Appointment Date*</label>
+              <input
+                type="date"
+                name="appointmentDate"
+                value={formData.appointmentDate}
+                onChange={handleChange}
+                min={new Date().toISOString().split('T')[0]} // Prevent past dates
+                required
+              />
+            </div>
+            <div className="ba-form-group">
+              <label>Appointment Time*</label>
+              <div className="ba-time-slots">
+                {timeSlots.map((slot) => (
+                  <button
+                    key={slot}
+                    type="button"
+                    className={formData.selectedSlot === slot ? 'selected' : ''}
+                    onClick={() => handleSlotClick(slot)}
+                    disabled={!formData.appointmentDate}
+                  >
+                    {slot}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="ba-form-group">
+              <label>Details</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Add details about your appointment..."
+                rows="4"
+              />
+            </div>
+            <button type="submit">Book Appointment</button>
+          </form>
+          {message && (
+            <p className={`ba-message ${message.includes('successfully') ? 'success' : 'error'}`}>
+              {message}
+            </p>
+          )}
+          {showRedirectButton && (
+            <button className="ba-redirect-btn" onClick={handleRedirectToView}>
+              View Your Appointments
+            </button>
+          )}
         </div>
-      )}
+        <div className="ba-illustration">
+          <img src="images/bookappointment.png" alt="Doctor and Pregnant Woman" />
+        </div>
+      </div>
 
       <style jsx>{`
         .ba-wrapper {
@@ -174,7 +175,6 @@ const BookAppointment = () => {
           margin-top: 100px;
           font-family: 'Georgia', serif;
           background: #fff7f9;
-          border-radius: 20px;
         }
 
         .ba-top-section {
@@ -210,12 +210,13 @@ const BookAppointment = () => {
           border-radius: 25px;
           box-shadow: 0 4px 12px rgba(248, 187, 208, 0.15);
           border: 1px solid #fce4ec;
+          display: flex;
+          gap: 30px;
+          align-items: flex-start;
         }
 
         .ba-form {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
+          flex: 1;
         }
 
         .ba-form-group {
@@ -231,47 +232,44 @@ const BookAppointment = () => {
         }
 
         .ba-form-group input,
-        .ba-form-group select,
         .ba-form-group textarea {
           width: 100%;
           padding: 10px;
           border: 1px solid #f8bbd0;
           border-radius: 10px;
           font-family: 'Georgia', serif;
-          font-size: 14px;
+          font-size: 16px;
           background: #fffafc;
-          color: #880e4f;
-          transition: border-color 0.3s ease;
         }
 
-        .ba-form-group input:focus,
-        .ba-form-group select:focus,
-        .ba-form-group textarea:focus {
-          border-color: #ec407a;
-          outline: none;
+        .ba-form-group textarea {
+          resize: vertical;
         }
 
         .ba-time-slots {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
           gap: 10px;
+          justify-content: flex-start;
         }
 
         .ba-time-slots button {
-          padding: 8px;
+          padding: 8px 12px;
           border: 1px solid #f8bbd0;
-          border-radius: 10px;
+          border-radius: 8px;
           background: #fffafc;
           color: #880e4f;
           cursor: pointer;
-          font-family: 'Georgia', serif;
           font-size: 14px;
-          transition: background-color 0.3s ease, color 0.3s ease;
+          transition: background-color 0.3s, color 0.3s;
+          text-align: center;
+          height: 40px;
         }
 
-        .ba-time-slots button:hover {
-          background: #f8bbd0;
-          color: #fff;
+        .ba-time-slots button:disabled {
+          background: #f5f5f5;
+          color: #ccc;
+          cursor: not-allowed;
         }
 
         .ba-time-slots button.selected {
@@ -280,51 +278,58 @@ const BookAppointment = () => {
           border-color: #ec407a;
         }
 
-        .ba-submit-btn {
-          padding: 12px 25px;
+        .ba-form button[type="submit"] {
+          padding: 10px 20px;
           border: none;
-          border-radius: 20px;
-          cursor: pointer;
-          font-family: 'Georgia', serif;
-          font-size: 16px;
+          border-radius: 10px;
           background: #ec407a;
           color: #fff;
-          transition: background-color 0.3s ease;
+          cursor: pointer;
+          font-size: 16px;
         }
 
-        .ba-submit-btn:hover {
-          background: #d1356b;
-        }
-
-        .ba-toast {
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          padding: 10px 20px;
+        .ba-message {
+          margin-top: 15px;
+          padding: 10px;
           border-radius: 10px;
-          color: #fff;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          z-index: 1000;
-          font-family: 'Georgia', serif;
+          text-align: center;
+          font-size: 16px;
         }
 
-        .ba-toast.success {
-          background: #2e7d32;
+        .ba-message.success {
+          background: #c8e6c9;
+          color: #2e7d32;
         }
 
-        .ba-toast.error {
-          background: #d81b60;
+        .ba-message.error {
+          background: #ffebee;
+          color: #d81b60;
         }
 
-        .ba-toast button {
-          background: none;
+        .ba-redirect-btn {
+          padding: 10px 20px;
           border: none;
+          border-radius: 10px;
+          background: #ffca28;
           color: #fff;
           cursor: pointer;
-          margin-left: 10px;
-          font-size: 14px;
+          font-size: 16px;
+          margin-top: 15px;
+          display: block;
+          width: 100%;
+        }
+
+        .ba-illustration {
+          flex: 1;
+          text-align: center;
+        }
+
+        .ba-illustration img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 15px;
+          opacity: 0.9;
+          filter: drop-shadow(0 2px 4px rgba(240, 98, 146, 0.2));
         }
       `}</style>
     </div>

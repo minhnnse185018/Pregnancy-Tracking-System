@@ -15,39 +15,63 @@ const ViewAppointment = () => {
     status: 'Scheduled',
   });
   const [message, setMessage] = useState('');
+  const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [statusOptions, setStatusOptions] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const appointmentsPerPage = 5; // Number of appointments per page
 
   useEffect(() => {
     fetchAppointments();
+    fetchStatusOptions();
   }, []);
 
   const fetchAppointments = async () => {
     try {
       const userId = sessionStorage.getItem('userID');
       if (!userId) {
-        setMessage('User not logged in. Please log in first.');
+        setMessage('Please log in to view your prenatal appointments.');
         return;
       }
 
       const response = await axios.get(`http://localhost:5254/api/appointments/get/${userId}`, {
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log('Fetched appointments:', response.data);
       if (Array.isArray(response.data)) {
         setAppointments(response.data);
       } else {
         setAppointments([]);
-        setMessage('Invalid response format from appointments API.');
+        setMessage('No appointments found.');
       }
     } catch (error) {
       setMessage(`Error fetching appointments: ${error.message}`);
-      console.error('Fetch error:', error);
     }
+  };
+
+  const fetchStatusOptions = async () => {
+    try {
+      const response = await axios.get('http://localhost:5254/api/appointments/statuses', {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        setStatusOptions(response.data); // e.g., ["Scheduled", "Reminded"]
+      } else {
+        setStatusOptions(['Scheduled', 'Reminded']); // Fallback
+        setMessage('No valid statuses from API, using defaults: Scheduled, Reminded.');
+      }
+    } catch (error) {
+      setStatusOptions(['Scheduled', 'Reminded']); // Fallback
+      setMessage(`Error fetching status options: ${error.message}. Using defaults: Scheduled, Reminded.`);
+    }
+  };
+
+  const handleViewClick = (appointment) => {
+    setSelectedAppointment(appointment);
+    setShowViewModal(true);
   };
 
   const handleEditClick = (appointment) => {
     if (!appointment || !appointment.id || !appointment.appointmentDate) {
-      console.error('Invalid appointment data:', appointment);
       setMessage('Invalid appointment selected.');
       return;
     }
@@ -68,8 +92,9 @@ const ViewAppointment = () => {
       appointmentDate: formattedDate,
       selectedSlot: formattedTime,
       description: appointment.description || '',
-      status: appointment.status || 'Scheduled',
+      status: appointment.status || statusOptions[0] || 'Scheduled',
     });
+    setShowViewModal(false);
     setShowEditModal(true);
   };
 
@@ -113,7 +138,7 @@ const ViewAppointment = () => {
     const [hours, minutes] = editFormData.selectedSlot.split(':');
     const selectedDateTime = new Date(`${editFormData.appointmentDate}T${hours}:${minutes}:00Z`);
     if (isNaN(selectedDateTime.getTime())) {
-      setMessage('Invalid date or time. Please check your selection.');
+      setMessage('Invalid date or time.');
       return;
     }
 
@@ -129,7 +154,6 @@ const ViewAppointment = () => {
         },
         { headers: { 'Content-Type': 'application/json' } }
       );
-      console.log('Update response:', response.data);
       if (response.status === 200) {
         setMessage('Appointment updated successfully!');
         fetchAppointments();
@@ -139,7 +163,6 @@ const ViewAppointment = () => {
       }
     } catch (error) {
       setMessage(`Error updating appointment: ${error.response?.data?.message || error.message}`);
-      console.error('Update error:', error.response?.data || error);
     }
   };
 
@@ -149,40 +172,61 @@ const ViewAppointment = () => {
         const response = await axios.delete(`http://localhost:5254/api/appointments/delete/${id}`, {
           headers: { 'Content-Type': 'application/json' },
         });
-        console.log('Delete response:', response.data);
         if (response.status === 200) {
           setMessage('Appointment deleted successfully!');
           fetchAppointments();
+          setShowViewModal(false);
         } else {
           setMessage('Unexpected response from server.');
         }
       } catch (error) {
         setMessage(`Error deleting appointment: ${error.response?.data?.message || error.message}`);
-        console.error('Delete error:', error.response?.data || error);
       }
     }
   };
 
   const closeToast = () => setMessage('');
 
+  // Pagination Logic
+  const indexOfLastAppointment = currentPage * appointmentsPerPage;
+  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+  const currentAppointments = appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
+  const totalPages = Math.ceil(appointments.length / appointmentsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div className="va-wrapper">
       <div className="va-top-section">
         <img src="images/favicon.ico" alt="Baby Icon" className="va-baby-icon" />
-        <div className="va-title">View Your Appointments</div>
+        <div className="va-title">Your Prenatal Appointments</div>
       </div>
       <div className="va-content">
         <div className="va-list">
-          {appointments.length > 0 ? (
-            appointments.map((appointment) => (
-              <div key={appointment.id} className="va-appointment-item">
-                <div>
-                  <strong>Title:</strong> {appointment.title || 'N/A'}
+          {currentAppointments.length > 0 ? (
+            currentAppointments.map((appointment) => (
+              <div
+                key={appointment.id}
+                className="va-appointment-item"
+                onClick={() => handleViewClick(appointment)}
+              >
+                <div className="va-item-header">
+                  <strong>{appointment.title || 'Prenatal Checkup'}</strong>
+                  <span className={`va-status va-status-${appointment.status?.toLowerCase()}`}>
+                    {appointment.status || 'Scheduled'}
+                  </span>
                 </div>
                 <div>
                   <strong>Date:</strong>{' '}
                   {appointment.appointmentDate
-                    ? new Date(appointment.appointmentDate).toLocaleDateString()
+                    ? new Date(appointment.appointmentDate).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
                     : 'N/A'}
                 </div>
                 <div>
@@ -194,28 +238,65 @@ const ViewAppointment = () => {
                       })
                     : 'N/A'}
                 </div>
-                <div>
-                  <strong>Details:</strong> {appointment.description || 'N/A'}
-                </div>
-                <div>
-                  <strong>Status:</strong> {appointment.status || 'N/A'}
-                </div>
-                <div className="va-actions">
-                  <button onClick={() => handleEditClick(appointment)}>Edit</button>
-                  <button onClick={() => handleDelete(appointment.id)}>Delete</button>
-                </div>
               </div>
             ))
           ) : (
-            <p>No appointments found.</p>
+            <p>No prenatal appointments scheduled yet.</p>
           )}
         </div>
+        {totalPages > 1 && (
+          <div className="va-pagination">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                className={currentPage === index + 1 ? 'active' : ''}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+
+      {showViewModal && selectedAppointment && (
+        <div className="va-modal">
+          <div className="va-modal-content">
+            <h2>Appointment Details</h2>
+            <div className="va-view-details">
+              <p><strong>Title:</strong> {selectedAppointment.title || 'N/A'}</p>
+              <p>
+                <strong>Date:</strong>{' '}
+                {new Date(selectedAppointment.appointmentDate).toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+              <p>
+                <strong>Time:</strong>{' '}
+                {new Date(selectedAppointment.appointmentDate).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
+              <p><strong>Details:</strong> {selectedAppointment.description || 'N/A'}</p>
+              <p><strong>Status:</strong> {selectedAppointment.status || 'N/A'}</p>
+            </div>
+            <div className="va-modal-actions">
+              <button onClick={() => handleEditClick(selectedAppointment)}>Edit</button>
+              <button onClick={() => handleDelete(selectedAppointment.id)}>Delete</button>
+              <button onClick={() => setShowViewModal(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showEditModal && (
         <div className="va-modal">
           <div className="va-modal-content">
-            <h2>Edit Appointment</h2>
+            <h2>Edit Your Prenatal Appointment</h2>
             <form onSubmit={handleEditSubmit}>
               <div className="va-form-group">
                 <label>Appointment Title*</label>
@@ -224,6 +305,7 @@ const ViewAppointment = () => {
                   name="title"
                   value={editFormData.title}
                   onChange={handleEditChange}
+                  placeholder="e.g., Ultrasound Checkup"
                   required
                 />
               </div>
@@ -260,17 +342,18 @@ const ViewAppointment = () => {
                   name="description"
                   value={editFormData.description}
                   onChange={handleEditChange}
+                  placeholder="e.g., Discuss baby’s growth"
                   rows="4"
                 />
               </div>
               <div className="va-form-group">
                 <label>Status*</label>
                 <select name="status" value={editFormData.status} onChange={handleEditChange} required>
-                  <option value="Scheduled">Scheduled</option>
-                  <option value="Completed">Completed</option>
-                  <option value="Cancelled">Cancelled</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Ready">Ready</option>
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
                 </select>
               </div>
               <button type="submit" className="va-modal-btn va-save-btn">
@@ -289,9 +372,9 @@ const ViewAppointment = () => {
       )}
 
       {message && (
-        <div className={`va-toast ${message.includes('successfully') ? 'success' : 'error'}`}>
-          {message}
-          <button onClick={closeToast}>Close</button>
+        <div className="va-toast">
+          <span>{message}</span>
+          <button onClick={closeToast}>✕</button>
         </div>
       )}
 
@@ -302,8 +385,9 @@ const ViewAppointment = () => {
           margin: 0 auto;
           margin-top: 100px;
           font-family: 'Georgia', serif;
-          background: #fff7f9;
+          background: #fff5f7;
           border-radius: 20px;
+          box-shadow: 0 4px 15px rgba(240, 98, 146, 0.1);
         }
 
         .va-top-section {
@@ -311,87 +395,108 @@ const ViewAppointment = () => {
           align-items: center;
           gap: 15px;
           margin-bottom: 35px;
-          background: linear-gradient(to right, #f8e1e9, #fceff2);
+          background: linear-gradient(to right, #fce4ec, #fff1f5);
           padding: 20px;
           border-radius: 20px;
-          box-shadow: 0 2px 8px rgba(248, 187, 208, 0.2);
+          border: 1px solid #f8bbd0;
         }
 
         .va-baby-icon {
-          width: 50px;
-          height: 50px;
+          width: 60px;
+          height: 60px;
           border-radius: 50%;
           background: #fff;
-          padding: 8px;
-          border: 2px solid #f8bbd0;
+          padding: 10px;
+          border: 3px solid #f06292;
         }
 
         .va-title {
-          color: #ec407a;
-          font-size: 28px;
-          font-weight: 500;
-          text-shadow: 1px 1px 3px rgba(236, 64, 122, 0.1);
+          color: #f06292;
+          font-size: 30px;
+          font-weight: 600;
         }
 
         .va-content {
           padding: 30px;
           background: #ffffff;
           border-radius: 25px;
-          box-shadow: 0 4px 12px rgba(248, 187, 208, 0.15);
           border: 1px solid #fce4ec;
         }
 
         .va-list {
           max-height: 600px;
           overflow-y: auto;
+          scrollbar-width: thin;
+          scrollbar-color: #f8bbd0 #fff5f7;
         }
 
         .va-appointment-item {
           border: 1px solid #f8bbd0;
-          padding: 15px;
-          margin-bottom: 15px;
-          border-radius: 10px;
+          padding: 20px;
+          margin-bottom: 20px;
+          border-radius: 15px;
           background: #fffafc;
-          transition: transform 0.2s ease;
+          cursor: pointer;
+          transition: all 0.3s ease;
         }
 
         .va-appointment-item:hover {
-          transform: scale(1.02);
-          box-shadow: 0 2px 6px rgba(248, 187, 208, 0.3);
+          transform: translateY(-5px);
+          box-shadow: 0 6px 15px rgba(240, 98, 146, 0.15);
         }
 
-        .va-actions {
+        .va-item-header {
           display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+          font-size: 18px;
+          color: #880e4f;
+        }
+
+        .va-status {
+          padding: 5px 10px;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 500;
+          text-transform: uppercase;
+        }
+
+        .va-status-scheduled {
+          background: #f8bbd0;
+          color: #fff;
+        }
+        .va-status-reminded {
+          background: #ffb300;
+          color: #fff;
+        }
+
+        .va-pagination {
+          display: flex;
+          justify-content: center;
           gap: 10px;
-          margin-top: 10px;
+          margin-top: 20px;
         }
 
-        .va-actions button {
-          padding: 8px 15px;
-          border: none;
-          border-radius: 20px;
+        .va-pagination button {
+          padding: 8px 12px;
+          border: 1px solid #f8bbd0;
+          border-radius: 5px;
+          background: #fffafc;
+          color: #880e4f;
           cursor: pointer;
-          font-family: 'Georgia', serif;
-          font-size: 14px;
-          transition: background-color 0.3s ease;
+          transition: all 0.3s ease;
         }
 
-        .va-actions button:first-child {
-          background: #ffca28;
+        .va-pagination button:hover {
+          background: #f8bbd0;
           color: #fff;
         }
 
-        .va-actions button:first-child:hover {
-          background: #e0b124;
-        }
-
-        .va-actions button:last-child {
-          background: #d81b60;
+        .va-pagination button.active {
+          background: #f06292;
           color: #fff;
-        }
-
-        .va-actions button:last-child:hover {
-          background: #b01550;
+          border-color: #f06292;
         }
 
         .va-modal {
@@ -400,7 +505,7 @@ const ViewAppointment = () => {
           left: 0;
           width: 100%;
           height: 100%;
-          background: rgba(0, 0, 0, 0.5);
+          background: rgba(0, 0, 0, 0.6);
           display: flex;
           justify-content: center;
           align-items: center;
@@ -408,31 +513,81 @@ const ViewAppointment = () => {
         }
 
         .va-modal-content {
-          background: #fff;
-          padding: 30px;
+          background: #fff7f9;
+          padding: 35px;
           border-radius: 20px;
-          width: 450px;
-          box-shadow: 0 4px 12px rgba(248, 187, 208, 0.2);
+          width: 500px;
+          box-shadow: 0 6px 20px rgba(240, 98, 146, 0.25);
           border: 1px solid #f8bbd0;
-          background: linear-gradient(to bottom, #fceff2, #fff7f9);
         }
 
         .va-modal-content h2 {
-          color: #ec407a;
-          font-size: 24px;
-          margin-bottom: 20px;
+          color: #f06292;
+          font-size: 26px;
+          margin-bottom: 25px;
           text-align: center;
-          text-shadow: 1px 1px 2px rgba(236, 64, 122, 0.1);
+        }
+
+        .va-view-details p {
+          margin: 10px 0;
+          color: #880e4f;
+          font-size: 16px;
+        }
+
+        .va-modal-actions {
+          display: flex;
+          gap: 15px;
+          margin-top: 20px;
+          justify-content: center;
+        }
+
+        .va-modal-actions button,
+        .va-modal-btn {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 25px;
+          cursor: pointer;
+          font-family: 'Georgia', serif;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        }
+
+        .va-modal-actions button:nth-child(1) {
+          background: #ffca28;
+          color: #fff;
+        }
+
+        .va-modal-actions button:nth-child(1):hover {
+          background: #ffb300;
+        }
+
+        .va-modal-actions button:nth-child(2) {
+          background: #f06292;
+          color: #fff;
+        }
+
+        .va-modal-actions button:nth-child(2):hover {
+          background: #d81b60;
+        }
+
+        .va-modal-actions button:nth-child(3) {
+          background: #ccc;
+          color: #333;
+        }
+
+        .va-modal-actions button:nth-child(3):hover {
+          background: #bbb;
         }
 
         .va-form-group {
-          margin-bottom: 20px;
+          margin-bottom: 25px;
         }
 
         .va-form-group label {
           display: block;
           margin-bottom: 8px;
-          color: #ec407a;
+          color: #f06292;
           font-size: 16px;
           font-weight: 500;
         }
@@ -441,9 +596,9 @@ const ViewAppointment = () => {
         .va-form-group select,
         .va-form-group textarea {
           width: 100%;
-          padding: 10px;
+          padding: 12px;
           border: 1px solid #f8bbd0;
-          border-radius: 10px;
+          border-radius: 12px;
           font-family: 'Georgia', serif;
           font-size: 14px;
           background: #fffafc;
@@ -454,26 +609,26 @@ const ViewAppointment = () => {
         .va-form-group input:focus,
         .va-form-group select:focus,
         .va-form-group textarea:focus {
-          border-color: #ec407a;
+          border-color: #f06292;
           outline: none;
         }
 
         .va-time-slots {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-          gap: 10px;
+          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+          gap: 12px;
         }
 
         .va-time-slots button {
-          padding: 8px;
+          padding: 10px;
           border: 1px solid #f8bbd0;
-          border-radius: 10px;
+          border-radius: 12px;
           background: #fffafc;
           color: #880e4f;
           cursor: pointer;
           font-family: 'Georgia', serif;
           font-size: 14px;
-          transition: background-color 0.3s ease, color 0.3s ease;
+          transition: all 0.3s ease;
         }
 
         .va-time-slots button:hover {
@@ -482,38 +637,28 @@ const ViewAppointment = () => {
         }
 
         .va-time-slots button.selected {
-          background: #ec407a;
+          background: #f06292;
           color: #fff;
-          border-color: #ec407a;
-        }
-
-        .va-modal-btn {
-          padding: 10px 20px;
-          border: none;
-          border-radius: 20px;
-          cursor: pointer;
-          font-family: 'Georgia', serif;
-          font-size: 14px;
-          transition: background-color 0.3s ease;
+          border-color: #f06292;
         }
 
         .va-save-btn {
-          background: #ec407a;
+          background: #f06292;
           color: #fff;
-          margin-right: 10px;
+          margin-right: 15px;
         }
 
         .va-save-btn:hover {
-          background: #d1356b;
+          background: #d81b60;
         }
 
         .va-cancel-btn {
-          background: #d81b60;
-          color: #fff;
+          background: #ccc;
+          color: #333;
         }
 
         .va-cancel-btn:hover {
-          background: #b01550;
+          background: #bbb;
         }
 
         .va-toast {
@@ -521,21 +666,14 @@ const ViewAppointment = () => {
           bottom: 20px;
           right: 20px;
           padding: 10px 20px;
-          border-radius: 10px;
+          background: #333;
           color: #fff;
+          border-radius: 5px;
           display: flex;
-          justify-content: space-between;
           align-items: center;
           z-index: 1000;
           font-family: 'Georgia', serif;
-        }
-
-        .va-toast.success {
-          background: #2e7d32;
-        }
-
-        .va-toast.error {
-          background: #d81b60;
+          font-size: 14px;
         }
 
         .va-toast button {
@@ -544,7 +682,7 @@ const ViewAppointment = () => {
           color: #fff;
           cursor: pointer;
           margin-left: 10px;
-          font-size: 14px;
+          font-size: 16px;
         }
       `}</style>
     </div>
