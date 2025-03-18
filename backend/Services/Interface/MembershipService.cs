@@ -33,7 +33,7 @@ namespace backend.Services.Implementation
                 UserId = membershipDto.UserId,
                 PlanId = membershipDto.PlanId,
                 StartDate = membershipDto.StartDate,
-                EndDate = membershipDto.StartDate.AddDays(plan.Duration * 7),
+                EndDate = membershipDto.StartDate.AddMonths(plan.Duration),
                 Status = "Pending",
                 CreatedAt = DateTime.UtcNow
             };

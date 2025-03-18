@@ -216,6 +216,7 @@ namespace backend.Data
                 {
                     Id = 1,
                     UserId = 1,
+                    Name = "First Pregnancy",
                     ConceptionDate = DateTime.Now.AddDays(-90),
                     DueDate = DateTime.Now.AddDays(180),
                     CreatedAt = DateTime.Now
