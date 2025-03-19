@@ -13,17 +13,19 @@ const AdminSidebar = () => {
             <GroupIcon /> Profile
           </Link>
         </li>
-        <li style={listItemStyle}>
+        {/* <li style={listItemStyle}>
           <Link to="admin-personnel" style={linkStyle}>
             <PeopleIcon /> Manage Personnel
           </Link>
-        </li>
+        </li> */}
         <li style={listItemStyle}>
           <Link to="admin-salon" style={linkStyle}>
             <StoreIcon /> Manage Service
           </Link>
+        </li>
+        <li style={listItemStyle}>
           <Link to="admin-customer" style={linkStyle}>
-            <StoreIcon /> Manage Customer
+            <PeopleIcon /> Manage Customer
           </Link>
         </li>
       </ul>

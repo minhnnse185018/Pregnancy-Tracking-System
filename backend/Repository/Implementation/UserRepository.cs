@@ -82,16 +82,16 @@ namespace backend.Repository.Implementation
             }
         }
 
-        public async Task<List<UserDto>> GetAllUsersAsync()
+        public async Task<List<UserDtoManager>> GetAllUsersAsync()
         {
             var users = await _context.Users
                 .OrderBy(u => u.FirstName)
                 .ToListAsync();
 
-            return _mapper.Map<List<UserDto>>(users);
+            return _mapper.Map<List<UserDtoManager>>(users);
         }
 
-        public async Task<List<UserDto>> GetFilteredUsersAsync(string? role = null, string? status = null)
+        public async Task<List<UserDtoManager>> GetFilteredUsersAsync(string? role = null, string? status = null)
         {
             var query = _context.Users.AsQueryable();
 
@@ -112,7 +112,7 @@ namespace backend.Repository.Implementation
                 .OrderBy(u => u.FirstName)
                 .ToListAsync();
 
-            return _mapper.Map<List<UserDto>>(users);
+            return _mapper.Map<List<UserDtoManager>>(users);
         }
 
         public async Task<UserDto?> GetUserByIdAsync(int id)
@@ -138,7 +138,7 @@ namespace backend.Repository.Implementation
 
         public async Task<bool> Register(RegisterRequest register)
         {
-            try 
+            try
             {
                 if (await IsEmailExists(register.Email))
                 {
@@ -146,13 +146,13 @@ namespace backend.Repository.Implementation
                 }
 
                 var user = _mapper.Map<User>(register);
-                
+
                 user.CreatedAt = DateTime.Now;
-                user.Status = "inactive"; 
+                user.Status = "inactive";
                 user.UserType = "1";
                 string verificationToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
                 user.ResetToken = verificationToken;
-                user.ResetTokenExpired = DateTime.UtcNow.AddHours(2); 
+                user.ResetTokenExpired = DateTime.UtcNow.AddHours(2);
 
                 if (!string.IsNullOrWhiteSpace(register.Phone))
                 {
@@ -170,9 +170,9 @@ namespace backend.Repository.Implementation
                 var verificationLink = $"http://localhost:3000/verify-account?token={Uri.EscapeDataString(verificationToken)}&email={Uri.EscapeDataString(register.Email)}";
                 var subject = "Account Verification(Valid for 2 hours)";
                 var body = $"Please click the link below to verify your account:\n\n{verificationLink}";
-                
+
                 await _emailService.SendEmailAsync(register.Email, subject, body);
-                
+
                 return true; // Return the user ID
             }
             catch (Exception ex)
@@ -193,7 +193,7 @@ namespace backend.Repository.Implementation
                 if (!string.IsNullOrWhiteSpace(userDto.FirstName)) user.FirstName = userDto.FirstName;
                 if (!string.IsNullOrWhiteSpace(userDto.LastName)) user.LastName = userDto.LastName;
                 if (!string.IsNullOrWhiteSpace(userDto.Gender)) user.Gender = userDto.Gender;
-                
+
 
                 // Explicitly update Phone
                 if (userDto.Phone != null)
@@ -238,77 +238,77 @@ namespace backend.Repository.Implementation
             return new string(Enumerable.Repeat(validChars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-     
-         public async Task<bool> ChangePasswordAsync(ChangePasswordRequestDto changePasswordRequestDto)
-         {
-             var user= await _context.Users.FirstOrDefaultAsync(x=>x.Id==changePasswordRequestDto.Id);
-             user.Password=changePasswordRequestDto.Password;
-             await _context.SaveChangesAsync();
-             return true;
- 
-         }
- 
-         public async Task<bool> ForgotPasswordRequestAsync(ForgotPasswordRequestDto forgotPasswordRequestDto)
-         {
-             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == forgotPasswordRequestDto.Email);
-             if (user == null)
-             {
-                 return false; 
-             }
-             string resetToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
-             user.ResetToken = resetToken;
-             user.ResetTokenExpired = DateTime.UtcNow.AddMinutes(10);
-             await _context.SaveChangesAsync();
-             var resetlink= $"http://localhost:3000/reset-password?token={Uri.EscapeDataString(resetToken)}&email={Uri.EscapeDataString(forgotPasswordRequestDto.Email)}";
-             var subject = "Password Reset Request(Valid for 10 minutes)";
-             var body = $"Click the link below to reset your password:\n\n{resetlink}";
-             
-             await _emailService.SendEmailAsync(user.Email, subject, body);
-             return true;
- 
-         }
- 
-         public async Task<bool> ResetPasswordRequest(ResetPasswordRequestDto resetPasswordRequestDto)
-         {
-             var user = await _context.Users.FirstOrDefaultAsync(u => 
-             u.Email == resetPasswordRequestDto.Email &&
-             u.ResetToken == resetPasswordRequestDto.Token &&
-             u.ResetTokenExpired > DateTime.UtcNow);
-             
-         if (user == null)
-         {
-             return false;
-         }
-         
-         // Update password
-         user.Password = resetPasswordRequestDto.NewPassword; // Ideally this should be hashed
-         user.ResetToken = null;
-         user.ResetTokenExpired = null;
-         
-         await _context.SaveChangesAsync();
-         return true;
-         }
 
-        public async Task<bool> VerifyRegistration(string email, string token)
+        public async Task<bool> ChangePasswordAsync(ChangePasswordRequestDto changePasswordRequestDto)
         {
-            // First, check if there's a pending user with this email
-            var user = await _context.Users.FirstOrDefaultAsync(u => 
-                u.Email == email && 
-                u.Status.ToLower() == "inactive");
-                
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == changePasswordRequestDto.Id);
+            user.Password = changePasswordRequestDto.Password;
+            await _context.SaveChangesAsync();
+            return true;
+
+        }
+
+        public async Task<bool> ForgotPasswordRequestAsync(ForgotPasswordRequestDto forgotPasswordRequestDto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == forgotPasswordRequestDto.Email);
             if (user == null)
             {
                 return false;
             }
-            
+            string resetToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            user.ResetToken = resetToken;
+            user.ResetTokenExpired = DateTime.UtcNow.AddMinutes(10);
+            await _context.SaveChangesAsync();
+            var resetlink = $"http://localhost:3000/reset-password?token={Uri.EscapeDataString(resetToken)}&email={Uri.EscapeDataString(forgotPasswordRequestDto.Email)}";
+            var subject = "Password Reset Request(Valid for 10 minutes)";
+            var body = $"Click the link below to reset your password:\n\n{resetlink}";
+
+            await _emailService.SendEmailAsync(user.Email, subject, body);
+            return true;
+
+        }
+
+        public async Task<bool> ResetPasswordRequest(ResetPasswordRequestDto resetPasswordRequestDto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+            u.Email == resetPasswordRequestDto.Email &&
+            u.ResetToken == resetPasswordRequestDto.Token &&
+            u.ResetTokenExpired > DateTime.UtcNow);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            // Update password
+            user.Password = resetPasswordRequestDto.NewPassword; // Ideally this should be hashed
+            user.ResetToken = null;
+            user.ResetTokenExpired = null;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> VerifyRegistration(string email, string token)
+        {
+            // First, check if there's a pending user with this email
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Email == email &&
+                u.Status.ToLower() == "inactive");
+
+            if (user == null)
+            {
+                return false;
+            }
+
             // If token is valid and not expired
-            if (user.ResetToken == token && user.ResetTokenExpired > DateTime.UtcNow) 
+            if (user.ResetToken == token && user.ResetTokenExpired > DateTime.UtcNow)
             {
                 // Activate the account
                 user.Status = "active";
                 user.ResetToken = null;
                 user.ResetTokenExpired = null;
-                
+
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -319,6 +319,18 @@ namespace backend.Repository.Implementation
                 await _context.SaveChangesAsync();
                 return false;
             }
+        }
+
+        public async Task<bool> UpdateUserStatusAsync(int id, string status)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return false;
+            }
+            user.Status = status;
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
