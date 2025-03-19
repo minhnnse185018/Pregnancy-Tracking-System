@@ -22,6 +22,9 @@ const AdminSidebar = () => {
           <Link to="admin-salon" style={linkStyle}>
             <StoreIcon /> Manage Service
           </Link>
+          <Link to="admin-customer" style={linkStyle}>
+            <StoreIcon /> Manage Customer
+          </Link>
         </li>
       </ul>
     </div>
