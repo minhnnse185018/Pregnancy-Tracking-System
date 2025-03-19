@@ -107,14 +107,14 @@ namespace backend.Data
 
 
 
-            
+
 
             // FetalGrowthStandard configuration
             modelBuilder.Entity<FetalGrowthStandard>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.WeekNumber).IsRequired();
-                
+
                 // Add decimal precision for the simplified model
                 entity.Property(e => e.WeightGrams)
                     .HasColumnType("decimal(10,2)");
@@ -204,7 +204,7 @@ namespace backend.Data
                     Id = 2,
                     Email = "2@gmail.com",
                     Password = "222222",
-                    UserType = "5",
+                    UserType = "4",
                     Status = "active",
                     CreatedAt = DateTime.Now
                 }
@@ -216,6 +216,7 @@ namespace backend.Data
                 {
                     Id = 1,
                     UserId = 1,
+                    Name = "First Pregnancy",
                     ConceptionDate = DateTime.Now.AddDays(-90),
                     DueDate = DateTime.Now.AddDays(180),
                     CreatedAt = DateTime.Now
@@ -245,7 +246,7 @@ namespace backend.Data
             );
 
             // 4. FAQs
-            
+
 
             // 5. Posts
             modelBuilder.Entity<Post>().HasData(
@@ -316,57 +317,57 @@ namespace backend.Data
                 new FetalGrowthStandard { Id = 32, WeekNumber = 39, HeightCm = 50.7m, WeightGrams = 3288m },
                 new FetalGrowthStandard { Id = 33, WeekNumber = 40, HeightCm = 51.2m, WeightGrams = 3462m }
             );
-        modelBuilder.Entity<Reminder>().HasData(
-                new Reminder
-                {
-                    Id = 1,
-                    Week = 7,
-                    Subject = "Reminder: Prenatal Check-up at Week 7 or 8",
-                    Body = "It's time for your prenatal check-up! At this stage, the goal is to confirm the presence of a fetal heartbeat, measure the embryo's length, and check the size of the amniotic sac. Make sure to complete the blood and urine tests to assess your health, including iron and calcium levels, and screen for gestational diabetes or thyroid disorders."
-                },
-                new Reminder
-                {
-                    Id = 2,
-                    Week = 11,
-                    Subject = "Reminder: Prenatal Screening at Week 11 to 13",
-                    Body = "Don't miss your important prenatal screening! This check-up screens for fetal abnormalities, especially Down syndrome. If you haven't had basic blood tests done earlier, now is the time to complete them."
-                },
-                new Reminder
-                {
-                    Id = 3,
-                    Week = 16,
-                    Subject = "Reminder: Anomaly Scan at Week 16 to 18",
-                    Body = "It’s time for your anomaly scan! At this check-up, the doctor will detect any structural abnormalities in the fetus, such as cleft palate or cleft lip. Schedule your appointment to ensure all is progressing well."
-                },
-                new Reminder
-                {
-                    Id = 4,
-                    Week = 20,
-                    Subject = "Reminder: Detailed Ultrasound at Week 20 to 22",
-                    Body = "Your detailed ultrasound is due! The doctor will check for abnormalities in the lungs, heart, and other organs. They will check your baby’s weight, umbilical cord, and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from now until delivery."
-                },
-                new Reminder
-                {
-                    Id = 5,
-                    Week = 24,
-                    Subject = "Reminder: Glucose Test and Screening at Week 24 to 28",
-                    Body = "At this point, it is crucial to undergo tests for gestational diabetes and preeclampsia, including urine tests and liver and kidney function assessments. You will also receive a tetanus vaccination at this time. Consult with your doctor for a suitable dietary plan based on your results."
-                },
-                new Reminder
-                {
-                    Id = 6,
-                    Week = 32,
-                    Subject = "Reminder: 4D Ultrasound at Week 32",
-                    Body = "It's time for your 4D ultrasound! This scan can help detect any late-developing abnormalities in the baby. The doctor will also monitor your overall health and the baby's position, along with blood flow in the uterine and umbilical arteries. You will receive your second tetanus shot around this time."
-                },
-                new Reminder
-                {
-                    Id = 7,
-                    Week = 35,
-                    Subject = "Reminder: Prenatal Monitoring at Week 35 or 36",
-                    Body = "Now it's time for fetal monitoring (cardiotocography) to assess uterine contractions and the fetal heart rate. The doctor will estimate the baby's weight, and check the umbilical cord and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from this point onward. Make sure to complete all required tests, including beta-strep screening."
-                }
-            );
+            modelBuilder.Entity<Reminder>().HasData(
+                    new Reminder
+                    {
+                        Id = 1,
+                        Week = 7,
+                        Subject = "Reminder: Prenatal Check-up at Week 7 or 8",
+                        Body = "It's time for your prenatal check-up! At this stage, the goal is to confirm the presence of a fetal heartbeat, measure the embryo's length, and check the size of the amniotic sac. Make sure to complete the blood and urine tests to assess your health, including iron and calcium levels, and screen for gestational diabetes or thyroid disorders."
+                    },
+                    new Reminder
+                    {
+                        Id = 2,
+                        Week = 11,
+                        Subject = "Reminder: Prenatal Screening at Week 11 to 13",
+                        Body = "Don't miss your important prenatal screening! This check-up screens for fetal abnormalities, especially Down syndrome. If you haven't had basic blood tests done earlier, now is the time to complete them."
+                    },
+                    new Reminder
+                    {
+                        Id = 3,
+                        Week = 16,
+                        Subject = "Reminder: Anomaly Scan at Week 16 to 18",
+                        Body = "It’s time for your anomaly scan! At this check-up, the doctor will detect any structural abnormalities in the fetus, such as cleft palate or cleft lip. Schedule your appointment to ensure all is progressing well."
+                    },
+                    new Reminder
+                    {
+                        Id = 4,
+                        Week = 20,
+                        Subject = "Reminder: Detailed Ultrasound at Week 20 to 22",
+                        Body = "Your detailed ultrasound is due! The doctor will check for abnormalities in the lungs, heart, and other organs. They will check your baby’s weight, umbilical cord, and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from now until delivery."
+                    },
+                    new Reminder
+                    {
+                        Id = 5,
+                        Week = 24,
+                        Subject = "Reminder: Glucose Test and Screening at Week 24 to 28",
+                        Body = "At this point, it is crucial to undergo tests for gestational diabetes and preeclampsia, including urine tests and liver and kidney function assessments. You will also receive a tetanus vaccination at this time. Consult with your doctor for a suitable dietary plan based on your results."
+                    },
+                    new Reminder
+                    {
+                        Id = 6,
+                        Week = 32,
+                        Subject = "Reminder: 4D Ultrasound at Week 32",
+                        Body = "It's time for your 4D ultrasound! This scan can help detect any late-developing abnormalities in the baby. The doctor will also monitor your overall health and the baby's position, along with blood flow in the uterine and umbilical arteries. You will receive your second tetanus shot around this time."
+                    },
+                    new Reminder
+                    {
+                        Id = 7,
+                        Week = 35,
+                        Subject = "Reminder: Prenatal Monitoring at Week 35 or 36",
+                        Body = "Now it's time for fetal monitoring (cardiotocography) to assess uterine contractions and the fetal heart rate. The doctor will estimate the baby's weight, and check the umbilical cord and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from this point onward. Make sure to complete all required tests, including beta-strep screening."
+                    }
+                );
 
             //FAQs
             modelBuilder.Entity<FAQ>().HasData(

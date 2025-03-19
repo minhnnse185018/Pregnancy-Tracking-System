@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Spinner, Alert, Button, Container, Card } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Alert, Button, Card, Container, Spinner } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./PaymentReturnHandler.css";
 
 function PaymentReturnHandler() {
@@ -18,7 +18,6 @@ function PaymentReturnHandler() {
         const queryString = location.search.substring(1);
 
         // Parse the query string into a collection of key-value pairs
-        // Make sure to decode URI components to handle special characters
         const queryParams = {};
         new URLSearchParams(queryString).forEach((value, key) => {
           queryParams[key] = decodeURIComponent(value);
@@ -26,8 +25,7 @@ function PaymentReturnHandler() {
 
         console.log("Sending payment params to backend:", queryParams);
 
-        // Try GET method instead of POST since we're getting a 405 error
-        // Option 1: Send as query parameters in a GET request
+        // Verify the payment with your backend
         const response = await axios.get(
           `http://localhost:5254/api/payment/return?${new URLSearchParams(
             queryParams
@@ -52,7 +50,7 @@ function PaymentReturnHandler() {
               "Payment successful! Your membership is now active."
           );
 
-          // After 3 seconds, redirect to the membership dashboard
+          // After 3 seconds, redirect to the membership page
           setTimeout(() => {
             navigate("/membership");
           }, 3000);
@@ -67,7 +65,8 @@ function PaymentReturnHandler() {
         console.error("Error handling payment return:", error);
         setStatus("error");
         setMessage(
-          "An error occurred while processing your payment. Please contact support."
+          error.response?.data?.message ||
+            "An error occurred while processing your payment. Please contact support."
         );
       }
     };
@@ -99,8 +98,8 @@ function PaymentReturnHandler() {
               <div className="success-icon">✓</div>
             </div>
             <h3 className="text-center text-success">Payment Successful!</h3>
-            <p> Thank you for your payment. </p>
-            <p> We also be in contact with more details shortly </p>
+            <p>Thank you for your payment.</p>
+            <p>We also be in contact with more details shortly</p>
           </>
         );
       case "failed":

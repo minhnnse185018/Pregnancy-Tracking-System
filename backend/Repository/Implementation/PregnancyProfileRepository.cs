@@ -55,12 +55,12 @@ namespace backend.Repository.Implementation
         {
             var profile = _mapper.Map<PregnancyProfile>(profileDto);
             profile.CreatedAt = DateTime.Now;
-            
+
             // Calculate conception date based on due date and week of pregnancy
             // Standard pregnancy is 40 weeks, so we calculate backwards from the due date
             int daysToSubtract = (40 - profileDto.WeekOfPregnancy) * 7;
             profile.ConceptionDate = profileDto.DueDate.AddDays(-daysToSubtract);
-            
+
             _context.PregnancyProfiles.Add(profile);
             return await _context.SaveChangesAsync();
         }
@@ -79,7 +79,8 @@ namespace backend.Repository.Implementation
                 profile.ConceptionDate = profileDto.ConceptionDate.Value;
             if (profileDto.DueDate.HasValue)
                 profile.DueDate = profileDto.DueDate.Value;
-
+            if (profileDto.Name != null)
+                profile.Name = profileDto.Name;
             await _context.SaveChangesAsync();
             return _mapper.Map<PregnancyProfileDto>(profile);
         }
