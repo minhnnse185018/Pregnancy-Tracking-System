@@ -60,7 +60,7 @@ const AdminProfilePage = () => {
 
       try {
         const response = await axios.post(
-          `http://localhost:5254/user/image/profile/${accountID}`,
+          `http://localhost:5254/api/Users/GetById/${accountID}/UploadImage`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
