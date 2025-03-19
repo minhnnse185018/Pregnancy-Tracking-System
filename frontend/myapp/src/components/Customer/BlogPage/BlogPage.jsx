@@ -16,6 +16,9 @@ function CommunityPosts() {
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
+  const [newPostImage, setNewPostImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploadingPost, setUploadingPost] = useState(false);
   
   // Toast state
   const [toasts, setToasts] = useState([]);
@@ -60,9 +63,6 @@ function CommunityPosts() {
   };
 
   const handleAddComment = async () => {
-    console.log("Selected Post ID:", selectedPostId);
-    console.log("Comment content:", commentText);
-
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
       showToast("You are not logged in. Please log in first!", "warning", "⚠️");
@@ -79,7 +79,6 @@ function CommunityPosts() {
         postId: selectedPostId,
         content: commentText,
       });
-      console.log("Server response:", response);
       showToast("Comment added successfully!", "success", "💬");
       setShowModal(false);
       setCommentText("");
@@ -87,6 +86,16 @@ function CommunityPosts() {
     } catch (error) {
       console.error("Error adding comment:", error);
       showToast("Error adding comment. Please try again.", "error", "❌");
+    }
+  };
+
+  // Image handling functions - simplified like in code 1
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewPostImage(file);
+      // Create a preview URL for the image
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -106,21 +115,46 @@ function CommunityPosts() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5254/api/Post", {
-        userId,
-        title: newPostTitle,
-        content: newPostContent,
+      setUploadingPost(true);
+      
+      // Create FormData object to send the file and other post data
+      const formData = new FormData();
+      formData.append('userId', userId);
+      formData.append('title', newPostTitle);
+      formData.append('content', newPostContent);
+      
+      // Add the image file if it exists - simplified approach like in code 1
+      if (newPostImage) {
+        formData.append('image', newPostImage);
+      }
+      
+      // Send the formData to your backend API
+      const response = await axios.post("http://localhost:5254/api/Post", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
-      console.log("Server response:", response);
+      
       showToast("Post created successfully!", "success", "✍️");
       setShowCreatePostModal(false);
+      // Reset form fields
       setNewPostTitle("");
       setNewPostContent("");
+      setNewPostImage(null);
+      setImagePreview(null);
       fetchPosts();
     } catch (error) {
       console.error("Error creating post:", error);
       showToast("Failed to create post. Please try again.", "error", "❌");
+    } finally {
+      setUploadingPost(false);
     }
+  };
+
+  // Clear image preview and file
+  const handleRemoveImage = () => {
+    setNewPostImage(null);
+    setImagePreview(null);
   };
 
   if (loading) return <p>Loading posts...</p>;
@@ -175,6 +209,14 @@ function CommunityPosts() {
                   </div>
                 </div>
                 <p className="post-text">Content: {post.content}</p>
+                
+                {/* Display post image if available */}
+                {post.image && (
+                  <div className="post-image-container">
+                    <img src={post.image} alt="Post" className="post-image" />
+                  </div>
+                )}
+                
                 <div className="post-stats">
                   <span className="post-time">
                     Created At: {new Date(post.createdAt).toLocaleDateString()}
@@ -237,7 +279,7 @@ function CommunityPosts() {
         handleAddComment={handleAddComment}
       />
       
-      {/* Create Post Modal */}
+      {/* Create Post Modal - Simplified like in code 1 */}
       {showCreatePostModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -253,10 +295,50 @@ function CommunityPosts() {
               placeholder="Write your post content here..."
               value={newPostContent}
               onChange={(e) => setNewPostContent(e.target.value)}
+              className="post-textarea"
             />
+            
+            {/* Image upload section - simplified like in code 1 */}
+            <div className="image-upload-section">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="image-upload-input"
+              />
+              
+              {/* Image preview */}
+              {imagePreview && (
+                <div className="image-preview-container">
+                  <img src={imagePreview} alt="Preview" className="image-preview" style={{ width: "300px" }} />
+                  <button 
+                    onClick={handleRemoveImage}
+                    className="remove-image-btn"
+                  >
+                    Remove Image
+                  </button>
+                </div>
+              )}
+            </div>
+            
             <div className="modal-actions">
-              <button onClick={handleCreatePost}>Create Post</button>
-              <button onClick={() => setShowCreatePostModal(false)}>
+              <button 
+                onClick={handleCreatePost}
+                disabled={uploadingPost}
+                className="create-btn"
+              >
+                {uploadingPost ? "Creating..." : "Create Post"}
+              </button>
+              <button 
+                onClick={() => {
+                  setShowCreatePostModal(false);
+                  setNewPostTitle("");
+                  setNewPostContent("");
+                  setNewPostImage(null);
+                  setImagePreview(null);
+                }}
+                className="cancel-btn"
+              >
                 Cancel
               </button>
             </div>

@@ -28,7 +28,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // Thêm state cho Confirm Password
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ function LoginPage() {
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
         setHasToken(true);
-        navigate("/"); // Chuyển hướng về trang home khi đăng nhập
+        navigate("/");
         toast.success("Login successful!");
       } else {
         setError("Email or Password Incorrect. Please try again.");
@@ -81,7 +81,7 @@ function LoginPage() {
     }
   };
 
-  // Xử lý đăng ký
+  // Xử lý đăng ký (thêm kiểm tra Confirm Password)
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -129,15 +129,16 @@ function LoginPage() {
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
         setHasToken(true);
-        navigate("/profile"); // Chuyển hướng đến trang profile khi đăng ký
-        toast.success("Registration successful!");
+        navigate("/");
       } else {
         toast.success(
           "A confirmation email has been sent to your email address. Please check your inbox."
         );
       }
     } catch (error) {
-      setError(error.response?.data?.message);
+      setError(
+        error.response?.data?.message
+      );
     } finally {
       setLoading(false);
     }
@@ -168,11 +169,10 @@ function LoginPage() {
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
         setHasToken(true);
-        // Chuyển hướng dựa trên signIn: đăng nhập về "/" và đăng ký về "/profile"
-        navigate(signIn ? "/" : "/profile");
         toast.success(
           `${signIn ? "Google login" : "Google registration"} successful!`
         );
+        navigate("/");
       } else {
         setError(
           `Google ${
@@ -256,7 +256,10 @@ function LoginPage() {
                 required
                 minLength={6}
               />
-              <Components.Anchor href="/forgotPassword">
+              <Components.Anchor
+                href="/forgotPassword
+              "
+              >
                 Forgot your password?
               </Components.Anchor>
               {error && <p style={{ color: "red" }}>{error}</p>}

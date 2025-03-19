@@ -3,10 +3,11 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  font-family: "Arial", sans-serif;
+  font-family: 'Nunito', 'Arial', sans-serif;
   background-color: #fcf8ff;
   position: relative;
 }
+
 .pregnancy-container::before {
   content: "";
   position: absolute;
@@ -22,7 +23,7 @@
 }
 
 .pregnancy-title {
-  color: #ff69b4;
+  color: #e83e8c;
   text-align: center;
   margin-bottom: 30px;
   font-size: 32px;
@@ -41,14 +42,14 @@
   display: block;
   width: 200px;
   height: 4px;
-  background: linear-gradient(to right, #ff69b4, #87cefa);
+  background: linear-gradient(to right, #e83e8c, #6f42c1);
   margin: 10px auto 0;
   border-radius: 2px;
 }
 
 /* Button styles */
 .create-profile-button {
-  background-color: #ff69b4;
+  background-color: #e83e8c;
   color: white;
   padding: 12px 28px;
   border: none;
@@ -58,7 +59,7 @@
   margin: 0 auto 30px;
   display: block;
   transition: all 0.3s;
-  box-shadow: 0 4px 8px rgba(255, 105, 180, 0.3);
+  box-shadow: 0 4px 8px rgba(232, 62, 140, 0.3);
   position: relative;
   overflow: hidden;
   font-weight: bold;
@@ -70,9 +71,9 @@
 }
 
 .create-profile-button:hover {
-  background-color: #e05a9e;
+  background-color: #c2185b;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(255, 105, 180, 0.4);
+  box-shadow: 0 6px 12px rgba(232, 62, 140, 0.4);
 }
 
 /* Grid layout for profiles */
@@ -85,16 +86,13 @@
 /* Profile card styling */
 .profile-card {
   background-color: #fff;
-  border-radius: 15px;
+  border-radius: 10px;
   padding: 25px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
   position: relative;
   overflow: hidden;
   border: 1px solid #f0f0f0;
-  background-position: bottom right;
-  background-repeat: no-repeat;
-  background-size: 100px;
 }
 
 .profile-card::before {
@@ -104,7 +102,7 @@
   left: 0;
   width: 100%;
   height: 8px;
-  background: linear-gradient(to right, #ff69b4, #87cefa);
+  background: linear-gradient(to right, #000000, #000000);
 }
 
 .profile-card:hover {
@@ -113,7 +111,7 @@
 }
 
 .profile-name {
-  color: #333;
+  color: #000000;
   margin-bottom: 20px;
   font-size: 22px;
   border-bottom: 2px dashed #ffcce5;
@@ -129,7 +127,7 @@
   font-size: 24px;
 }
 
-/* Timeline styling for pregnancy dates */
+/* Profile field styling */
 .profile-field {
   margin-bottom: 18px;
   position: relative;
@@ -145,22 +143,24 @@
   margin-bottom: 5px;
 }
 
-/* Baby images for timeline */
-.profile-field:nth-child(2) {
-  margin-bottom: 40px;
-}
-
+/* Icons for timeline */
 .profile-field:nth-child(2)::before {
   content: "";
   position: absolute;
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 30px;
-  height: 30px;
-  background-image: url("https://static.vecteezy.com/system/resources/previews/020/948/270/non_2x/due-date-icon-vector.jpg");
-  background-size: contain;
+  width: 32px;
+  height: 32px;
+  background-color: #f8f8f8;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23e83e8c' d='M448 96h-64V48c0-26.5-21.5-48-48-48H176c-26.5 0-48 21.5-48 48v48H64c-35.3 0-64 28.7-64 64v256c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64zM160 48c0-8.8 7.2-16 16-16h160c8.8 0 16 7.2 16 16v48H160V48zm192 108c23.8 0 52.7 29.3 56 71.4 3.3 42.1-26.3 74.6-56 74.6-29.7 0-59.3-32.5-56-74.6 3.3-42.1 32.2-71.4 56-71.4z'%3E%3C/path%3E%3C/svg%3E");
+  background-position: center;
   background-repeat: no-repeat;
+  background-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile-field:nth-child(3)::before {
@@ -169,27 +169,61 @@
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 60px;
-  height: 60px;
-  background-image: url("https://static.vecteezy.com/system/resources/previews/005/205/739/non_2x/cute-happiness-baby-cartoon-character-free-vector.jpg");
-  background-size: contain;
+  width: 32px;
+  height: 32px;
+  background-color: #f8f8f8;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23e83e8c' d='M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 96c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 96c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 96c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48h-96V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H96C60.7 64 32 92.7 32 128v32h384v-32c0-35.3-28.7-64-64-64z'%3E%3C/path%3E%3C/svg%3E");
+  background-position: center;
   background-repeat: no-repeat;
-  margin-left: -20px;
+  background-size: 16px;
 }
 
-/* Timeline connecting the dates */
+.profile-field:nth-child(4)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background-color: #f8f8f8;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23e83e8c' d='M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z'%3E%3C/path%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
+
+.profile-field:nth-child(5)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background-color: #f8f8f8;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23e83e8c' d='M320.2 243.8l-49.7 99.4c-6 12.1-23.4 11.7-28.9-.6l-56.9-126.3-30 71.7H60.6l182.5 186.5c7.1 7.3 18.6 7.3 25.7 0L451.4 288H342.3l-22.1-44.2zM473.7 73.9l-2.4-2.5c-51.5-52.6-135.8-52.6-187.4 0L256 100l-27.9-28.5c-51.5-52.7-135.9-52.7-187.4 0l-2.4 2.4C-10.4 123.7-12.5 203 31 256h102.4l35.9-86.2c5.4-12.9 23.6-13.2 29.4-.4l58.2 129.3 49-97.9c5.9-11.8 22.7-11.8 28.6 0l27.6 55.2H481c43.5-53 41.4-132.3-7.3-182.1z'%3E%3C/path%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
+
+/* Timeline connector */
 .profile-field:nth-child(2)::after {
   content: "";
   position: absolute;
   left: 15px;
   top: 100%;
-  width: 3px;
+  width: 2px;
   height: 40px;
   background-color: transparent;
   background-image: repeating-linear-gradient(
     to bottom,
-    #ff69b4 0px,
-    #ff69b4 5px,
+    #e83e8c 0px,
+    #e83e8c 5px,
     transparent 5px,
     transparent 10px
   );
@@ -259,18 +293,74 @@
   }
 }
 
-/* Hover effects */
-.status-ongoing:hover,
-.status-other:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+/* Action button styling - updated to match design reference */
+.profile-actions {
+  display: flex;
+  margin-top: 20px;
+  gap: 10px;
 }
 
-/* Loading and error messages */
+/* Updated Edit button style */
+.edit-button {
+  flex: 1;
+  background-color: #6f42c1; /* Secondary color from design reference */
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-button:hover {
+  background-color: #5e35b1;
+  box-shadow: 0 4px 8px rgba(111, 66, 193, 0.3);
+}
+
+.edit-button::before {
+  content: "✏️";
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+/* Updated Delete button style */
+.delete-button {
+  flex: 1;
+  background-color: #343a40; /* Neutral dark color from design reference */
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-button:hover {
+  background-color: #212529;
+  box-shadow: 0 4px 8px rgba(52, 58, 64, 0.3);
+}
+
+.delete-button::before {
+  content: "🗑️";
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+/* Loading and error states */
 .loading-message {
   text-align: center;
   padding: 30px;
-  background-color: #f9f9f9;
+  background-color: #fff;
   border-radius: 12px;
   margin: 20px auto;
   color: #666;
@@ -292,8 +382,8 @@
   background-color: #fff5f5;
   border-radius: 12px;
   margin: 20px auto;
-  color: #d32f2f;
-  border-left: 4px solid #d32f2f;
+  color: #e53e3e;
+  border-left: 4px solid #e53e3e;
   max-width: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
@@ -318,51 +408,7 @@
   margin-bottom: 10px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .profiles-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-card {
-    padding: 20px;
-  }
-}
-
-/* Edit button styling */
-.edit-button {
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #4e9af1;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.edit-button:hover {
-  background-color: #3a7bc8;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.edit-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(78, 154, 241, 0.3);
-}
-
-.edit-button::before {
-  content: "✏️";
-  margin-right: 6px;
-  font-size: 14px;
-}
-
-/* Modal Styles */
+/* Modal styling */
 .preg-modal-overlay {
   position: fixed;
   top: 0;
@@ -404,7 +450,7 @@
   align-items: center;
   padding: 20px 24px;
   border-bottom: 1px solid #eaeaea;
-  background-color: #f9f9f9;
+  background-color: #f8f9fa;
   border-radius: 12px 12px 0 0;
 }
 
@@ -441,7 +487,7 @@
   padding: 24px;
 }
 
-/* Form Styles */
+/* Form styling */
 .form-group {
   margin-bottom: 20px;
 }
@@ -466,8 +512,8 @@
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #4e9af1;
-  box-shadow: 0 0 0 2px rgba(78, 154, 241, 0.2);
+  border-color: #e83e8c;
+  box-shadow: 0 0 0 2px rgba(232, 62, 140, 0.2);
   outline: none;
 }
 
@@ -495,110 +541,57 @@
 
 .save-button {
   padding: 10px 24px;
-  background-color: #f2abff;
+  background-color: #e83e8c;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 500;
   transition: all 0.3s;
 }
 
 .save-button:hover {
-  background-color: #f2abff;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive adjustments for modal */
-@media (max-width: 600px) {
-  .preg-modal-container {
-    width: 95%;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  .cancel-button, 
-  .save-button {
-    width: 100%;
-    margin-top: 8px;
-  }
-}
-
-/* Delete button styling */
-.delete-button {
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #f5646c;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 10px;
-}
-
-.delete-button:hover {
-  background-color: #e04c53;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.delete-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(245, 100, 108, 0.3);
-}
-
-.delete-button::before {
-  content: "🗑️";
-  margin-right: 6px;
-  font-size: 14px;
-}
-
-/* Profile actions container */
-.profile-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-start;
-}
-
-/* Delete modal specific styles */
-.preg-delete-modal {
-  max-width: 450px;
-}
-
-.delete-warning {
-  color: #333;
-  font-size: 16px;
-  line-height: 1.5;
-  margin-bottom: 20px;
-  padding: 15px;
-  background-color: #fff8f8;
-  border-left: 4px solid #f5646c;
-  border-radius: 4px;
+  background-color: #c2185b;
+  box-shadow: 0 4px 8px rgba(232, 62, 140, 0.3);
 }
 
 .delete-confirm-button {
   padding: 10px 24px;
-  background-color: #f5646c;
+  background-color: #dc3545;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 500;
   transition: all 0.3s;
 }
 
 .delete-confirm-button:hover {
-  background-color: #e04c53;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #c82333;
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.delete-warning {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+  .profiles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card {
+    padding: 20px;
+  }
+  
+  .profile-actions {
+    flex-direction: column;
+  }
+  
+  .edit-button, .delete-button {
+    margin-bottom: 10px;
+  }
 }

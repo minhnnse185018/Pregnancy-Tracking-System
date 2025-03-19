@@ -1,13 +1,12 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import AboutUs from "./components/Customer/AboutUs/AboutUs";
 import { AuthProvider } from "./components/Customer/AuthContext";
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import BookAppointment from "./components/Customer/BookAppointment/BookAppointment";
-import ViewAppointment from "./components/Customer/BookAppointment/ViewAppointment";
 import Contact from "./components/Customer/Contact/Contact";
 import UserProfile from "./components/Customer/CustomerProfile/CustomerProfile";
 import FetalGrowthTracker from "./components/Customer/FetalGrowthTracker/FetalGrowthTracker";
@@ -17,7 +16,6 @@ import InternalLoginPage from "./components/Customer/Login/InternalLoginPage";
 import LoginPage from "./components/Customer/Login/LoginPage";
 import ResetPasswordPage from "./components/Customer/Login/resetPassword";
 import MembershipPage from "./components/Customer/Member/MembershipPage";
-import PaymentReturnHandler from "./components/Customer/Member/PaymentReturnHandler";
 import Navbarr from "./components/Customer/Navbarr/Navbarr";
 import CreatePregnancyProfile from "./components/Customer/PregnancyProfile/CreatePregnancyProfile";
 import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
@@ -49,6 +47,9 @@ import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
+import PaymentReturnHandler from "./components/Customer/Member/PaymentReturnHandler";
+import MedicalAppointments from "./components/Customer/BookAppointment/viewAppointment";
+import RegisterAccount from "./components/Customer/Login/RegisterAccout";
 function App() {
   return (
     <div>
@@ -78,21 +79,18 @@ function App() {
               </>
             }
           />
-          <Route path="/appointment" element={<CustomerPrivateRoute />}>
-            <Route
-              path=""
-              element={
-                <>
-                  <Navbarr />
-                  <BookAppointment />
-                  <Footer />
-                </>
-              }
-            />
-          </Route>
-          <Route path="/blog" element={<CustomerPrivateRoute />}>
           <Route
-            path=""
+            path="/appointment"
+            element={
+              <>
+                <Navbarr />
+                <BookAppointment />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/blog"
             element={
               <>
                 <Navbarr />
@@ -101,7 +99,6 @@ function App() {
               </>
             }
           />
-          </Route>
           <Route
             path="/contact"
             element={
@@ -112,9 +109,8 @@ function App() {
               </>
             }
           />
-          <Route path="/membership" element={<CustomerPrivateRoute />}>
           <Route
-            path=""
+            path="/membership"
             element={
               <>
                 <Navbarr />
@@ -123,7 +119,6 @@ function App() {
               </>
             }
           />
-          </Route>
           <Route
             path="/payment-success"
             element={
@@ -144,9 +139,8 @@ function App() {
               </>
             }
           />
-          <Route path="/growth-tracker" element={<CustomerPrivateRoute />}>
           <Route
-            path=""
+            path="/growth-tracker"
             element={
               <>
                 <Navbarr />
@@ -155,7 +149,6 @@ function App() {
               </>
             }
           />
-          </Route>
           <Route
             path="/health-tips"
             element={
@@ -246,12 +239,20 @@ function App() {
           />
 
           <Route
-            path="/viewappointment"
+            path="/viewAppointment"
             element={
               <>
                 <Navbarr />
-                <ViewAppointment />/
+                <MedicalAppointments />/
                 <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/verify-account"
+            element={
+              <>
+                <RegisterAccount />/
               </>
             }
           />
