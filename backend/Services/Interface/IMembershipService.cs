@@ -1,6 +1,6 @@
 ﻿using backend.Dtos.Memberships;
 
-namespace backend.Services.Implementation
+namespace backend.Services.Interface
 {
     public interface IMembershipService
     {
@@ -8,5 +8,6 @@ namespace backend.Services.Implementation
         Task<MembershipDto> ActivateMembershipAsync(int membershipId);
         Task<List<MembershipDto>> GetMembershipsByUserIdAsync(int userId);
         Task<bool> IsMembershipActiveAsync(int userId);
+        Task CleanupExpiredMembershipsAsync();
     }
 }

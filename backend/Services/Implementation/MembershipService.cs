@@ -65,5 +65,15 @@ namespace backend.Services.Implementation
         {
             return await _membershipRepository.IsMembershipActiveAsync(userId);
         }
+        public async Task CleanupExpiredMembershipsAsync()
+        {
+            var memberships = await _membershipRepository.GetAllMembershipsAsync();
+            var expiredMemberships = memberships.Where(m => m.Status == "Active" && m.EndDate <= DateTime.UtcNow);
+
+            foreach (var membership in expiredMemberships)
+            {
+                await _membershipRepository.DeleteMembershipAsync(membership.Id);
+            }
+        }
     }
 }
