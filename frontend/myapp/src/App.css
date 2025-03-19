@@ -1,0 +1,84 @@
+/* Đặt cursor mặc định và ngăn chọn text trên toàn ứng dụng */
+* {
+  cursor: default; /* Cursor mặc định là mũi tên */
+  user-select: none; /* Ngăn chọn text */
+  -webkit-user-select: none; /* Hỗ trợ Chrome/Safari */
+  -moz-user-select: none; /* Hỗ trợ Firefox */
+  -ms-user-select: none; /* Hỗ trợ IE/Edge */
+}
+
+/* Đặt lại cursor thành pointer cho các phần tử tương tác */
+a,
+button,
+[role="button"],
+[type="button"],
+.nav-link,
+.feature-link,
+.tracking-link {
+  cursor: pointer !important; /* Đảm bảo con trỏ tay */
+  text-decoration: none; /* Bỏ gạch chân mặc định */
+  color: inherit; /* Giữ màu gốc */
+  
+}
+
+/* Kiểm soát hover để tránh hiệu ứng không mong muốn */
+a:hover,
+button:hover,
+.nav-link:hover,
+.feature-link:hover,
+.tracking-link:hover {
+  text-decoration: none !important; /* Không thêm gạch chân */
+  color: inherit; /* Giữ màu, tránh nhấp nháy */
+  background-color: transparent; /* Tránh nền thay đổi */
+}
+
+/* Ngoại lệ cho các phần tử cần chọn text (input, textarea) */
+input,
+textarea,
+select {
+  cursor: text !important; /* Cursor text cho trường nhập liệu */
+  user-select: text !important; /* Cho phép chọn text */
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+/* Định dạng chung cho ứng dụng */
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
