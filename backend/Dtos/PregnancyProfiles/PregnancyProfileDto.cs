@@ -8,7 +8,7 @@ namespace backend.Dtos.PregnancyProfiles
         public int Id { get; set; }
         public int UserId { get; set; }
         public string UserName { get; set; } = null!;
-
+        public string Name { get; set; } = null!;
 
         public DateTime ConceptionDate { get; set; }
 

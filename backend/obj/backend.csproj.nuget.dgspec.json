@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\backend.csproj": {}
+    "F:\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj": {}
   },
   "projects": {
-    "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\backend.csproj": {
+    "F:\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
+        "projectUniqueName": "F:\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\FPT University\\Ki5_HocNVH\\SWP391\\ProjectSWP\\Pregnancy-Tracking-System\\backend\\obj\\",
+        "projectPath": "F:\\SWP\\Pregnancy-Tracking-System\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\TAI LOC\\.nuget\\packages\\",
+        "outputPath": "F:\\SWP\\Pregnancy-Tracking-System\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\TAI LOC\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -169,7 +169,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.406/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.407/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
