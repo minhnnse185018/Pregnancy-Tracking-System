@@ -18,14 +18,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
-        options.SerializerSettings.DateFormatString = "yyyy-MM-dd";
+        options.SerializerSettings.DateFormatString = "yyyy-MM-dd'T'HH:mm:ss";
     });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add AutoMapper
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+
+// Improve AutoMapper registration
+builder.Services.AddAutoMapper(cfg => {
+    cfg.AddProfile<MappingProfile>();
+}, typeof(Program).Assembly);
 
 // Configure Database
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
@@ -73,12 +77,20 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<AppointmentReminderService>();
 builder.Services.AddHostedService<ScheduledEmailService>();
 builder.Services.AddScoped<IFAQRepository, FAQRepository>();
+builder.Services.AddScoped<IReminderRepository, ReminderRepository>(); // Add this line
 builder.Services.AddScoped<IReminderServices, ReminderServices>();
 builder.Services.AddScoped<RemiderServicesJob>();
 
 // Register GrowthAlert services
 builder.Services.AddScoped<IGrowthAlertRepository, GrowthAlertRepository>();
 builder.Services.AddScoped<IGrowthAlertService, GrowthAlertService>();
+
+// Add Revenue tracking services
+builder.Services.AddScoped<IRevenueRepository, RevenueRepository>();
+builder.Services.AddScoped<IRevenueService, RevenueService>();
+
+builder.Services.AddScoped<ICloudinaryServices, CloudinaryServices>();
+
 builder.Services.AddQuartz(q =>
 {
     var jobKey = new JobKey("ReminderServicesJob");

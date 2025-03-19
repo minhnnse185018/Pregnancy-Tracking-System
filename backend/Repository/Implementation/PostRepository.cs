@@ -3,6 +3,8 @@ using backend.Data;
 using backend.Dtos.Posts;
 using backend.Models;
 using backend.Repository.Interface;
+using backend.Services;
+using backend.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository.Implementation
@@ -11,11 +13,13 @@ namespace backend.Repository.Implementation
     {
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
+        private readonly ICloudinaryServices _imageService;
 
-        public PostRepository(ApplicationDBContext context, IMapper mapper)
+        public PostRepository(ApplicationDBContext context, IMapper mapper, ICloudinaryServices imageService)
         {
             _context = context;
             _mapper = mapper;
+            _imageService = imageService;
         }
 
         public async Task<List<PostDto>> GetAllPostsAsync()
@@ -59,10 +63,25 @@ namespace backend.Repository.Implementation
 
         public async Task<int> CreatePostAsync( CreatePostDto postDto)
         {
-            var post = _mapper.Map<Post>(postDto);
-            post.CreatedAt = DateTime.Now;
-            post.UpdatedAt = DateTime.Now;
-            post.Status = "active";
+            string img= null;
+            if(postDto.Image != null && postDto.Image.Length > 0)
+            {
+                using (var stream = postDto.Image.OpenReadStream())
+                {
+                    img= await _imageService.UploadImageAsync(postDto.Image);
+                }
+            }
+            var post = new Post
+            {
+                Title = postDto.Title,
+                Content = postDto.Content,
+                Image = img,
+                UserId = postDto.UserId,
+                Status = "Active",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+            
 
             await _context.Posts.AddAsync(post);
             
@@ -75,7 +94,17 @@ namespace backend.Repository.Implementation
             var post = await _context.Posts.FindAsync(id);
             if (post == null) return null;
 
-            _mapper.Map(postDto, post);
+            string img= null;
+            if(postDto.Image != null && postDto.Image.Length > 0)
+            {
+                using (var stream = postDto.Image.OpenReadStream())
+                {
+                    img= await _imageService.UploadImageAsync(postDto.Image);
+                }
+            }
+            post.Title = postDto.Title;
+            post.Content = postDto.Content;
+            post.Image = img;
             post.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();

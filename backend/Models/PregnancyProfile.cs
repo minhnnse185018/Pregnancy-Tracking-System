@@ -8,7 +8,7 @@ namespace backend.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        
+        public string Name { get; set; }
         public DateTime ConceptionDate { get; set; }
         public DateTime DueDate { get; set; }
         

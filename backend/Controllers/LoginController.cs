@@ -17,7 +17,7 @@ using backend.Dtos;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Google.Apis.Auth;
-//using Google.Apis.Auth;
+using backend.Services.Implementation;
 
 namespace backend.Controllers
 {
@@ -28,12 +28,18 @@ namespace backend.Controllers
         private readonly IUserRepository _userRepository;
         private readonly JwtService _jwtService;
         private readonly IMapper _mapper;
+        private readonly IMembershipService _membershipService; // Add this field
 
-        public LoginController(IUserRepository userRepository, JwtService jwtService, IMapper mapper)
+        public LoginController(
+            IUserRepository userRepository, 
+            JwtService jwtService, 
+            IMapper mapper,
+            IMembershipService membershipService) // Add this parameter
         {
             _userRepository = userRepository;
             _jwtService = jwtService;
             _mapper = mapper;
+            _membershipService = membershipService; // Initialize the field
         }
 
         [HttpPost]
@@ -46,12 +52,16 @@ namespace backend.Controllers
             }
 
             var token = _jwtService.GenerateToken(user);
+            
+            // Check if user has active membership
+            var hasMembership = await _membershipService.IsMembershipActiveAsync(user.Id);
 
             return Ok(new 
             { 
                 token = token, 
                 userID = user.Id, 
-                userRole=user.UserType
+                userRole = user.UserType,
+                hasMembership = hasMembership // Add this property to the response
             });
         }
 
@@ -134,11 +144,16 @@ namespace backend.Controllers
                     {
                         // Generate token
                         var token = _jwtService.GenerateToken(user);
+                        
+                        // Check if user has active membership
+                        var hasMembership = await _membershipService.IsMembershipActiveAsync(user.Id);
+                        
                         return Ok(new 
                         { 
                             token,
                             userID = user.Id,
-                            userRole = user.UserType
+                            userRole = user.UserType,
+                            hasMembership = hasMembership // Add this to the response
                         });
                     }
                 }
@@ -206,12 +221,16 @@ namespace backend.Controllers
                 userDto = await _userRepository.GetUserByEmailAsync(email);
                 // Generate JWT token
                 var token = _jwtService.GenerateToken(userDto);
+                
+                // Check if user has active membership
+                var hasMembership = await _membershipService.IsMembershipActiveAsync(userDto.Id);
 
                 return Ok(new
                 {
                     token = token,
-                    user = userDto.Id,
-                    userRole= userDto.UserType
+                    userID = userDto.Id,
+                    userRole= userDto.UserType,
+                    hasMembership = hasMembership // Add this to the response
                 });
             }
             catch (Exception ex)

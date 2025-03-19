@@ -10,9 +10,10 @@ namespace backend.Repository.Interface
         Task<List<Appointment>> GetAllAppointmentsAsync(); // Thêm để lấy tất cả
         Task<List<Appointment>> GetAppointmentsByStatusAsync(string status); // Thêm để lấy theo Status
         Task<bool> CancelAppointmentAsync(int id);
-        Task<Appointment?> UpdateAppointmentAsync(int id, AppointmentDto appointmentDto);
+        Task<Appointment?> UpdateAppointmentAsync(UpdateAppointmentDto appointment);
         Task<List<Appointment>> GetUpcomingAppointmentsAsync(DateTime reminderTime);
         Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId);
+        Task<bool> DeleteAppointmentAsync(int id);
     }
 
 }
