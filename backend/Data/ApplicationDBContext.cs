@@ -216,10 +216,11 @@ namespace backend.Data
                 {
                     Id = 1,
                     UserId = 1,
-                    Name = "First Pregnancy",
-                    ConceptionDate = DateTime.Now.AddDays(-90),
-                    DueDate = DateTime.Now.AddDays(180),
-                    CreatedAt = DateTime.Now
+                    Name = "Default Pregnancy", // Add this missing required field
+                    ConceptionDate = DateTime.Parse("2024-12-18"),
+                    DueDate = DateTime.Parse("2025-09-14"),
+                    CreatedAt = DateTime.Parse("2025-03-18"),
+                    PregnancyStatus = "Active"
                 }
             );
 
