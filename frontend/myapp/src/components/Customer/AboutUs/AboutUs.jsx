@@ -1,6 +1,6 @@
 import React from "react";
+
 export default function AboutUs() {
-  // Define styles as JavaScript objects
   const heroSection = {
     padding: "160px 0",
   };
@@ -85,11 +85,9 @@ export default function AboutUs() {
 
   return (
     <div>
-      {/* Hero Section */}
       <section style={heroSection}>
         <div className="container">
           <div className="row align-items-center">
-            {/* Image Section */}
             <div className="col-md-6">
               <img
                 src="images/about-mainpicture.png"
@@ -97,51 +95,48 @@ export default function AboutUs() {
                 style={heroImage}
               />
             </div>
-            {/* Text Section */}
             <div className="col-md-6">
               <h2 style={heroHeading} className="mb-4">
-                Về Chúng Tôi
+                About Us
               </h2>
               <p style={heroText}>
-                <strong>Mom & Baby</strong> là người bạn đồng hành đáng tin cậy
-                dành cho các bà mẹ mang thai và chăm sóc em bé. Chúng tôi cung
-                cấp những thông tin hữu ích, dịch vụ chất lượng và cộng đồng
-                thân thiện để giúp hành trình làm mẹ của bạn trở nên dễ dàng và
-                ý nghĩa hơn.
+                <strong>Mom & Baby</strong> is a trusted companion for expectant
+                mothers and baby care. We provide useful information, quality
+                services, and a friendly community to make your motherhood
+                journey easier and more meaningful.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
       <section style={servicesSection}>
         <div className="container">
-          <h2 style={servicesHeading}>Tại Sao Chọn Chúng Tôi?</h2>
+          <h2 style={servicesHeading}>Why Choose Us?</h2>
           <div className="row">
             {[
               {
-                title: "Thông Tin Hữu Ích",
+                title: "Useful Information",
                 description:
-                  "Cung cấp kiến thức về mang thai, sinh nở và chăm sóc bé một cách khoa học và cập nhật nhất.",
+                  "Providing scientific and up-to-date knowledge about pregnancy, childbirth, and baby care.",
                 image: "images/home-icon5.png",
               },
               {
-                title: "Theo Dõi Thai Kỳ",
+                title: "Pregnancy Tracking",
                 description:
-                  "Công cụ theo dõi sự phát triển của thai nhi, nhắc nhở lịch khám thai và tiêm phòng.",
+                  "Tools to track fetal development, remind prenatal check-ups, and vaccinations.",
                 image: "images/home-icon3.png",
               },
               {
-                title: "Cộng Đồng Mẹ Bầu",
+                title: "Mom Community",
                 description:
-                  "Nơi chia sẻ kinh nghiệm, tâm sự và kết nối với các bà mẹ khác trong hành trình làm mẹ.",
+                  "A place to share experiences, talk, and connect with other mothers on their motherhood journey.",
                 image: "images/home-icon1.png",
               },
               {
-                title: "Dịch Vụ Tư Vấn",
+                title: "Consultation Services",
                 description:
-                  "Hỗ trợ tư vấn từ các chuyên gia về dinh dưỡng, sức khỏe và tâm lý cho mẹ và bé.",
+                  "Expert advice on nutrition, health, and psychology for mothers and babies.",
                 image: "images/home-icon2.png",
               },
             ].map((service, index) => (
@@ -163,15 +158,14 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* Statistics Section */}
       <section style={statisticsSection}>
         <div className="container">
           <div className="row text-center">
             {[
-              { count: "100,000+", label: "Thành Viên Hài Lòng" },
-              { count: "50,000+", label: "Bài Viết Hữu Ích" },
-              { count: "200,000+", label: "Chủ Đề Thảo Luận" },
-              { count: "24/7", label: "Hỗ Trợ Tư Vấn" },
+              { count: "100,000+", label: "Satisfied Members" },
+              { count: "50,000+", label: "Useful Articles" },
+              { count: "200,000+", label: "Discussion Topics" },
+              { count: "24/7", label: "Consultation Support" },
             ].map((stat, index) => (
               <div key={index} className="col-sm-3" style={statItem}>
                 <h2 style={statNumber}>{stat.count}</h2>

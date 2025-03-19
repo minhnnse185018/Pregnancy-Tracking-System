@@ -1,290 +1,692 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./viewAppointment.css";
-import axios from "axios";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const MedicalAppointments = () => {
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingAppointment, setEditingAppointment] = useState({
-    appointmentId: "",
-    appointmentDate: "",
-    title: "",
-    description: "",
-  });
+const ViewAppointment = () => {
   const navigate = useNavigate();
+  const [appointments, setAppointments] = useState([]);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    id: '',
+    title: '',
+    appointmentDate: '',
+    selectedSlot: '',
+    description: '',
+    status: 'Scheduled',
+  });
+  const [message, setMessage] = useState('');
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [statusOptions, setStatusOptions] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const appointmentsPerPage = 5; // Number of appointments per page
 
   useEffect(() => {
     fetchAppointments();
+    fetchStatusOptions();
   }, []);
 
   const fetchAppointments = async () => {
-    setLoading(true);
-    setError(null);
-    const userID = sessionStorage.getItem("userID");
-    if (!userID) {
-      setError("User ID not found. Please log in.");
-      setLoading(false);
+    try {
+      const userId = sessionStorage.getItem('userID');
+      if (!userId) {
+        setMessage('Please log in to view your prenatal appointments.');
+        return;
+      }
+
+      const response = await axios.get(`http://localhost:5254/api/appointments/get/${userId}`, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (Array.isArray(response.data)) {
+        setAppointments(response.data);
+      } else {
+        setAppointments([]);
+        setMessage('No appointments found.');
+      }
+    } catch (error) {
+      setMessage(`Error fetching appointments: ${error.message}`);
+    }
+  };
+
+  const fetchStatusOptions = async () => {
+    try {
+      const response = await axios.get('http://localhost:5254/api/appointments/statuses', {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        setStatusOptions(response.data); // e.g., ["Scheduled", "Reminded"]
+      } else {
+        setStatusOptions(['Scheduled', 'Reminded']); // Fallback
+        setMessage('No valid statuses from API, using defaults: Scheduled, Reminded.');
+      }
+    } catch (error) {
+      setStatusOptions(['Scheduled', 'Reminded']); // Fallback
+      setMessage(`Error fetching status options: ${error.message}. Using defaults: Scheduled, Reminded.`);
+    }
+  };
+
+  const handleViewClick = (appointment) => {
+    setSelectedAppointment(appointment);
+    setShowViewModal(true);
+  };
+
+  const handleEditClick = (appointment) => {
+    if (!appointment || !appointment.id || !appointment.appointmentDate) {
+      setMessage('Invalid appointment selected.');
       return;
     }
-    try {
-      const response = await axios.get(
-        `http://localhost:5254/api/appointments/get/${userID}`
-      );
-      setAppointments(response.data);
-    } catch (err) {
-      setError(err.message);
-      setAppointments([]);
-    } finally {
-      setLoading(false);
+    setSelectedAppointment(appointment);
+    const dateTime = new Date(appointment.appointmentDate);
+    if (isNaN(dateTime.getTime())) {
+      setMessage('Invalid appointment date format.');
+      return;
     }
-  };
+    const formattedDate = dateTime.toISOString().split('T')[0];
+    const hours = dateTime.getUTCHours().toString().padStart(2, '0');
+    const minutes = dateTime.getUTCMinutes().toString().padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}`;
 
-  const formatDate = (dateString) => {
-    const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const formatDateForInput = (dateString) => {
-    const date = new Date(dateString);
-    return date.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
-  };
-
-  const handleCreateAppointment = () => {
-    console.log("Book Appointment clicked");
-    navigate("/appointment");
-  };
-
-  const handleEditAppointment = (appointment) => {
-    setEditingAppointment({
-      appointmentId: appointment.appointmentId,
-      userId: appointment.userId,
-      appointmentDate: formatDateForInput(appointment.appointmentDate),
-      title: appointment.title,
-      description: appointment.description,
+    setEditFormData({
+      id: appointment.id,
+      title: appointment.title || '',
+      appointmentDate: formattedDate,
+      selectedSlot: formattedTime,
+      description: appointment.description || '',
+      status: appointment.status || statusOptions[0] || 'Scheduled',
     });
-    setIsEditModalOpen(true);
-  };
-
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
+    setShowViewModal(false);
+    setShowEditModal(true);
   };
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditingAppointment((prev) => ({
+    setEditFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSaveEdit = async (e) => {
+  const handleSlotClick = (slot) => {
+    setEditFormData((prev) => ({
+      ...prev,
+      selectedSlot: slot,
+    }));
+  };
+
+  const generateTimeSlots = () => {
+    const slots = [];
+    for (let hour = 8; hour <= 22; hour++) {
+      slots.push(`${hour.toString().padStart(2, '0')}:00`);
+    }
+    return slots;
+  };
+
+  const timeSlots = generateTimeSlots();
+
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (!selectedAppointment) {
+      setMessage('No appointment selected for update.');
+      return;
+    }
+
+    if (!editFormData.appointmentDate || !editFormData.selectedSlot) {
+      setMessage('Please select both a date and a time slot.');
+      return;
+    }
+
+    const [hours, minutes] = editFormData.selectedSlot.split(':');
+    const selectedDateTime = new Date(`${editFormData.appointmentDate}T${hours}:${minutes}:00Z`);
+    if (isNaN(selectedDateTime.getTime())) {
+      setMessage('Invalid date or time.');
+      return;
+    }
+
     try {
-      // Using appointmentId for the update endpoint
       const response = await axios.put(
-        `http://localhost:5254/api/appointments/update/${editingAppointment.appointmentId}`,
-        editingAppointment
+        `http://localhost:5254/api/appointments/update`,
+        {
+          id: parseInt(editFormData.id),
+          appointmentDate: selectedDateTime.toISOString(),
+          title: editFormData.title,
+          description: editFormData.description,
+          status: editFormData.status,
+        },
+        { headers: { 'Content-Type': 'application/json' } }
       );
-
-      if (
-        response.data &&
-        response.data.message === "Appointment updated successfully!"
-      ) {
-        alert("Appointment updated successfully!");
-        setIsEditModalOpen(false);
-        await fetchAppointments(); // Refresh the appointments list
+      if (response.status === 200) {
+        setMessage('Appointment updated successfully!');
+        fetchAppointments();
+        setShowEditModal(false);
+      } else {
+        setMessage('Unexpected response from server.');
       }
-    } catch (err) {
-      alert(`Error updating appointment: ${err.message}`);
-      console.error("Error updating appointment:", err);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      setMessage(`Error updating appointment: ${error.response?.data?.message || error.message}`);
     }
   };
 
-  const handleDeleteAppointment = async (id) => {
-    if (window.confirm("Are you sure you want to delete this appointment?")) {
-      setLoading(true);
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this appointment?')) {
       try {
-        const response = await axios.delete(
-          `http://localhost:5254/api/appointments/delete/${id}`
-        );
-
-        if (
-          response.data &&
-          response.data.message === "Appointment cancelled successfully!"
-        ) {
-          alert("Appointment cancelled successfully!");
-          await fetchAppointments(); // Refresh the appointments list
+        const response = await axios.delete(`http://localhost:5254/api/appointments/delete/${id}`, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (response.status === 200) {
+          setMessage('Appointment deleted successfully!');
+          fetchAppointments();
+          setShowViewModal(false);
+        } else {
+          setMessage('Unexpected response from server.');
         }
-      } catch (err) {
-        alert(`Error cancelling appointment: ${err.message}`);
-        console.error("Error cancelling appointment:", err);
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        setMessage(`Error deleting appointment: ${error.response?.data?.message || error.message}`);
       }
     }
   };
 
-  // Edit Appointment Form Component
-  const EditAppointmentForm = ({ appointment, onSave, onCancel, onChange }) => {
-    return (
-      <form onSubmit={onSave} className="edit-form">
-        <div className="form-group">
-          <label>Title</label>
-          <input
-            type="text"
-            name="title"
-            value={appointment.title || ""} // Ensure no undefined values
-            onChange={onChange} // Use the passed onChange handler
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Date</label>
-          <input
-            type="datetime-local"
-            name="appointmentDate"
-            value={appointment.appointmentDate || ""} // Ensure correct format and no undefined
-            onChange={onChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Description</label>
-          <textarea
-            name="description"
-            value={appointment.description || ""} // Default to empty string if undefined
-            onChange={onChange}
-            rows="3"
-          />
-        </div>
-        <div className="form-buttons">
-          <button type="submit" className="submit-button">
-            Save Changes
-          </button>
-          <button type="button" className="cancel-button" onClick={onCancel}>
-            Cancel
-          </button>
-        </div>
-      </form>
-    );
-  };
+  const closeToast = () => setMessage('');
 
-  const renderContent = () => {
-    if (loading) {
-      return (
-        <div className="loading-message">Loading your appointments...</div>
-      );
-    }
+  // Pagination Logic
+  const indexOfLastAppointment = currentPage * appointmentsPerPage;
+  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+  const currentAppointments = appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
+  const totalPages = Math.ceil(appointments.length / appointmentsPerPage);
 
-    if (error) {
-      return <div className="error-message">Error: {error}</div>;
-    }
-
-    if (appointments.length === 0) {
-      return (
-        <div className="empty-message">
-          No appointments found. Add your first appointment to get started!
-        </div>
-      );
-    }
-
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-
-    return (
-      <div className="appointments-grid">
-        {appointments.map((appointment) => {
-          const appointmentDate = new Date(appointment.appointmentDate);
-          const isUpcoming = appointmentDate >= currentDate;
-          const statusClass = isUpcoming ? "status-upcoming" : "status-past";
-          const statusText = isUpcoming ? "Upcoming" : "Past";
-
-          return (
-            <div className="appointment-card" key={appointment.appointmentId}>
-              <h2 className="appointment-title">{appointment.title}</h2>
-              <div className="appointment-field">
-                <span className="field-label">Date</span>
-                <span>{formatDate(appointment.appointmentDate)}</span>
-              </div>
-              <div className="appointment-field">
-                <span className="field-label">Notes</span>
-                <span>{appointment.description || "No details provided"}</span>
-              </div>
-              <div className="appointment-field">
-                <span className="field-label">Status</span>
-                <span className={statusClass}>{statusText}</span>
-              </div>
-              <div className="appointment-actions">
-                <button
-                  className="edit-button"
-                  onClick={() => handleEditAppointment(appointment)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="delete-button"
-                  onClick={() =>
-                    handleDeleteAppointment(appointment.appointmentId)
-                  }
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
-    <div className="appointments-container">
-      <h1 className="appointments-title">Medical Appointments</h1>
-      <button
-        className="create-appointment-button"
-        onClick={handleCreateAppointment}
-      >
-        Book Appointment
-      </button>
-      <div className="appointments-content">{renderContent()}</div>
-
-      {/* Edit Modal using the style you provided */}
-      {isEditModalOpen && (
-        <div className="preg-modal-overlay">
-          <div className="preg-modal-container">
-            <div className="preg-modal-header">
-              <h2>Edit Appointment</h2>
-              <button
-                className="preg-close-button"
-                onClick={handleCloseEditModal}
+    <div className="va-wrapper">
+      <div className="va-top-section">
+        <img src="images/favicon.ico" alt="Baby Icon" className="va-baby-icon" />
+        <div className="va-title">Your Prenatal Appointments</div>
+      </div>
+      <div className="va-content">
+        <div className="va-list">
+          {currentAppointments.length > 0 ? (
+            currentAppointments.map((appointment) => (
+              <div
+                key={appointment.id}
+                className="va-appointment-item"
+                onClick={() => handleViewClick(appointment)}
               >
-                ×
+                <div className="va-item-header">
+                  <strong>{appointment.title || 'Prenatal Checkup'}</strong>
+                  <span className={`va-status va-status-${appointment.status?.toLowerCase()}`}>
+                    {appointment.status || 'Scheduled'}
+                  </span>
+                </div>
+                <div>
+                  <strong>Date:</strong>{' '}
+                  {appointment.appointmentDate
+                    ? new Date(appointment.appointmentDate).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : 'N/A'}
+                </div>
+                <div>
+                  <strong>Time:</strong>{' '}
+                  {appointment.appointmentDate
+                    ? new Date(appointment.appointmentDate).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : 'N/A'}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No prenatal appointments scheduled yet.</p>
+          )}
+        </div>
+        {totalPages > 1 && (
+          <div className="va-pagination">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                className={currentPage === index + 1 ? 'active' : ''}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
               </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {showViewModal && selectedAppointment && (
+        <div className="va-modal">
+          <div className="va-modal-content">
+            <h2>Appointment Details</h2>
+            <div className="va-view-details">
+              <p><strong>Title:</strong> {selectedAppointment.title || 'N/A'}</p>
+              <p>
+                <strong>Date:</strong>{' '}
+                {new Date(selectedAppointment.appointmentDate).toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+              <p>
+                <strong>Time:</strong>{' '}
+                {new Date(selectedAppointment.appointmentDate).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
+              <p><strong>Details:</strong> {selectedAppointment.description || 'N/A'}</p>
+              <p><strong>Status:</strong> {selectedAppointment.status || 'N/A'}</p>
             </div>
-            <div className="preg-modal-body">
-              <EditAppointmentForm
-                appointment={editingAppointment}
-                onSave={handleSaveEdit}
-                onCancel={handleCloseEditModal}
-                onChange={handleEditChange} // This line is missing
-              />
+            <div className="va-modal-actions">
+              <button onClick={() => handleEditClick(selectedAppointment)}>Edit</button>
+              <button onClick={() => handleDelete(selectedAppointment.id)}>Delete</button>
+              <button onClick={() => setShowViewModal(false)}>Close</button>
             </div>
           </div>
         </div>
       )}
+
+      {showEditModal && (
+        <div className="va-modal">
+          <div className="va-modal-content">
+            <h2>Edit Your Prenatal Appointment</h2>
+            <form onSubmit={handleEditSubmit}>
+              <div className="va-form-group">
+                <label>Appointment Title*</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={editFormData.title}
+                  onChange={handleEditChange}
+                  placeholder="e.g., Ultrasound Checkup"
+                  required
+                />
+              </div>
+              <div className="va-form-group">
+                <label>Appointment Date*</label>
+                <input
+                  type="date"
+                  name="appointmentDate"
+                  value={editFormData.appointmentDate}
+                  onChange={handleEditChange}
+                  min={new Date().toISOString().split('T')[0]}
+                  required
+                />
+              </div>
+              <div className="va-form-group">
+                <label>Appointment Time*</label>
+                <div className="va-time-slots">
+                  {timeSlots.map((slot) => (
+                    <button
+                      key={slot}
+                      type="button"
+                      className={editFormData.selectedSlot === slot ? 'selected' : ''}
+                      onClick={() => handleSlotClick(slot)}
+                      disabled={!editFormData.appointmentDate}
+                    >
+                      {slot}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="va-form-group">
+                <label>Details</label>
+                <textarea
+                  name="description"
+                  value={editFormData.description}
+                  onChange={handleEditChange}
+                  placeholder="e.g., Discuss baby’s growth"
+                  rows="4"
+                />
+              </div>
+              <div className="va-form-group">
+                <label>Status*</label>
+                <select name="status" value={editFormData.status} onChange={handleEditChange} required>
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button type="submit" className="va-modal-btn va-save-btn">
+                Save Changes
+              </button>
+              <button
+                type="button"
+                className="va-modal-btn va-cancel-btn"
+                onClick={() => setShowEditModal(false)}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <div className="va-toast">
+          <span>{message}</span>
+          <button onClick={closeToast}>✕</button>
+        </div>
+      )}
+
+      <style jsx>{`
+        .va-wrapper {
+          padding: 25px;
+          max-width: 1200px;
+          margin: 0 auto;
+          margin-top: 100px;
+          font-family: 'Georgia', serif;
+          background: #fff5f7;
+          border-radius: 20px;
+          box-shadow: 0 4px 15px rgba(240, 98, 146, 0.1);
+        }
+
+        .va-top-section {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          margin-bottom: 35px;
+          background: linear-gradient(to right, #fce4ec, #fff1f5);
+          padding: 20px;
+          border-radius: 20px;
+          border: 1px solid #f8bbd0;
+        }
+
+        .va-baby-icon {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          background: #fff;
+          padding: 10px;
+          border: 3px solid #f06292;
+        }
+
+        .va-title {
+          color: #f06292;
+          font-size: 30px;
+          font-weight: 600;
+        }
+
+        .va-content {
+          padding: 30px;
+          background: #ffffff;
+          border-radius: 25px;
+          border: 1px solid #fce4ec;
+        }
+
+        .va-list {
+          max-height: 600px;
+          overflow-y: auto;
+          scrollbar-width: thin;
+          scrollbar-color: #f8bbd0 #fff5f7;
+        }
+
+        .va-appointment-item {
+          border: 1px solid #f8bbd0;
+          padding: 20px;
+          margin-bottom: 20px;
+          border-radius: 15px;
+          background: #fffafc;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .va-appointment-item:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 6px 15px rgba(240, 98, 146, 0.15);
+        }
+
+        .va-item-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+          font-size: 18px;
+          color: #880e4f;
+        }
+
+        .va-status {
+          padding: 5px 10px;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 500;
+          text-transform: uppercase;
+        }
+
+        .va-status-scheduled {
+          background: #f8bbd0;
+          color: #fff;
+        }
+        .va-status-reminded {
+          background: #ffb300;
+          color: #fff;
+        }
+
+        .va-pagination {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 20px;
+        }
+
+        .va-pagination button {
+          padding: 8px 12px;
+          border: 1px solid #f8bbd0;
+          border-radius: 5px;
+          background: #fffafc;
+          color: #880e4f;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .va-pagination button:hover {
+          background: #f8bbd0;
+          color: #fff;
+        }
+
+        .va-pagination button.active {
+          background: #f06292;
+          color: #fff;
+          border-color: #f06292;
+        }
+
+        .va-modal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.6);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+        }
+
+        .va-modal-content {
+          background: #fff7f9;
+          padding: 35px;
+          border-radius: 20px;
+          width: 500px;
+          box-shadow: 0 6px 20px rgba(240, 98, 146, 0.25);
+          border: 1px solid #f8bbd0;
+        }
+
+        .va-modal-content h2 {
+          color: #f06292;
+          font-size: 26px;
+          margin-bottom: 25px;
+          text-align: center;
+        }
+
+        .va-view-details p {
+          margin: 10px 0;
+          color: #880e4f;
+          font-size: 16px;
+        }
+
+        .va-modal-actions {
+          display: flex;
+          gap: 15px;
+          margin-top: 20px;
+          justify-content: center;
+        }
+
+        .va-modal-actions button,
+        .va-modal-btn {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 25px;
+          cursor: pointer;
+          font-family: 'Georgia', serif;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        }
+
+        .va-modal-actions button:nth-child(1) {
+          background: #ffca28;
+          color: #fff;
+        }
+
+        .va-modal-actions button:nth-child(1):hover {
+          background: #ffb300;
+        }
+
+        .va-modal-actions button:nth-child(2) {
+          background: #f06292;
+          color: #fff;
+        }
+
+        .va-modal-actions button:nth-child(2):hover {
+          background: #d81b60;
+        }
+
+        .va-modal-actions button:nth-child(3) {
+          background: #ccc;
+          color: #333;
+        }
+
+        .va-modal-actions button:nth-child(3):hover {
+          background: #bbb;
+        }
+
+        .va-form-group {
+          margin-bottom: 25px;
+        }
+
+        .va-form-group label {
+          display: block;
+          margin-bottom: 8px;
+          color: #f06292;
+          font-size: 16px;
+          font-weight: 500;
+        }
+
+        .va-form-group input,
+        .va-form-group select,
+        .va-form-group textarea {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #f8bbd0;
+          border-radius: 12px;
+          font-family: 'Georgia', serif;
+          font-size: 14px;
+          background: #fffafc;
+          color: #880e4f;
+          transition: border-color 0.3s ease;
+        }
+
+        .va-form-group input:focus,
+        .va-form-group select:focus,
+        .va-form-group textarea:focus {
+          border-color: #f06292;
+          outline: none;
+        }
+
+        .va-time-slots {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+          gap: 12px;
+        }
+
+        .va-time-slots button {
+          padding: 10px;
+          border: 1px solid #f8bbd0;
+          border-radius: 12px;
+          background: #fffafc;
+          color: #880e4f;
+          cursor: pointer;
+          font-family: 'Georgia', serif;
+          font-size: 14px;
+          transition: all 0.3s ease;
+        }
+
+        .va-time-slots button:hover {
+          background: #f8bbd0;
+          color: #fff;
+        }
+
+        .va-time-slots button.selected {
+          background: #f06292;
+          color: #fff;
+          border-color: #f06292;
+        }
+
+        .va-save-btn {
+          background: #f06292;
+          color: #fff;
+          margin-right: 15px;
+        }
+
+        .va-save-btn:hover {
+          background: #d81b60;
+        }
+
+        .va-cancel-btn {
+          background: #ccc;
+          color: #333;
+        }
+
+        .va-cancel-btn:hover {
+          background: #bbb;
+        }
+
+        .va-toast {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          padding: 10px 20px;
+          background: #333;
+          color: #fff;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          z-index: 1000;
+          font-family: 'Georgia', serif;
+          font-size: 14px;
+        }
+
+        .va-toast button {
+          background: none;
+          border: none;
+          color: #fff;
+          cursor: pointer;
+          margin-left: 10px;
+          font-size: 16px;
+        }
+      `}</style>
     </div>
   );
 };
 
-export default MedicalAppointments;
+export default ViewAppointment;

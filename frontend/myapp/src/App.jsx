@@ -1,12 +1,13 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import AboutUs from "./components/Customer/AboutUs/AboutUs";
 import { AuthProvider } from "./components/Customer/AuthContext";
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import BookAppointment from "./components/Customer/BookAppointment/BookAppointment";
+import MedicalAppointments from "./components/Customer/BookAppointment/viewAppointment";
 import Contact from "./components/Customer/Contact/Contact";
 import UserProfile from "./components/Customer/CustomerProfile/CustomerProfile";
 import FetalGrowthTracker from "./components/Customer/FetalGrowthTracker/FetalGrowthTracker";
@@ -14,8 +15,10 @@ import Footer from "./components/Customer/Footer/Footer";
 import ForgotPasswordPage from "./components/Customer/Login/forgotPassword";
 import InternalLoginPage from "./components/Customer/Login/InternalLoginPage";
 import LoginPage from "./components/Customer/Login/LoginPage";
+import RegisterAccount from "./components/Customer/Login/RegisterAccout";
 import ResetPasswordPage from "./components/Customer/Login/resetPassword";
 import MembershipPage from "./components/Customer/Member/MembershipPage";
+import PaymentReturnHandler from "./components/Customer/Member/PaymentReturnHandler";
 import Navbarr from "./components/Customer/Navbarr/Navbarr";
 import CreatePregnancyProfile from "./components/Customer/PregnancyProfile/CreatePregnancyProfile";
 import PregnancyProfile from "./components/Customer/PregnancyProfile/PregnancyProfile";
@@ -25,6 +28,7 @@ import PaymentSuccess from "./components/Dashboard/PaymentSuccess";
 import HealthTipComponent from "./components/HealthTipComponent/HealthTipComponent";
 import MainContent from "./components/HomePage/Maincontent/Maincontent";
 import AdminPrivateRoute from "./components/PrivateRoute/AdminPrivateRoute";
+import CustomerMembershipRoute from "./components/PrivateRoute/CustomerMembershipRoute";
 import CustomerPrivateRoute from "./components/PrivateRoute/CustomerPrivateRoute";
 import DoctorPrivateRoute from "./components/PrivateRoute/DoctorPrivateRoute";
 import ManagerPrivateRoute from "./components/PrivateRoute/ManagerPrivateRoute";
@@ -47,9 +51,6 @@ import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
-import PaymentReturnHandler from "./components/Customer/Member/PaymentReturnHandler";
-import MedicalAppointments from "./components/Customer/BookAppointment/viewAppointment";
-import RegisterAccount from "./components/Customer/Login/RegisterAccout";
 function App() {
   return (
     <div>
@@ -79,26 +80,32 @@ function App() {
               </>
             }
           />
+          <Route  path="/appointment" element={<CustomerPrivateRoute />} >
           <Route
-            path="/appointment"
+            path=""
             element={
               <>
+                <CustomerMembershipRoute/>
                 <Navbarr />
                 <BookAppointment />
                 <Footer />
               </>
             }
           />
+          </Route>
+          <Route  path="/blog" element={<CustomerPrivateRoute />} >
           <Route
-            path="/blog"
+            path=""
             element={
               <>
+                <CustomerMembershipRoute/>
                 <Navbarr />
                 <BlogPage />
                 <Footer />
               </>
             }
           />
+          </Route>
           <Route
             path="/contact"
             element={
@@ -109,8 +116,9 @@ function App() {
               </>
             }
           />
+          <Route  path="/membership" element={<CustomerPrivateRoute />} >
           <Route
-            path="/membership"
+            path=""
             element={
               <>
                 <Navbarr />
@@ -119,6 +127,7 @@ function App() {
               </>
             }
           />
+          </Route>
           <Route
             path="/payment-success"
             element={
@@ -139,16 +148,19 @@ function App() {
               </>
             }
           />
+          <Route  path="/growth-tracker"  >
           <Route
-            path="/growth-tracker"
+            path=""
             element={
               <>
+                
                 <Navbarr />
                 <FetalGrowthTracker />
                 <Footer />
               </>
             }
           />
+          </Route>
           <Route
             path="/health-tips"
             element={
@@ -172,7 +184,7 @@ function App() {
               }
             />
           </Route>
-          <Route path="/profilePregnancy" element={<CustomerPrivateRoute />}>
+          <Route path="/profilePregnancy" element={<CustomerPrivateRoute />} >
             <Route
               path=""
               element={
@@ -184,10 +196,7 @@ function App() {
               }
             />
           </Route>
-          <Route
-            path="/create-pregnancy-profile"
-            element={<CustomerPrivateRoute />}
-          >
+          <Route  path="/create-pregnancy-profile" element={<CustomerPrivateRoute />} >
             <Route
               path=""
               element={

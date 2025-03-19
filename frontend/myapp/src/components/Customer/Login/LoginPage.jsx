@@ -20,7 +20,7 @@ const GoogleButtonContainer = styled.div`
   margin: 10px 0;
 `;
 
-function LoginPage() {
+function LoginPage({ onClose }) { // Added onClose prop for modal support
   const clientId =
     "157843865023-45o3ncemhfk5n348ee0kdrmn9cq02u9b.apps.googleusercontent.com";
   const [signIn, toggle] = useState(true);
@@ -28,7 +28,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // Thêm state cho Confirm Password
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -63,14 +63,16 @@ function LoginPage() {
         }
       );
 
-      const { token, userID, userRole } = response.data;
+      const { token, userID, userRole, hasMembership } = response.data; // Added hasMembership
       if (token) {
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
+        sessionStorage.setItem("hasMembership", hasMembership); // Store hasMembership
         setHasToken(true);
         navigate("/");
         toast.success("Login successful!");
+        if (onClose) onClose(); // Close modal if onClose is provided
       } else {
         setError("Email or Password Incorrect. Please try again.");
       }
@@ -81,7 +83,7 @@ function LoginPage() {
     }
   };
 
-  // Xử lý đăng ký (thêm kiểm tra Confirm Password)
+  // Xử lý đăng ký
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -123,22 +125,22 @@ function LoginPage() {
         }
       );
 
-      const { token, userID, userRole } = response.data;
+      const { token, userID, userRole, hasMembership } = response.data; // Added hasMembership
       if (token) {
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
+        sessionStorage.setItem("hasMembership", hasMembership); // Store hasMembership
         setHasToken(true);
         navigate("/");
+        if (onClose) onClose(); // Close modal if onClose is provided
       } else {
         toast.success(
           "A confirmation email has been sent to your email address. Please check your inbox."
         );
       }
     } catch (error) {
-      setError(
-        error.response?.data?.message
-      );
+      setError(error.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -163,16 +165,18 @@ function LoginPage() {
         }
       );
 
-      const { token, userID, userRole } = response.data;
+      const { token, userID, userRole, hasMembership } = response.data; // Added hasMembership
       if (token) {
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("userID", userID);
         sessionStorage.setItem("userRole", userRole);
+        sessionStorage.setItem("hasMembership", hasMembership); // Store hasMembership
         setHasToken(true);
         toast.success(
           `${signIn ? "Google login" : "Google registration"} successful!`
         );
         navigate("/");
+        if (onClose) onClose(); // Close modal if onClose is provided
       } else {
         setError(
           `Google ${
@@ -256,10 +260,7 @@ function LoginPage() {
                 required
                 minLength={6}
               />
-              <Components.Anchor
-                href="/forgotPassword
-              "
-              >
+              <Components.Anchor href="/forgotPassword">
                 Forgot your password?
               </Components.Anchor>
               {error && <p style={{ color: "red" }}>{error}</p>}
