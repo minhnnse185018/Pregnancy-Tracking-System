@@ -1,966 +1,567 @@
-import CloseIcon from "@mui/icons-material/Close";
-import CommentIcon from "@mui/icons-material/Comment";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Modal,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
-import * as Yup from "yup";
+import "../../components/Customer/BlogPage/BlogPage.css";
+import "./ManagerBlogs.css";
+function ManagerBlogs() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [showComments, setShowComments] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [editCommentId, setEditCommentId] = useState(null);
 
-const ManagerBlogs = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [currentBlog, setCurrentBlog] = useState(null);
-  const [selectedBlog, setSelectedBlog] = useState(null);
-  const [comments, setComments] = useState([]);
-  const accountID = sessionStorage.getItem("userID"); // Fetch userID from sessionStorage
-  const [newBlog, setNewBlog] = useState({
-    userId: accountID || "",
-    title: "",
-    content: "",
-    image: "",
-  });
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [creating, setCreating] = useState(false);
-  const [likesCount, setLikesCount] = useState({});
-  const [commentsCount, setCommentsCount] = useState({});
-  const [newComment, setNewComment] = useState("");
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [blogToDelete, setBlogToDelete] = useState(null);
-  const [editedComment, setEditedComment] = useState("");
-  const [commentToEdit, setCommentToEdit] = useState(null);
-  const [commentToDelete, setCommentToDelete] = useState(null);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [currentImage, setCurrentImage] = useState(null);
+  // Create/Edit Post States
+  const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const [newPostTitle, setNewPostTitle] = useState("");
+  const [newPostContent, setNewPostContent] = useState("");
+  const [newPostImage, setNewPostImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploadingPost, setUploadingPost] = useState(false);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    setOpen(false);
-    resetForm();
+  // Toast state
+  const [toasts, setToasts] = useState([]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  // Show toast notification function
+  const showToast = (message, type = "success", icon = "✅") => {
+    const id = Date.now();
+    const newToast = {
+      id,
+      message,
+      type,
+      icon,
+    };
+
+    setToasts((prev) => [...prev, newToast]);
+
+    // Auto hide toast after 3 seconds
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 3000);
   };
 
-  const showSnackbar = (message, severity = "success") => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
-
-  const handleDetailModalClose = () => setDetailModalOpen(false);
-
-  const openEditModal = (comment) => {
-    if (comment.accountId === accountID) {
-      setCommentToEdit(comment);
-      setEditedComment(comment.content);
-    } else {
-      showSnackbar("You can only edit your own comments.", "warning");
+  const fetchPosts = async () => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      showToast("User not logged in. Please log in first.", "error", "❌");
+      return;
+    }
+    try {
+      const response = await axios.get("http://localhost:5254/api/Post/GetAll");
+      setPosts(response.data);
+    } catch (err) {
+      setError("Failed to load posts.");
+      showToast("Failed to load posts.", "error", "❌");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const closeEditModal = () => {
-    setCommentToEdit(null);
-    setEditedComment("");
+  // Image handling functions
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewPostImage(file);
+      // Create a preview URL for the image
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
-  const handleEditComment = async () => {
-    if (!editedComment.trim()) {
-      showSnackbar("Please enter a comment.", "warning");
+  // Clear image preview and file
+  const handleRemoveImage = () => {
+    setNewPostImage(null);
+    setImagePreview(null);
+  };
+
+  // 1. Handle Create/Edit Post
+  const handleCreatePost = async () => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      showToast("You are not logged in. Please log in first!", "warning", "⚠️");
+      return;
+    }
+    if (!newPostTitle.trim()) {
+      showToast("Post title cannot be empty!", "warning", "⚠️");
+      return;
+    }
+    if (!newPostContent.trim()) {
+      showToast("Post content cannot be empty!", "warning", "⚠️");
+      return;
+    }
+
+    try {
+      setUploadingPost(true);
+
+      // Create FormData object to send the file and other post data
+      const formData = new FormData();
+      formData.append("userId", userId);
+      formData.append("title", newPostTitle);
+      formData.append("content", newPostContent);
+
+      // Add the image file if it exists
+      if (newPostImage) {
+        formData.append("image", newPostImage);
+      }
+
+      let response;
+      if (editMode && selectedPostId) {
+        // Update existing post
+        formData.append("id", selectedPostId);
+        response = await axios.put(
+          `http://localhost:5254/api/Post/${selectedPostId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        showToast("Post updated successfully!", "success", "✍️");
+      } else {
+        // Create new post
+        response = await axios.post(
+          "http://localhost:5254/api/Post",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        showToast("Post created successfully!", "success", "✍️");
+      }
+
+      setShowCreatePostModal(false);
+      // Reset form fields
+      setNewPostTitle("");
+      setNewPostContent("");
+      setNewPostImage(null);
+      setImagePreview(null);
+      setEditMode(false);
+      setSelectedPostId(null);
+      fetchPosts();
+    } catch (error) {
+      console.error("Error with post:", error);
+      showToast(
+        `Failed to ${editMode ? "update" : "create"} post. Please try again.`,
+        "error",
+        "❌"
+      );
+    } finally {
+      setUploadingPost(false);
+    }
+  };
+
+  // 2. Handle Delete Blog
+  const handleDeleteBlog = async (blogId) => {
+    if (!window.confirm("Are you sure you want to delete this blog post?")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:5254/api/Post/${blogId}`);
+      showToast("Blog post deleted successfully!", "success", "🗑️");
+      fetchPosts(); // Refresh the posts list
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+      showToast("Failed to delete blog post. Please try again.", "error", "❌");
+    }
+  };
+
+  // 3. Handle Search Posts
+  const handleSearchPost = async () => {
+    if (!searchTerm.trim()) {
+      fetchPosts(); // If search term is empty, fetch all posts
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `http://localhost:5254/api/Post/search?searchTerm=${searchTerm}`
+      );
+      setPosts(response.data);
+    } catch (error) {
+      console.error("Error searching posts:", error);
+      showToast("Failed to search posts. Please try again.", "error", "❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle edit post button click
+  const handleEditPost = (post) => {
+    setEditMode(true);
+    setSelectedPostId(post.id);
+    setNewPostTitle(post.title);
+    setNewPostContent(post.content);
+    setImagePreview(post.image);
+    setShowCreatePostModal(true);
+  };
+
+  // 4. Handle Update Comment
+  const handleUpdateComment = async () => {
+    if (!commentText.trim()) {
+      showToast("Comment content cannot be empty!", "warning", "⚠️");
       return;
     }
 
     try {
       await axios.put(
-        `http://localhost:5254/api/Post/comments/${commentToEdit.commentId}`,
-        { content: editedComment }
+        `http://localhost:5254/api/Comment/UpdateComment/${editCommentId}`,
+        {
+          postId: selectedPostId,
+          content: commentText,
+        }
       );
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment.commentId === commentToEdit.commentId
-            ? { ...comment, content: editedComment }
-            : comment
-        )
-      );
-      closeEditModal();
-      showSnackbar("Comment edited successfully!", "success");
+      showToast("Comment updated successfully!", "success", "💬");
+      setShowModal(false);
+      setCommentText("");
+      setEditCommentId(null);
+      fetchPosts();
     } catch (error) {
-      console.error("Error editing comment:", error);
-      showSnackbar("Failed to edit comment.", "error");
+      console.error("Error updating comment:", error);
+      showToast("Error updating comment. Please try again.", "error", "❌");
     }
   };
 
-  const openDeleteConfirm = (commentId) => {
-    setCommentToDelete(commentId);
-    setDeleteConfirmOpen(true);
-  };
-
-  const closeDeleteConfirm = () => {
-    setCommentToDelete(null);
-    setDeleteConfirmOpen(false);
-  };
-
-  const handleDeleteComment = async () => {
-    if (!commentToDelete) return;
+  // 5. Handle Delete Comment
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("Are you sure you want to delete this comment?")) {
+      return;
+    }
 
     try {
       await axios.delete(
-        `http://localhost:5254/api/Post/comments/${commentToDelete}`
+        `http://localhost:5254/api/Comment/Delete/${commentId}`
       );
-      setComments((prevComments) =>
-        prevComments.filter((comment) => comment.commentId !== commentToDelete)
-      );
-      closeDeleteConfirm();
-      showSnackbar("Comment deleted successfully!", "success");
+      showToast("Comment deleted successfully!", "success", "🗑️");
+      fetchPosts(); // Refresh the posts list
     } catch (error) {
       console.error("Error deleting comment:", error);
-      showSnackbar("Failed to delete comment.", "error");
+      showToast("Failed to delete comment. Please try again.", "error", "❌");
     }
   };
 
-  const BlogSchema = Yup.object().shape({
-    title: Yup.string()
-      .required("Please enter a title.")
-      .min(5, "Title must be at least 5 characters long.")
-      .max(100, "Title must be less than 100 characters."),
-    content: Yup.string()
-      .required("Please enter content.")
-      .min(20, "Content must be at least 20 characters long.")
-      .max(5000, "Content must be less than 5000 characters."),
-    image: Yup.string().notRequired(),
-  });
-
-  const resetForm = () => {
-    setNewBlog({ userId: accountID || "", title: "", content: "", image: "" });
-    setCurrentBlog(null);
-    setSelectedImage(null);
+  // Handle edit comment button click
+  const handleEditComment = (comment) => {
+    setEditCommentId(comment.id);
+    setCommentText(comment.content);
+    setSelectedPostId(comment.postId);
+    setShowModal(true);
   };
 
-  const fetchBlogs = async () => {
-    try {
-      const response = await axios.get("http://localhost:5254/api/Post/GetAll");
-      const sortedDate = response.data.sort(
-        (a, b) => new Date(b.createDate) - new Date(a.createDate)
-      );
-      console.log("Fetched blogs:", sortedDate);
-      setBlogs(sortedDate);
-      response.data.forEach((blog) => {
-        fetchLikeCount(blog.id);
-        fetchCommentCount(blog.id);
-      });
-    } catch (error) {
-      console.error("Error fetching blogs:", error);
-      showSnackbar("Failed to fetch blogs.", "error");
-    }
-  };
-
-  const fetchLikeCount = async (blogId) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5254/api/Post/like/${blogId}`
-      );
-      setLikesCount((prev) => ({ ...prev, [blogId]: response.data }));
-    } catch (error) {
-      console.error("Error fetching like count:", error);
-    }
-  };
-
-  const fetchCommentCount = async (blogId) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5254/api/Post/comments/count/${blogId}`
-      );
-      setCommentsCount((prev) => ({ ...prev, [blogId]: response.data }));
-    } catch (error) {
-      console.error("Error fetching comment count:", error);
-    }
-  };
-
-  const fetchComments = async (blogId) => {
-    try {
-      // Thay vì gọi /api/Post/comments/{blogId}, gọi API chi tiết bài viết
-      const response = await axios.get(`http://localhost:5254/api/Post/${blogId}`);
-      const postData = response.data;
-      console.log("Fetched post with comments:", postData);
-
-      // Giả sử comment nằm trong postData.comments
-      const sortedComments = (postData.comments || []).sort(
-        (a, b) => new Date(b.createDate) - new Date(a.createDate)
-      );
-      setComments(sortedComments);
-    } catch (error) {
-      console.error("Error fetching comments:", {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
-      showSnackbar("Failed to fetch comments. Check console for details.", "error");
-    }
-  };
-
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
-
-  const handleSearchChange = (e) => {
-    setSearchKeyword(e.target.value);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedImage(file);
-  };
-
-  const handleSaveBlog = async (values) => {
-    setCreating(true);
-    const { title, content } = values;
-
-    if (!title || !content) {
-      showSnackbar("Please fill in title and content fields.", "error");
-      setCreating(false);
-      return;
-    }
-
-    if (!accountID && !currentBlog) {
-      showSnackbar("User not authenticated. Please log in.", "error");
-      setCreating(false);
-      return;
-    }
-
-    try {
-      let blogId = null;
-
-      if (currentBlog) {
-        const blogIdToUpdate = parseInt(currentBlog.id, 10);
-        if (!blogIdToUpdate || blogIdToUpdate <= 0) {
-          throw new Error("Invalid blog ID for update. Value received: " + currentBlog.id);
-        }
-
-        console.log("Updating blog with ID:", blogIdToUpdate, "Payload:", {
-          title,
-          content,
-          image: selectedImage ? selectedImage.name : currentBlog.image || "",
-          status: "Published",
-        });
-        const response = await axios.put(
-          `http://localhost:5254/api/Post/Update/${blogIdToUpdate}`,
-          {
-            title,
-            content,
-            image: selectedImage ? selectedImage.name : currentBlog.image || "",
-            status: "Published",
-          }
-        );
-        blogId = response.data.id || currentBlog.id;
-
-        if (selectedImage instanceof File) {
-          const formData = new FormData();
-          formData.append("image", selectedImage);
-          await axios.put(
-            `http://localhost:5254/api/Post/image/upload/${blogId}`,
-            formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
-          );
-        }
-      } else {
-        console.log("Creating new blog with payload:", {
-          userId: accountID,
-          title,
-          content,
-          image: selectedImage ? selectedImage.name : "",
-        });
-        const response = await axios.post("http://localhost:5254/api/Post", {
-          userId: accountID,
-          title,
-          content,
-          image: selectedImage ? selectedImage.name : "",
-        });
-        blogId = response.data;
-
-        if (selectedImage instanceof File) {
-          const formData = new FormData();
-          formData.append("image", selectedImage);
-          await axios.put(
-            `http://localhost:5254/api/Post/image/upload/${blogId}`,
-            formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
-          );
-        }
-      }
-
-      fetchBlogs();
-      handleClose();
-      showSnackbar("Blog saved successfully!", "success");
-    } catch (error) {
-      console.error("Error saving blog:", error.response?.data || error.message);
-      if (error.response?.status === 400) {
-        showSnackbar(
-          "Invalid request. Please check the data and try again.",
-          "error"
-        );
-      } else if (error.response?.status === 404) {
-        showSnackbar("Blog not found. It may have been deleted.", "error");
-      } else {
-        showSnackbar("Failed to save blog. Check console for details.", "error");
-      }
-    } finally {
-      setCreating(false);
-    }
-  };
-
-  const handleEditBlog = (blog) => {
-    setCurrentBlog(blog);
-    setNewBlog({
-      userId: blog.userId,
-      title: blog.title,
-      content: blog.content,
-      image: blog.image || "",
-    });
-    setCurrentImage(
-      blog.imageName
-        ? `http://localhost:5254/api/Post/image/${blog.imageName}`
-        : null
-    );
-    setSelectedImage(null);
-    setOpen(true);
-  };
-
-  const handleCardClick = (blog) => {
-    setSelectedBlog(blog);
-    fetchComments(blog.id);
-    setDetailModalOpen(true);
-  };
-
-  const handleCommentSubmit = async () => {
-    if (!newComment.trim()) {
-      showSnackbar("Please enter a comment.", "warning");
-      return;
-    }
-
-    const userId = accountID || "manager";
-    if (!userId) {
-      showSnackbar("You are not logged in. Please log in first!", "warning");
-      return;
-    }
-
-    const commentData = {
-      postId: parseInt(selectedBlog.id, 10),
-      userId: userId,
-      content: newComment,
-    };
-
-    console.log("Submitting comment with data:", JSON.stringify(commentData, null, 2));
-
-    try {
-      const token = sessionStorage.getItem("token");
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      };
-
-      // Thử endpoint /api/Comments (thêm "s" vì /api/Comment không hoạt động)
-      const response = await axios.post(
-        "http://localhost:5254/api/Comments", // Thay đổi endpoint
-        commentData,
-        config
-      );
-      console.log("Comment creation response:", response.data);
-      setNewComment("");
-      fetchComments(selectedBlog.id);
-      showSnackbar("Comment added successfully!", "success");
-    } catch (error) {
-      console.error("Error adding comment:", {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-        request: error.request,
-      });
-      if (error.response) {
-        switch (error.response.status) {
-          case 400:
-            showSnackbar("Bad request. Check the comment data or contact support.", "error");
-            break;
-          case 401:
-            showSnackbar("Unauthorized. Please log in and try again.", "error");
-            break;
-          case 404:
-            showSnackbar("Endpoint not found. Please verify the API with the backend team.", "error");
-            break;
-          default:
-            showSnackbar("Failed to add comment. Check console for details.", "error");
-        }
-      } else if (error.request) {
-        showSnackbar("No response from server. Check your network connection.", "error");
-      } else {
-        showSnackbar("Error setting up the request. See console for details.", "error");
-      }
-    }
-  };
-
-  const openDeleteModal = (blog) => {
-    console.log("Blog object for deletion:", blog);
-    if (!blog || !blog.id || isNaN(parseInt(blog.id, 10))) {
-      showSnackbar("Invalid blog selected for deletion.", "error");
-      return;
-    }
-    setBlogToDelete(blog);
-    setDeleteModalOpen(true);
-  };
-
-  const closeDeleteModal = () => {
-    setBlogToDelete(null);
-    setDeleteModalOpen(false);
-  };
-
-  const handleDeleteBlog = async () => {
-    if (!blogToDelete) return;
-
-    try {
-      console.log("blogToDelete object:", blogToDelete);
-      const blogIdToDelete = parseInt(blogToDelete.id, 10);
-      if (!blogIdToDelete || blogIdToDelete <= 0) {
-        throw new Error("Invalid blog ID for deletion. Value received: " + blogToDelete.id);
-      }
-
-      console.log("Deleting blog with ID:", blogIdToDelete);
-      const response = await axios.delete(`http://localhost:5254/api/Post/${blogIdToDelete}`);
-      if (response.status === 200) {
-        setDeleteModalOpen(false);
-        setBlogToDelete(null);
-        fetchBlogs();
-        showSnackbar("Blog deleted successfully!", "success");
-      }
-    } catch (error) {
-      console.error("Error deleting blog:", error.response?.data || error.message);
-      if (error.response?.status === 404) {
-        showSnackbar("Blog not found. It may have been deleted.", "error");
-      } else if (error.response?.status === 400) {
-        showSnackbar("Invalid request. Please check the blog ID and try again.", "error");
-      } else {
-        showSnackbar("Failed to delete blog. Check console for details.", "error");
-      }
-    }
-  };
-
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5254/api/Post/search?keyword=${searchKeyword}`
-      );
-      setBlogs(response.data);
-    } catch (error) {
-      console.error("Error searching blogs:", error);
-      showSnackbar("Failed to search blogs.", "error");
-    }
-  };
-
-  const filterBlogs = blogs.filter((blog) =>
-    blog.title.toLowerCase().includes(searchKeyword.toLowerCase())
-  );
+  if (loading) return <p>Loading posts...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <Box sx={{ padding: 4, backgroundColor: "#fff", minHeight: "100vh" }}>
-      <Button
-        variant="contained"
-        sx={{
-          backgroundColor: "#4CAF50",
-          mb: 2,
-          "&:hover": { backgroundColor: "#388E3C" },
-        }}
-        onClick={handleOpen}
-      >
-        Add Blog
-      </Button>
-      <TextField
-        fullWidth
-        label="Search By Title"
-        variant="outlined"
-        value={searchKeyword}
-        onChange={handleSearchChange}
-        onKeyPress={(e) => {
-          if (e.key === "Enter") handleSearch();
-        }}
-        sx={{ mb: 2 }}
-      />
-      <Grid container spacing={2}>
-        {filterBlogs.map((blog) => (
-          <Grid item xs={12} md={4} key={blog.id}>
-            <Card
-              sx={{
-                height: 350,
-                position: "relative",
-                overflow: "hidden",
-                borderRadius: 2,
-                boxShadow: 2,
-                transition: "transform 0.3s, box-shadow 0.3s",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: 5,
-                  cursor: "pointer",
-                },
-              }}
-              onClick={() => handleCardClick(blog)}
-            >
-              {blog.imageName && (
-                <CardMedia
-                  component="img"
-                  height="190"
-                  image={`http://localhost:5254/api/Post/image/${blog.imageName}`}
-                  alt={blog.title}
-                  sx={{ objectFit: "cover" }}
-                />
-              )}
-              <CardContent
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  padding: 2,
-                  backgroundColor: "#f9f9f9",
-                }}
+    <div className="community-container pregnant-theme">
+      {/* Toast Container */}
+      <div className="toast-container">
+        {toasts.map((toast) => (
+          <div key={toast.id} className={`custom-toast ${toast.type}`}>
+            <div className="toast-header">
+              <span className="toast-icon">{toast.icon}</span>
+              <span className="toast-title">Notification</span>
+              <button
+                className="toast-close"
+                onClick={() =>
+                  setToasts((prev) => prev.filter((t) => t.id !== toast.id))
+                }
               >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#4CAF50",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {blog.title}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    mb: 1,
-                  }}
-                >
-                  {blog.content}
-                </Typography>
-                <Typography variant="caption" color="textSecondary">
-                  {blog.createDate}
-                </Typography>
-                <Box display="flex" alignItems="center" mt={1}>
-                  <ThumbUpAltIcon fontSize="small" sx={{ mr: 0.5 }} />
-                  <Typography variant="body2" sx={{ mr: 2 }}>
-                    {likesCount[blog.id] || 0}
-                  </Typography>
-                  <CommentIcon fontSize="small" sx={{ mr: 0.5 }} />
-                  <Typography variant="body2">
-                    {commentsCount[blog.id] || 0}
-                  </Typography>
-                </Box>
-                <Typography
-                  variant="caption"
-                  color="textSecondary"
-                  sx={{ mt: 1.5 }}
-                >
-                  {blog.managerName}
-                </Typography>
-                <Box
-                  sx={{
-                    position: "absolute",
-                    bottom: 8,
-                    right: 8,
-                    display: "flex",
-                    gap: 1,
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    size="small"
-                    sx={{
-                      backgroundColor: "#4CAF50",
-                      "&:hover": { backgroundColor: "#388E3C" },
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditBlog(blog);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <IconButton
-                    color="error"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openDeleteModal(blog);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
+                ×
+              </button>
+            </div>
+            <div className="toast-body">{toast.message}</div>
+          </div>
         ))}
-      </Grid>
+      </div>
 
-      {/* Modal Chi tiết Blog */}
-      <Modal open={detailModalOpen} onClose={handleDetailModalClose}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 800,
-            height: 600,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-            overflowY: "auto",
+      <div className="posts-header">
+        <h1 className="posts-title">Manage Blog Posts</h1>
+      </div>
+
+      {/* Search Bar */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search posts..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+        <button onClick={handleSearchPost} className="search-btn">
+          Search
+        </button>
+        <button
+          onClick={() => {
+            setSearchTerm("");
+            fetchPosts();
           }}
+          className="reset-btn"
         >
-          <IconButton
-            sx={{ position: "absolute", top: 8, right: 8 }}
-            onClick={handleDetailModalClose}
-          >
-            <CloseIcon />
-          </IconButton>
-          {selectedBlog && (
-            <>
-              <Typography
-                variant="h6"
-                sx={{
-                  mb: 2,
-                  fontWeight: "bold",
-                  fontSize: "35px",
-                  textAlign: "center",
-                }}
-              >
-                {selectedBlog.title}
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  mb: 2,
-                  fontWeight: "bold",
-                  fontSize: "15px",
-                  textAlign: "right",
-                }}
-              >
-                {`${selectedBlog.managerName}, ${selectedBlog.createDate}`}
-              </Typography>
+          Reset
+        </button>
+      </div>
 
-              {selectedBlog.imageName && (
-                <CardMedia
-                  component="img"
-                  height="500"
-                  image={`http://localhost:5254/api/Post/image/${selectedBlog.imageName}`}
-                  alt={selectedBlog.title}
-                  sx={{ objectFit: "contain", mb: 2, borderRadius: 2 }}
-                />
-              )}
+      {/* Create Post Button
+      <div className="action-buttons">
+        <button
+          onClick={() => {
+            setEditMode(false);
+            setNewPostTitle("");
+            setNewPostContent("");
+            setNewPostImage(null);
+            setImagePreview(null);
+            setShowCreatePostModal(true);
+          }}
+          className="create-post-btn"
+        >
+          Create New Post
+        </button>
+      </div> */}
 
-              <Typography variant="body1" color="text.primary" sx={{ mb: 2 }}>
-                {selectedBlog.content}
-              </Typography>
+      <div className="posts-container">
+        {posts.length === 0 ? (
+          <p>No Posts Found.</p>
+        ) : (
+          posts.map((post) => (
+            <div key={post.id} className="post-card">
+              <div className="post-content">
+                <div className="post-user">
+                  <div className="post-info">
+                    <p className="post-metadata">
+                      Post by:{" "}
+                      <span className="author-name">{post.userName}</span>
+                    </p>
+                    <h2 className="post-title">Title: {post.title}</h2>
+                  </div>
+                </div>
+                <p className="post-text">Content: {post.content}</p>
 
-              <Divider sx={{ my: 2 }} />
+                {/* Display post image if available */}
+                {post.image && (
+                  <div className="post-image-container">
+                    <img src={post.image} alt="Post" className="post-image" />
+                  </div>
+                )}
 
-              <Box display="flex" alignItems="center" mt={1}>
-                <ThumbUpAltIcon fontSize="small" sx={{ mr: 0.5 }} />
-                <Typography variant="body2" sx={{ mr: 2 }}>
-                  {likesCount[selectedBlog.id] || 0}
-                </Typography>
-                <CommentIcon fontSize="small" sx={{ mr: 0.5 }} />
-                <Typography variant="body2">
-                  {commentsCount[selectedBlog.id] || 0}
-                </Typography>
-              </Box>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                Comments:
-              </Typography>
-              <TextField
-                fullWidth
-                label="Add a comment..."
-                variant="outlined"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "#4CAF50",
-                  mb: 2,
-                  "&:hover": { backgroundColor: "#388E3C" },
-                }}
-                onClick={handleCommentSubmit}
-              >
-                Submit Comment
-              </Button>
-
-              <List sx={{ maxHeight: 300, overflowY: "auto" }}>
-                {comments.length > 0 ? (
-                  comments.map((comment) => (
-                    <ListItem
-                      key={comment.id} // Thay commentId thành id để khớp với schema từ backend
-                      alignItems="flex-start"
-                      sx={{ display: "flex", justifyContent: "space-between" }}
+                <div className="post-stats">
+                  <span className="post-time">
+                    Created At: {new Date(post.createdAt).toLocaleDateString()}
+                  </span>
+                  <div className="interaction-stats">
+                    <button
+                      onClick={() => {
+                        setSelectedPost(post);
+                        setShowComments(!showComments);
+                      }}
+                      className="view-comments-btn"
                     >
-                      <ListItemText
-                        primary={`${
-                          comment.userId === accountID
-                            ? "Me"
-                            : comment.userName || "Unknown"
-                        } (${comment.createdAt ? new Date(comment.createdAt).toLocaleDateString() : "Unknown date"})`}
-                        secondary={
-                          <Box sx={{ maxHeight: 60, overflowY: "auto" }}>
-                            {comment.content}
-                          </Box>
-                        }
-                      />
-                      <Box sx={{ display: "flex", gap: 1 }}>
-                        {comment.userId === accountID && (
-                          <IconButton
-                            edge="end"
-                            aria-label="edit"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openEditModal(comment);
-                            }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        )}
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openDeleteConfirm(comment.id); // Thay commentId thành id
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Box>
-                    </ListItem>
-                  ))
-                ) : (
-                  <Typography variant="body2" color="textSecondary">
-                    No comments available.
-                  </Typography>
-                )}
-              </List>
+                      💬 View Comments ({post.commentCount})
+                    </button>
+                    <button
+                      onClick={() => handleEditPost(post)}
+                      className="edit-post-btn"
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteBlog(post.id)}
+                      className="delete-post-btn"
+                    >
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
 
-              <Dialog
-                open={deleteConfirmOpen}
-                onClose={closeDeleteConfirm}
+                {showComments && selectedPost?.id === post.id && (
+                  <div className="comments-section">
+                    <h3>Comments</h3>
+                    {post.comments && post.comments.length > 0 ? (
+                      post.comments.map((comment) => (
+                        <div key={comment.id} className="comment">
+                          <div className="comment-header">
+                            <span className="comment-author">
+                              {comment.userName}
+                            </span>
+                            <span className="comment-date">
+                              {new Date(comment.createdAt).toLocaleDateString()}
+                            </span>
+                            <div className="comment-actions">
+                              <button
+                                onClick={() => handleEditComment(comment)}
+                                className="edit-comment-btn"
+                              >
+                                ✏️
+                              </button>
+                              <button
+                                onClick={() => handleDeleteComment(comment.id)}
+                                className="delete-comment-btn"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </div>
+                          <p className="comment-content">{comment.content}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No comments yet.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Create/Edit Post Modal with Scrollable Content */}
+      {showCreatePostModal && (
+        <div className="modal-overlay">
+          <div className="modal-content scrollable-modal">
+            <div className="modal-header">
+              <h2>{editMode ? "Edit Post" : "Create New Post"}</h2>
+              <button 
+                className="modal-close-btn" 
+                onClick={() => setShowCreatePostModal(false)}
               >
-                <DialogTitle>Confirm Delete</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Are you sure you want to delete this comment?
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={closeDeleteConfirm} color="primary">
-                    Cancel
-                  </Button>
-                  <Button onClick={handleDeleteComment} color="error">
-                    Delete
-                  </Button>
-                </DialogActions>
-              </Dialog>
-
-              {commentToEdit && commentToEdit.userId === accountID && (
-                <Dialog open={Boolean(commentToEdit)} onClose={closeEditModal}>
-                  <DialogTitle>Edit Comment</DialogTitle>
-                  <DialogContent>
-                    <TextField
-                      fullWidth
-                      multiline
-                      rows={3}
-                      variant="outlined"
-                      value={editedComment}
-                      onChange={(e) => setEditedComment(e.target.value)}
-                      autoFocus
-                    />
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={closeEditModal} color="primary">
-                      Cancel
-                    </Button>
-                    <Button onClick={handleEditComment} color="primary">
-                      Save
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              )}
-            </>
-          )}
-        </Box>
-      </Modal>
-
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="h6" mb={2}>
-            {currentBlog ? "Edit Blog" : "Add New Blog"}
-          </Typography>
-          <Formik
-            initialValues={{
-              title: newBlog.title || "",
-              content: newBlog.content || "",
-              image: newBlog.image || "",
-            }}
-            validationSchema={BlogSchema}
-            onSubmit={async (values, { setSubmitting }) => {
-              setSubmitting(true);
-              await handleSaveBlog(values);
-              setSubmitting(false);
-            }}
-          >
-            {({ isSubmitting, setFieldValue, dirty, isValid }) => (
-              <Form>
-                <Field
-                  as={TextField}
-                  fullWidth
-                  name="title"
-                  label="Title"
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-                <ErrorMessage
-                  name="title"
-                  component="div"
-                  style={{ color: "red" }}
-                />
-
-                <Field
-                  as={TextField}
-                  fullWidth
-                  name="content"
-                  label="Content"
-                  multiline
-                  rows={4}
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-                <ErrorMessage
-                  name="content"
-                  component="div"
-                  style={{ color: "red" }}
-                />
-
-                {currentImage && (
-                  <img
-                    src={currentImage}
-                    alt="Current blog"
-                    style={{ width: "100%", marginBottom: "1rem" }}
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="modal-form">
+                <label>
+                  Title:
+                  <input
+                    type="text"
+                    value={newPostTitle}
+                    onChange={(e) => setNewPostTitle(e.target.value)}
+                    placeholder="Enter post title"
+                    required
                   />
+                </label>
+                <label>
+                  Content:
+                  <textarea
+                    value={newPostContent}
+                    onChange={(e) => setNewPostContent(e.target.value)}
+                    placeholder="Enter post content"
+                    required
+                    rows={8}
+                  />
+                </label>
+                <label>
+                  Image:
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </label>
+                {imagePreview && (
+                  <div className="image-preview-container">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="image-preview"
+                    />
+                    <button
+                      onClick={handleRemoveImage}
+                      className="remove-image-btn"
+                    >
+                      Remove Image
+                    </button>
+                  </div>
                 )}
-                <input
-                  type="file"
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    setFieldValue("image", file ? file.name : "");
-                    setSelectedImage(file);
-                  }}
-                  placeholder="Optional image"
-                />
-                <ErrorMessage
-                  name="image"
-                  component="div"
-                  style={{ color: "red" }}
-                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                onClick={handleCreatePost}
+                className="save-post-btn"
+                disabled={uploadingPost}
+              >
+                {uploadingPost
+                  ? "Saving..."
+                  : editMode
+                  ? "Update Post"
+                  : "Create Post"}
+              </button>
+              <button
+                onClick={() => setShowCreatePostModal(false)}
+                className="cancel-btn"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{ mt: 2, backgroundColor: "#4CAF50" }}
-                  disabled={isSubmitting || (!dirty && !currentBlog) || !isValid}
-                >
-                  {creating ? <CircularProgress size={24} /> : "Save"}
-                </Button>
-              </Form>
-            )}
-          </Formik>
-        </Box>
-      </Modal>
-
-      <Dialog open={deleteModalOpen} onClose={closeDeleteModal}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this blog?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDeleteModal} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteBlog} color="error" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </Box>
+      {/* Edit Comment Modal with Scrollable Content */}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content scrollable-modal">
+            <div className="modal-header">
+              <h2>Edit Comment</h2>
+              <button 
+                className="modal-close-btn" 
+                onClick={() => {
+                  setShowModal(false);
+                  setCommentText("");
+                  setEditCommentId(null);
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="modal-form">
+                <label>
+                  Comment:
+                  <textarea
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="Edit your comment"
+                    required
+                    rows={5}
+                  />
+                </label>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                onClick={handleUpdateComment}
+                className="save-comment-btn"
+              >
+                Update Comment
+              </button>
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  setCommentText("");
+                  setEditCommentId(null);
+                }}
+                className="cancel-btn"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
-};
+}
 
 export default ManagerBlogs;

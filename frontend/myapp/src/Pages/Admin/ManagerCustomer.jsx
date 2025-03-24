@@ -1,116 +1,102 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Pagination,
   Paper,
-  Select,
+  Typography,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Pagination,
+  Modal,
   TextField,
-  Typography,
 } from "@mui/material";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const ManageCustomer = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [customers, setCustomers] = useState([]); // Store the list of customers
-  const [statusFilter, setStatusFilter] = useState("All"); // Filter for status
-  const [currentPage, setCurrentPage] = useState(1); // Current page for pagination
-  const customersPerPage = 5; // Number of customers per page
-  const [selectedCustomer, setSelectedCustomer] = useState({
+  const [customers, setCustomers] = useState([]); // Đảm bảo là mảng
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const customersPerPage = 5;
+  const [newCustomer, setNewCustomer] = useState({
     id: "",
     status: "",
-  }); // Store the customer being edited
-  const [startDate, setStartDate] = useState(null); // Start date for filtering
-  const [endDate, setEndDate] = useState(null); // End date for filtering
-  const [errorMessage, setErrorMessage] = useState(""); // Store error messages
+  });
+  const [startDate, setStartDate] = useState(null); // Ngày bắt đầu cho lọc
+  const [endDate, setEndDate] = useState(null); // Ngày kết thúc cho lọc
 
-  // Fetch all customers using the GET /api/Users/GetAll endpoint
+  // Fetch dữ liệu khách hàng
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get("http://localhost:5254/api/Users/GetAll");
-        if (Array.isArray(response.data)) {
-          setCustomers(response.data);
+        const customerResponse = await axios.get(
+          "http://localhost:8080/user/customers"
+        );
+        // Kiểm tra kết quả trả về có phải là một mảng hay không
+        if (Array.isArray(customerResponse.data)) {
+          setCustomers(customerResponse.data);
         } else {
-          setCustomers([]); // Set to empty array if response is not an array
+          setCustomers([]); // Nếu không phải mảng, đặt thành mảng rỗng
         }
       } catch (error) {
-        console.error("Error fetching customers:", error);
-        setCustomers([]); // Set to empty array on error
-        setErrorMessage("Failed to fetch customers. Please try again.");
+        console.error("Error fetching customer data:", error);
+        setCustomers([]); // Đặt thành mảng rỗng nếu có lỗi
       }
     };
 
     fetchCustomers();
   }, []);
 
-  // Update customer status using the PUT /api/Users/UpdateStatus endpoint
-  const updateCustomerStatus = async () => {
+  // Cập nhật trạng thái khách hàng
+  const updateCustomer = async () => {
     try {
       const response = await axios.put(
-        "http://localhost:5254/api/Users/UpdateStatus",
+        `http://localhost:8080/user/update-status/${newCustomer.id}`,
+        null,
         {
-          id: selectedCustomer.id,
-          status: selectedCustomer.status,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+          params: {
+            status: newCustomer.status,
           },
         }
       );
-
       if (response.status === 200) {
-        // Fetch updated customer list after status change
-        const customerResponse = await axios.get("http://localhost:5254/api/Users/GetAll");
-        if (Array.isArray(customerResponse.data)) {
-          setCustomers(customerResponse.data);
-        }
-        setErrorMessage(""); // Clear any previous error messages
+        const customerResponse = await axios.get(
+          "http://localhost:8080/user/customers"
+        );
+        setCustomers(customerResponse.data);
         handleClose();
       }
     } catch (error) {
-      console.error("Error updating customer status:", error);
-      setErrorMessage("Failed to update customer status. Please try again.");
+      console.error("Error updating customer:", error);
     }
   };
 
-  const handleOpenEditModal = (customerId, newStatus) => {
-    setSelectedCustomer({
-      id: customerId,
-      status: newStatus,
-    });
-    setOpenEditModal(true);
-  };
-
+  const handleOpenEditModal = () => setOpenEditModal(true);
   const handleClose = () => {
     setOpenEditModal(false);
-    setSelectedCustomer({
+    setNewCustomer({
       id: "",
       status: "",
     });
-    setErrorMessage(""); // Clear error message on modal close
   };
 
-  // Calculate total pages after filtering
+  // Tính tổng số trang sau khi lọc
   const totalPages = Math.ceil(
     customers.filter((customer) => {
-      const customerDate = new Date(customer.createdAt);
+      const customerDate = new Date(customer.registerDate);
       const isStatusMatch =
-        statusFilter === "All" || customer.status.toLowerCase() === statusFilter.toLowerCase();
+        statusFilter === "All" || String(customer.status) === statusFilter;
       const isDateInRange =
         (!startDate || customerDate >= startDate) &&
         (!endDate || customerDate <= endDate);
@@ -119,12 +105,12 @@ const ManageCustomer = () => {
     }).length / customersPerPage
   );
 
-  // Filter and paginate the customer list
+  // Lọc và phân trang danh sách khách hàng
   const paginatedCustomers = customers
     .filter((customer) => {
-      const customerDate = new Date(customer.createdAt);
+      const customerDate = new Date(customer.registerDate);
       const isStatusMatch =
-        statusFilter === "All" || customer.status.toLowerCase() === statusFilter.toLowerCase();
+        statusFilter === "All" || String(customer.status) === statusFilter;
       const isDateInRange =
         (!startDate || customerDate >= startDate) &&
         (!endDate || customerDate <= endDate);
@@ -149,7 +135,7 @@ const ManageCustomer = () => {
         Manage Customer Account
       </Typography>
 
-      {/* Filter Section */}
+      {/* Phần lọc */}
       <Box sx={{ mb: 2, display: "flex", gap: 2 }}>
         <FormControl sx={{ minWidth: 200 }}>
           <InputLabel>Status</InputLabel>
@@ -158,12 +144,12 @@ const ManageCustomer = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <MenuItem value="All">All</MenuItem>
-            <MenuItem value="active">Active</MenuItem>
-            <MenuItem value="inactive">Inactive</MenuItem>
+            <MenuItem value="true">Active</MenuItem>
+            <MenuItem value="false">Inactive</MenuItem>
           </Select>
         </FormControl>
 
-        {/* Date Filter */}
+        {/* Bộ lọc thời gian đăng ký */}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             label="Start Date"
@@ -180,14 +166,7 @@ const ManageCustomer = () => {
         </LocalizationProvider>
       </Box>
 
-      {/* Display Error Message */}
-      {errorMessage && (
-        <Typography color="error" sx={{ mb: 2 }}>
-          {errorMessage}
-        </Typography>
-      )}
-
-      {/* Customer Table */}
+      {/* Bảng khách hàng */}
       <TableContainer component={Paper} sx={{ backgroundColor: "#f5f5f5" }}>
         <Table>
           <TableHead>
@@ -206,40 +185,48 @@ const ManageCustomer = () => {
                 <TableCell>
                   {(currentPage - 1) * customersPerPage + index + 1}
                 </TableCell>
-                <TableCell>
-                  {customer.firstName || customer.lastName
-                    ? `${customer.firstName || ""} ${customer.lastName || ""}`.trim()
-                    : "N/A"}
-                </TableCell>
+                <TableCell>{customer.name}</TableCell>
                 <TableCell>{customer.email}</TableCell>
                 <TableCell>
-                  {new Date(customer.createdAt).toLocaleDateString()}
+                  {new Date(customer.registerDate).toLocaleDateString()}
                 </TableCell>
                 <TableCell
                   sx={{
-                    color: customer.status.toLowerCase() === "active" ? "#4CAF50" : "#F44336",
+                    color: customer.status ? "#4CAF50" : "#F44336",
                   }}
                 >
-                  {customer.status.toLowerCase() === "active" ? "Active" : "Inactive"}
+                  {customer.status ? "Active" : "Inactive"}
                 </TableCell>
                 <TableCell>
-                  {customer.status.toLowerCase() === "active" ? (
+                  {customer.status ? (
                     <Button
                       variant="contained"
+                      color="primary"
                       sx={{ backgroundColor: "#F44336" }}
-                      onClick={() =>
-                        handleOpenEditModal(customer.id, "inactive")
-                      }
+                      onClick={() => {
+                        setNewCustomer({
+                          id: customer.id,
+                          status: false,
+                        });
+                        handleOpenEditModal();
+                      }}
                     >
                       Disable
                     </Button>
                   ) : (
                     <Button
                       variant="contained"
+                      color="primary"
                       sx={{ backgroundColor: "#4CAF50" }}
-                      onClick={() => handleOpenEditModal(customer.id, "active")}
+                      onClick={() => {
+                        setNewCustomer({
+                          id: customer.id,
+                          status: true,
+                        });
+                        handleOpenEditModal();
+                      }}
                     >
-                      Enable
+                      Active
                     </Button>
                   )}
                 </TableCell>
@@ -249,7 +236,7 @@ const ManageCustomer = () => {
         </Table>
       </TableContainer>
 
-      {/* Pagination */}
+      {/* Phân trang */}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
         <Pagination
           count={totalPages}
@@ -259,7 +246,7 @@ const ManageCustomer = () => {
         />
       </Box>
 
-      {/* Edit Modal */}
+      {/* Modal chỉnh sửa */}
       <Modal open={openEditModal} onClose={handleClose}>
         <Box
           sx={{
@@ -275,15 +262,10 @@ const ManageCustomer = () => {
           }}
         >
           <Typography variant="h6" mb={2}>
-            {selectedCustomer.status === "active"
+            {newCustomer.status
               ? "Activate this account?"
               : "Deactivate this account?"}
           </Typography>
-          {errorMessage && (
-            <Typography color="error" sx={{ mb: 2 }}>
-              {errorMessage}
-            </Typography>
-          )}
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
             <Button
               variant="outlined"
@@ -296,7 +278,7 @@ const ManageCustomer = () => {
               type="submit"
               variant="contained"
               sx={{ bgcolor: "#4CAF50" }}
-              onClick={updateCustomerStatus}
+              onClick={updateCustomer}
             >
               Yes
             </Button>
