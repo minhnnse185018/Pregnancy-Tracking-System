@@ -10,9 +10,11 @@ function MembershipPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const [userMemberships, setUserMemberships] = useState([]);
 
   useEffect(() => {
     fetchMembershipPlans();
+    handleCheckMembershipPlan();
   }, []);
 
   const fetchMembershipPlans = async () => {
@@ -36,6 +38,39 @@ function MembershipPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // New function to check user's membership plans
+  const handleCheckMembershipPlan = async () => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      console.log("User not logged in");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5254/api/Membership/user/${userId}`
+      );
+      setUserMemberships(response.data);
+    } catch (err) {
+      console.error("Failed to fetch user memberships:", err);
+    }
+  };
+
+  // Function to check if user has already purchased a specific plan
+  const hasPurchasedPlan = (planId) => {
+    return userMemberships.some(
+      (membership) => membership.planId === planId && membership.status === "active"
+    );
+  };
+
+  // Function to get button text based on plan status
+  const getButtonText = (planId) => {
+    if (hasPurchasedPlan(planId)) {
+      return "Currently Subscribed";
+    }
+    return "Join Now";
   };
 
   const handleShowPaymentModal = (plan) => {
@@ -133,8 +168,12 @@ function MembershipPage() {
                   <li key={i}>{benefit}</li>
                 ))}
               </ul>
-              <Button onClick={() => handleShowPaymentModal(plan)}>
-                Join Now
+              <Button 
+                onClick={() => handleShowPaymentModal(plan)}
+                disabled={hasPurchasedPlan(plan.id)}
+                variant={hasPurchasedPlan(plan.id) ? "success" : "primary"}
+              >
+                {getButtonText(plan.id)}
               </Button>
             </div>
           ))}

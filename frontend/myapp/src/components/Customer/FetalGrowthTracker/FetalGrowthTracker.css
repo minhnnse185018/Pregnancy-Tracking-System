@@ -1,199 +1,348 @@
-/* Reset default styles */
+/* Reset cơ bản */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Wrapper toàn bộ ứng dụng */
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #f9e9ec, #e8d9f1); /* Gradient pastel */
+}
+
+/* Header */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ff8c94; /* Hồng phấn */
+}
+
+.nav-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  font-size: 14px;
+  color: #5c4b7d; /* Tím đậm */
+  font-weight: 500;
+}
+
+.nav-menu a:hover {
+  color: #ff8c94;
+}
+
+/* Main content */
+main {
+  flex: 1;
+  padding: 20px;
 }
 
 /* Container chính */
-.growth-tracker-container {
-  max-width: 1200px;
-  margin-top: 100px !important;
+.tracker-container {
+  max-width: 900px;
   margin: 0 auto;
   padding: 20px;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #f9f5f6 0%, #e8f4f8 100%);
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  margin-bottom: 100px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Tiêu đề */
 .tracker-title {
-  font-size: 2.5rem;
-  color: #ff9999;
-  text-align: center;
-  margin-bottom: 10px;
+  font-size: 28px;
   font-weight: 600;
-}
-
-.tracker-description {
-  font-size: 1.1rem;
-  color: #666;
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-/* Form nhập liệu (Create Section) */
-.data-entry-form {
-  background: #fff;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
-  border: 2px solid #ffcccc;
-}
-
-.growth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.form-row {
-  display: flex;
-  gap: 25px;
-  flex-wrap: wrap;
-}
-
-.form-control {
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 12px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  background: #f9f9f9;
-}
-
-.form-control:focus {
-  border-color: #ff9999;
-  box-shadow: 0 0 8px rgba(255, 153, 153, 0.3);
-  outline: none;
-  background: #fff;
-}
-
-.form-label {
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.save-button {
-  background-color: #ff9999;
-  border: none;
-  padding: 12px 25px;
-  font-size: 1rem;
-  border-radius: 12px;
-  transition: background-color 0.3s ease;
-}
-
-.save-button:hover {
-  background-color: #ff8080;
-}
-
-.cancel-button {
-  background-color: #ccc;
-  border: none;
-  padding: 12px 25px;
-  font-size: 1rem;
-  border-radius: 12px;
-  transition: background-color 0.3s ease;
-}
-
-.cancel-button:hover {
-  background-color: #b3b3b3;
-}
-
-/* Thông báo lỗi */
-.error-message {
-  color: #ff6666;
-  font-size: 0.9rem;
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-/* Loading */
-.loading-container {
-  text-align: center;
-  padding: 20px;
-}
-
-.loading-message {
-  font-size: 1.2rem;
-  color: #66b2b2;
-}
-
-/* Bảng dữ liệu */
-.growth-table {
-  background: #fff;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.growth-table th {
-  background-color: #f9ebeb;
-  color: #555;
-  font-weight: 600;
-  padding: 15px;
-}
-
-.growth-table td {
-  vertical-align: middle;
-  padding: 12px;
-  font-size: 0.95rem;
-}
-
-.action-button {
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 0.85rem;
-}
-
-/* Biểu đồ */
-.chart-container {
-  background: #fff;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  margin-top: 30px;
-}
-
-.chart-title {
-  font-size: 1.8rem;
-  color: #66b2b2;
+  color: #5c4b7d;
   text-align: center;
   margin-bottom: 20px;
 }
 
-/* Khi không có dữ liệu */
-.no-data-container {
-  text-align: center;
-  padding: 30px;
+/* Nhóm input */
+.input-group {
+  margin-bottom: 20px;
 }
 
-.no-data {
-  font-size: 1.2rem;
-  color: #999;
+.input-group label {
+  display: block;
+  font-size: 16px;
+  color: #7a638f;
+  margin-bottom: 8px;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #d4c4e2;
+  border-radius: 8px;
+  background-color: #fff;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #b493d3;
+}
+
+/* Ghi chú cho guest */
+.guest-note,
+.chart-description .details,
+.login-prompt {
+  font-size: 14px;
+  color: #8c759e;
+  text-align: center;
+  margin: 15px 0;
+}
+
+/* Nút trong login prompt */
+.login-prompt button {
+  background: none;
+  border: none;
+  color: #ff8c94;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Bảng dữ liệu */
+.fetal-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.fetal-data-table th,
+.fetal-data-table td {
+  padding: 15px;
+  text-align: center;
+  font-size: 16px;
+  color: #5c4b7d;
+}
+
+.fetal-data-table th {
+  background-color: #f5e1e6;
+  font-weight: 600;
+}
+
+.fetal-data-table td {
+  border-bottom: 1px solid #e8d9f1;
+}
+
+.fetal-data-table button {
+  padding: 6px 12px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.fetal-data-table button:first-child {
+  background-color: #b493d3;
+  color: #fff;
+}
+
+.fetal-data-table button:last-child {
+  background-color: #ff8c94;
+  color: #fff;
+}
+
+.fetal-data-table button:hover {
+  opacity: 0.9;
+}
+
+/* Chart */
+.chart-wrapper {
+  background-color: #fff5f7; /* Màu trắng ánh hồng */
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Mô tả bên dưới biểu đồ */
+.chart-description {
+  text-align: left;
+  margin-top: 10px;
+  color: #5c4b7d;
+  font-size: 14px;
+}
+
+.chart-description .trend {
+  font-weight: 600;
+  color: #ff8c94;
+}
+
+.chart-description .trend::after {
+  content: "↑";
+  margin-left: 5px;
+}
+
+.chart-description .details {
+  font-size: 12px;
+  color: #8c759e;
+  text-align: left;
+}
+
+/* Form thêm/sửa dữ liệu */
+.form-container,
+.modal-container {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 20px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.form-container h2,
+.modal-container h2 {
+  font-size: 18px;
+  color: #5c4b7d;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #7a638f;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #d4c4e2;
+  border-radius: 5px;
+  outline: none;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.save-button,
+.cancel-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.save-button {
+  background-color: #b493d3;
+  color: #fff;
+}
+
+.cancel-button {
+  background-color: #e8d9f1;
+  color: #5c4b7d;
+}
+
+.save-button:hover,
+.cancel-button:hover {
+  opacity: 0.9;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  max-width: 400px;
+  width: 90%;
+}
+
+/* Nút tạo profile */
+.create-profile-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #ff8c94;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.create-profile-button:hover {
+  background-color: #f76c74;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-  .form-row {
-    flex-direction: column;
+@media (max-width: 600px) {
+  .tracker-container {
+    margin: 10px;
+    padding: 10px;
   }
 
   .tracker-title {
-    font-size: 2rem;
+    font-size: 24px;
   }
 
-  .growth-table {
-    font-size: 0.9rem;
+  .fetal-data-table th,
+  .fetal-data-table td {
+    font-size: 14px;
+    padding: 10px;
   }
 
-  .action-button {
-    padding: 5px 10px;
-    font-size: 0.8rem;
+  .form-group input,
+  .form-group textarea {
+    font-size: 12px;
+  }
+
+  .app-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .nav-menu {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }

@@ -1,88 +1,63 @@
-import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Typography,
-  Avatar,
-  IconButton,
-  Paper,
-  Container,
-  Snackbar,
   Alert,
+  Box,
   Button,
+  Container,
+  Paper,
+  Snackbar,
   TextField,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import axios from "axios";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
+  Typography,
+} from '@mui/material';
+import axios from 'axios';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import * as Yup from 'yup';
 
 const AdminProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false); // State to manage edit mode
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [profile, setProfile] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    profileImage: "",
+    name: '',
+    email: '',
+    phone: '',
   });
-  const accountID = sessionStorage.getItem("userID");
+  const [fullUserData, setFullUserData] = useState(null); // Lưu toàn bộ dữ liệu từ API để sử dụng khi update
+
+  const accountID = sessionStorage.getItem('userID');
+
+  // Lấy dữ liệu profile từ API
   useEffect(() => {
     const fetchProfileData = async () => {
-      const accountID = sessionStorage.getItem("userID");
       if (accountID) {
         try {
           const response = await axios.get(
-            `http://localhost:8080/user/profile/${accountID}`
+            `http://localhost:5254/api/Users/GetById/${accountID}`
           );
-          const { name, email, phone, profileImage } = response.data;
+          const data = response.data;
+          const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'No Name Available';
           setProfile({
-            name: name || "No Name Available",
-            email: email || "No Email Available",
-            phone: phone || "No Phone Available",
-            profileImage: profileImage || "https://via.placeholder.com/150",
+            name: fullName,
+            email: data.email || 'No Email Available',
+            phone: data.phone || 'No Phone Available',
           });
+          setFullUserData(data); // Lưu toàn bộ dữ liệu từ API
         } catch (error) {
-          console.error("Error fetching profile data:", error);
+          console.error('Error fetching profile data:', error);
+          setSnackbarMessage('Failed to fetch profile data.');
+          setSnackbarSeverity('error');
+          setSnackbarOpen(true);
         }
+      } else {
+        setSnackbarMessage('User ID not found in session storage.');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
     };
 
     fetchProfileData();
-  }, []);
-
-  const handleProfileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      try {
-        const response = await axios.post(
-          `http://localhost:8080/user/image/profile/${accountID}`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-
-        const imageUrl = response.data.imageUrl;
-        setProfile((prevProfile) => ({
-          ...prevProfile,
-          profileImage: imageUrl,
-        }));
-        setSnackbarMessage("Profile image uploaded successfully!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
-      } catch (error) {
-        console.error("Error uploading profile image:", error);
-        setSnackbarMessage("Failed to upload profile image.");
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
-      }
-    }
-  };
+  }, [accountID]);
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -90,26 +65,65 @@ const AdminProfilePage = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .matches(/^[A-Za-z\s]+$/, "Name can only contain letters and spaces")
-      .required("Name is required"),
+      .matches(/^[A-Za-z\s]+$/, 'Name can only contain letters and spaces')
+      .required('Name is required'),
     phone: Yup.string()
-      .matches(/^[0-9]+$/, "Phone must contain only numbers")
-      .required("Phone is required"),
+      .matches(/^[0-9]+$/, 'Phone must contain only numbers')
+      .required('Phone is required'),
   });
 
   const handleSubmit = async (values) => {
     try {
-      const accountID = sessionStorage.getItem("userID");
-      await axios.put(`http://localhost:8080/user/update/${accountID}`, values);
-      setSnackbarMessage("Profile updated successfully!");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-      setProfile((prev) => ({ ...prev, ...values }));
-      setIsEditing(false); // Exit edit mode after saving
+      const [firstName, ...lastNameArr] = values.name.split(' ');
+      const lastName = lastNameArr.join(' ');
+
+      // Tạo dữ liệu để gửi lên API, dựa trên cấu trúc bảng Users
+      const updatedData = {
+        id: parseInt(accountID), // Id là số nguyên
+        email: profile.email, // Email không thay đổi
+        password: fullUserData?.password, // Lấy từ dữ liệu gốc (bắt buộc)
+        userType: fullUserData?.userType, // Lấy từ dữ liệu gốc (bắt buộc)
+        firstName: firstName || '',
+        lastName: lastName || '',
+        gender: fullUserData?.gender || null,
+        dateOfBirth: fullUserData?.dateOfBirth || null,
+        phone: values.phone,
+        status: fullUserData?.status || 'active', // Lấy từ dữ liệu gốc (bắt buộc)
+        createdAt: fullUserData?.createdAt || new Date().toISOString(), // Lấy từ dữ liệu gốc (bắt buộc)
+        resetToken: fullUserData?.resetToken || null,
+        resetTokenExpiration: fullUserData?.resetTokenExpiration || null,
+      };
+
+      // Gọi API để cập nhật thông tin
+      const response = await axios.put(
+        `http://localhost:5254/api/Users/Update/${accountID}`,
+        updatedData,
+        {
+          headers: {
+            'Content-Type': 'application/json-patch+json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setSnackbarMessage('Profile updated successfully!');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setProfile((prev) => ({ ...prev, ...values }));
+        setFullUserData({ ...fullUserData, ...updatedData });
+        setIsEditing(false); // Exit edit mode after saving
+      }
     } catch (error) {
-      console.error("Error updating profile:", error);
-      setSnackbarMessage("Failed to update profile.");
-      setSnackbarSeverity("error");
+      console.error('Error updating profile:', error);
+      if (error.response) {
+        console.log('Server response:', error.response.data);
+        setSnackbarMessage(
+          `Failed to update profile: ${error.response.data.message || 'Bad Request'}`
+        );
+      } else {
+        setSnackbarMessage('Failed to update profile.');
+      }
+      setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
   };
@@ -121,52 +135,24 @@ const AdminProfilePage = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#f7f7f7",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
+        backgroundColor: '#f7f7f7',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
         padding: 4,
       }}
     >
-      <Container maxWidth="sm" sx={{ position: "relative", zIndex: 2 }}>
+      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 2 }}>
         <Paper
           elevation={3}
-          sx={{ borderRadius: "8px", textAlign: "center", padding: 3, mt: -1 }}
+          sx={{ borderRadius: '8px', textAlign: 'center', padding: 3, mt: -1 }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginTop: 2,
-            }}
-          >
-            <Avatar
-              src={profile.profileImage}
-              alt="Profile Image"
-              sx={{ width: 150, height: 150, border: "4px solid white" }}
-            />
-            <IconButton
-              color="primary"
-              component="label"
-              aria-label="edit profile image"
-            >
-              <EditIcon />
-              <input
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handleProfileUpload}
-              />
-            </IconButton>
-          </Box>
-
           <Typography
             variant="h5"
             component="h2"
-            sx={{ mt: 2, fontWeight: "bold" }}
+            sx={{ mt: 2, fontWeight: 'bold' }}
           >
             {profile.name}
           </Typography>
@@ -209,7 +195,7 @@ const AdminProfilePage = () => {
                     <ErrorMessage
                       name="name"
                       component="div"
-                      style={{ color: "red" }}
+                      style={{ color: 'red' }}
                     />
                   </Box>
                   <Box mt={2}>
@@ -224,7 +210,7 @@ const AdminProfilePage = () => {
                     <ErrorMessage
                       name="phone"
                       component="div"
-                      style={{ color: "red" }}
+                      style={{ color: 'red' }}
                     />
                   </Box>
                   <Box mt={2}>
@@ -266,12 +252,12 @@ const AdminProfilePage = () => {
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert
           onClose={handleSnackbarClose}
           severity={snackbarSeverity}
-          sx={{ width: "100%" }}
+          sx={{ width: '100%' }}
         >
           {snackbarMessage}
         </Alert>

@@ -1,13 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { FcPlus } from "react-icons/fc";
 import "react-toastify/dist/ReactToastify.css";
-
-const validatePhoneNumber = (phoneNumber) => {
-  const phonePattern = /^(03|05|07|08|09)\d{8}$/;
-  return phonePattern.test(phoneNumber);
-};
 
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -33,7 +27,6 @@ const UserProfile = () => {
     phone: "",
   });
 
-  //Get user by ID
   useEffect(() => {
     const userId = sessionStorage.getItem("userID");
     if (userId) {
@@ -72,44 +65,33 @@ const UserProfile = () => {
       fetchUserData();
     }
   }, []);
-  //handle input from user
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUser((prevUser) => ({
       ...prevUser,
-      [name]: value, // Dynamically updating the field being edited
+      [name]: value,
     }));
 
-    // Validation
     let errorMsg = "";
-
-    // First Name & Last Name: Only letters and spaces allowed
     if (name === "firstName" || name === "lastName") {
       if (!/^[a-zA-Z\s]+$/.test(value)) {
         errorMsg = "Only letters and spaces are allowed.";
       }
-    }
-    // Phone Number: Must start with 03, 05, 07, 08, or 09 and contain 10 digits
-    else if (name === "phone") {
+    } else if (name === "phone") {
       if (!/^(03|05|07|08|09)\d{8}$/.test(value)) {
         errorMsg = "Please enter a valid phone number.";
       }
-    }
-    // Email: Must be a valid Gmail address
-    else if (name === "email") {
+    } else if (name === "email") {
       if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value)) {
         errorMsg = "Please enter a valid Gmail address (example@gmail.com).";
       }
-    }
-    // Gender: Must be 'Male', 'Female', or 'Other'
-    else if (name === "gender") {
+    } else if (name === "gender") {
       const allowedGenders = ["Male", "Female", "Other"];
       if (!allowedGenders.includes(value)) {
         errorMsg = "Gender must be Male, Female, or Other.";
       }
-    }
-    // Date of Birth: Must be in YYYY-MM-DD format and a valid date
-    else if (name === "dateOfBirth") {
+    } else if (name === "dateOfBirth") {
       const datePattern = /^\d{4}-\d{2}-\d{2}$/;
       if (!datePattern.test(value)) {
         errorMsg = "Date of Birth must be in YYYY-MM-DD format.";
@@ -122,12 +104,12 @@ const UserProfile = () => {
       }
     }
 
-
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [name]: errorMsg, // Assign error message to the respective field
+      [name]: errorMsg,
     }));
   };
+
   const handleUploadFile = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -136,13 +118,11 @@ const UserProfile = () => {
     }
   };
 
-  //Edit user profile
   const toggleEditMode = async () => {
     if (isEditing) {
       if (JSON.stringify(user) !== JSON.stringify(initialUser)) {
         try {
           const userId = sessionStorage.getItem("userID");
-
           const updatedUser = {
             id: userId,
             firstName: user.firstName,
@@ -171,10 +151,7 @@ const UserProfile = () => {
             setInitialUser(user);
           }
         } catch (error) {
-          console.error(
-            "Update failed:",
-            error.response?.data || error.message
-          );
+          console.error("Update failed:", error.response?.data || error.message);
           toast.error(
             "Failed to update profile! " + (error.response?.data?.message || "")
           );
@@ -186,7 +163,6 @@ const UserProfile = () => {
     }
   };
 
-  //View user profile
   return (
     <div>
       <ToastContainer autoClose={1300} />
@@ -199,15 +175,15 @@ const UserProfile = () => {
           margin: "auto",
           marginTop: "150px",
           marginBottom: "150px",
-          backgroundColor: "rgb(212, 212, 212)",
+          background: "linear-gradient(135deg, #fff0f5 0%, #fce4e8 100%)", // Gradient đồng nhất
           boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 
+        <h2
           style={{
             fontSize: "24px",
             fontWeight: "bold",
-            color: "#333",
+            color: "#FF8989", // Màu hồng chính
             marginBottom: "20px",
             textAlign: "center",
           }}
@@ -216,7 +192,7 @@ const UserProfile = () => {
         </h2>
 
         <div style={{ marginBottom: "20px" }}>
-          <label style={{ fontSize: "16px", color: "#555" }}>First Name:</label>
+          <label style={{ fontSize: "16px", color: "#FF8989" }}>First Name:</label>
           <input
             type="text"
             name="firstName"
@@ -229,8 +205,8 @@ const UserProfile = () => {
               fontSize: "16px",
               margin: "8px 0",
               borderRadius: "8px",
-              border: errors.fullName ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: isEditing ? "#fff" : "#e9ecef",
+              border: errors.firstName ? "2px solid red" : "2px solid #ccc",
+              backgroundColor: "#fff", // Luôn là trắng
               outline: "none",
             }}
           />
@@ -242,7 +218,7 @@ const UserProfile = () => {
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <label style={{ fontSize: "16px", color: "#555" }}>Last Name:</label>
+          <label style={{ fontSize: "16px", color: "#FF8989" }}>Last Name:</label>
           <input
             type="text"
             name="lastName"
@@ -255,19 +231,20 @@ const UserProfile = () => {
               fontSize: "16px",
               margin: "8px 0",
               borderRadius: "8px",
-              border: errors.fullName ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: isEditing ? "#fff" : "#e9ecef",
+              border: errors.lastName ? "2px solid red" : "2px solid #ccc",
+              backgroundColor: "#fff", // Luôn là trắng
               outline: "none",
             }}
           />
-          {errors.firstName && (
+          {errors.lastName && (
             <span style={{ color: "red", fontSize: "14px" }}>
-              {errors.firstName}
+              {errors.lastName}
             </span>
           )}
         </div>
+
         <div style={{ marginBottom: "20px" }}>
-          <label style={{ fontSize: "16px", color: "#555" }}>Email :</label>
+          <label style={{ fontSize: "16px", color: "#FF8989" }}>Email:</label>
           <input
             type="text"
             name="email"
@@ -281,7 +258,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.email ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: "#e9ecef",
+              backgroundColor: "#fff", // Luôn là trắng
               outline: "none",
             }}
           />
@@ -293,7 +270,7 @@ const UserProfile = () => {
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <label style={{ fontSize: "16px", color: "#555" }}>Gender:</label>
+          <label style={{ fontSize: "16px", color: "#FF8989" }}>Gender:</label>
           <input
             type="text"
             name="gender"
@@ -307,7 +284,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.gender ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: isEditing ? "#fff" : "#e9ecef",
+              backgroundColor: "#fff", // Luôn là trắng
               outline: "none",
             }}
           />
@@ -319,8 +296,8 @@ const UserProfile = () => {
         </div>
 
         <div style={{ marginBottom: "20px" }}>
-          <label style={{ fontSize: "16px", color: "#555" }}>
-            dateOfBirth:
+          <label style={{ fontSize: "16px", color: "#FF8989" }}>
+            Date of Birth:
           </label>
           <input
             type="text"
@@ -335,7 +312,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.dateOfBirth ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: isEditing ? "#fff" : "#e9ecef",
+              backgroundColor: "#fff", // Luôn là trắng
               outline: "none",
             }}
           />
@@ -345,8 +322,9 @@ const UserProfile = () => {
             </span>
           )}
         </div>
+
         <div style={{ marginBottom: "20px" }}>
-          <label style={{ fontSize: "16px", color: "#555" }}>Phone:</label>
+          <label style={{ fontSize: "16px", color: "#FF8989" }}>Phone:</label>
           <input
             type="text"
             name="phone"
@@ -360,7 +338,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.phone ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: isEditing ? "#fff" : "#e9ecef",
+              backgroundColor: "#fff", // Luôn là trắng
               outline: "none",
             }}
           />
@@ -371,8 +349,6 @@ const UserProfile = () => {
           )}
         </div>
 
-        
-
         <br />
         <button
           onClick={toggleEditMode}
@@ -380,8 +356,8 @@ const UserProfile = () => {
             padding: "12px 24px",
             fontSize: "18px",
             fontWeight: "bold",
-            color: "#9BBAA36",
-            backgroundColor: isEditing ? "#9BBAA3" : "#9BBAA36",
+            color: "#fff",
+            backgroundColor: "#FF8989", // Màu hồng chính
             border: "none",
             borderRadius: "8px",
             cursor: "pointer",
@@ -391,7 +367,6 @@ const UserProfile = () => {
         >
           {isEditing ? "Save" : "Edit"}
         </button>
-
       </div>
     </div>
   );
