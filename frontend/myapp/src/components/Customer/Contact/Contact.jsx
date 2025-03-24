@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import './Contact.css';
+import './Contact.css'; // Giữ file CSS gốc nếu cần
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -87,12 +87,12 @@ const Contact = () => {
         formData
       );
       if (response.status === 200) {
-        toast.success("Send Success!");
+        toast.success("Message Sent Successfully!");
       } else {
-        toast.error("Send Failed!");
+        toast.error("Failed to Send Message!");
       }
     } catch (error) {
-      toast.error("Send Failed!");
+      toast.error("Failed to Send Message!");
     }
 
     setFormData({
@@ -164,11 +164,24 @@ const Contact = () => {
   return (
     <div>
       <ToastContainer autoClose={1300} />
-      <section className="ftco-section bg-light">
+      <section
+        className="ftco-section bg-light"
+        style={{ background: "linear-gradient(135deg, #fff0f5 0%, #fce4e8 100%)" }}
+      >
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-md-6 text-center mb-5">
-              <h2 className="heading-section">Contact Us</h2>
+              <header>
+                <h2
+                  className="heading-section"
+                  style={{
+                    color: "#FF8989",
+                    textShadow: "2px 2px 6px rgba(11, 140, 196, 0.4)",
+                  }}
+                >
+                  Contact Us
+                </h2>
+              </header>
             </div>
           </div>
           <div className="row justify-content-center">
@@ -176,7 +189,14 @@ const Contact = () => {
               <div className="wrapper w-100">
                 <div className="row no-gutters">
                   <div className="col-md-8 d-flex justify-content-center">
-                    <div className="contact-wrap w-100 p-md-5 p-4">
+                    <div
+                      className="contact-wrap w-100 p-md-5 p-4"
+                      style={{
+                        backgroundColor: "#fff",
+                        borderRadius: "15px",
+                        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
                       <form
                         method="POST"
                         id="contactForm"
@@ -187,9 +207,13 @@ const Contact = () => {
                         <div className="row">
                           <div className="col-md-6">
                             <div className="form-group">
-                              <label className="label" htmlFor="fullName">
+                              <label
+                                className="label"
+                                htmlFor="fullName"
+                                style={{ color: "#FF8989" }}
+                              >
                                 Full Name
-                                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                                <span style={{ color: "#e63946", marginLeft: "5px" }}>*</span>
                               </label>
                               <input
                                 type="text"
@@ -201,17 +225,26 @@ const Contact = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 required
+                                style={{
+                                  border: "1px solid #fce4e8",
+                                  backgroundColor: "#fff0f5",
+                                  color: "#6b7280",
+                                }}
                               />
                               {touched.fullName && errors.fullName && (
-                                <div style={{ color: "red" }}>{errors.fullName}</div>
+                                <div style={{ color: "#e63946" }}>{errors.fullName}</div>
                               )}
                             </div>
                           </div>
                           <div className="col-md-6">
                             <div className="form-group">
-                              <label className="label" htmlFor="email">
+                              <label
+                                className="label"
+                                htmlFor="email"
+                                style={{ color: "#FF8989" }}
+                              >
                                 Email Address
-                                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                                <span style={{ color: "#e63946", marginLeft: "5px" }}>*</span>
                               </label>
                               <input
                                 type="email"
@@ -223,39 +256,57 @@ const Contact = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 required
+                                style={{
+                                  border: "1px solid #fce4e8",
+                                  backgroundColor: "#fff0f5",
+                                  color: "#6b7280",
+                                }}
                               />
                               {touched.email && errors.email && (
-                                <div style={{ color: "red" }}>{errors.email}</div>
+                                <div style={{ color: "#e63946" }}>{errors.email}</div>
                               )}
                             </div>
                           </div>
                           <div className="col-md-6">
                             <div className="form-group">
-                              <label className="label" htmlFor="phone">
+                              <label
+                                className="label"
+                                htmlFor="phone"
+                                style={{ color: "#FF8989" }}
+                              >
                                 Phone
-                                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                                <span style={{ color: "#e63946", marginLeft: "5px" }}>*</span>
                               </label>
                               <input
                                 type="text"
                                 className="form-control"
                                 name="phone"
                                 id="phone"
-                                placeholder="Phone (Optional)"
+                                placeholder="Phone"
                                 value={formData.phone}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 required
+                                style={{
+                                  border: "1px solid #fce4e8",
+                                  backgroundColor: "#fff0f5",
+                                  color: "#6b7280",
+                                }}
                               />
                               {touched.phone && errors.phone && (
-                                <div style={{ color: "red" }}>{errors.phone}</div>
+                                <div style={{ color: "#e63946" }}>{errors.phone}</div>
                               )}
                             </div>
                           </div>
                           <div className="col-md-12">
                             <div className="form-group">
-                              <label className="label" htmlFor="subject">
+                              <label
+                                className="label"
+                                htmlFor="subject"
+                                style={{ color: "#FF8989" }}
+                              >
                                 Subject
-                                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                                <span style={{ color: "#e63946", marginLeft: "5px" }}>*</span>
                               </label>
                               <input
                                 type="text"
@@ -267,17 +318,26 @@ const Contact = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 required
+                                style={{
+                                  border: "1px solid #fce4e8",
+                                  backgroundColor: "#fff0f5",
+                                  color: "#6b7280",
+                                }}
                               />
                               {touched.subject && errors.subject && (
-                                <div style={{ color: "red" }}>{errors.subject}</div>
+                                <div style={{ color: "#e63946" }}>{errors.subject}</div>
                               )}
                             </div>
                           </div>
                           <div className="col-md-12">
                             <div className="form-group">
-                              <label className="label" htmlFor="message">
+                              <label
+                                className="label"
+                                htmlFor="message"
+                                style={{ color: "#FF8989" }}
+                              >
                                 Message
-                                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                                <span style={{ color: "#e63946", marginLeft: "5px" }}>*</span>
                               </label>
                               <textarea
                                 name="message"
@@ -290,9 +350,14 @@ const Contact = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 required
+                                style={{
+                                  border: "1px solid #fce4e8",
+                                  backgroundColor: "#fff0f5",
+                                  color: "#6b7280",
+                                }}
                               ></textarea>
                               {touched.message && errors.message && (
-                                <div style={{ color: "red" }}>{errors.message}</div>
+                                <div style={{ color: "#e63946" }}>{errors.message}</div>
                               )}
                             </div>
                           </div>
@@ -301,6 +366,12 @@ const Contact = () => {
                               type="submit"
                               className="btn btn-primary"
                               disabled={!isSubmitEnabled}
+                              style={{
+                                backgroundColor: "#FF8989",
+                                borderColor: "#FF8989",
+                                padding: "12px 24px",
+                                fontSize: "1.2rem",
+                              }}
                             >
                               Send Message
                             </button>
@@ -314,6 +385,7 @@ const Contact = () => {
                       className="info-wrap w-100 p-5 img"
                       style={{
                         backgroundImage: `url(images/hero-pregnancy.png)`,
+                        borderRadius: "15px",
                       }}
                     ></div>
                   </div>
