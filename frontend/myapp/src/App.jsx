@@ -7,7 +7,7 @@ import AboutUs from "./components/Customer/AboutUs/AboutUs";
 import { AuthProvider } from "./components/Customer/AuthContext";
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import BookAppointment from "./components/Customer/BookAppointment/BookAppointment";
-import MedicalAppointments from "./components/Customer/BookAppointment/viewAppointment";
+import MedicalAppointments from "./components/Customer/BookAppointment/ViewAppointment";
 import Contact from "./components/Customer/Contact/Contact";
 import UserProfile from "./components/Customer/CustomerProfile/CustomerProfile";
 import FetalGrowthTracker from "./components/Customer/FetalGrowthTracker/FetalGrowthTracker";

@@ -93,7 +93,7 @@ function FetalGrowthTracker() {
             weeks: weeks,
             length: item.heightCm || 0,
             weight: item.weightGrams || 0,
-            notes: item.notes || "N/A", // Thay "milestones" thành "notes"
+            notes: item.notes || "N/A",
             measureDate: item.measureDate || item.createdAt,
           };
         });
@@ -117,7 +117,7 @@ function FetalGrowthTracker() {
         weeks,
         length: (weeks * 0.5).toFixed(1),
         weight: (weeks * 10).toFixed(0),
-        notes: `At ${weeks} weeks, the fetus is developing rapidly!`, // Thay "milestones" thành "notes"
+        notes: `At ${weeks} weeks, the fetus is developing rapidly!`,
       },
     ];
     setFetalData(data);
@@ -153,7 +153,7 @@ function FetalGrowthTracker() {
       profileId: selectedProfile.id,
       weightGrams: updatedData.weight,
       heightCm: updatedData.length,
-      notes: updatedData.notes, // Thay "milestones" thành "notes"
+      notes: updatedData.notes,
       week: updatedData.weeks,
       measureDate: new Date().toISOString(),
     };
@@ -172,7 +172,7 @@ function FetalGrowthTracker() {
 
       if (response.ok) {
         toast.success(currentEditData ? "Data updated!" : "Data created!");
-        fetchFetalData(selectedProfile.id);
+        fetchFetalData(selectedProfile.id); // Re-fetch fetal data to re-render the page
         handleCloseModal();
       } else {
         throw new Error(`Failed to save data: ${response.status}`);
@@ -192,7 +192,7 @@ function FetalGrowthTracker() {
 
       if (response.ok) {
         toast.success("Data deleted!");
-        fetchFetalData(selectedProfile.id);
+        fetchFetalData(selectedProfile.id); // Re-fetch fetal data to re-render the page
       } else {
         throw new Error(`Failed to delete data: ${response.status}`);
       }
@@ -356,7 +356,7 @@ function FetalGrowthTracker() {
             <th>Weeks</th>
             <th>Length (cm)</th>
             <th>Weight (g)</th>
-            <th>Notes</th> {/* Thay "Milestones" thành "Notes" */}
+            <th>Notes</th>
             {isAuthenticated && <th>Actions</th>}
           </tr>
         </thead>
@@ -366,7 +366,7 @@ function FetalGrowthTracker() {
               <td>{data.weeks || "N/A"}</td>
               <td>{data.length || "N/A"}</td>
               <td>{data.weight || "N/A"}</td>
-              <td>{data.notes || "N/A"}</td> {/* Thay "milestones" thành "notes" */}
+              <td>{data.notes || "N/A"}</td>
               {isAuthenticated && (
                 <td>
                   <button onClick={() => handleOpenModal(data)}>Edit</button>
@@ -406,7 +406,7 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
   const [weeks, setWeeks] = useState(data?.weeks || "");
   const [length, setLength] = useState(data?.length || "");
   const [weight, setWeight] = useState(data?.weight || "");
-  const [notes, setNotes] = useState(data?.notes || ""); // Thay "milestones" thành "notes"
+  const [notes, setNotes] = useState(data?.notes || "");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -414,13 +414,13 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
       weeks: parseInt(weeks),
       length: parseFloat(length),
       weight: parseFloat(weight),
-      notes, // Thay "milestones" thành "notes"
+      notes,
     });
     if (!isModal) {
       setWeeks("");
       setLength("");
       setWeight("");
-      setNotes(""); // Thay "milestones" thành "notes"
+      setNotes("");
     }
   };
 
@@ -457,11 +457,11 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         />
       </div>
       <div className="form-group">
-        <label>Notes:</label> {/* Thay "Milestones" thành "Notes" */}
+        <label>Notes:</label>
         <textarea
-          value={notes} // Thay "milestones" thành "notes"
-          onChange={(e) => setNotes(e.target.value)} // Thay "milestones" thành "notes"
-          placeholder="Enter notes (optional)" // Thay "milestones" thành "notes"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Enter notes (optional)"
         />
       </div>
       <div className="form-actions">
