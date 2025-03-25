@@ -7,7 +7,7 @@ import AboutUs from "./components/Customer/AboutUs/AboutUs";
 import { AuthProvider } from "./components/Customer/AuthContext";
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import BookAppointment from "./components/Customer/BookAppointment/BookAppointment";
-import MedicalAppointments from "./components/Customer/BookAppointment/ViewAppointment";
+import MedicalAppointments from "./components/Customer/BookAppointment/viewAppointment";
 import Contact from "./components/Customer/Contact/Contact";
 import UserProfile from "./components/Customer/CustomerProfile/CustomerProfile";
 import FetalGrowthTracker from "./components/Customer/FetalGrowthTracker/FetalGrowthTracker";
@@ -80,31 +80,31 @@ function App() {
               </>
             }
           />
-          <Route  path="/appointment" element={<CustomerPrivateRoute />} >
-          <Route
-            path=""
-            element={
-              <>
-                <CustomerMembershipRoute/>
-                <Navbarr />
-                <BookAppointment />
-                <Footer />
-              </>
-            }
-          />
+          <Route path="/appointment" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <CustomerMembershipRoute />
+                  <Navbarr />
+                  <BookAppointment />
+                  <Footer />
+                </>
+              }
+            />
           </Route>
-          <Route  path="/blog" element={<CustomerPrivateRoute />} >
-          <Route
-            path=""
-            element={
-              <>
-                <CustomerMembershipRoute/>
-                <Navbarr />
-                <BlogPage />
-                <Footer />
-              </>
-            }
-          />
+          <Route path="/blog" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <CustomerMembershipRoute />
+                  <Navbarr />
+                  <BlogPage />
+                  <Footer />
+                </>
+              }
+            />
           </Route>
           <Route
             path="/contact"
@@ -116,17 +116,17 @@ function App() {
               </>
             }
           />
-          <Route  path="/membership" element={<CustomerPrivateRoute />} >
-          <Route
-            path=""
-            element={
-              <>
-                <Navbarr />
-                <MembershipPage />
-                <Footer />
-              </>
-            }
-          />
+          <Route path="/membership" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <MembershipPage />
+                  <Footer />
+                </>
+              }
+            />
           </Route>
           <Route
             path="/payment-success"
@@ -148,18 +148,17 @@ function App() {
               </>
             }
           />
-          <Route  path="/growth-tracker"  >
-          <Route
-            path=""
-            element={
-              <>
-                
-                <Navbarr />
-                <FetalGrowthTracker />
-                <Footer />
-              </>
-            }
-          />
+          <Route path="/growth-tracker">
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <FetalGrowthTracker />
+                  <Footer />
+                </>
+              }
+            />
           </Route>
           <Route
             path="/health-tips"
@@ -184,7 +183,7 @@ function App() {
               }
             />
           </Route>
-          <Route path="/profilePregnancy" element={<CustomerPrivateRoute />} >
+          <Route path="/profilePregnancy" element={<CustomerPrivateRoute />}>
             <Route
               path=""
               element={
@@ -196,7 +195,10 @@ function App() {
               }
             />
           </Route>
-          <Route  path="/create-pregnancy-profile" element={<CustomerPrivateRoute />} >
+          <Route
+            path="/create-pregnancy-profile"
+            element={<CustomerPrivateRoute />}
+          >
             <Route
               path=""
               element={

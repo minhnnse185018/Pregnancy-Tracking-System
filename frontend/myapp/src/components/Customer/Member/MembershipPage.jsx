@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import axios from "axios";
 import "./MembershipPage.css";
 
@@ -7,9 +7,6 @@ function MembershipPage() {
   const [error, setError] = useState(null);
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [userMemberships, setUserMemberships] = useState([]);
 
   useEffect(() => {
@@ -28,9 +25,9 @@ function MembershipPage() {
         price: plan.price,
         duration: `${plan.duration} months`,
         benefits: plan.description
-          .split('",\r\n') // Split based on API formatting
-          .map((desc) => desc.replace(/["\r\n]/g, "").trim()) // Clean unwanted characters
-          .filter((desc) => desc !== ""), // Remove empty strings
+          .split('",\r\n')
+          .map((desc) => desc.replace(/["\r\n]/g, "").trim())
+          .filter((desc) => desc !== ""),
       }));
       setPlans(formattedPlans);
     } catch (err) {
@@ -40,7 +37,6 @@ function MembershipPage() {
     }
   };
 
-  // New function to check user's membership plans
   const handleCheckMembershipPlan = async () => {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
@@ -58,14 +54,12 @@ function MembershipPage() {
     }
   };
 
-  // Function to check if user has already purchased a specific plan
   const hasPurchasedPlan = (planId) => {
     return userMemberships.some(
-      (membership) => membership.planId === planId && membership.status === "active"
+      (membership) => membership.planId === planId && membership.status === "Active"
     );
   };
 
-  // Function to get button text based on plan status
   const getButtonText = (planId) => {
     if (hasPurchasedPlan(planId)) {
       return "Currently Subscribed";
@@ -73,17 +67,7 @@ function MembershipPage() {
     return "Join Now";
   };
 
-  const handleShowPaymentModal = (plan) => {
-    setSelectedPlan(plan);
-    setShowPaymentModal(true);
-  };
-
-  const handleClosePaymentModal = () => {
-    setShowPaymentModal(false);
-    setSelectedPaymentMethod("");
-  };
-
-  const handlePayment = async () => {
+  const handleJoinPlan = async (plan) => {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
       alert("Please log in to proceed with the payment!");
@@ -97,7 +81,7 @@ function MembershipPage() {
         "http://localhost:5254/api/Membership/purchase",
         {
           userId: parseInt(userId),
-          planId: selectedPlan.id,
+          planId: plan.id,
           startDate: currentDate
         }
       );
@@ -117,8 +101,8 @@ function MembershipPage() {
         "http://localhost:5254/api/payment",
         {
           membershipId: membershipId,
-          amount: selectedPlan.price,
-          paymentDescription: `Payment for ${selectedPlan.name}`
+          amount: plan.price,
+          paymentDescription: `Payment for ${plan.name}`
         }
       );
       
@@ -169,7 +153,7 @@ function MembershipPage() {
                 ))}
               </ul>
               <Button 
-                onClick={() => handleShowPaymentModal(plan)}
+                onClick={() => handleJoinPlan(plan)}
                 disabled={hasPurchasedPlan(plan.id)}
                 variant={hasPurchasedPlan(plan.id) ? "success" : "primary"}
               >
@@ -179,59 +163,6 @@ function MembershipPage() {
           ))}
         </div>
       )}
-
-      {/* Payment Method Modal */}
-      <Modal show={showPaymentModal} onHide={handleClosePaymentModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Select Payment Method</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            You are purchasing: <strong>{selectedPlan?.name}</strong>
-          </p>
-          <p>
-            Amount: <strong>{selectedPlan?.price?.toLocaleString()}đ</strong>
-          </p>
-          <div className="payment-options">
-            <label>
-              <input
-                type="radio"
-                value="bank"
-                checked={selectedPaymentMethod === "bank"}
-                onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-              />
-              Bank Transfer
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="qr"
-                checked={selectedPaymentMethod === "qr"}
-                onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-              />
-              Scan QR Code
-            </label>
-          </div>
-          {selectedPaymentMethod === "qr" && (
-            <div className="payment-details">
-              <p>Please scan the QR code to proceed with the payment:</p>
-              <img src="images/QRCode.png" alt="QR Code" className="qr-code" />
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClosePaymentModal}>
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handlePayment}
-            disabled={!selectedPaymentMethod}
-          >
-            Confirm Payment
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 }
