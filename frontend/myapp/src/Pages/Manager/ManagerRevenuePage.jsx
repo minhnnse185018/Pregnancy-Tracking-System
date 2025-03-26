@@ -186,28 +186,35 @@ const RevenueAnalytics = () => {
             <LineChart width={800} height={400} data={dailyData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" tickFormatter={formatDate} />
-              <YAxis yAxisId="left" />
-              <YAxis yAxisId="right" orientation="right" />
+              <YAxis
+                yAxisId="left"
+                tickFormatter={(value) => Math.round(value).toLocaleString()}
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                tickFormatter={(value) => Math.round(value).toLocaleString()}
+              />
               <Tooltip labelFormatter={formatDate} />
               <Legend />
               <Line
                 yAxisId="left"
                 type="monotone"
                 dataKey="amount"
-                stroke="#0088FE"
+                stroke="rgba(46, 204, 113, 0.9)"
                 name="Revenue"
+                
               />
               <Line
                 yAxisId="right"
                 type="monotone"
                 dataKey="transactionCount"
-                stroke="#00C49F"
+                stroke="rgba(33, 150, 243, 0.9)"
                 name="Transactions"
               />
             </LineChart>
           </div>
         )}
-
         {activeTab === "monthly" && (
           <div className="chart-container">
             <div className="input-group">
@@ -222,19 +229,23 @@ const RevenueAnalytics = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis yAxisId="left" />
-              <YAxis yAxisId="right" orientation="right" />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                tickFormatter={(value) => Math.round(value).toLocaleString()}
+              />
               <Tooltip />
               <Legend />
               <Bar
                 yAxisId="left"
                 dataKey="amount"
-                fill="#0088FE"
+                fill="rgba(0, 177, 106, 0.9)"
                 name="Doanh thu"
               />
               <Bar
                 yAxisId="right"
                 dataKey="transactionCount"
-                fill="#00C49F"
+                fill="rgba(33, 150, 243, 0.9)"
                 name="Số giao dịch"
               />
             </BarChart>
