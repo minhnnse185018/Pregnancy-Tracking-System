@@ -1,225 +1,283 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Grid,
-  Paper,
-  Typography,
-  TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
-} from "chart.js";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import axios from "axios";
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+import {
+  Calendar,
+  DollarSign,
+  BarChart2,
+  PieChart as PieChartIcon,
+} from "lucide-react";
+import "./ManagerRevenuePage.css";
 
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
-const ManageRevenuePage = () => {
-  const [totalRevenue, setTotalRevenue] = useState(0);
-  const [totalProfit, setTotalProfit] = useState(0);
-  const [dailyRevenue, setDailyRevenue] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [days, setDays] = useState(10);
-  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
-  const [maxRevenue, setMaxRevenue] = useState(0);
+const RevenueAnalytics = () => {
+  const [activeTab, setActiveTab] = useState("summary");
+  const [startDate, setStartDate] = useState("01/01/2023");
+  const [endDate, setEndDate] = useState("1/1/2026");
+  const [year, setYear] = useState(2025);
+  const [summaryData, setSummaryData] = useState(null);
+  const [dailyData, setDailyData] = useState([]);
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [planData, setPlanData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const formatVietnamDate = (date) => {
-    return new Intl.DateTimeFormat("vi-VN", {
-      timeZone: "Asia/Ho_Chi_Minh",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(new Date(date));
-  };
-
-  const fetchTotalRevenue = async () => {
+  const fetchSummaryData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/revenue/total-revenue"
+      const response = await fetch(
+        `http://localhost:5254/api/Revenue/summary?startDate=${encodeURIComponent(
+          startDate
+        )}&endDate=${encodeURIComponent(endDate)}`
       );
-      setTotalRevenue(response.data);
-    } catch (error) {
-      console.error("Error fetching total revenue:", error);
+      if (!response.ok) throw new Error("Failed to fetch summary data");
+      const data = await response.json();
+      setSummaryData(data);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
-  const fetchTotalProfit = async () => {
+  const fetchDailyData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/revenue/total-profit"
+      const response = await fetch(
+        `http://localhost:5254/api/Revenue/daily?startDate=${encodeURIComponent(
+          startDate
+        )}&endDate=${encodeURIComponent(endDate)}`
       );
-      setTotalProfit(response.data);
-    } catch (error) {
-      console.error("Error fetching total profit:", error);
+      if (!response.ok) throw new Error("Failed to fetch daily data");
+      const data = await response.json();
+      setDailyData(data);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
-  const fetchLastXDaysData = async () => {
+  const fetchMonthlyData = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/revenue/last-x-days/${days}`
+      const response = await fetch(
+        `http://localhost:5254/api/Revenue/monthly/${year}`
       );
-      const data = response.data || {};
+      if (!response.ok) throw new Error("Failed to fetch monthly data");
+      const data = await response.json();
+      setMonthlyData(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-      const labels = Object.keys(data).sort(
-        (a, b) => new Date(a) - new Date(b)
+  const fetchPlanData = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5254/api/Revenue/by-plan?startDate=${encodeURIComponent(
+          startDate
+        )}&endDate=${encodeURIComponent(endDate)}`
       );
-      const revenueData = labels.map((date) => data[date]?.revenue || 0);
-      const maxRevenueValue = Math.max(...revenueData); // Tìm giá trị cao nhất của doanh thu
-
-      setMaxRevenue(maxRevenueValue); // Lưu giá trị cao nhất vào state
-      setChartData({
-        labels,
-        datasets: [
-          {
-            label: "Revenue",
-            data: revenueData,
-            borderColor: "#007BFF",
-            backgroundColor: "rgba(0, 123, 255, 0.1)",
-            fill: true,
-          },
-        ],
-      });
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      if (!response.ok) throw new Error("Failed to fetch plan data");
+      const data = await response.json();
+      setPlanData(data);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   useEffect(() => {
-    fetchTotalRevenue();
-    fetchTotalProfit();
-    fetchLastXDaysData();
-  }, [days]);
+    setLoading(true);
+    Promise.all([
+      fetchSummaryData(),
+      fetchDailyData(),
+      fetchMonthlyData(),
+      fetchPlanData(),
+    ]).finally(() => setLoading(false));
+  }, [startDate, endDate, year]);
+  useEffect(() => {
+    if (activeTab === "monthly") {
+      setLoading(true);
+      fetchMonthlyData().finally(() => setLoading(false));
+    }
+  }, [year, activeTab]);
 
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-    },
-    scales: {
-      y: {
-        min: 0,
-        max: maxRevenue * 1.5, // Thiết lập chiều cao tối đa là 2 lần giá trị cao nhất
-        ticks: {
-          stepSize: maxRevenue / 5, // Điều chỉnh khoảng cách giữa các giá trị trên trục y
-        },
-      },
-    },
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString();
   };
 
+  const tabs = [
+    { id: "summary", label: "Summary", icon: DollarSign },
+    { id: "daily", label: "Daily Revenue", icon: BarChart2 },
+    { id: "monthly", label: "Monthly Revenue", icon: Calendar },
+    { id: "plans", label: "Revenue by Plan", icon: PieChartIcon },
+  ];
+
   return (
-    <Box
-      sx={{
-        padding: 4,
-        backgroundColor: "#fff",
-        minHeight: "100vh",
-        color: "#333",
-      }}
-    >
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        sx={{ mb: 2, color: "#4CAF50" }}
-      >
-        Revenue Management
-      </Typography>
+    <div className="container">
+      <div className="card">
+        <div className="tabs">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`tab-button ${activeTab === tab.id ? "active" : ""}`}
+            >
+              <tab.icon className="w-4 h-4 mr-2" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-      {/* Date Filter for Daily Revenue */}
-      <Grid container spacing={2} sx={{ mb: 4 }}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Grid item xs={12} sm={6} md={3}>
-            <DatePicker
-              label="Daily Revenue"
-              value={selectedDate}
-              onChange={(newValue) => setSelectedDate(newValue)}
-              renderInput={(params) => <TextField {...params} fullWidth />}
-            />
-          </Grid>
-        </LocalizationProvider>
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            label="Number of Days"
-            type="number"
-            value={days}
-            onChange={(e) => setDays(Number(e.target.value))}
-            fullWidth
-          />
-        </Grid>
-      </Grid>
+        <div className="input-group">
+          {activeTab !== "monthly" && (
+            <>
+              <div>
+                <label>Start Date</label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label>End Date</label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
+            </>
+          )}
+        </div>
 
-      {/* Key Metrics Section */}
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={6}>
-          <Paper
-            sx={{ padding: 2, backgroundColor: "#f5f5f5", borderRadius: "8px" }}
-          >
-            <Typography variant="h6" color="primary">
-              {totalRevenue.toLocaleString()} USD
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Total Revenue
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={6}>
-          <Paper
-            sx={{ padding: 2, backgroundColor: "#f5f5f5", borderRadius: "8px" }}
-          >
-            <Typography variant="h6" color="primary">
-              {totalProfit.toLocaleString()} USD
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Total Profit
-            </Typography>
-          </Paper>
-        </Grid>
-      </Grid>
+        {loading && <div className="loading">Loading...</div>}
+        {error && <div className="error">Error: {error}</div>}
 
-      {/* Line Chart for Revenue */}
-      <Grid container spacing={2} sx={{ mt: 4 }}>
-        <Grid item xs={12}>
-          <Paper
-            sx={{
-              padding: 2,
-              backgroundColor: "#f5f5f5",
-              borderRadius: "8px",
-            }}
-          >
-            <Typography variant="h6" color="primary">
-              Revenue Over the Last {days} Days
-            </Typography>
-            <Line data={chartData} options={chartOptions} />
-          </Paper>
-        </Grid>
-      </Grid>
-    </Box>
+        {activeTab === "summary" && summaryData && (
+          <div className="chart-container">
+            <div className="grid">
+              <div className="card fade-in">
+                <div className="card-header">Total Revenue</div>
+                <div className="card-value">
+                  ${summaryData.totalRevenue.toLocaleString()}
+                </div>
+              </div>
+              <div className="card slide-up">
+                <div className="card-header">Total Transactions</div>
+                <div className="card-value">
+                  {summaryData.totalTransactions}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "daily" && (
+          <div className="chart-container">
+            <LineChart width={800} height={400} data={dailyData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" tickFormatter={formatDate} />
+              <YAxis
+                yAxisId="left"
+                tickFormatter={(value) => Math.round(value).toLocaleString()}
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                tickFormatter={(value) => Math.round(value).toLocaleString()}
+              />
+              <Tooltip labelFormatter={formatDate} />
+              <Legend />
+              <Line
+                yAxisId="left"
+                type="monotone"
+                dataKey="amount"
+                stroke="rgba(46, 204, 113, 0.9)"
+                name="Revenue"
+                
+              />
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="transactionCount"
+                stroke="rgba(33, 150, 243, 0.9)"
+                name="Transactions"
+              />
+            </LineChart>
+          </div>
+        )}
+        {activeTab === "monthly" && (
+          <div className="chart-container">
+            <div className="input-group">
+              <label>Năm</label>
+              <input
+                type="number"
+                value={year}
+                onChange={(e) => setYear(Number(e.target.value))}
+              />
+            </div>
+            <BarChart width={800} height={500} data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis yAxisId="left" />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                tickFormatter={(value) => Math.round(value).toLocaleString()}
+              />
+              <Tooltip />
+              <Legend />
+              <Bar
+                yAxisId="left"
+                dataKey="amount"
+                fill="rgba(0, 177, 106, 0.9)"
+                name="Doanh thu"
+              />
+              <Bar
+                yAxisId="right"
+                dataKey="transactionCount"
+                fill="rgba(33, 150, 243, 0.9)"
+                name="Số giao dịch"
+              />
+            </BarChart>
+          </div>
+        )}
+
+        {activeTab === "plans" && (
+          <div className="chart-container pie-chart-colors">
+            <PieChart width={600} height={400}>
+              <Pie
+                data={planData}
+                dataKey="amount"
+                nameKey="planName"
+                cx="50%"
+                cy="50%"
+                outerRadius={150}
+                label={(entry) =>
+                  `${entry.planName}: $${entry.amount.toLocaleString()}`
+                }
+              >
+                {planData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} className={`cell-${index}`} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
-export default ManageRevenuePage;
+export default RevenueAnalytics;

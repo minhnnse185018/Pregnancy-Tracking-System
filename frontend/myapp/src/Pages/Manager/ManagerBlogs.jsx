@@ -368,12 +368,12 @@ function ManagerBlogs() {
                     >
                       💬 View Comments ({post.commentCount})
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => handleEditPost(post)}
                       className="edit-post-btn"
                     >
                       ✏️ Edit
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => handleDeleteBlog(post.id)}
                       className="delete-post-btn"
@@ -397,17 +397,17 @@ function ManagerBlogs() {
                               {new Date(comment.createdAt).toLocaleDateString()}
                             </span>
                             <div className="comment-actions">
-                              <button
+                              {/* <button
                                 onClick={() => handleEditComment(comment)}
                                 className="edit-comment-btn"
                               >
                                 ✏️
-                              </button>
+                              </button> */}
                               <button
                                 onClick={() => handleDeleteComment(comment.id)}
                                 className="delete-comment-btn"
                               >
-                                🗑️
+                                Delete Comment
                               </button>
                             </div>
                           </div>
@@ -431,8 +431,8 @@ function ManagerBlogs() {
           <div className="modal-content scrollable-modal">
             <div className="modal-header">
               <h2>{editMode ? "Edit Post" : "Create New Post"}</h2>
-              <button 
-                className="modal-close-btn" 
+              <button
+                className="modal-close-btn"
                 onClick={() => setShowCreatePostModal(false)}
               >
                 ×
@@ -514,8 +514,8 @@ function ManagerBlogs() {
           <div className="modal-content scrollable-modal">
             <div className="modal-header">
               <h2>Edit Comment</h2>
-              <button 
-                className="modal-close-btn" 
+              <button
+                className="modal-close-btn"
                 onClick={() => {
                   setShowModal(false);
                   setCommentText("");
