@@ -5,13 +5,14 @@ namespace backend.Services.Interface
 {
     public interface IGrowthAlertService
     {
-        Task<IEnumerable<GrowthAlert>> GetAllAlertsAsync();
-        Task<GrowthAlert> GetAlertByIdAsync(int id);
-        Task<IEnumerable<GrowthAlert>> GetAlertsByMeasurementIdAsync(int measurementId);
-        Task<IEnumerable<GrowthAlert>> GetAlertsByUserIdAsync(int userId);
+        Task<IEnumerable<GrowthAlertDto>> GetAllAlertsAsync();
+        Task<GrowthAlertDto> GetAlertByIdAsync(int id);
+        Task<IEnumerable<GrowthAlertDto>> GetAlertsByMeasurementIdAsync(int measurementId);
+        Task<IEnumerable<GrowthAlertDto>> GetAlertsByUserIdAsync(int userId);
         Task<IEnumerable<GrowthAlertDto>> GetAlertsByUserIdWithWeekAsync(int userId);
+        Task<IEnumerable<GrowthAlertDto>> GetAlertsByProfileIdAsync(int profileId);
         Task CreateAlertAsync(GrowthAlert alert);
-        Task UpdateAlertAsync(GrowthAlert alert);
+        Task UpdateAlertAsync(int id, UpdateGrowthAlertDto alertDto);
         Task DeleteAlertAsync(int id);
     }
 }

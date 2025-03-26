@@ -1,6 +1,6 @@
 using backend.Dtos.Memberships;
 using backend.Repository.Interface;
-using backend.Services.Interface;
+using backend.Services.Implementation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -42,13 +42,6 @@ namespace backend.Controllers
         {
             var isActive = await _membershipService.IsMembershipActiveAsync(userId);
             return Ok(new { IsActive = isActive });
-        }
-
-        [HttpPost("cleanup-expired")]
-        public async Task<IActionResult> CleanupExpiredMemberships()
-        {
-            await _membershipService.CleanupExpiredMembershipsAsync();
-            return Ok(new { Message = "Expired memberships cleaned up." });
         }
     }
 } 

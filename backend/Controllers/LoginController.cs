@@ -17,7 +17,7 @@ using backend.Dtos;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Google.Apis.Auth;
-using backend.Services.Interface;
+using backend.Services.Implementation;
 
 namespace backend.Controllers
 {

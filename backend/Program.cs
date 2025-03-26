@@ -19,6 +19,7 @@ builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.DateFormatString = "yyyy-MM-dd'T'HH:mm:ss";
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -80,7 +81,6 @@ builder.Services.AddScoped<IFAQRepository, FAQRepository>();
 builder.Services.AddScoped<IReminderRepository, ReminderRepository>(); // Add this line
 builder.Services.AddScoped<IReminderServices, ReminderServices>();
 builder.Services.AddScoped<RemiderServicesJob>();
-builder.Services.AddHostedService<DeleteMembershipService>();
 
 // Register GrowthAlert services
 builder.Services.AddScoped<IGrowthAlertRepository, GrowthAlertRepository>();
