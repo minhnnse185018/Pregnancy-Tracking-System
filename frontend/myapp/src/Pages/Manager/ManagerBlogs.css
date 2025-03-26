@@ -1,0 +1,400 @@
+/* Manager Blogs Specific Styling */
+
+/* Main container with manager theme */
+.pregnant-theme {
+  background-color: #f9f5ff;
+  position: relative;
+}
+
+.pregnant-theme::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://i.imgur.com/JKXQy5l.png");
+  background-repeat: repeat;
+  background-size: 100px;
+  opacity: 0.05;
+  z-index: -1;
+}
+
+/* Manager-specific header styling */
+.posts-header {
+  background-color: #f0e6ff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.posts-title {
+  color: #6a3093;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+  position: relative;
+}
+
+.posts-title::after {
+  content: "";
+  display: block;
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(to right, #6a3093, #a044ff);
+  margin: 10px auto 0;
+  border-radius: 3px;
+}
+
+/* Search container styling */
+.search-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-input:focus {
+  border-color: #a044ff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(160, 68, 255, 0.2);
+}
+
+.search-btn, .reset-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-btn {
+  background-color: #6a3093;
+  color: white;
+}
+
+.search-btn:hover {
+  background-color: #7d3aad;
+}
+
+.reset-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.reset-btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+/* Create post button styling */
+.create-post-btn {
+  background: linear-gradient(to right, #6a3093, #a044ff);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(106, 48, 147, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.create-post-btn::before {
+  content: "+";
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.create-post-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(106, 48, 147, 0.3);
+}
+
+/* Post card styling for manager view */
+.post-card {
+  border: 1px solid #e0e0e0;
+  border-left: 4px solid #6a3093;
+  background-color: white;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.post-card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Post metadata styling */
+.post-metadata {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.author-name {
+  font-weight: 600;
+  color: #6a3093;
+}
+
+/* Post interaction buttons */
+.view-comments-btn, .edit-post-btn, .delete-post-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.view-comments-btn {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.view-comments-btn:hover {
+  background-color: #bae7ff;
+}
+
+.edit-post-btn {
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+.edit-post-btn:hover {
+  background-color: #d9f7be;
+}
+
+.delete-post-btn {
+  background-color: #fff2f0;
+  color: #ff4d4f;
+}
+
+.delete-post-btn:hover {
+  background-color: #ffccc7;
+}
+
+/* Comment section styling */
+.comments-section {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.comments-section h3 {
+  color: #6a3093;
+  font-size: 18px;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Comment styling */
+.comment {
+  background-color: white;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: #6a3093;
+}
+
+.comment-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.edit-comment-btn, .delete-comment-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 50px 50px 0 0;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.edit-comment-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.delete-comment-btn:hover {
+  background-color: #fff2f0;
+  padding: 50px 50px 0 0;
+}
+
+/* Modal styling */
+.scrollable-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 90%;
+  max-width: 600px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  color: #6a3093;
+  margin: 0;
+  font-size: 22px;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  color: #ff4d4f;
+}
+
+.modal-body {
+  margin-bottom: 20px;
+}
+
+.modal-form label {
+  display: block;
+  margin-bottom: 15px;
+  font-weight: 500;
+  color: #333;
+}
+
+.modal-form input[type="text"],
+.modal-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.modal-form input[type="text"]:focus,
+.modal-form textarea:focus {
+  border-color: #a044ff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(160, 68, 255, 0.2);
+}
+
+.modal-form input[type="file"] {
+  margin-top: 5px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.save-post-btn, .save-comment-btn {
+  background-color: #6a3093;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-post-btn:hover, .save-comment-btn:hover {
+  background-color: #7d3aad;
+}
+
+.save-post-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+  }
+  
+  .interaction-stats {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .modal-content {
+    width: 95%;
+  }
+}

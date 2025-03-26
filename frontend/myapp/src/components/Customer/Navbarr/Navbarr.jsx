@@ -354,7 +354,7 @@ export default function Navbarr() {
             </li>
             <li className="nav-item">
               <Link to="/blog" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                Community
+                Blog
               </Link>
             </li>
             <li className="nav-item">

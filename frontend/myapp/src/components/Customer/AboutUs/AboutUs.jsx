@@ -1,186 +1,199 @@
 import React from "react";
-export default function AboutUs() {
-  // Define styles as JavaScript objects
-  const heroSection = {
-    padding: "160px 0",
-  };
+import styled from "styled-components";
 
-  const heroImage = {
-    borderRadius: "15px",
-    width: "100%",
-    height: "auto",
-  };
+// Styled Components
+const HeroSection = styled.section`
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fff0f5 0%, #fce4e8 100%); /* Gradient nhẹ nhàng */
+`;
 
-  const heroHeading = {
-    fontSize: "36px",
-    color: "#2D3436",
-  };
+const HeroBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-image: url('/images/swiper5.png'); /* Hình nền tĩnh từ Maincontent */
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.85); /* Mờ nhẹ để nổi bật chữ */
+`;
 
-  const heroText = {
-    fontSize: "18px",
-    color: "#636E72",
-  };
+const HeroContainer = styled.div`
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+`;
 
-  const servicesSection = {
-    backgroundColor: "#FFF0F5",
-    padding: "60px 0",
-  };
+const HeroTitle = styled.h1`
+  color: #FF8989; /* Màu hồng mới */
+  font-size: 3.5rem;
+  text-shadow: 2px 2px 8px rgba(236, 219, 219, 0.6);
+  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+`;
 
-  const servicesHeading = {
-    fontSize: "36px",
-    color: "#FF69B4",
-    textAlign: "center",
-    marginBottom: "50px",
-  };
+const HeroDescription = styled.p`
+  color: #FF8989; /* Màu hồng mới */
+  font-size: 1.6rem;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  margin: 0 auto;
+`;
 
-  const serviceItem = {
-    display: "flex",
-    marginBottom: "30px",
-  };
+const ServicesSection = styled.section`
+  padding: 60px 0;
+  background-color: #fff; /* Nền trắng để làm nổi bật nội dung */
+`;
 
-  const serviceIconContainer = {
-    backgroundColor: "#FFE4E1",
-    padding: "15px",
-    borderRadius: "50%",
-    marginRight: "20px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: "80px",
-  };
+const SectionTitle = styled.h2`
+  color: #FF8989; /* Màu hồng mới */
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 6px rgba(11, 140, 196, 0.4);
+  text-align: center;
+  margin-bottom: 40px;
+`;
 
-  const serviceIcon = {
-    width: "60px",
-    height: "60px",
-  };
+const ServiceCard = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #fff0f5 0%, #fce4e8 100%); /* Gradient nhẹ */
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 
-  const serviceTitle = {
-    fontSize: "24px",
-    color: "#2D3436",
-    marginBottom: "10px",
-  };
+  &:hover {
+    transform: translateY(-5px);
+  }
+`;
 
-  const serviceDescription = {
-    color: "#636E72",
-  };
+const ServiceIcon = styled.img`
+  width: 60px;
+  height: 60px;
+  margin-right: 20px;
+`;
 
-  const statisticsSection = {
-    backgroundColor: "#FFB6C1",
-    padding: "60px 0",
-  };
+const ServiceTitle = styled.h3`
+  color: #FF8989; /* Màu hồng mới */
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+`;
 
-  const statItem = {
-    marginBottom: "30px",
-  };
+const ServiceDescription = styled.p`
+  color: #6b7280; /* Xám đậm để dễ đọc */
+  font-size: 1.1rem;
+`;
 
-  const statNumber = {
-    fontSize: "48px",
-    color: "#FFFFFF",
-  };
+const StatsSection = styled.section`
+  background: linear-gradient(135deg, #ffb6c1 0%, #f8c1cc 100%); /* Gradient hồng đậm */
+  padding: 40px 0;
+`;
 
-  const statLabel = {
-    fontSize: "18px",
-    color: "#FFFFFF",
-  };
+const StatItem = styled.div`
+  text-align: center;
+`;
 
+const StatNumber = styled.h2`
+  color: #ffffff; /* Trắng để nổi bật trên nền gradient */
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+`;
+
+const StatLabel = styled.p`
+  color: #FF8989; /* Màu hồng mới */
+  font-size: 1.3rem;
+`;
+
+const AboutUs = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section style={heroSection}>
-        <div className="container">
-          <div className="row align-items-center">
-            {/* Image Section */}
-            <div className="col-md-6">
-              <img
-                src="images/about-mainpicture.png"
-                alt="About Mom and Baby"
-                style={heroImage}
-              />
-            </div>
-            {/* Text Section */}
-            <div className="col-md-6">
-              <h2 style={heroHeading} className="mb-4">
-                Về Chúng Tôi
-              </h2>
-              <p style={heroText}>
-                <strong>Mom & Baby</strong> là người bạn đồng hành đáng tin cậy
-                dành cho các bà mẹ mang thai và chăm sóc em bé. Chúng tôi cung
-                cấp những thông tin hữu ích, dịch vụ chất lượng và cộng đồng
-                thân thiện để giúp hành trình làm mẹ của bạn trở nên dễ dàng và
-                ý nghĩa hơn.
-              </p>
-            </div>
+      <HeroSection>
+        <HeroBackground />
+        <HeroContainer>
+          <div>
+            <HeroTitle>About Mom & Baby</HeroTitle>
+            <HeroDescription>
+              We are your trusted companion, offering warm support and helpful information for your motherhood journey.
+            </HeroDescription>
           </div>
-        </div>
-      </section>
+        </HeroContainer>
+      </HeroSection>
 
       {/* Services Section */}
-      <section style={servicesSection}>
+      <ServicesSection>
         <div className="container">
-          <h2 style={servicesHeading}>Tại Sao Chọn Chúng Tôi?</h2>
+          <SectionTitle>Why Choose Us?</SectionTitle>
           <div className="row">
             {[
               {
-                title: "Thông Tin Hữu Ích",
-                description:
-                  "Cung cấp kiến thức về mang thai, sinh nở và chăm sóc bé một cách khoa học và cập nhật nhất.",
-                image: "images/about2.png",
+                title: "Knowledge Support",
+                description: "Scientific and up-to-date information on pregnancy, childbirth, and baby care.",
+                image: "images/home-icon5.png",
               },
               {
-                title: "Theo Dõi Thai Kỳ",
-                description:
-                  "Công cụ theo dõi sự phát triển của thai nhi, nhắc nhở lịch khám thai và tiêm phòng.",
-                image: "images/icon4.png",
+                title: "Pregnancy Tracking",
+                description: "Tools to monitor your baby’s growth and remind you of checkup schedules.",
+                image: "images/home-icon3.png",
               },
               {
-                title: "Cộng Đồng Mẹ Bầu",
-                description:
-                  "Nơi chia sẻ kinh nghiệm, tâm sự và kết nối với các bà mẹ khác trong hành trình làm mẹ.",
-                image: "images/about-1.png",
+                title: "Mom Community",
+                description: "Connect and share with other moms on your motherhood journey.",
+                image: "images/home-icon1.png",
               },
               {
-                title: "Dịch Vụ Tư Vấn",
-                description:
-                  "Hỗ trợ tư vấn từ các chuyên gia về dinh dưỡng, sức khỏe và tâm lý cho mẹ và bé.",
-                image: "images/icon3.png",
+                title: "Expert Advice",
+                description: "Support from experts on health, nutrition, and emotional well-being.",
+                image: "images/home-icon2.png",
               },
             ].map((service, index) => (
-              <div key={index} className="col-md-6" style={serviceItem}>
-                <div style={serviceIconContainer}>
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    style={serviceIcon}
-                  />
-                </div>
-                <div>
-                  <h4 style={serviceTitle}>{service.title}</h4>
-                  <p style={serviceDescription}>{service.description}</p>
-                </div>
+              <div key={index} className="col-md-6">
+                <ServiceCard>
+                  <ServiceIcon src={service.image} alt={service.title} />
+                  <div>
+                    <ServiceTitle>{service.title}</ServiceTitle>
+                    <ServiceDescription>{service.description}</ServiceDescription>
+                  </div>
+                </ServiceCard>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </ServicesSection>
 
       {/* Statistics Section */}
-      <section style={statisticsSection}>
+      <StatsSection>
         <div className="container">
           <div className="row text-center">
             {[
-              { count: "100,000+", label: "Thành Viên Hài Lòng" },
-              { count: "50,000+", label: "Bài Viết Hữu Ích" },
-              { count: "200,000+", label: "Chủ Đề Thảo Luận" },
-              { count: "24/7", label: "Hỗ Trợ Tư Vấn" },
+              { count: "100,000+", label: "Trusted Moms" },
+              { count: "50,000+", label: "Helpful Articles" },
+              { count: "200,000+", label: "Discussion Topics" },
+              { count: "24/7", label: "Continuous Support" },
             ].map((stat, index) => (
-              <div key={index} className="col-sm-3" style={statItem}>
-                <h2 style={statNumber}>{stat.count}</h2>
-                <p style={statLabel}>{stat.label}</p>
+              <div key={index} className="col-sm-3">
+                <StatItem>
+                  <StatNumber>{stat.count}</StatNumber>
+                  <StatLabel>{stat.label}</StatLabel>
+                </StatItem>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </StatsSection>
     </div>
   );
-}
+};
+
+export default AboutUs;

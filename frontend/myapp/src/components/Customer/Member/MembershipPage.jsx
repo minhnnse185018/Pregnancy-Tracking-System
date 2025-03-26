@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import axios from "axios";
 import "./MembershipPage.css";
 
@@ -7,12 +7,11 @@ function MembershipPage() {
   const [error, setError] = useState(null);
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const [userMemberships, setUserMemberships] = useState([]);
 
   useEffect(() => {
     fetchMembershipPlans();
+    handleCheckMembershipPlan();
   }, []);
 
   const fetchMembershipPlans = async () => {
@@ -26,9 +25,9 @@ function MembershipPage() {
         price: plan.price,
         duration: `${plan.duration} months`,
         benefits: plan.description
-          .split('",\r\n') // Split based on API formatting
-          .map((desc) => desc.replace(/["\r\n]/g, "").trim()) // Clean unwanted characters
-          .filter((desc) => desc !== ""), // Remove empty strings
+          .split('",\r\n')
+          .map((desc) => desc.replace(/["\r\n]/g, "").trim())
+          .filter((desc) => desc !== ""),
       }));
       setPlans(formattedPlans);
     } catch (err) {
@@ -38,40 +37,90 @@ function MembershipPage() {
     }
   };
 
-  const handleShowPaymentModal = (plan) => {
-    setSelectedPlan(plan);
-    setShowPaymentModal(true);
+  const handleCheckMembershipPlan = async () => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      console.log("User not logged in");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5254/api/Membership/user/${userId}`
+      );
+      setUserMemberships(response.data);
+    } catch (err) {
+      console.error("Failed to fetch user memberships:", err);
+    }
   };
 
-  const handleClosePaymentModal = () => {
-    setShowPaymentModal(false);
-    setSelectedPaymentMethod("");
+  const hasPurchasedPlan = (planId) => {
+    return userMemberships.some(
+      (membership) => membership.planId === planId && membership.status === "Active"
+    );
   };
 
-  const handlePayment = async () => {
+  const getButtonText = (planId) => {
+    if (hasPurchasedPlan(planId)) {
+      return "Currently Subscribed";
+    }
+    return "Join Now";
+  };
+
+  const handleJoinPlan = async (plan) => {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
       alert("Please log in to proceed with the payment!");
       return;
     }
+    
     try {
-      const response = await axios.post("http://localhost:5254/api/payment", {
-        userId: userId,
-        membershipId: selectedPlan.id,
-        amount: selectedPlan.price,
-        paymentDescription: `Payment for ${selectedPlan.name} plan`,
-        paymentMethod: selectedPaymentMethod,
-      });
-
-      if (response.status === 200) {
-        alert("Payment successful!");
-        setShowPaymentModal(false);
+      // Step 1: Create a pending membership
+      const currentDate = new Date().toISOString();
+      const membershipResponse = await axios.post(
+        "http://localhost:5254/api/Membership/purchase",
+        {
+          userId: parseInt(userId),
+          planId: plan.id,
+          startDate: currentDate
+        }
+      );
+      
+      console.log("Membership created:", membershipResponse.data);
+      
+      // Step 2: Create payment after membership is created
+      const membershipId = membershipResponse.data.id || membershipResponse.data.membershipId;
+      
+      if (!membershipId) {
+        console.error("Failed to get membership ID from response:", membershipResponse.data);
+        alert("Error creating membership. Please try again.");
+        return;
+      }
+      
+      const paymentResponse = await axios.post(
+        "http://localhost:5254/api/payment",
+        {
+          membershipId: membershipId,
+          amount: plan.price,
+          paymentDescription: `Payment for ${plan.name}`
+        }
+      );
+      
+      console.log("Payment response:", paymentResponse.data);
+      
+      // Handle the payment URL response
+      if (paymentResponse.data && typeof paymentResponse.data === 'string' && paymentResponse.data.includes('vnpayment.vn')) {
+        // If response.data is a URL string, use it directly
+        window.location.href = paymentResponse.data;
+      } else if (paymentResponse.data && paymentResponse.data.vnpayUrl) {
+        // If response.data is an object with vnpayUrl property
+        window.location.href = paymentResponse.data.vnpayUrl;
       } else {
-        alert("Payment failed!");
+        alert("Failed to get payment URL!");
       }
     } catch (error) {
-      console.error("Payment error:", error);
-      alert("An error occurred, please try again!");
+      console.error("Payment process error:", error);
+      alert("An error occurred during the payment process. Please try again!");
     }
   };
 
@@ -79,7 +128,8 @@ function MembershipPage() {
     <div className="membership-container">
       <h1 className="membership-title">Join the Journey with Mom and Baby</h1>
       <p className="membership-description">
-        Choose a suitable membership plan to access exclusive materials, expert advice, and connect with the mom community!
+        Choose a suitable membership plan to access exclusive materials, expert
+        advice, and connect with the mom community!
       </p>
 
       {loading ? (
@@ -102,78 +152,17 @@ function MembershipPage() {
                   <li key={i}>{benefit}</li>
                 ))}
               </ul>
-              <Button onClick={() => handleShowPaymentModal(plan)}>
-                Join Now
+              <Button 
+                onClick={() => handleJoinPlan(plan)}
+                disabled={hasPurchasedPlan(plan.id)}
+                variant={hasPurchasedPlan(plan.id) ? "success" : "primary"}
+              >
+                {getButtonText(plan.id)}
               </Button>
             </div>
           ))}
         </div>
       )}
-
-      {/* Payment Method Modal */}
-      <Modal show={showPaymentModal} onHide={handleClosePaymentModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Select Payment Method</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            You are purchasing: <strong>{selectedPlan?.name}</strong>
-          </p>
-          <p>
-            Amount: <strong>{selectedPlan?.price?.toLocaleString()}đ</strong>
-          </p>
-          <div className="payment-options">
-            <label>
-              <input
-                type="radio"
-                value="bank"
-                checked={selectedPaymentMethod === "bank"}
-                onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-              />
-              Bank Transfer
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="qr"
-                checked={selectedPaymentMethod === "qr"}
-                onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-              />
-              Scan QR Code
-            </label>
-          </div>
-          {selectedPaymentMethod === "bank" && (
-            <div className="payment-details">
-              <p>
-                <strong>ACCOUNT HOLDER:</strong> NGUYEN VAN A
-              </p>
-              <p>
-                <strong>ACCOUNT NUMBER:</strong> babycare.com
-              </p>
-              <p>
-                <strong>BANK:</strong> MB
-              </p>
-              <p>
-                <strong>TRANSFER NOTE:</strong> NAP306046MOM
-              </p>
-            </div>
-          )}
-          {selectedPaymentMethod === "qr" && (
-            <div className="payment-details">
-              <p>Please scan the QR code to proceed with the payment:</p>
-              <img src="images/QRCode.png" alt="QR Code" className="qr-code" />
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClosePaymentModal}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handlePayment} disabled={!selectedPaymentMethod}>
-            Confirm Payment
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 }

@@ -104,22 +104,29 @@ const SecondaryButton = styled.a`
 `;
 
 const Maincontent = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
-    document.body.classList.toggle("dark")
-  }
+    setIsDarkMode(!isDarkMode);
+    document.body.classList.toggle("dark");
+  };
 
-  // Các liên kết
+  // Hàm xử lý cuộn đến phần Features
+  const scrollToFeatures = () => {
+    const featuresSection = document.querySelector('.features-section');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const links = {
     Appointment: "/appointment",
     tracker: "/growth-tracker",
     healthtips: "/health-tips",
     blog: "/blog",
     login: "/customer-login",
-  }
+  };
 
   return (
     <div className={`app-container ${isDarkMode ? "dark" : ""}`}>
@@ -147,8 +154,10 @@ const Maincontent = () => {
               Accompanying you on your journey of motherhood and baby care
             </p>
             <div className="hero-buttons">
-              <button className="primary-button">Explore Now</button>
-              <button className="secondary-button">Learn More</button>
+              <button className="primary-button" onClick={scrollToFeatures}>
+                Explore Now
+              </button>
+              <button className="secondary-button" onClick={() => navigate("/about")}>Learn More</button>
             </div>
             <div className="hero-image-container">
             </div>
@@ -158,74 +167,74 @@ const Maincontent = () => {
 
       {/* Features Section */}
       <section className="features-section">
-  <h2 className="section-title">Explore Features</h2>
+        <h2 className="section-title">Explore Features</h2>
 
-  <div className="features-grid">
-    {/* Feature 1 - Appointment */}
-    <a href={links.Appointment} className="feature-card">
-      <div className="feature-icon-container">
-        <EventAvailable className="feature-icon" style={{ fontSize: 48, color: "#FF6F61" }} />
-      </div>
-      <h3 className="feature-title">Schedule a Checkup</h3>
-      <p className="feature-description">
-        Book doctor appointments and track important pregnancy milestones.
-      </p>
-    </a>
+        <div className="features-grid">
+          {/* Feature 1 - Appointment */}
+          <a href={links.Appointment} className="feature-card">
+            <div className="feature-icon-container">
+              <EventAvailable className="feature-icon" style={{ fontSize: 48, color: "#FF6F61" }} />
+            </div>
+            <h3 className="feature-title">Schedule a Checkup</h3>
+            <p className="feature-description">
+              Book doctor appointments and track important pregnancy milestones.
+            </p>
+          </a>
 
-    {/* Feature 2 - Baby Growth Tracker */}
-    <a href={links.tracker} className="feature-card">
-      <div className="feature-icon-container">
-        <ShowChart className="feature-icon" style={{ fontSize: 48, color: "#FFA07A" }} />
-      </div>
-      <h3 className="feature-title">Baby Growth Tracker</h3>
-      <p className="feature-description">
-        Monitor your baby's development and milestones with ease.
-      </p>
-    </a>
+          {/* Feature 2 - Baby Growth Tracker */}
+          <a href={links.tracker} className="feature-card">
+            <div className="feature-icon-container">
+              <ShowChart className="feature-icon" style={{ fontSize: 48, color: "#FFA07A" }} />
+            </div>
+            <h3 className="feature-title">Baby Growth Tracker</h3>
+            <p className="feature-description">
+              Monitor your baby's development and milestones with ease.
+            </p>
+          </a>
 
-    {/* Feature 3 - Mom & Baby Care */}
-    <a href={links.healthtips} className="feature-card">
-      <div className="feature-icon-container">
-        <HealthAndSafety className="feature-icon" style={{ fontSize: 48, color: "#4CAF50" }} />
-      </div>
-      <h3 className="feature-title">Mom & Baby Care</h3>
-      <p className="feature-description">
-        Find expert advice on postpartum care, nutrition, and baby wellness.
-      </p>
-    </a>
+          {/* Feature 3 - Mom & Baby Care */}
+          <a href={links.healthtips} className="feature-card">
+            <div className="feature-icon-container">
+              <HealthAndSafety className="feature-icon" style={{ fontSize: 48, color: "#4CAF50" }} />
+            </div>
+            <h3 className="feature-title">Mom & Baby Care</h3>
+            <p className="feature-description">
+              Find expert advice on postpartum care, nutrition, and baby wellness.
+            </p>
+          </a>
 
-    {/* Feature 4 - Parenting Community */}
-    <a href={links.blog} className="feature-card">
-      <div className="feature-icon-container">
-        <Forum className="feature-icon" style={{ fontSize: 48, color: "#42A5F5" }} />
-      </div>
-      <h3 className="feature-title">Parenting Community</h3>
-      <p className="feature-description">
-        Connect with other parents, share experiences, and get support.
-      </p>
-    </a>
-  </div>
-</section>
+          {/* Feature 4 - Parenting Community */}
+          <a href={links.blog} className="feature-card">
+            <div className="feature-icon-container">
+              <Forum className="feature-icon" style={{ fontSize: 48, color: "#42A5F5" }} />
+            </div>
+            <h3 className="feature-title">Parenting Community</h3>
+            <p className="feature-description">
+              Connect with other parents, share experiences, and get support.
+            </p>
+          </a>
+        </div>
+      </section>
 
       {/* Call to Action Section */}
       <section className="cta-section">
-      <div className="cta-content">
-        <h2 className="cta-title">Start Your Journey</h2>
-        <p className="cta-description">
-          Sign up today to receive personalized information and track your baby's growth.
-        </p>
-        <button className="cta-button" onClick={() => navigate("/customer-login")}>
-          Sign Up for Free
-        </button>
-      </div>
-    </section>
+        <div className="cta-content">
+          <h2 className="cta-title">Start Your Journey</h2>
+          <p className="cta-description">
+            Sign up today to receive personalized information and track your baby's growth.
+          </p>
+          <button className="cta-button" onClick={() => navigate("/customer-login")}>
+            Sign Up for Free
+          </button>
+        </div>
+      </section>
 
       {/* Background Text */}
       <div className="background-text">
         <h2>Mom & Baby</h2>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Maincontent;

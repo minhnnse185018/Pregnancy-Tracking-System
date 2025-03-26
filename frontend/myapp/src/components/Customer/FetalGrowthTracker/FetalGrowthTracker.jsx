@@ -1,353 +1,495 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Table } from 'react-bootstrap';
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
   Legend,
-  ResponsiveContainer,
+  LinearScale,
+  Title,
   Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
-import './FetalGrowthTracker.css';
+} from "chart.js";
+import React, { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "./FetalGrowthTracker.css";
 
-const FetalGrowthTracker = () => {
-  const [growthData, setGrowthData] = useState([]);
-  const [weight, setWeight] = useState(''); // kg
-  const [height, setHeight] = useState(''); // cm
-  const [measurementDate, setMeasurementDate] = useState(''); // YYYY-MM-DD
-  const [notes, setNotes] = useState('');
-  const [editId, setEditId] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-  // API base URL and endpoints
-  const API_BASE_URL = 'http://localhost:5254';
-  const API_ENDPOINTS = {
-    getAll: '/api/FetalMeasurement/GetAllGrowth',
-    create: '/api/FetalMeasurement/CreateGrowth',
-    update: (id) => `/api/FetalMeasurement/UpdateGrowth/${id}`,
-    delete: (id) => `/api/FetalMeasurement/DeleteGrowth/${id}`,
-  };
+function FetalGrowthTracker() {
+  const [gestationalAge, setGestationalAge] = useState("");
+  const [fetalData, setFetalData] = useState([]);
+  const [userProfiles, setUserProfiles] = useState([]);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentEditData, setCurrentEditData] = useState(null);
+  const navigate = useNavigate();
 
-  // Mock profileId (must be an integer, adjust based on your auth system)
-  const profileId = 1; // Changed to integer to match API expectation
-
-  // Fetch all growth data
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = sessionStorage.getItem('token');
-        const response = await axios.get(`${API_BASE_URL}${API_ENDPOINTS.getAll}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log('API GetAll Response:', response.data);
+    checkAuthentication();
+    if (isAuthenticated) {
+      fetchUserProfiles();
+    }
+  }, [isAuthenticated]);
 
-        const transformedData = response.data.map(item => ({
-          id: item.id,
-          weight: item.weightGrams / 1000, // Convert grams to kg
-          height: item.heightCm,
-          measurementDate: item.measurementDate.split('T')[0], // Extract YYYY-MM-DD
-          notes: item.notes || 'No notes',
-        }));
-        setGrowthData(transformedData);
-      } catch (err) {
-        console.error('Fetch error:', err.response ? err.response.data : err.message);
-        setError(`Error loading data: ${err.response?.status} - ${err.response?.data?.message || err.message}`);
-      } finally {
-        setLoading(false);
-      }
+  function checkAuthentication() {
+    const userId = sessionStorage.getItem("userID");
+    setIsAuthenticated(!!userId);
+  }
+
+  function fetchUserProfiles() {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      toast.error("Please log in to view your profiles.");
+      navigate("/login");
+      return;
+    }
+
+    fetch(`http://localhost:5254/api/PregnancyProfile/GetProfilesByUserId/${userId}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch profiles");
+        return response.json();
+      })
+      .then((data) => {
+        setUserProfiles(data);
+        if (data.length > 0) {
+          setSelectedProfile(data[0]);
+          fetchFetalData(data[0].id);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching profiles:", err);
+        toast.error("Failed to load profiles.");
+      });
+  }
+
+  function fetchFetalData(profileId) {
+    fetch(`http://localhost:5254/api/FetalMeasurement/GetGrowthByProfile/${profileId}`)
+      .then((response) => {
+        if (!response.ok) return [];
+        return response.json();
+      })
+      .then((data) => {
+        const profile = userProfiles.find((p) => p.id === profileId);
+        const conceptionDate = profile ? new Date(profile.conceptionDate) : null;
+        const mappedData = (data || []).map((item) => {
+          let weeks = item.week || "N/A";
+          if (weeks === "N/A" && conceptionDate && item.measureDate) {
+            const measureDate = new Date(item.measureDate);
+            const diffTime = Math.abs(measureDate - conceptionDate);
+            const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+            weeks = diffWeeks;
+          }
+          return {
+            id: item.id,
+            profileId: item.profileId,
+            weeks: weeks,
+            length: item.heightCm || 0,
+            weight: item.weightGrams || 0,
+            notes: item.notes || "N/A",
+            measureDate: item.measureDate || item.createdAt,
+          };
+        });
+        const sortedData = mappedData.sort((a, b) => {
+          const weekA = parseInt(a.weeks) || 0;
+          const weekB = parseInt(b.weeks) || 0;
+          return weekA - weekB;
+        });
+        setFetalData(sortedData);
+      })
+      .catch((err) => {
+        console.error("Error fetching fetal data:", err);
+        toast.error("Failed to load fetal growth data.");
+        setFetalData([]);
+      });
+  }
+
+  function calculateGuestFetalData(weeks) {
+    const data = [
+      {
+        weeks,
+        length: (weeks * 0.5).toFixed(1),
+        weight: (weeks * 10).toFixed(0),
+        notes: `At ${weeks} weeks, the fetus is developing rapidly!`,
+      },
+    ];
+    setFetalData(data);
+  }
+
+  function handleGestationalAgeChange(e) {
+    const weeks = e.target.value;
+    setGestationalAge(weeks);
+    if (weeks && !isAuthenticated) {
+      calculateGuestFetalData(weeks);
+    }
+  }
+
+  function handleProfileChange(e) {
+    const profileId = e.target.value;
+    const profile = userProfiles.find((p) => p.id === profileId);
+    setSelectedProfile(profile);
+    fetchFetalData(profileId);
+  }
+
+  function handleOpenModal(data = null) {
+    setCurrentEditData(data);
+    setIsModalOpen(true);
+  }
+
+  function handleCloseModal() {
+    setIsModalOpen(false);
+    setCurrentEditData(null);
+  }
+
+  async function handleSaveFetalData(updatedData) {
+    const payload = {
+      profileId: selectedProfile.id,
+      weightGrams: updatedData.weight,
+      heightCm: updatedData.length,
+      notes: updatedData.notes,
+      week: updatedData.weeks,
+      measureDate: new Date().toISOString(),
     };
 
-    fetchData();
-  }, []);
+    const url = currentEditData
+      ? `http://localhost:5254/api/FetalMeasurement/UpdateGrowth/${currentEditData.id}`
+      : `http://localhost:5254/api/FetalMeasurement/CreateGrowth`;
+    const method = currentEditData ? "PUT" : "POST";
 
-  // Handle Create/Update
-  const handleSave = async (e) => {
-    e.preventDefault();
-
-    // Validate input
-    if (!weight || !height || !measurementDate) {
-      setError('Please fill in all required fields (weight, height, measurement date)!');
-      return;
-    }
-
-    const weightValue = parseFloat(weight);
-    const heightValue = parseFloat(height);
-    if (isNaN(weightValue) || isNaN(heightValue)) {
-      setError('Weight and height must be valid numbers!');
-      return;
-    }
-
-    // Validate measurementDate (ensure it's in YYYY-MM-DD format)
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(measurementDate)) {
-      setError('Measurement date must be in YYYY-MM-DD format!');
-      return;
-    }
-
-    // Convert measurementDate to ISO format
-    let isoDate;
     try {
-      const [year, month, day] = measurementDate.split('-');
-      isoDate = new Date(year, month - 1, day).toISOString(); // month is 0-based in JS
-    } catch (err) {
-      setError('Invalid measurement date!');
-      return;
-    }
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    // Prepare data for API
-    const data = {
-      profileId,
-      weightGrams: weightValue * 1000, // Convert kg to grams
-      heightCm: heightValue,
-      measurementDate: isoDate, // Send in ISO format
-      notes: notes || '', // Send empty string if no notes, instead of null
-    };
-
-    setLoading(true);
-    setError(null);
-    try {
-      const token = sessionStorage.getItem('token');
-      if (editId) {
-        // Update
-        await axios.put(`${API_BASE_URL}${API_ENDPOINTS.update(editId)}`, data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json-patch+json',
-          },
-        });
-        setGrowthData(growthData.map(item =>
-          item.id === editId ? { ...item, weight: weightValue, height: heightValue, measurementDate, notes } : item
-        ));
-        setEditId(null);
+      if (response.ok) {
+        toast.success(currentEditData ? "Data updated!" : "Data created!");
+        fetchFetalData(selectedProfile.id); // Re-fetch fetal data to re-render the page
+        handleCloseModal();
       } else {
-        // Create
-        const response = await axios.post(`${API_BASE_URL}${API_ENDPOINTS.create}`, data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json-patch+json',
-          },
-        });
-        console.log('Create Response:', response.data);
-        setGrowthData([...growthData, { 
-          id: response.data.id, 
-          weight: weightValue, 
-          height: heightValue, 
-          measurementDate: response.data.measurementDate.split('T')[0], // Extract YYYY-MM-DD
-          notes: response.data.notes 
-        }]);
+        throw new Error(`Failed to save data: ${response.status}`);
       }
-      resetForm();
     } catch (err) {
-      console.error('Save error:', err.response ? err.response.data : err.message);
-      setError(`Error saving data: ${err.response?.status} - ${err.response?.data?.message || err.message}`);
-    } finally {
-      setLoading(false);
+      console.error("Error saving fetal data:", err);
+      toast.error(`Failed to save data: ${err.message}`);
     }
-  };
+  }
 
-  // Handle Delete
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this record?')) {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = sessionStorage.getItem('token');
-        await axios.delete(`${API_BASE_URL}${API_ENDPOINTS.delete(id)}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setGrowthData(growthData.filter(item => item.id !== id));
-      } catch (err) {
-        console.error('Delete error:', err.response ? err.response.data : err.message);
-        setError(`Error deleting data: ${err.response?.status} - ${err.response?.data?.message || err.message}`);
-      } finally {
-        setLoading(false);
+  async function handleDeleteFetalData(id) {
+    try {
+      const response = await fetch(
+        `http://localhost:5254/api/FetalMeasurement/DeleteGrowth/${id}`,
+        { method: "DELETE", headers: { "Content-Type": "application/json" } }
+      );
+
+      if (response.ok) {
+        toast.success("Data deleted!");
+        fetchFetalData(selectedProfile.id); // Re-fetch fetal data to re-render the page
+      } else {
+        throw new Error(`Failed to delete data: ${response.status}`);
       }
+    } catch (err) {
+      console.error("Error deleting fetal data:", err);
+      toast.error(`Failed to delete data: ${err.message}`);
     }
+  }
+
+  const chartData = {
+    labels: fetalData.length > 0 ? fetalData.map((data) => `Week ${data.weeks || "N/A"}`) : [],
+    datasets: [
+      {
+        label: "Length (cm)",
+        data: fetalData.map((data) => data.length || 0),
+        backgroundColor: "rgba(255, 140, 148, 0.6)",
+        borderColor: "rgba(255, 140, 148, 1)",
+        borderWidth: 1,
+        barThickness: 30,
+      },
+      {
+        label: "Weight (g)",
+        data: fetalData.map((data) => data.weight || 0),
+        backgroundColor: "rgba(180, 147, 211, 0.6)",
+        borderColor: "rgba(180, 147, 211, 1)",
+        borderWidth: 1,
+        barThickness: 30,
+      },
+    ],
   };
 
-  // Handle Edit
-  const handleEdit = (item) => {
-    setEditId(item.id);
-    setWeight(item.weight.toString());
-    setHeight(item.height.toString());
-    setMeasurementDate(item.measurementDate);
-    setNotes(item.notes);
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: { display: false },
+      tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+      },
+    },
+    scales: {
+      y: { display: false, grid: { display: false } },
+      x: {
+        ticks: { color: "#5c4b7d", font: { family: "'Poppins', sans-serif" } },
+        grid: { display: false },
+      },
+    },
+    categoryPercentage: 0.8,
+    barPercentage: 0.6,
   };
 
-  // Reset form
-  const resetForm = () => {
-    setWeight('');
-    setHeight('');
-    setMeasurementDate('');
-    setNotes('');
-    setEditId(null);
-  };
+  function renderGuestView() {
+    return (
+      <div className="tracker-container">
+        <h1 className="tracker-title">Fetal Growth Tracker</h1>
+        <p className="guest-note">Enter gestational age to preview growth (not saved).</p>
+        <div className="input-group">
+          <label htmlFor="gestationalAge">Gestational Age (weeks):</label>
+          <input
+            type="number"
+            id="gestationalAge"
+            value={gestationalAge}
+            onChange={handleGestationalAgeChange}
+            min="1"
+            max="40"
+          />
+        </div>
+        {fetalData.length > 0 ? (
+          <>
+            {renderFetalDataTable()}
+            <div className="chart-wrapper">
+              <Bar data={chartData} options={chartOptions} />
+              <div className="chart-description">
+                <p className="trend">Trending up this month</p>
+                <p className="details">Showing growth data for the entered gestational age</p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p>No fetal growth data available. Enter a gestational age to preview.</p>
+        )}
+        <p className="login-prompt">
+          <button onClick={() => navigate("/login")}>Log in</button> to save and manage data!
+        </p>
+      </div>
+    );
+  }
 
-  // Prepare chart data
-  const chartData = growthData.map(item => ({
-    date: item.measurementDate,
-    weight: item.weight,
-    height: item.height,
-  }));
+  function renderAuthenticatedView() {
+    if (userProfiles.length === 0) {
+      return (
+        <div className="tracker-container">
+          <h1 className="tracker-title">Fetal Growth Tracker</h1>
+          <p>No pregnancy profiles found.</p>
+          <button
+            className="create-profile-button"
+            onClick={() => navigate("/create-pregnancy-profile")}
+          >
+            Create a Pregnancy Profile
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="tracker-container">
+        <h1 className="tracker-title">Fetal Growth Tracker</h1>
+        <div className="input-group">
+          <label htmlFor="profileSelect">Select Pregnancy Profile:</label>
+          <select
+            id="profileSelect"
+            value={selectedProfile?.id || ""}
+            onChange={handleProfileChange}
+          >
+            {userProfiles.map((profile) => (
+              <option key={profile.id} value={profile.id}>
+                {profile.name || `Profile ${profile.id}`} -{" "}
+                {new Date(profile.conceptionDate).toLocaleDateString()}
+              </option>
+            ))}
+          </select>
+        </div>
+        <FetalDataForm onSave={handleSaveFetalData} />
+        {fetalData.length > 0 ? (
+          <>
+            {renderFetalDataTable()}
+            <div className="chart-wrapper">
+              <Bar data={chartData} options={chartOptions} />
+              <div className="chart-description">
+                <p className="trend">Trending up this month</p>
+                <p className="details">Showing growth data for the selected profile</p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p>No fetal growth data available for this profile. Add data to get started.</p>
+        )}
+        {isModalOpen && (
+          <FetalDataForm
+            data={currentEditData}
+            onSave={handleSaveFetalData}
+            onCancel={handleCloseModal}
+            isModal={true}
+          />
+        )}
+      </div>
+    );
+  }
+
+  function renderFetalDataTable() {
+    if (fetalData.length === 0) {
+      return <p>No data to display.</p>;
+    }
+
+    return (
+      <table className="fetal-data-table">
+        <thead>
+          <tr>
+            <th>Weeks</th>
+            <th>Length (cm)</th>
+            <th>Weight (g)</th>
+            <th>Notes</th>
+            {isAuthenticated && <th>Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {fetalData.map((data) => (
+            <tr key={data.id || data.weeks || Math.random()}>
+              <td>{data.weeks || "N/A"}</td>
+              <td>{data.length || "N/A"}</td>
+              <td>{data.weight || "N/A"}</td>
+              <td>{data.notes || "N/A"}</td>
+              {isAuthenticated && (
+                <td>
+                  <button onClick={() => handleOpenModal(data)}>Edit</button>
+                  <button onClick={() => handleDeleteFetalData(data.id)}>Delete</button>
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
 
   return (
-    <div className="growth-tracker-container">
-      <h1 className="tracker-title">Fetal Growth Tracker</h1>
-      <p className="tracker-description">Easily input and manage your baby’s growth data!</p>
-
-      {/* Data Entry Form */}
-      <div className="data-entry-form">
-        {error && <p className="error-message">{error}</p>}
-        <Form onSubmit={handleSave} className="growth-form">
-          <div className="form-row">
-            <Form.Group controlId="weight" className="mb-3">
-              <Form.Label>Weight (kg)</Form.Label>
-              <Form.Control
-                type="number"
-                step="0.01"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                placeholder="Enter weight (kg)"
-                disabled={loading}
-                className="form-control"
-              />
-            </Form.Group>
-            <Form.Group controlId="height" className="mb-3">
-              <Form.Label>Height (cm)</Form.Label>
-              <Form.Control
-                type="number"
-                step="0.1"
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-                placeholder="Enter height (cm)"
-                disabled={loading}
-                className="form-control"
-              />
-            </Form.Group>
-            <Form.Group controlId="measurementDate" className="mb-3">
-              <Form.Label>Measurement Date (YYYY-MM-DD)</Form.Label>
-              <Form.Control
-                type="date"
-                value={measurementDate}
-                onChange={(e) => setMeasurementDate(e.target.value)}
-                placeholder="Select date (YYYY-MM-DD)"
-                disabled={loading}
-                className="form-control"
-              />
-            </Form.Group>
-          </div>
-          <Form.Group controlId="notes" className="mb-3">
-            <Form.Label>Notes</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Enter notes (optional)"
-              disabled={loading}
-              className="form-control"
-            />
-          </Form.Group>
-          <Button variant="primary" type="submit" className="save-button" disabled={loading}>
-            {loading ? 'Processing...' : editId ? 'Update' : 'Add'}
-          </Button>
-          {editId && (
-            <Button variant="secondary" onClick={resetForm} className="cancel-button ms-2" disabled={loading}>
-              Cancel
-            </Button>
-          )}
-        </Form>
-      </div>
-
-      {loading ? (
-        <div className="loading-container">
-          <p className="loading-message">Loading data...</p>
+    <div className="app-wrapper">
+      <header className="app-header">
+        <div className="logo">
+          <span role="img" aria-label="mom-and-baby">🤰</span> MOM & BABY
         </div>
-      ) : error ? (
-        <div className="error-container">
-          <p className="error-message">{error}</p>
-        </div>
-      ) : growthData.length > 0 ? (
-        <>
-          {/* Data Management Table */}
-          <Table striped bordered hover responsive className="growth-table mt-4">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Weight (kg)</th>
-                <th>Height (cm)</th>
-                <th>Measurement Date (YYYY-MM-DD)</th>
-                <th>Notes</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {growthData.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.weight.toFixed(2)}</td>
-                  <td>{item.height}</td>
-                  <td>{item.measurementDate}</td>
-                  <td>{item.notes}</td>
-                  <td>
-                    <Button variant="warning" size="sm" onClick={() => handleEdit(item)} className="me-2 action-button">
-                      Edit
-                    </Button>
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(item.id)} className="action-button">
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-
-          {/* Chart */}
-          <div className="chart-container mt-4">
-            <h2 className="chart-title">Growth Chart</h2>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                <XAxis dataKey="date" label={{ value: 'Measurement Date', position: 'insideBottomRight', offset: -10 }} style={{ fontSize: '14px' }} />
-                <YAxis
-                  label={{ value: 'Value (kg/cm)', angle: -90, position: 'insideLeft' }}
-                  yAxisId="left"
-                  orientation="left"
-                  tickFormatter={(value) => (value ? `${value} kg` : '')}
-                  style={{ fontSize: '14px' }}
-                />
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  tickFormatter={(value) => (value ? `${value} cm` : '')}
-                  style={{ fontSize: '14px' }}
-                />
-                <Tooltip
-                  formatter={(value, name) =>
-                    name === 'weight' ? [`${value} kg`, 'Weight'] : [`${value} cm`, 'Height']
-                  }
-                  contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #ddd' }}
-                />
-                <Legend wrapperStyle={{ fontSize: '14px' }} />
-                <Bar dataKey="weight" name="Weight (kg)" fill="#FF9999" yAxisId="left" barSize={20} />
-                <Bar dataKey="height" name="Height (cm)" fill="#66B2B2" yAxisId="right" barSize={20} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </>
-      ) : (
-        <div className="no-data-container">
-          <p className="no-data">No data available. Please add information to view the chart!</p>
-        </div>
-      )}
+        <nav className="nav-menu">
+          <a href="/">Home</a>
+          <a href="/about">About Us</a>
+          <a href="/services">Service</a>
+          <a href="/member">Member</a>
+          <a href="/blog">Blog</a>
+          <a href="/contact">Contact</a>
+        </nav>
+      </header>
+      <main>
+        {isAuthenticated ? renderAuthenticatedView() : renderGuestView()}
+      </main>
     </div>
   );
-};
+}
+
+function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
+  const [weeks, setWeeks] = useState(data?.weeks || "");
+  const [length, setLength] = useState(data?.length || "");
+  const [weight, setWeight] = useState(data?.weight || "");
+  const [notes, setNotes] = useState(data?.notes || "");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave({
+      weeks: parseInt(weeks),
+      length: parseFloat(length),
+      weight: parseFloat(weight),
+      notes,
+    });
+    if (!isModal) {
+      setWeeks("");
+      setLength("");
+      setWeight("");
+      setNotes("");
+    }
+  };
+
+  const formContent = (
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label>Weeks:</label>
+        <input
+          type="number"
+          value={weeks}
+          onChange={(e) => setWeeks(e.target.value)}
+          min="1"
+          max="40"
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Length (cm):</label>
+        <input
+          type="number"
+          value={length}
+          onChange={(e) => setLength(e.target.value)}
+          step="0.1"
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Weight (g):</label>
+        <input
+          type="number"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Notes:</label>
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Enter notes (optional)"
+        />
+      </div>
+      <div className="form-actions">
+        {onCancel && (
+          <button type="button" onClick={onCancel} className="cancel-button">
+            Cancel
+          </button>
+        )}
+        <button type="submit" className="save-button">
+          Save
+        </button>
+      </div>
+    </form>
+  );
+
+  return isModal ? (
+    <div className="modal-overlay">
+      <div className="modal-container">
+        <h2>Edit Fetal Growth Data</h2>
+        {formContent}
+      </div>
+    </div>
+  ) : (
+    <div className="form-container">
+      <h2>Add Fetal Growth Data</h2>
+      {formContent}
+    </div>
+  );
+}
 
 export default FetalGrowthTracker;

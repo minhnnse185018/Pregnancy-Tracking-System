@@ -1,31 +1,25 @@
-import GroupIcon from "@mui/icons-material/Group"; // Icon cho Profile
-import PeopleIcon from "@mui/icons-material/People"; // Icon cho Manage Personnel
-import StoreIcon from "@mui/icons-material/Store"; // Icon cho Manage Salon
+import PersonIcon from "@mui/icons-material/Person"; // Icon cho Doctor Profile
+import PregnantWomanIcon from "@mui/icons-material/PregnantWoman"; // Icon cho Patient Management
 import React from "react";
 import { Link } from "react-router-dom";
 
-const AdminSidebar = () => {
+const DoctorSidebar = () => {
   return (
     <div className="sidebar" style={sidebarStyle}>
       <ul style={listStyle}>
         <li style={listItemStyle}>
-          <Link to="admin-profile" style={linkStyle}>
-            <GroupIcon /> Profile
-          </Link>
-        </li>
-        {/* <li style={listItemStyle}>
-          <Link to="admin-personnel" style={linkStyle}>
-            <PeopleIcon /> Manage Personnel
-          </Link>
-        </li> */}
-        <li style={listItemStyle}>
-          <Link to="admin-salon" style={linkStyle}>
-            <StoreIcon /> Manage Service
+          <Link to="/doctor/profile" style={linkStyle}>
+            <PersonIcon /> Doctor Profile
           </Link>
         </li>
         <li style={listItemStyle}>
-          <Link to="admin-customer" style={linkStyle}>
-            <PeopleIcon /> Manage Customer
+          <Link to="/doctor/chat" style={linkStyle}>
+            <PregnantWomanIcon /> Chat with Patients
+          </Link>
+        </li>
+        <li style={listItemStyle}>
+          <Link to="/doctor/alert" style={linkStyle}>
+            <PregnantWomanIcon /> Growth Tracker & Alerts
           </Link>
         </li>
       </ul>
@@ -33,24 +27,22 @@ const AdminSidebar = () => {
   );
 };
 
-// Sidebar styling phù hợp với chủ đề Mom and Baby
+// Sidebar styling đồng nhất với AdminSidebar
 const sidebarStyle = {
   width: "260px",
   backgroundColor: "#FFF5EE", // Màu kem nhẹ
   height: "100vh",
   padding: "20px 0",
   boxShadow: "2px 0 10px rgba(0, 0, 0, 0.1)",
-  borderRadius: "0 20px 20px 0", // Bo tròn góc phải
+  borderRadius: "0 20px 20px 0",
 };
 
-// List styling
 const listStyle = {
   listStyleType: "none",
   padding: 0,
-  color: "#D2691E", // Nâu ấm
+  color: "#D2691E", // Nâu ấm, đồng nhất với Admin
 };
 
-// List item styling
 const listItemStyle = {
   padding: "15px 20px",
   borderBottom: "1px solid #F4A8A8", // Viền pastel nhẹ
@@ -60,10 +52,9 @@ const listItemStyle = {
   borderRadius: "10px",
 };
 
-// Link styling
 const linkStyle = {
   textDecoration: "none",
-  color: "#D2691E", // Nâu ấm
+  color: "#D2691E", // Nâu ấm, đồng nhất với Admin
   display: "flex",
   alignItems: "center",
   gap: "0.8rem",
@@ -73,8 +64,8 @@ const linkStyle = {
 
 // Hover effect
 listItemStyle[":hover"] = {
-  backgroundColor: "#FFDAB9", // Màu cam pastel nhẹ khi hover
+  backgroundColor: "#FFDAB9", // Cam pastel nhẹ khi hover, đồng nhất với Admin
   transform: "scale(1.05)",
 };
 
-export default AdminSidebar;
+export default DoctorSidebar;

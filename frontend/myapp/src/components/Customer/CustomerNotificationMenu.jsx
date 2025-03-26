@@ -1,17 +1,17 @@
 import {
-    Box,
-    Button,
-    CircularProgress,
-    Divider,
-    Menu,
-    MenuItem,
-    Modal,
-    Typography,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Menu,
+  MenuItem,
+  Modal,
+  Typography,
 } from "@mui/material";
 import axios from "axios";
-import * as React from "react";
+import React from 'react';
 
-
+// Styles for the modal
 const modalStyle = {
   position: "fixed",
   top: "50%",
@@ -32,6 +32,7 @@ const modalStyle = {
   zIndex: 1300,
 };
 
+// Styles for the menu
 const menuStyle = {
   maxWidth: "350px",
   maxHeight: "70vh",
@@ -43,69 +44,134 @@ const menuStyle = {
 };
 
 function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
-  const [notifications, setNotifications] = React.useState([]);
+  const [alerts, setAlerts] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const [selectedNotification, setSelectedNotification] = React.useState(null);
+  const [error, setError] = React.useState(null);
+  const [selectedAlert, setSelectedAlert] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
+  const [viewedAlertIds, setViewedAlertIds] = React.useState(() => {
+    // Load viewed alert IDs from sessionStorage on mount
+    const stored = sessionStorage.getItem("viewedAlertIds");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  // Save viewedAlertIds to sessionStorage whenever it changes
   React.useEffect(() => {
-    const fetchNotifications = async () => {
+    sessionStorage.setItem("viewedAlertIds", JSON.stringify(viewedAlertIds));
+  }, [viewedAlertIds]);
+
+  // Fetch alerts when the component mounts or when setUnreadCount changes
+  React.useEffect(() => {
+    const fetchAlerts = async () => {
       try {
-        const accountID = sessionStorage.getItem("userID");
-        const response = await axios.get(
-          `http://localhost:8080/api/noti/${accountID}`
+        // Get the token from sessionStorage
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+          setError("Authentication token not found. Please log in again.");
+          setLoading(false);
+          return;
+        }
+
+        // Construct the API URL using an environment variable
+        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5254";
+        const url = `${apiUrl}/api/GrowthAlert/1/week`;
+
+        // Make the API request
+        const response = await axios.get(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        // Sort alerts by ID in descending order (newest first)
+        const sortedAlerts = response.data.sort((a, b) => b.id - a.id);
+        setAlerts(sortedAlerts);
+
+        // Calculate unread count (alerts that haven't been viewed)
+        const unreadAlerts = sortedAlerts.filter(
+          (alert) => !viewedAlertIds.includes(alert.id)
         );
-        const sortedNotifications = response.data.sort((a, b) => b.notiId - a.notiId);
-        console.log(response);
-        setNotifications(response.data);
-        const unreadNotifications = sortedNotifications.filter((n) => !n.read).length;
-        setUnreadCount(unreadNotifications);
+        setUnreadCount(unreadAlerts.length);
+        setError(null);
       } catch (error) {
-        console.error("Failed to fetch notifications:", error);
+        if (error.response?.status === 404) {
+          setError("No recent alerts found.");
+        } else if (error.response?.status === 401) {
+          setError("Session expired. Please log in again.");
+          window.location.href = "/login";
+        } else {
+          setError("Failed to load alerts. Please try again later.");
+        }
+        setAlerts([]);
+        setUnreadCount(0); // Reset unread count on error
       } finally {
         setLoading(false);
       }
     };
 
-    fetchNotifications();
+    fetchAlerts();
+    const interval = setInterval(fetchAlerts, 30000); // Poll every 30 seconds
+    return () => clearInterval(interval); // Clean up the interval on unmount
   }, [setUnreadCount]);
 
-  const markAsRead = async (notiId) => {
-    if (!notiId) {
-      console.error("notiId is undefined!");
-      return;
+  // Mark alerts as viewed when the menu is opened
+  React.useEffect(() => {
+    if (anchorEl && alerts.length > 0) {
+      // When the menu is opened, mark all current alerts as viewed
+      const newViewedAlertIds = [...new Set([...viewedAlertIds, ...alerts.map(alert => alert.id)])];
+      setViewedAlertIds(newViewedAlertIds);
+      setUnreadCount(0); // Set unread count to 0 since all alerts are now viewed
     }
-    try {
-      await axios.put(`http://localhost:8080/api/noti/${notiId}`);
-      setNotifications((prev) =>
-        prev.map((n) => (n.notiId === notiId ? { ...n, read: true } : n))
-      );
+  }, [anchorEl, alerts, setUnreadCount]);
 
-      setUnreadCount((prev) => Math.max(prev - 1, 0));
-    } catch (error) {
-      console.error("Failed to mark notification as read:", error);
-    }
-  };
-
-  const handleOpenModal = (notification) => {
-    console.log(notification);
-    setSelectedNotification(notification);
+  // Handle opening the modal when an alert is clicked
+  const handleOpenModal = (alert) => {
+    setSelectedAlert(alert);
     setOpenModal(true);
     handleClose();
-
-    if (!notification.read) {
-      markAsRead(notification.notiId);
-    }
   };
 
+  // Handle closing the modal
   const handleCloseModal = () => {
     setOpenModal(false);
-    setSelectedNotification(null);
+    setSelectedAlert(null);
   };
 
+  // Render loading state
   if (loading) {
     return <CircularProgress />;
   }
 
+  // Render error state
+  if (error) {
+    return (
+      <Menu
+        sx={menuStyle}
+        id="menu-notification"
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>
+          <Typography
+            textAlign="center"
+            color={error === "No recent alerts found." ? "textSecondary" : "error"}
+          >
+            {error}
+          </Typography>
+        </MenuItem>
+      </Menu>
+    );
+  }
+
+  // Render the menu with alerts
   return (
     <div>
       <Menu
@@ -124,27 +190,24 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {notifications.length > 0 ? (
-          notifications.map((notification, index) => (
-            <Box key={index}>
+        {alerts.length > 0 ? (
+          alerts.map((alert, index) => (
+            <Box key={alert.id}>
               <MenuItem
-                onClick={() => handleOpenModal(notification)}
+                onClick={() => handleOpenModal(alert)}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "flex-start",
                   padding: "12px 16px",
                   width: "100%",
-                  backgroundColor: notification.read
-                    ? "white"
-                    : "rgba(0, 255, 0, 0.1)",
                   "&:hover": {
                     backgroundColor: "rgba(0, 0, 0, 0.04)",
                   },
                 }}
               >
                 <Typography
-                  fontWeight={notification.read ? "normal" : "bold"}
+                  fontWeight="bold"
                   sx={{
                     width: "100%",
                     overflow: "hidden",
@@ -152,7 +215,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {notification.title}
+                  Growth Alert
                 </Typography>
                 <Typography
                   sx={{
@@ -164,7 +227,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {notification.msg}
+                  {alert.alertMessage}
                 </Typography>
                 <Typography
                   sx={{
@@ -175,44 +238,45 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     textAlign: "right",
                   }}
                 >
-                  {new Date(notification.createDate).toLocaleString()}
+                  {new Date(alert.createdAt).toLocaleString()}
                 </Typography>
               </MenuItem>
-              {index < notifications.length - 1 && <Divider />}
+              {index < alerts.length - 1 && <Divider />}
             </Box>
           ))
         ) : (
           <MenuItem onClick={handleClose}>
-            <Typography textAlign="center">No notifications</Typography>
+            <Typography textAlign="center">No alerts</Typography>
           </MenuItem>
         )}
       </Menu>
 
-      {selectedNotification && (
+      {/* Modal to display the full alert message */}
+      {selectedAlert && (
         <Modal
           open={openModal}
           onClose={handleCloseModal}
-          aria-labelledby="notification-modal-title"
-          aria-describedby="notification-modal-description"
+          aria-labelledby="alert-modal-title"
+          aria-describedby="alert-modal-description"
           disableScrollLock={true}
         >
           <Box sx={modalStyle}>
             <Typography
-              id="notification-modal-title"
+              id="alert-modal-title"
               variant="h6"
               component="h2"
               gutterBottom
             >
-              {selectedNotification.title}
+              Growth Alert
             </Typography>
             <Typography
-              id="notification-modal-description"
+              id="alert-modal-description"
               sx={{
                 mt: 2,
                 overflowWrap: "break-word",
               }}
             >
-              {selectedNotification.msg}
+              {selectedAlert.alertMessage}
             </Typography>
             <Button
               onClick={handleCloseModal}
