@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import React from 'react';
+import React, { useCallback, useEffect, useState } from "react";
 
 // Styles for the modal
 const modalStyle = {
@@ -44,79 +44,90 @@ const menuStyle = {
 };
 
 function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
-  const [alerts, setAlerts] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
-  const [selectedAlert, setSelectedAlert] = React.useState(null);
-  const [openModal, setOpenModal] = React.useState(false);
-  const [viewedAlertIds, setViewedAlertIds] = React.useState(() => {
+  const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedAlert, setSelectedAlert] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [viewedAlertIds, setViewedAlertIds] = useState(() => {
     // Load viewed alert IDs from sessionStorage on mount
     const stored = sessionStorage.getItem("viewedAlertIds");
     return stored ? JSON.parse(stored) : [];
   });
 
   // Save viewedAlertIds to sessionStorage whenever it changes
-  React.useEffect(() => {
+  useEffect(() => {
     sessionStorage.setItem("viewedAlertIds", JSON.stringify(viewedAlertIds));
   }, [viewedAlertIds]);
 
-  // Fetch alerts when the component mounts or when setUnreadCount changes
-  React.useEffect(() => {
-    const fetchAlerts = async () => {
-      try {
-        // Get the token from sessionStorage
-        const token = sessionStorage.getItem("token");
-        if (!token) {
-          setError("Authentication token not found. Please log in again.");
-          setLoading(false);
-          return;
-        }
+  // Fetch alerts using the userId
+  const fetchAlerts = useCallback(async () => {
+    try {
+      // Get the userId and token from sessionStorage
+      const userId = sessionStorage.getItem("userID");
+      const token = sessionStorage.getItem("token");
 
-        // Construct the API URL using an environment variable
-        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5254";
-        const url = `${apiUrl}/api/GrowthAlert/1/week`;
-
-        // Make the API request
-        const response = await axios.get(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        // Sort alerts by ID in descending order (newest first)
-        const sortedAlerts = response.data.sort((a, b) => b.id - a.id);
-        setAlerts(sortedAlerts);
-
-        // Calculate unread count (alerts that haven't been viewed)
-        const unreadAlerts = sortedAlerts.filter(
-          (alert) => !viewedAlertIds.includes(alert.id)
-        );
-        setUnreadCount(unreadAlerts.length);
-        setError(null);
-      } catch (error) {
-        if (error.response?.status === 404) {
-          setError("No recent alerts found.");
-        } else if (error.response?.status === 401) {
-          setError("Session expired. Please log in again.");
-          window.location.href = "/login";
-        } else {
-          setError("Failed to load alerts. Please try again later.");
-        }
-        setAlerts([]);
-        setUnreadCount(0); // Reset unread count on error
-      } finally {
+      if (!userId) {
+        setError("User ID not found. Please log in again.");
         setLoading(false);
+        return;
       }
-    };
 
+      if (!token) {
+        setError("Authentication token not found. Please log in again.");
+        setLoading(false);
+        return;
+      }
+
+      // Construct the API URL
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5254";
+      const url = `${apiUrl}/api/GrowthAlert/${userId}/week`; // Using GET /api/GrowthAlert/{userId}/week
+
+      // Make the API request
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Sort alerts by ID in descending order (newest first)
+      const sortedAlerts = response.data.sort((a, b) => b.id - a.id);
+      setAlerts(sortedAlerts);
+
+      // Calculate unread count (alerts that haven't been viewed)
+      const unreadAlerts = sortedAlerts.filter(
+        (alert) => !viewedAlertIds.includes(alert.id)
+      );
+      setUnreadCount(unreadAlerts.length);
+      setError(null);
+    } catch (error) {
+      if (error.response?.status === 404) {
+        setError("No recent alerts found.");
+      } else if (error.response?.status === 401) {
+        setError("Session expired. Please log in again.");
+        window.location.href = "/login";
+      } else {
+        setError("Failed to load alerts. Please try again later.");
+      }
+      setAlerts([]);
+      setUnreadCount(0); // Reset unread count on error
+    } finally {
+      setLoading(false);
+    }
+  }, [setUnreadCount, viewedAlertIds]);
+
+  // Fetch alerts when the component mounts or when setUnreadCount changes
+  useEffect(() => {
     fetchAlerts();
     const interval = setInterval(fetchAlerts, 30000); // Poll every 30 seconds
     return () => clearInterval(interval); // Clean up the interval on unmount
-  }, [setUnreadCount]);
+  }, [fetchAlerts]);
 
   // Mark alerts as viewed when the menu is opened
-  React.useEffect(() => {
+  useEffect(() => {
     if (anchorEl && alerts.length > 0) {
       // When the menu is opened, mark all current alerts as viewed
-      const newViewedAlertIds = [...new Set([...viewedAlertIds, ...alerts.map(alert => alert.id)])];
+      const newViewedAlertIds = [
+        ...new Set([...viewedAlertIds, ...alerts.map((alert) => alert.id)]),
+      ];
       setViewedAlertIds(newViewedAlertIds);
       setUnreadCount(0); // Set unread count to 0 since all alerts are now viewed
     }
@@ -215,7 +226,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  Growth Alert
+                  Growth Alert for Profile ID: {alert.profileId}
                 </Typography>
                 <Typography
                   sx={{
@@ -238,7 +249,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     textAlign: "right",
                   }}
                 >
-                  {new Date(alert.createdAt).toLocaleString()}
+                  Week {alert.week} - {new Date(alert.createdAt).toLocaleString()}
                 </Typography>
               </MenuItem>
               {index < alerts.length - 1 && <Divider />}
@@ -267,7 +278,17 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
               component="h2"
               gutterBottom
             >
-              Growth Alert
+              Growth Alert for Profile ID: {selectedAlert.profileId}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: "0.875rem",
+                color: "#757575",
+                mb: 2,
+              }}
+            >
+              Week {selectedAlert.week} -{" "}
+              {new Date(selectedAlert.createdAt).toLocaleString()}
             </Typography>
             <Typography
               id="alert-modal-description"
