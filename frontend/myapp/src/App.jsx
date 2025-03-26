@@ -1,6 +1,6 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import AboutUs from "./components/Customer/AboutUs/AboutUs";
@@ -51,6 +51,7 @@ import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
+import ScrollToTop from "./components/Customer/Footer/ScrollToTop";
 function App() {
   return (
     <div>
@@ -160,6 +161,7 @@ function App() {
               }
             />
           </Route>
+
           <Route
             path="/health-tips"
             element={
