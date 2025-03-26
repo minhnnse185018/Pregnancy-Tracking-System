@@ -15,35 +15,79 @@ namespace backend.Repository.Implementation
             _context = context;
         }
 
-        public async Task<IEnumerable<GrowthAlert>> GetAllAsync()
+        public async Task<IEnumerable<GrowthAlertDto>> GetAllAsync()
         {
             return await _context.GrowthAlerts
                 .Include(g => g.FetalMeasurement)
+                .ThenInclude(f => f.Profile)
+                .Select(g => new GrowthAlertDto
+                {
+                    Id = g.Id,
+                    MeasurementId = g.MeasurementId,
+                    AlertMessage = g.AlertMessage,
+                    CreatedAt = g.CreatedAt,
+                    Week = g.FetalMeasurement.Week,
+                    ProfileId = g.FetalMeasurement.ProfileId,
+                    ProfileName = g.FetalMeasurement.Profile.Name
+                })
                 .ToListAsync();
         }
 
-        public async Task<GrowthAlert> GetByIdAsync(int id)
+        public async Task<GrowthAlertDto> GetByIdAsync(int id)
         {
             return await _context.GrowthAlerts
                 .Include(g => g.FetalMeasurement)
-                .FirstOrDefaultAsync(g => g.Id == id);
+                .ThenInclude(f => f.Profile)
+                .Where(g => g.Id == id)
+                .Select(g => new GrowthAlertDto
+                {
+                    Id = g.Id,
+                    MeasurementId = g.MeasurementId,
+                    AlertMessage = g.AlertMessage,
+                    CreatedAt = g.CreatedAt,
+                    Week = g.FetalMeasurement.Week,
+                    ProfileId = g.FetalMeasurement.ProfileId,
+                    ProfileName = g.FetalMeasurement.Profile.Name
+                })
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<GrowthAlert>> GetByMeasurementIdAsync(int measurementId)
+        public async Task<IEnumerable<GrowthAlertDto>> GetByMeasurementIdAsync(int measurementId)
         {
             return await _context.GrowthAlerts
                 .Include(g => g.FetalMeasurement)
+                .ThenInclude(f => f.Profile)
                 .Where(g => g.MeasurementId == measurementId)
+                .Select(g => new GrowthAlertDto
+                {
+                    Id = g.Id,
+                    MeasurementId = g.MeasurementId,
+                    AlertMessage = g.AlertMessage,
+                    CreatedAt = g.CreatedAt,
+                    Week = g.FetalMeasurement.Week,
+                    ProfileId = g.FetalMeasurement.ProfileId,
+                    ProfileName = g.FetalMeasurement.Profile.Name
+                })
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<GrowthAlert>> GetByUserIdAsync(int userId)
+        public async Task<IEnumerable<GrowthAlertDto>> GetByUserIdAsync(int userId)
         {
             return await _context.GrowthAlerts
                 .Include(g => g.FetalMeasurement)
                 .ThenInclude(f => f.Profile)
                 .Where(g => g.FetalMeasurement.Profile.UserId == userId)
                 .OrderByDescending(g => g.CreatedAt)
+                .Select(g => new GrowthAlertDto
+                {
+                    Id = g.Id,
+                    MeasurementId = g.MeasurementId,
+                    AlertMessage = g.AlertMessage,
+                    CreatedAt = g.CreatedAt,
+                    Week = g.FetalMeasurement.Week,
+                    ProfileId = g.FetalMeasurement.ProfileId,
+                    ProfileName = g.FetalMeasurement.Profile.Name
+                })
                 .ToListAsync();
         }
 
@@ -60,7 +104,29 @@ namespace backend.Repository.Implementation
                     MeasurementId = g.MeasurementId,
                     AlertMessage = g.AlertMessage,
                     CreatedAt = g.CreatedAt,
-                    Week = g.FetalMeasurement.Week
+                    Week = g.FetalMeasurement.Week,
+                    ProfileId = g.FetalMeasurement.ProfileId,
+                    ProfileName = g.FetalMeasurement.Profile.Name
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<GrowthAlertDto>> GetByProfileIdAsync(int profileId)
+        {
+            return await _context.GrowthAlerts
+                .Include(g => g.FetalMeasurement)
+                .ThenInclude(f => f.Profile)
+                .Where(g => g.FetalMeasurement.ProfileId == profileId)
+                .OrderByDescending(g => g.CreatedAt)
+                .Select(g => new GrowthAlertDto
+                {
+                    Id = g.Id,
+                    MeasurementId = g.MeasurementId,
+                    AlertMessage = g.AlertMessage,
+                    CreatedAt = g.CreatedAt,
+                    Week = g.FetalMeasurement.Week,
+                    ProfileId = g.FetalMeasurement.ProfileId,
+                    ProfileName = g.FetalMeasurement.Profile.Name
                 })
                 .ToListAsync();
         }
@@ -84,6 +150,21 @@ namespace backend.Repository.Implementation
             {
                 _context.GrowthAlerts.Remove(alert);
                 await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateByIdAsync(int id, string alertMessage)
+        {
+            var alert = await _context.GrowthAlerts.FindAsync(id);
+            if (alert != null)
+            {
+                alert.AlertMessage = alertMessage;
+                _context.GrowthAlerts.Update(alert);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new KeyNotFoundException($"GrowthAlert with ID {id} not found");
             }
         }
     }
