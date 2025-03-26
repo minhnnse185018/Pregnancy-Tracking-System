@@ -11,7 +11,7 @@ namespace backend.Models
         public string Name { get; set; }
         public DateTime ConceptionDate { get; set; }
         public DateTime DueDate { get; set; }
-        
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string PregnancyStatus { get; set; } = null!; // This will be computed by the database
 
@@ -19,4 +19,4 @@ namespace backend.Models
         public virtual User User { get; set; } = null!;
         public virtual ICollection<FetalMeasurement> FetalMeasurements { get; set; } = new List<FetalMeasurement>();
     }
-} 
+}

@@ -26,6 +26,7 @@ namespace backend.Mapper
         {
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
+            CreateMap<User, UserDtoManager>().ReverseMap();
             CreateMap<AppointmentDto, Appointment>();
             CreateMap<Appointment, AppointmentDto>();
 
@@ -92,8 +93,8 @@ namespace backend.Mapper
 
             CreateMap<CreatePregnancyProfileDto, PregnancyProfile>()
                 .ForMember(dest => dest.ConceptionDate, opt => opt.Ignore());
-            CreateMap<UpdatePregnancyProfileDto, PregnancyProfile>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<UpdatePregnancyProfileDto, PregnancyProfile>();
+
             // FetalGrowthStandard mappings
             CreateMap<FetalGrowthStandard, FetalGrowthStandardDto>();
             CreateMap<CreateFetalGrowthStandardDto, FetalGrowthStandard>();
@@ -118,7 +119,8 @@ namespace backend.Mapper
             CreateMap<UpdateMembershipPlanDto, MembershipPlan>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<Payment,PaymentResponseDto>().ReverseMap();
+            CreateMap<Payment, PaymentResponseDto>().ReverseMap();
+
         }
     }
 }

@@ -1,320 +1,131 @@
-/* ==============================
-    GLOBAL STYLES
-    ============================== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Inter", sans-serif;
-}
-
-body {
-  background: #f4f6f9;
-  color: #333;
-}
-
-/* ==============================
-        CONTAINER STYLING
-        ============================== */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 20px;
 }
 
-/* ==============================
-        CARD COMPONENT
-        ============================== */
 .card {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  transition: transform 0.2s ease-in-out;
+  margin-bottom: 20px;
 }
 
-.card:hover {
-  transform: scale(1.02);
-}
-
-.card-header {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.card-value {
-  font-size: 28px;
-  font-weight: bold;
-  color: hsl(21, 100%, 58%);
-}
-
-/* ==============================
-        TABS STYLING
-        ============================== */
 .tabs {
   display: flex;
-  gap: 10px;
+  border-bottom: 1px solid #e0e0e0;
   margin-bottom: 20px;
 }
 
 .tab-button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 15px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 10px 20px;
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: background 0.3s ease-in-out;
+  font-size: 16px;
+  color: #666;
 }
 
 .tab-button.active {
-  background: #ffa662;
-  color: white;
+  color: #000;
+  border-bottom: 2px solid #000;
 }
 
-.tab-button:hover {
-  background: #e0e0e0;
-}
-
-/* ==============================
-        FORM INPUT STYLING
-        ============================== */
 .input-group {
   display: flex;
-  gap: 15px;
+  gap: 20px;
   margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
 }
 
 .input-group input {
   padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  transition: all 0.3s ease-in-out;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
 }
 
-.input-group input:focus {
-  border-color: #ffc165;
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 136, 254, 0.3);
-}
-
-/* ==============================
-        CHART CONTAINER
-============================== */
 .chart-container {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-left: 40px;
-  width: auto !important;
-}
-.recharts-cartesian-axis-tick-value {
-  white-space: nowrap; /* Prevents text from wrapping */
-  overflow: visible; /* Allows content to overflow */
-  text-overflow: clip; /* Ensures full text is shown */
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-.recharts-cartesian-axis-tick {
-  overflow: visible;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
 }
 
-.recharts-surface {
-  overflow: visible;
+.card-header {
+  font-size: 16px;
+  color: #666;
 }
 
-
-/* ==============================
-        LOADING AND ERROR MESSAGE
-        ============================== */
-.loading {
-  text-align: center;
-  font-size: 18px;
+.card-value {
+  font-size: 24px;
   font-weight: bold;
-  color: #555;
+  margin-top: 10px;
+}
+
+.loading,
+.error {
+  text-align: center;
   padding: 20px;
+  color: #666;
 }
 
 .error {
-  color: red;
-  font-weight: bold;
-  padding: 10px;
-  background: #ffecec;
-  border-left: 5px solid red;
-  margin-bottom: 20px;
+  color: #ff0000;
 }
 
-/* ==============================
-        RESPONSIVE DESIGN
-        ============================== */
-@media (max-width: 1024px) {
-  .container {
-    padding: 15px;
-  }
-
-  .input-group {
-    flex-direction: column;
-  }
-
-  .tabs {
-    flex-wrap: wrap;
-  }
+/* Fade-in animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
 }
 
-@media (max-width: 768px) {
-  .card {
-    padding: 15px;
-  }
-
-  .chart-container {
-    padding: 15px;
-  }
-
-  .input-group {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .tab-button {
-    flex: 1;
-    text-align: center;
-  }
-}
-
-/* ==============================
-        BUTTONS STYLING
-        ============================== */
-.button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: all 0.3s ease-in-out;
-}
-
-.button-primary {
-  background: #0077e6;
-  color: white;
-}
-
-.button-primary:hover {
-  background: #0077e6;
-}
-
-.button-secondary {
-  background: #f0f0f0;
-  color: #333;
-}
-
-.button-secondary:hover {
-  background: #e0e0e0;
-}
-
-/* ==============================
-        ANIMATIONS
-        ============================== */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
+}
+
+/* Slide-up animation */
+.slide-up {
+  animation: slideUp 0.5s ease-in;
 }
 
 @keyframes slideUp {
   from {
+    transform: translateY(20px);
     opacity: 0;
-    transform: translateY(50px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
+    opacity: 1;
   }
 }
 
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
+/* Pie chart colors (you can adjust these as needed) */
+.cell-0 {
+  fill: #0088FE;
 }
-
-.slide-up {
-  animation: slideUp 0.5s ease-in-out;
+.cell-1 {
+  fill: #00C49F;
 }
-
-/* ==============================
-        DARK MODE SUPPORT
-        ============================== */
-body.dark-mode {
-  background: #1e1e1e;
-  color: #fff;
+.cell-2 {
+  fill: #FFBB28;
 }
-
-.dark-mode .card {
-  background: #2c2c2c;
-  color: white;
-  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+.cell-3 {
+  fill: #FF8042;
 }
-
-.dark-mode .tab-button {
-  background: #333;
-  color: white;
-}
-
-.dark-mode .tab-button.active {
-  background: #0088fe;
-}
-
-.dark-mode .button-secondary {
-  background: #444;
-  color: white;
-}
-
-.dark-mode .chart-container {
-  background: #2c2c2c;
-}
-
-/* ==============================
-        CHART TOOLTIP
-        ============================== */
-.custom-tooltip {
-  background: white;
-  padding: 10px;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode .custom-tooltip {
-  background: #333;
-  color: white;
-  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
-}
-
-/* ==============================
-        PIE CHART CUSTOM COLORS
-        ============================== */
-.pie-chart-colors .cell-0 {
-  fill: #0088fe;
-}
-
-.pie-chart-colors .cell-1 {
-  fill: #00c49f;
-}
-
-.pie-chart-colors .cell-2 {
-  fill: #ffbb28;
-}
-
-.pie-chart-colors .cell-3 {
-  fill: #ff8042;
-}
-
-.pie-chart-colors .cell-4 {
+.cell-4 {
   fill: #8884d8;
 }
