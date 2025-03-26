@@ -1,3 +1,9 @@
+import {
+  BarChart2,
+  Calendar,
+  DollarSign,
+  PieChart as PieChartIcon,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import {
   Bar,
@@ -13,13 +19,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-// Import Material-UI icons
-import {
-  AttachMoney,
-  BarChart as BarChartIcon,
-  CalendarToday,
-  PieChart as PieChartIcon,
-} from "@mui/icons-material";
 import "./ManagerRevenuePage.css";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
@@ -103,7 +102,6 @@ const RevenueAnalytics = () => {
       fetchPlanData(),
     ]).finally(() => setLoading(false));
   }, [startDate, endDate, year]);
-
   useEffect(() => {
     if (activeTab === "monthly") {
       setLoading(true);
@@ -116,9 +114,9 @@ const RevenueAnalytics = () => {
   };
 
   const tabs = [
-    { id: "summary", label: "Summary", icon: AttachMoney },
-    { id: "daily", label: "Daily Revenue", icon: BarChartIcon },
-    { id: "monthly", label: "Monthly Revenue", icon: CalendarToday },
+    { id: "summary", label: "Summary", icon: DollarSign },
+    { id: "daily", label: "Daily Revenue", icon: BarChart2 },
+    { id: "monthly", label: "Monthly Revenue", icon: Calendar },
     { id: "plans", label: "Revenue by Plan", icon: PieChartIcon },
   ];
 
@@ -132,7 +130,7 @@ const RevenueAnalytics = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`tab-button ${activeTab === tab.id ? "active" : ""}`}
             >
-              <tab.icon sx={{ width: 16, height: 16, marginRight: "8px" }} />
+              <tab.icon className="w-4 h-4 mr-2" />
               {tab.label}
             </button>
           ))}
@@ -216,7 +214,6 @@ const RevenueAnalytics = () => {
             </LineChart>
           </div>
         )}
-
         {activeTab === "monthly" && (
           <div className="chart-container">
             <div className="input-group">

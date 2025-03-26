@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
 const Footer = () => {
+  const scrollToTop = () => {
+    window.scrollTo(0, 0);
+  };
   return (
     <footer
       style={{
@@ -108,37 +110,37 @@ const Footer = () => {
               }}
             >
               <li>
-                <Link to="/" style={linkStyle}>
+                <Link to="/" style={linkStyle} onClick={scrollToTop}>
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/about" style={linkStyle}>
+                <Link to="/about" style={linkStyle} onClick={scrollToTop}>
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/services" style={linkStyle}>
+                <Link to="/services" style={linkStyle} onClick={scrollToTop}>
                   Services
                 </Link>
               </li>
               <li>
-                <Link to="/blog" style={linkStyle}>
+                <Link to="/blog" style={linkStyle} onClick={scrollToTop}>
                   Blog
                 </Link>
               </li>
               <li>
-                <Link to="/contact" style={linkStyle}>
+                <Link to="/contact" style={linkStyle} onClick={scrollToTop}>
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link to="/faq" style={linkStyle}>
+                <Link to="/health-tips" style={linkStyle} onClick={scrollToTop}>
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" style={linkStyle}>
+                <Link to="/privacy" style={linkStyle} onClick={scrollToTop}>
                   Privacy Policy
                 </Link>
               </li>
