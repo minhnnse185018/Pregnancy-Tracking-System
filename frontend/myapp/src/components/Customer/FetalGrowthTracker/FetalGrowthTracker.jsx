@@ -13,14 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./FetalGrowthTracker.css";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function FetalGrowthTracker() {
   const [gestationalAge, setGestationalAge] = useState("");
@@ -93,6 +86,10 @@ function FetalGrowthTracker() {
             weeks: weeks,
             length: item.heightCm || 0,
             weight: item.weightGrams || 0,
+            biparietalDiameter: item.biparietalDiameterCm || 0,
+            femoralLength: item.femoralLengthCm || 0,
+            headCircumference: item.headCircumferenceCm || 0,
+            abdominalCircumference: item.abdominalCircumferenceCm || 0,
             notes: item.notes || "N/A",
             measureDate: item.measureDate || item.createdAt,
           };
@@ -117,6 +114,10 @@ function FetalGrowthTracker() {
         weeks,
         length: (weeks * 0.5).toFixed(1),
         weight: (weeks * 10).toFixed(0),
+        biparietalDiameter: (weeks * 0.2).toFixed(1),
+        femoralLength: (weeks * 0.1).toFixed(1),
+        headCircumference: (weeks * 0.8).toFixed(1),
+        abdominalCircumference: (weeks * 0.7).toFixed(1),
         notes: `At ${weeks} weeks, the fetus is developing rapidly!`,
       },
     ];
@@ -153,6 +154,10 @@ function FetalGrowthTracker() {
       profileId: selectedProfile.id,
       weightGrams: updatedData.weight,
       heightCm: updatedData.length,
+      biparietalDiameterCm: updatedData.biparietalDiameter,
+      femoralLengthCm: updatedData.femoralLength,
+      headCircumferenceCm: updatedData.headCircumference,
+      abdominalCircumferenceCm: updatedData.abdominalCircumference,
       notes: updatedData.notes,
       week: updatedData.weeks,
       measureDate: new Date().toISOString(),
@@ -172,7 +177,7 @@ function FetalGrowthTracker() {
 
       if (response.ok) {
         toast.success(currentEditData ? "Data updated!" : "Data created!");
-        fetchFetalData(selectedProfile.id); // Re-fetch fetal data to re-render the page
+        fetchFetalData(selectedProfile.id);
         handleCloseModal();
       } else {
         throw new Error(`Failed to save data: ${response.status}`);
@@ -192,7 +197,7 @@ function FetalGrowthTracker() {
 
       if (response.ok) {
         toast.success("Data deleted!");
-        fetchFetalData(selectedProfile.id); // Re-fetch fetal data to re-render the page
+        fetchFetalData(selectedProfile.id);
       } else {
         throw new Error(`Failed to delete data: ${response.status}`);
       }
@@ -211,7 +216,7 @@ function FetalGrowthTracker() {
         backgroundColor: "rgba(255, 140, 148, 0.6)",
         borderColor: "rgba(255, 140, 148, 1)",
         borderWidth: 1,
-        barThickness: 30,
+        barThickness: 15,
       },
       {
         label: "Weight (g)",
@@ -219,7 +224,39 @@ function FetalGrowthTracker() {
         backgroundColor: "rgba(180, 147, 211, 0.6)",
         borderColor: "rgba(180, 147, 211, 1)",
         borderWidth: 1,
-        barThickness: 30,
+        barThickness: 15,
+      },
+      {
+        label: "Biparietal Diameter (cm)",
+        data: fetalData.map((data) => data.biparietalDiameter || 0),
+        backgroundColor: "rgba(100, 200, 150, 0.6)",
+        borderColor: "rgba(100, 200, 150, 1)",
+        borderWidth: 1,
+        barThickness: 15,
+      },
+      {
+        label: "Femoral Length (cm)",
+        data: fetalData.map((data) => data.femoralLength || 0),
+        backgroundColor: "rgba(255, 200, 100, 0.6)",
+        borderColor: "rgba(255, 200, 100, 1)",
+        borderWidth: 1,
+        barThickness: 15,
+      },
+      {
+        label: "Head Circumference (cm)",
+        data: fetalData.map((data) => data.headCircumference || 0),
+        backgroundColor: "rgba(150, 150, 255, 0.6)",
+        borderColor: "rgba(150, 150, 255, 1)",
+        borderWidth: 1,
+        barThickness: 15,
+      },
+      {
+        label: "Abdominal Circumference (cm)",
+        data: fetalData.map((data) => data.abdominalCircumference || 0),
+        backgroundColor: "rgba(200, 100, 200, 0.6)",
+        borderColor: "rgba(200, 100, 200, 1)",
+        borderWidth: 1,
+        barThickness: 15,
       },
     ],
   };
@@ -227,7 +264,14 @@ function FetalGrowthTracker() {
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: { display: false },
+      legend: {
+        display: true,
+        position: "top",
+        labels: {
+          font: { family: "'Poppins', sans-serif", size: 12 },
+          color: "#5c4b7d",
+        },
+      },
       title: { display: false },
       tooltip: {
         backgroundColor: "rgba(0, 0, 0, 0.8)",
@@ -236,7 +280,11 @@ function FetalGrowthTracker() {
       },
     },
     scales: {
-      y: { display: false, grid: { display: false } },
+      y: {
+        display: true,
+        grid: { display: false },
+        ticks: { color: "#5c4b7d", font: { family: "'Poppins', sans-serif" } },
+      },
       x: {
         ticks: { color: "#5c4b7d", font: { family: "'Poppins', sans-serif" } },
         grid: { display: false },
@@ -350,33 +398,43 @@ function FetalGrowthTracker() {
     }
 
     return (
-      <table className="fetal-data-table">
-        <thead>
-          <tr>
-            <th>Weeks</th>
-            <th>Length (cm)</th>
-            <th>Weight (g)</th>
-            <th>Notes</th>
-            {isAuthenticated && <th>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {fetalData.map((data) => (
-            <tr key={data.id || data.weeks || Math.random()}>
-              <td>{data.weeks || "N/A"}</td>
-              <td>{data.length || "N/A"}</td>
-              <td>{data.weight || "N/A"}</td>
-              <td>{data.notes || "N/A"}</td>
-              {isAuthenticated && (
-                <td>
-                  <button onClick={() => handleOpenModal(data)}>Edit</button>
-                  <button onClick={() => handleDeleteFetalData(data.id)}>Delete</button>
-                </td>
-              )}
+      <div className="table-wrapper">
+        <table className="fetal-data-table">
+          <thead>
+            <tr>
+              <th>Weeks</th>
+              <th>Length (cm)</th>
+              <th>Weight (g)</th>
+              <th>Biparietal Diameter (cm)</th>
+              <th>Femoral Length (cm)</th>
+              <th>Head Circumference (cm)</th>
+              <th>Abdominal Circumference (cm)</th>
+              <th>Notes</th>
+              {isAuthenticated && <th>Actions</th>}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {fetalData.map((data) => (
+              <tr key={data.id || data.weeks || Math.random()}>
+                <td>{data.weeks || "N/A"}</td>
+                <td>{data.length || "N/A"}</td>
+                <td>{data.weight || "N/A"}</td>
+                <td>{data.biparietalDiameter || "N/A"}</td>
+                <td>{data.femoralLength || "N/A"}</td>
+                <td>{data.headCircumference || "N/A"}</td>
+                <td>{data.abdominalCircumference || "N/A"}</td>
+                <td>{data.notes || "N/A"}</td>
+                {isAuthenticated && (
+                  <td>
+                    <button onClick={() => handleOpenModal(data)}>Edit</button>
+                    <button onClick={() => handleDeleteFetalData(data.id)}>Delete</button>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
@@ -406,6 +464,10 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
   const [weeks, setWeeks] = useState(data?.weeks || "");
   const [length, setLength] = useState(data?.length || "");
   const [weight, setWeight] = useState(data?.weight || "");
+  const [biparietalDiameter, setBiparietalDiameter] = useState(data?.biparietalDiameter || "");
+  const [femoralLength, setFemoralLength] = useState(data?.femoralLength || "");
+  const [headCircumference, setHeadCircumference] = useState(data?.headCircumference || "");
+  const [abdominalCircumference, setAbdominalCircumference] = useState(data?.abdominalCircumference || "");
   const [notes, setNotes] = useState(data?.notes || "");
 
   const handleSubmit = (e) => {
@@ -414,12 +476,20 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
       weeks: parseInt(weeks),
       length: parseFloat(length),
       weight: parseFloat(weight),
+      biparietalDiameter: parseFloat(biparietalDiameter),
+      femoralLength: parseFloat(femoralLength),
+      headCircumference: parseFloat(headCircumference),
+      abdominalCircumference: parseFloat(abdominalCircumference),
       notes,
     });
     if (!isModal) {
       setWeeks("");
       setLength("");
       setWeight("");
+      setBiparietalDiameter("");
+      setFemoralLength("");
+      setHeadCircumference("");
+      setAbdominalCircumference("");
       setNotes("");
     }
   };
@@ -453,6 +523,46 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
           type="number"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Biparietal Diameter (cm):</label>
+        <input
+          type="number"
+          value={biparietalDiameter}
+          onChange={(e) => setBiparietalDiameter(e.target.value)}
+          step="0.1"
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Femoral Length (cm):</label>
+        <input
+          type="number"
+          value={femoralLength}
+          onChange={(e) => setFemoralLength(e.target.value)}
+          step="0.1"
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Head Circumference (cm):</label>
+        <input
+          type="number"
+          value={headCircumference}
+          onChange={(e) => setHeadCircumference(e.target.value)}
+          step="0.1"
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Abdominal Circumference (cm):</label>
+        <input
+          type="number"
+          value={abdominalCircumference}
+          onChange={(e) => setAbdominalCircumference(e.target.value)}
+          step="0.1"
           required
         />
       </div>
