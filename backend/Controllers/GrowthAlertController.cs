@@ -18,17 +18,17 @@ namespace backend.Controllers
 
         // GET: api/GrowthAlert
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GrowthAlertDto>>> GetAllAlerts()
+        public async Task<ActionResult<IEnumerable<GrowthAlert>>> GetAllAlerts()
         {
-            var alerts = await _service.GetAllAsync();
+            var alerts = await _service.GetAllAlertsAsync();
             return Ok(alerts);
         }
 
         // GET: api/GrowthAlert/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<GrowthAlertDto>> GetAlertById(int id)
+        public async Task<ActionResult<GrowthAlert>> GetAlertById(int id)
         {
-            var alert = await _service.GetByIdAsync(id);
+            var alert = await _service.GetAlertByIdAsync(id);
             if (alert == null)
             {
                 return NotFound();
@@ -38,37 +38,18 @@ namespace backend.Controllers
 
         // GET: api/GrowthAlert/measurement/5
         [HttpGet("measurement/{measurementId}")]
-        public async Task<ActionResult<GrowthAlertDto>> GetAlertsByMeasurementId(int measurementId)
+        public async Task<ActionResult<IEnumerable<GrowthAlert>>> GetAlertsByMeasurementId(int measurementId)
         {
-            var alerts = await _service.GetByMeasurementIdAsync(measurementId);
-            if (alerts == null)
-            {
-                return NotFound();
-            }
+            var alerts = await _service.GetAlertsByMeasurementIdAsync(measurementId);
             return Ok(alerts);
         }
 
 
         // GET: api/GrowthAlert/customer/5/week
         [HttpGet("{userId}/week")]
-        public async Task<ActionResult<IEnumerable<GrowthAlertDto>>> GetAlertsByUserId(int userId)
+        public async Task<ActionResult<IEnumerable<GrowthAlertDto>>> GetAlertsByUserIdWithWeek(int userId)
         {
-            var alerts = await _service.GetByUserIdAsync(userId);
-            if (alerts == null)
-            {
-                return NotFound();
-            }
-            return Ok(alerts);
-        }
-
-        [HttpGet("profile/{profileId}")]
-        public async Task<ActionResult<IEnumerable<GrowthAlertDto>>> GetGrowthAlertsByProfileId(int profileId)
-        {
-            var alerts = await _service.GetGrowthAlertsByProfileId(profileId);
-            if (alerts == null)
-            {
-                return NotFound();
-            }
+            var alerts = await _service.GetAlertsByUserIdWithWeekAsync(userId);
             return Ok(alerts);
         }
 
@@ -76,8 +57,8 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAlert(GrowthAlert alert)
         {
-            await _service.AddAsync(alert);
-            return CreatedAtAction("GetAlertById", new { id = alert.Id }, alert);
+            await _service.CreateAlertAsync(alert);
+            return CreatedAtAction(nameof(GetAlertById), new { id = alert.Id }, alert);
         }
 
         // PUT: api/GrowthAlert/5
@@ -89,7 +70,7 @@ namespace backend.Controllers
                 return BadRequest();
             }
 
-            await _service.UpdateAsync(alert);
+            await _service.UpdateAlertAsync(alert);
             return NoContent();
         }
 
@@ -97,7 +78,7 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAlert(int id)
         {
-            await _service.DeleteAsync(id);
+            await _service.DeleteAlertAsync(id);
             return NoContent();
         }
     }

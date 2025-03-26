@@ -15,19 +15,17 @@ namespace backend.Repository.Interface
         Task<int> UpdateUser(int id, User user);
         Task<int> UpdateUserInfo(UpdateUserInfoDto user);
         Task<int> DeleteUser(int id);
-        Task<List<UserDtoManager>> GetAllUsersAsync();
-        Task<List<UserDtoManager>> GetFilteredUsersAsync(string? role = null, string? status = null);
+        Task<List<UserDto>> GetAllUsersAsync();
+        Task<List<UserDto>> GetFilteredUsersAsync(string? role = null, string? status = null);
         Task<UserDto?> GetUserByIdAsync(int id);
         Task<UserDto?> GetUserByEmailAsync(string email);
         Task<bool> Register(RegisterRequest register);
         Task<bool> ForgotPasswordAsync(string email);
         Task<bool> ForgotPasswordRequestAsync(ForgotPasswordRequestDto forgotPasswordRequestDto);
-        Task<bool> ChangePasswordAsync(ChangePasswordRequestDto changePasswordRequestDto);
+        Task<bool> ChangePasswordAsync(ChangePasswordRequestDto changePasswordRequestDto );
 
         Task<bool> ResetPasswordRequest(ResetPasswordRequestDto resetPasswordRequestDto);
         Task<bool> VerifyRegistration(string email, string token);
-        Task<bool> UpdateUserStatusAsync(int id, string status);
-
     }
 
 }

@@ -52,8 +52,23 @@ namespace backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var profile = await _profileRepository.UpdateProfileAsync(id, profileDto);
-            return profile == null ? NotFound() : Ok(profile);
+            try 
+            {
+                var profile = await _profileRepository.UpdateProfileAsync(id, profileDto);
+                if (profile == null)
+                    return NotFound($"No pregnancy profile found with ID {id}");
+            
+                return Ok(profile);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, "An error occurred while updating the profile");
+            }
         }
 
         [HttpDelete("DeleteProfile/{id}")]
