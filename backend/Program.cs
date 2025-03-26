@@ -19,6 +19,7 @@ builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.DateFormatString = "yyyy-MM-dd'T'HH:mm:ss";
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -104,6 +105,9 @@ builder.Services.AddQuartzHostedService(options =>
 {
     options.WaitForJobsToComplete = true;
 });
+
+// Add this line in the service registration section
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 

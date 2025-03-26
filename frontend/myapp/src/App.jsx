@@ -51,7 +51,6 @@ import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
-import ScrollToTop from "./components/Customer/Footer/ScrollToTop";
 function App() {
   return (
     <div>

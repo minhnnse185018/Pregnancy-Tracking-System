@@ -12,7 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250319183429_init")]
+    [Migration("20250326061509_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -95,7 +95,7 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "Thank you for sharing your experience! It's very helpful.",
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4045),
+                            CreatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1093),
                             PostId = 1,
                             UserId = 2
                         },
@@ -103,7 +103,7 @@ namespace backend.Migrations
                         {
                             Id = 2,
                             Content = "I'm glad you found it helpful! Feel free to ask any questions.",
-                            CreatedAt = new DateTime(2025, 3, 20, 2, 34, 28, 520, DateTimeKind.Local).AddTicks(4046),
+                            CreatedAt = new DateTime(2025, 3, 26, 14, 15, 8, 823, DateTimeKind.Local).AddTicks(1095),
                             PostId = 1,
                             UserId = 1
                         });
@@ -144,802 +144,802 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            Answer = "It’s a software that helps pregnant women track their baby’s development, manage appointments, receive alerts, and share experiences.",
+                            Answer = "It's a software that helps pregnant women track their baby's development, manage appointments, receive alerts, and share experiences.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4191),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1261),
                             DisplayOrder = 1,
                             Question = "What is the pregnancy tracking system?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4190)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1260)
                         },
                         new
                         {
                             Id = 2,
                             Answer = "Pregnant women, family members, or anyone interested in pregnancy can sign up and use it.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4193),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1263),
                             DisplayOrder = 2,
                             Question = "Who can use this system?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4192)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1262)
                         },
                         new
                         {
                             Id = 3,
                             Answer = "Register as a member, choose a membership plan, and make a payment to activate features.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4195),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1265),
                             DisplayOrder = 3,
                             Question = "How do I start using the system?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4194)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1264)
                         },
                         new
                         {
                             Id = 4,
-                            Answer = "Currently, there’s a web version; a mobile app is under development and will launch soon.",
+                            Answer = "Currently, there's a web version; a mobile app is under development and will launch soon.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4197),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1267),
                             DisplayOrder = 4,
                             Question = "Is there a mobile app for the system?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4196)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1266)
                         },
                         new
                         {
                             Id = 5,
                             Answer = "It currently supports Vietnamese; English will be added in the future.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4199),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1269),
                             DisplayOrder = 5,
                             Question = "Does the system support multiple languages?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4198)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1268)
                         },
                         new
                         {
                             Id = 6,
                             Answer = "Yes, you get a 7-day free trial with the Basic plan before purchasing.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4200),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1270),
                             DisplayOrder = 6,
                             Question = "Can I try it for free?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4200)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1270)
                         },
                         new
                         {
                             Id = 7,
                             Answer = "Yes, we use data encryption to protect your personal information.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4202),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1272),
                             DisplayOrder = 7,
                             Question = "Is the system secure?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4201)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1271)
                         },
                         new
                         {
                             Id = 8,
                             Answer = "Not directly yet, but you can schedule appointments with doctors through it.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4204),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1274),
                             DisplayOrder = 8,
                             Question = "Does the system connect with doctors?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4203)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1273)
                         },
                         new
                         {
                             Id = 9,
                             Answer = "A team of pregnancy experts and technology professionals created this software.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4206),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1276),
                             DisplayOrder = 9,
                             Question = "Who developed this system?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4205)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1275)
                         },
                         new
                         {
                             Id = 10,
                             Answer = "Yes, we periodically update features and information.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4208),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1278),
                             DisplayOrder = 10,
                             Question = "Is the system updated regularly?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4207)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1277)
                         },
                         new
                         {
                             Id = 11,
                             Answer = "Basic, Advanced, and Premium plans with different pricing and features. Check details on the 'Plans' page.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4209),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1279),
                             DisplayOrder = 1,
                             Question = "What membership plans are available?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4209)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1279)
                         },
                         new
                         {
                             Id = 12,
                             Answer = "Log in, go to 'Account Management,' select a new plan, and complete the payment.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4211),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1281),
                             DisplayOrder = 2,
                             Question = "How do I upgrade my membership plan?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4210)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1280)
                         },
                         new
                         {
                             Id = 13,
                             Answer = "Yes, you can get a refund within 7 days if no features have been used.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4213),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1283),
                             DisplayOrder = 3,
-                            Question = "Can I get a refund if I’m not satisfied?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4212)
+                            Question = "Can I get a refund if I'm not satisfied?",
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1282)
                         },
                         new
                         {
                             Id = 14,
                             Answer = "Basic tracking, appointment scheduling, and key milestone reminders.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4215),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1285),
                             DisplayOrder = 4,
                             Question = "What features does the Basic plan include?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4214)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1284)
                         },
                         new
                         {
                             Id = 15,
                             Answer = "The Premium plan includes detailed charts, community sharing, and 24/7 support.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4215),
+                            CreatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1285),
                             DisplayOrder = 5,
                             Question = "How does the Premium plan differ from the Advanced plan?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4216)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1286)
                         },
                         new
                         {
                             Id = 16,
                             Answer = "Yes, you can upgrade or downgrade anytime; fees are adjusted based on remaining time.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4218),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1288),
                             DisplayOrder = 6,
                             Question = "Can I switch plans mid-term?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4217)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1287)
                         },
                         new
                         {
                             Id = 17,
                             Answer = "Yes, periodic discounts are available—check the 'Promotions' page.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4220),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1290),
                             DisplayOrder = 7,
                             Question = "Are there discounts on membership plans?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4219)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1289)
                         },
                         new
                         {
                             Id = 18,
                             Answer = "Payments are monthly or yearly, depending on your chosen plan.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4221),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1291),
                             DisplayOrder = 8,
                             Question = "How often do I need to pay for the plan?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4221)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1291)
                         },
                         new
                         {
                             Id = 19,
-                            Answer = "Not yet, but we’re working on adding this to the Premium plan.",
+                            Answer = "Not yet, but we're working on adding this to the Premium plan.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4223),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1293),
                             DisplayOrder = 9,
                             Question = "Do membership plans include doctor consultations?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4222)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1292)
                         },
                         new
                         {
                             Id = 20,
                             Answer = "Go to 'Account Management' to view your active plan details.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4225),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1295),
                             DisplayOrder = 10,
                             Question = "How do I check my current membership plan?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4224)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1294)
                         },
                         new
                         {
                             Id = 21,
                             Answer = "Visit the homepage, click 'Register,' fill in your details, and confirm via email.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4227),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1297),
                             DisplayOrder = 1,
                             Question = "How do I register as a member?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4226)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1296)
                         },
                         new
                         {
                             Id = 22,
                             Answer = "Bank cards, e-wallets (Momo, ZaloPay), and bank transfers.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4229),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1299),
                             DisplayOrder = 2,
                             Question = "What payment methods are accepted?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4228)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1298)
                         },
                         new
                         {
                             Id = 23,
                             Answer = "Your account is activated immediately after successful payment.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4230),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1300),
                             DisplayOrder = 3,
                             Question = "How long after payment is my account activated?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4229)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1300)
                         },
                         new
                         {
                             Id = 24,
                             Answer = "Click 'Forgot Password' on the login page and receive a reset link via email.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4232),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1302),
                             DisplayOrder = 4,
                             Question = "What if I forget my password?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4231)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1301)
                         },
                         new
                         {
                             Id = 25,
                             Answer = "Yes, we use SSL encryption to protect payment information.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4234),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1304),
                             DisplayOrder = 5,
                             Question = "Is payment secure?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4233)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1303)
                         },
                         new
                         {
                             Id = 26,
                             Answer = "Yes, enter their email when making the payment for the plan.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4236),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1306),
                             DisplayOrder = 6,
-                            Question = "Can I pay for someone else’s account?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4235)
+                            Question = "Can I pay for someone else's account?",
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1305)
                         },
                         new
                         {
                             Id = 27,
-                            Answer = "It’s not mandatory but recommended for notifications.",
+                            Answer = "It's not mandatory but recommended for notifications.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4237),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1308),
                             DisplayOrder = 7,
                             Question = "Is a phone number required for registration?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4237)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1307)
                         },
                         new
                         {
                             Id = 28,
                             Answer = "Check your Spam folder or contact support.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4239),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1309),
                             DisplayOrder = 8,
-                            Question = "What if I don’t receive a confirmation email?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4238)
+                            Question = "What if I don't receive a confirmation email?",
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1309)
                         },
                         new
                         {
                             Id = 29,
                             Answer = "No, each email is linked to a single account.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4241),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1311),
                             DisplayOrder = 9,
                             Question = "Can I use one email for multiple accounts?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4240)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1310)
                         },
                         new
                         {
                             Id = 30,
                             Answer = "Check your internet connection or contact your bank, then try again.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4243),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1313),
                             DisplayOrder = 10,
                             Question = "What if my payment fails?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4242)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1312)
                         },
                         new
                         {
                             Id = 31,
                             Answer = "Go to 'Pregnancy Tracking,' enter data from ultrasounds or measurements.",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4245),
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1315),
                             DisplayOrder = 1,
-                            Question = "How do I update my baby’s weight and height?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4244)
+                            Question = "How do I update my baby's weight and height?",
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1314)
                         },
                         new
                         {
                             Id = 32,
                             Answer = "The system automatically creates a chart based on the data you input by week.",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4246),
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1317),
                             DisplayOrder = 2,
                             Question = "How is the growth chart generated?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4246)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1316)
                         },
                         new
                         {
                             Id = 33,
                             Answer = "Yes, charts and history are available in 'Pregnancy Tracking.'",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4248),
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1318),
                             DisplayOrder = 3,
                             Question = "Can I view past growth records?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4247)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1317)
                         },
                         new
                         {
                             Id = 34,
                             Answer = "Based on WHO standards for weight and height by pregnancy week.",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4250),
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1320),
                             DisplayOrder = 4,
                             Question = "What measurements are considered normal?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4249)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1319)
                         },
                         new
                         {
                             Id = 35,
                             Answer = "You can edit or delete entries in the input history section.",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4252),
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1322),
                             DisplayOrder = 5,
                             Question = "What if I enter incorrect data?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4251)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1321)
                         },
                         new
                         {
                             Id = 36,
                             Answer = "Currently, only one baby is supported; multi-baby tracking is coming soon.",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4254),
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1324),
                             DisplayOrder = 6,
                             Question = "Can I track multiple babies at once?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4253)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1323)
                         },
                         new
                         {
                             Id = 37,
                             Answer = "Yes, download it as a PDF or image from the 'Chart' section.",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4256),
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1325),
                             DisplayOrder = 7,
                             Question = "Can I download the growth chart?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4255)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1324)
                         },
                         new
                         {
                             Id = 38,
                             Answer = "You can input manual measurements or skip if unavailable.",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4257),
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1327),
                             DisplayOrder = 8,
-                            Question = "What if I don’t have ultrasound data?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4257)
+                            Question = "What if I don't have ultrasound data?",
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1326)
                         },
                         new
                         {
                             Id = 39,
-                            Answer = "Not yet, but we’re developing this feature.",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4259),
+                            Answer = "Not yet, but we're developing this feature.",
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1329),
                             DisplayOrder = 9,
                             Question = "Does the system predict growth?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4258)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1328)
                         },
                         new
                         {
                             Id = 40,
                             Answer = "Yes, you can add notes when entering data for detailed tracking.",
-                            Category = "Tracking Baby’s Growth",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4261),
+                            Category = "Tracking Baby's Growth",
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1331),
                             DisplayOrder = 10,
                             Question = "Can I add notes to growth data?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4260)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1330)
                         },
                         new
                         {
                             Id = 41,
-                            Answer = "If measurements fall below standards, you’ll get an email or app notification.",
+                            Answer = "If measurements fall below standards, you'll get an email or app notification.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4263),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1332),
                             DisplayOrder = 1,
                             Question = "How does the system alert me about abnormalities?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4262)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1332)
                         },
                         new
                         {
                             Id = 42,
                             Answer = "Prenatal checkups, tests, vaccinations, and key milestones 7 hours in advance.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4264),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1334),
                             DisplayOrder = 2,
                             Question = "What reminders will I receive?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4264)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1333)
                         },
                         new
                         {
                             Id = 43,
                             Answer = "Yes, customize or disable them in 'Settings.'",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4266),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1336),
                             DisplayOrder = 3,
                             Question = "Can I turn off alerts?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4265)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1335)
                         },
                         new
                         {
                             Id = 44,
                             Answer = "Currently only via email; SMS will be added to the Premium plan later.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4268),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1338),
                             DisplayOrder = 4,
                             Question = "Are reminders sent via SMS?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4267)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1337)
                         },
                         new
                         {
                             Id = 45,
                             Answer = "Check your Spam folder or contact support to verify settings.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4270),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1340),
                             DisplayOrder = 5,
-                            Question = "What if I don’t receive reminders?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4269)
+                            Question = "What if I don't receive reminders?",
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1339)
                         },
                         new
                         {
                             Id = 46,
                             Answer = "Yes, create them in the 'Appointments' section.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4272),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1341),
                             DisplayOrder = 6,
                             Question = "Can I add custom reminders?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4271)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1341)
                         },
                         new
                         {
                             Id = 47,
                             Answer = "Yes, they specify which measurement is abnormal and suggest actions.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4273),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1343),
                             DisplayOrder = 7,
                             Question = "Are alerts detailed?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4272)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1342)
                         },
                         new
                         {
                             Id = 48,
                             Answer = "Default is 7 hours; you can adjust this in settings.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4275),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1345),
                             DisplayOrder = 8,
                             Question = "How far in advance are reminders sent?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4274)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1344)
                         },
                         new
                         {
                             Id = 49,
                             Answer = "Currently only via email; app support will come after launch.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4277),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1347),
                             DisplayOrder = 9,
                             Question = "Can I get reminders through the app?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4276)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1346)
                         },
                         new
                         {
                             Id = 50,
                             Answer = "Yes, view alert history in the 'Notifications' section.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4279),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1349),
                             DisplayOrder = 10,
                             Question = "Are alerts saved?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4278)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1348)
                         },
                         new
                         {
                             Id = 51,
                             Answer = "Go to 'Appointments,' pick a date and time, enter doctor details, and confirm.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4280),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1350),
                             DisplayOrder = 1,
                             Question = "How do I schedule an appointment with a doctor?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4280)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1350)
                         },
                         new
                         {
                             Id = 52,
                             Answer = "Yes, go to the appointment list, select it, and update the details.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4282),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1415),
                             DisplayOrder = 2,
                             Question = "Can I edit an appointment?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4281)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1414)
                         },
                         new
                         {
                             Id = 53,
-                            Answer = "You’ll receive a cancellation email, and it’s removed from the system.",
+                            Answer = "You'll receive a cancellation email, and it's removed from the system.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4284),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1417),
                             DisplayOrder = 3,
                             Question = "What happens if I cancel an appointment?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4283)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1416)
                         },
                         new
                         {
                             Id = 54,
                             Answer = "Yes, enter their details when creating the appointment.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4286),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1419),
                             DisplayOrder = 4,
                             Question = "Can I book an appointment for someone else?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4285)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1418)
                         },
                         new
                         {
                             Id = 55,
                             Answer = "Not yet, but this feature will be added soon.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4287),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1421),
                             DisplayOrder = 5,
                             Question = "Does it sync with Google Calendar?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4287)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1420)
                         },
                         new
                         {
                             Id = 56,
-                            Answer = "The system sends a reminder 7 hours beforehand so you won’t miss it.",
+                            Answer = "The system sends a reminder 7 hours beforehand so you won't miss it.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4289),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1422),
                             DisplayOrder = 6,
                             Question = "What if I forget an appointment?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4288)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1422)
                         },
                         new
                         {
                             Id = 57,
                             Answer = "Yes, old appointments are listed in the 'Appointments' section.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4291),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1424),
                             DisplayOrder = 7,
                             Question = "Can I view past appointments?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4290)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1423)
                         },
                         new
                         {
                             Id = 58,
-                            Answer = "Yes, as long as the times don’t overlap to avoid conflicts.",
+                            Answer = "Yes, as long as the times don't overlap to avoid conflicts.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4293),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1426),
                             DisplayOrder = 8,
                             Question = "Can I book multiple appointments at once?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4292)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1425)
                         },
                         new
                         {
                             Id = 59,
-                            Answer = "Yes, you’ll get an email confirmation right after booking.",
+                            Answer = "Yes, you'll get an email confirmation right after booking.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4295),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1428),
                             DisplayOrder = 9,
                             Question = "Do appointments come with a confirmation?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4294)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1427)
                         },
                         new
                         {
                             Id = 60,
                             Answer = "Yes, add notes when creating or editing an appointment.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4296),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1429),
                             DisplayOrder = 10,
                             Question = "Can I add notes to appointments?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4296)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1429)
                         },
                         new
                         {
                             Id = 61,
                             Answer = "Go to 'Share,' select the chart, add a note, and post it to the community.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4298),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1431),
                             DisplayOrder = 1,
-                            Question = "How do I share my baby’s growth chart?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4297)
+                            Question = "How do I share my baby's growth chart?",
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1430)
                         },
                         new
                         {
                             Id = 62,
-                            Answer = "Yes, comment directly under other members’ posts.",
+                            Answer = "Yes, comment directly under other members' posts.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4300),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1433),
                             DisplayOrder = 2,
-                            Question = "Can I comment on others’ experiences?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4299)
+                            Question = "Can I comment on others' experiences?",
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1432)
                         },
                         new
                         {
                             Id = 63,
                             Answer = "Visit the 'Blog' section on the homepage to read posts.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4302),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1435),
                             DisplayOrder = 3,
                             Question = "How do I view the experience-sharing blog?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4301)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1434)
                         },
                         new
                         {
                             Id = 64,
                             Answer = "Yes, go to your post list and choose to delete.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4303),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1437),
                             DisplayOrder = 4,
                             Question = "Can I delete my shared posts?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4303)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1436)
                         },
                         new
                         {
                             Id = 65,
                             Answer = "Yes, but you can set them visible only to system members.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4310),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1438),
                             DisplayOrder = 5,
                             Question = "Are shared posts public?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4308)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1437)
                         },
                         new
                         {
                             Id = 66,
                             Answer = "Currently only charts and text are supported; photos will be added later.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4313),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1440),
                             DisplayOrder = 6,
                             Question = "Can I upload photos to the community?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4311)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1439)
                         },
                         new
                         {
                             Id = 67,
                             Answer = "Yes, new posts are added weekly by the community and experts.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4314),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1442),
                             DisplayOrder = 7,
                             Question = "Is the blog updated regularly?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4313)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1441)
                         },
                         new
                         {
                             Id = 68,
                             Answer = "Yes, the blog has filters for topics like nutrition and health.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4317),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1444),
                             DisplayOrder = 8,
                             Question = "Can I search posts by topic?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4316)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1443)
                         },
                         new
                         {
                             Id = 69,
                             Answer = "Yes, inappropriate content is removed by administrators.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4319),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1445),
                             DisplayOrder = 9,
                             Question = "Are shared posts moderated?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4318)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1445)
                         },
                         new
                         {
                             Id = 70,
                             Answer = "Not yet, but this feature is in development.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4321),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1447),
                             DisplayOrder = 10,
                             Question = "Can I follow other members?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4320)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1446)
                         },
                         new
                         {
                             Id = 71,
                             Answer = "Call the hotline at 123-456-789 or email support@pregnancytrack.com.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4323),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1449),
                             DisplayOrder = 1,
                             Question = "Where can I contact support?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4322)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1448)
                         },
                         new
                         {
                             Id = 72,
                             Answer = "Log in, go to 'Account Management' to view and edit your info.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4325),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1451),
                             DisplayOrder = 2,
                             Question = "How do I view my member profile?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4324)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1450)
                         },
                         new
                         {
                             Id = 73,
                             Answer = "They provide an overview of your pregnancy, appointments, and growth reports.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4326),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1453),
                             DisplayOrder = 3,
                             Question = "What are the dashboard and reports for?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4325)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1452)
                         },
                         new
                         {
                             Id = 74,
                             Answer = "Yes, contact support to request permanent account deletion.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4328),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1454),
                             DisplayOrder = 4,
                             Question = "Can I delete my account?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4327)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1453)
                         },
                         new
                         {
                             Id = 75,
                             Answer = "Yes, your data is encrypted and accessible only to you.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4369),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1456),
                             DisplayOrder = 5,
                             Question = "Is my profile secure?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4368)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1455)
                         },
                         new
                         {
                             Id = 76,
                             Answer = "Yes for Premium members; other plans get support during business hours.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4371),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1458),
                             DisplayOrder = 6,
                             Question = "Is support available 24/7?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4370)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1457)
                         },
                         new
                         {
                             Id = 77,
                             Answer = "Yes, update it in 'Account Management.'",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4372),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1460),
                             DisplayOrder = 7,
                             Question = "Can I change my account email?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4372)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1459)
                         },
                         new
                         {
                             Id = 78,
                             Answer = "Yes, export them as PDFs from the 'Dashboard' section.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4374),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1462),
                             DisplayOrder = 8,
                             Question = "Can I export reports?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4373)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1461)
                         },
                         new
                         {
                             Id = 79,
                             Answer = "Data is kept for up to 5 years after your account expires.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4376),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1463),
                             DisplayOrder = 9,
                             Question = "How long is my data stored?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4375)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1462)
                         },
                         new
                         {
                             Id = 80,
                             Answer = "Not yet, but you can schedule appointments with doctors.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 19, 18, 34, 28, 520, DateTimeKind.Utc).AddTicks(4378),
+                            CreatedAt = new DateTime(2025, 3, 26, 6, 15, 8, 823, DateTimeKind.Utc).AddTicks(1465),
                             DisplayOrder = 10,
                             Question = "Can I contact a doctor through the system?",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4377)
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1464)
                         });
                 });
 
@@ -950,6 +950,18 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AbdominalCircumferenceCm")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("BiparietalDiameterCm")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("FemoralLengthCm")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("HeadCircumferenceCm")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("HeightCm")
                         .HasColumnType("decimal(10,2)");
@@ -968,6 +980,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
+                            AbdominalCircumferenceCm = 0m,
+                            BiparietalDiameterCm = 0m,
+                            FemoralLengthCm = 0m,
+                            HeadCircumferenceCm = 0m,
                             HeightCm = 1.6m,
                             WeekNumber = 8,
                             WeightGrams = 1m
@@ -975,6 +991,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
+                            AbdominalCircumferenceCm = 0m,
+                            BiparietalDiameterCm = 0m,
+                            FemoralLengthCm = 0m,
+                            HeadCircumferenceCm = 0m,
                             HeightCm = 2.3m,
                             WeekNumber = 9,
                             WeightGrams = 2m
@@ -982,6 +1002,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 3,
+                            AbdominalCircumferenceCm = 0m,
+                            BiparietalDiameterCm = 0m,
+                            FemoralLengthCm = 0m,
+                            HeadCircumferenceCm = 0m,
                             HeightCm = 3.1m,
                             WeekNumber = 10,
                             WeightGrams = 4m
@@ -989,6 +1013,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 4,
+                            AbdominalCircumferenceCm = 0m,
+                            BiparietalDiameterCm = 0m,
+                            FemoralLengthCm = 0m,
+                            HeadCircumferenceCm = 0m,
                             HeightCm = 4.1m,
                             WeekNumber = 11,
                             WeightGrams = 7m
@@ -996,6 +1024,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 5,
+                            AbdominalCircumferenceCm = 5.6m,
+                            BiparietalDiameterCm = 2.1m,
+                            FemoralLengthCm = 0.8m,
+                            HeadCircumferenceCm = 7.0m,
                             HeightCm = 5.4m,
                             WeekNumber = 12,
                             WeightGrams = 14m
@@ -1003,6 +1035,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 6,
+                            AbdominalCircumferenceCm = 6.9m,
+                            BiparietalDiameterCm = 2.5m,
+                            FemoralLengthCm = 1.1m,
+                            HeadCircumferenceCm = 8.4m,
                             HeightCm = 7.4m,
                             WeekNumber = 13,
                             WeightGrams = 23m
@@ -1010,6 +1046,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 7,
+                            AbdominalCircumferenceCm = 8.1m,
+                            BiparietalDiameterCm = 2.8m,
+                            FemoralLengthCm = 1.5m,
+                            HeadCircumferenceCm = 9.8m,
                             HeightCm = 8.7m,
                             WeekNumber = 14,
                             WeightGrams = 43m
@@ -1017,6 +1057,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 8,
+                            AbdominalCircumferenceCm = 9.3m,
+                            BiparietalDiameterCm = 3.2m,
+                            FemoralLengthCm = 1.8m,
+                            HeadCircumferenceCm = 11.1m,
                             HeightCm = 10.1m,
                             WeekNumber = 15,
                             WeightGrams = 70m
@@ -1024,6 +1068,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 9,
+                            AbdominalCircumferenceCm = 10.5m,
+                            BiparietalDiameterCm = 3.5m,
+                            FemoralLengthCm = 2.1m,
+                            HeadCircumferenceCm = 12.4m,
                             HeightCm = 11.6m,
                             WeekNumber = 16,
                             WeightGrams = 100m
@@ -1031,6 +1079,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 10,
+                            AbdominalCircumferenceCm = 11.7m,
+                            BiparietalDiameterCm = 3.9m,
+                            FemoralLengthCm = 2.4m,
+                            HeadCircumferenceCm = 13.7m,
                             HeightCm = 13.0m,
                             WeekNumber = 17,
                             WeightGrams = 140m
@@ -1038,6 +1090,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 11,
+                            AbdominalCircumferenceCm = 12.9m,
+                            BiparietalDiameterCm = 4.2m,
+                            FemoralLengthCm = 2.7m,
+                            HeadCircumferenceCm = 15.0m,
                             HeightCm = 14.2m,
                             WeekNumber = 18,
                             WeightGrams = 190m
@@ -1045,6 +1101,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 12,
+                            AbdominalCircumferenceCm = 14.1m,
+                            BiparietalDiameterCm = 4.6m,
+                            FemoralLengthCm = 3.0m,
+                            HeadCircumferenceCm = 16.2m,
                             HeightCm = 15.3m,
                             WeekNumber = 19,
                             WeightGrams = 240m
@@ -1052,6 +1112,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 13,
+                            AbdominalCircumferenceCm = 15.2m,
+                            BiparietalDiameterCm = 4.9m,
+                            FemoralLengthCm = 3.3m,
+                            HeadCircumferenceCm = 17.5m,
                             HeightCm = 16.4m,
                             WeekNumber = 20,
                             WeightGrams = 300m
@@ -1059,6 +1123,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 14,
+                            AbdominalCircumferenceCm = 16.4m,
+                            BiparietalDiameterCm = 5.2m,
+                            FemoralLengthCm = 3.6m,
+                            HeadCircumferenceCm = 18.7m,
                             HeightCm = 25.6m,
                             WeekNumber = 21,
                             WeightGrams = 360m
@@ -1066,6 +1134,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 15,
+                            AbdominalCircumferenceCm = 17.5m,
+                            BiparietalDiameterCm = 5.5m,
+                            FemoralLengthCm = 3.9m,
+                            HeadCircumferenceCm = 19.8m,
                             HeightCm = 27.8m,
                             WeekNumber = 22,
                             WeightGrams = 430m
@@ -1073,6 +1145,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 16,
+                            AbdominalCircumferenceCm = 18.6m,
+                            BiparietalDiameterCm = 5.8m,
+                            FemoralLengthCm = 4.2m,
+                            HeadCircumferenceCm = 21.0m,
                             HeightCm = 28.9m,
                             WeekNumber = 23,
                             WeightGrams = 501m
@@ -1080,6 +1156,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 17,
+                            AbdominalCircumferenceCm = 19.7m,
+                            BiparietalDiameterCm = 6.1m,
+                            FemoralLengthCm = 4.4m,
+                            HeadCircumferenceCm = 22.1m,
                             HeightCm = 30.0m,
                             WeekNumber = 24,
                             WeightGrams = 600m
@@ -1087,6 +1167,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 18,
+                            AbdominalCircumferenceCm = 20.8m,
+                            BiparietalDiameterCm = 6.4m,
+                            FemoralLengthCm = 4.7m,
+                            HeadCircumferenceCm = 23.2m,
                             HeightCm = 34.6m,
                             WeekNumber = 25,
                             WeightGrams = 660m
@@ -1094,6 +1178,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 19,
+                            AbdominalCircumferenceCm = 21.9m,
+                            BiparietalDiameterCm = 6.7m,
+                            FemoralLengthCm = 4.9m,
+                            HeadCircumferenceCm = 24.2m,
                             HeightCm = 35.6m,
                             WeekNumber = 26,
                             WeightGrams = 760m
@@ -1101,6 +1189,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 20,
+                            AbdominalCircumferenceCm = 22.9m,
+                            BiparietalDiameterCm = 6.9m,
+                            FemoralLengthCm = 5.2m,
+                            HeadCircumferenceCm = 25.2m,
                             HeightCm = 36.6m,
                             WeekNumber = 27,
                             WeightGrams = 875m
@@ -1108,6 +1200,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 21,
+                            AbdominalCircumferenceCm = 24.0m,
+                            BiparietalDiameterCm = 7.2m,
+                            FemoralLengthCm = 5.4m,
+                            HeadCircumferenceCm = 26.2m,
                             HeightCm = 37.6m,
                             WeekNumber = 28,
                             WeightGrams = 1005m
@@ -1115,6 +1211,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 22,
+                            AbdominalCircumferenceCm = 25.0m,
+                            BiparietalDiameterCm = 7.4m,
+                            FemoralLengthCm = 5.6m,
+                            HeadCircumferenceCm = 27.1m,
                             HeightCm = 38.6m,
                             WeekNumber = 29,
                             WeightGrams = 1153m
@@ -1122,6 +1222,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 23,
+                            AbdominalCircumferenceCm = 26.0m,
+                            BiparietalDiameterCm = 7.7m,
+                            FemoralLengthCm = 5.9m,
+                            HeadCircumferenceCm = 28.0m,
                             HeightCm = 39.9m,
                             WeekNumber = 30,
                             WeightGrams = 1319m
@@ -1129,6 +1233,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 24,
+                            AbdominalCircumferenceCm = 27.0m,
+                            BiparietalDiameterCm = 7.9m,
+                            FemoralLengthCm = 6.1m,
+                            HeadCircumferenceCm = 28.8m,
                             HeightCm = 41.1m,
                             WeekNumber = 31,
                             WeightGrams = 1502m
@@ -1136,6 +1244,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 25,
+                            AbdominalCircumferenceCm = 28.0m,
+                            BiparietalDiameterCm = 8.2m,
+                            FemoralLengthCm = 6.3m,
+                            HeadCircumferenceCm = 29.6m,
                             HeightCm = 42.4m,
                             WeekNumber = 32,
                             WeightGrams = 1702m
@@ -1143,6 +1255,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 26,
+                            AbdominalCircumferenceCm = 29.0m,
+                            BiparietalDiameterCm = 8.4m,
+                            FemoralLengthCm = 6.5m,
+                            HeadCircumferenceCm = 30.4m,
                             HeightCm = 43.7m,
                             WeekNumber = 33,
                             WeightGrams = 1918m
@@ -1150,6 +1266,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 27,
+                            AbdominalCircumferenceCm = 29.9m,
+                            BiparietalDiameterCm = 8.6m,
+                            FemoralLengthCm = 6.7m,
+                            HeadCircumferenceCm = 31.1m,
                             HeightCm = 45.0m,
                             WeekNumber = 34,
                             WeightGrams = 2146m
@@ -1157,6 +1277,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 28,
+                            AbdominalCircumferenceCm = 30.9m,
+                            BiparietalDiameterCm = 8.8m,
+                            FemoralLengthCm = 6.8m,
+                            HeadCircumferenceCm = 31.8m,
                             HeightCm = 46.2m,
                             WeekNumber = 35,
                             WeightGrams = 2383m
@@ -1164,6 +1288,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 29,
+                            AbdominalCircumferenceCm = 31.8m,
+                            BiparietalDiameterCm = 9.0m,
+                            FemoralLengthCm = 7.0m,
+                            HeadCircumferenceCm = 32.4m,
                             HeightCm = 47.4m,
                             WeekNumber = 36,
                             WeightGrams = 2622m
@@ -1171,6 +1299,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 30,
+                            AbdominalCircumferenceCm = 32.7m,
+                            BiparietalDiameterCm = 9.2m,
+                            FemoralLengthCm = 7.2m,
+                            HeadCircumferenceCm = 33.0m,
                             HeightCm = 48.6m,
                             WeekNumber = 37,
                             WeightGrams = 2859m
@@ -1178,6 +1310,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 31,
+                            AbdominalCircumferenceCm = 33.6m,
+                            BiparietalDiameterCm = 9.4m,
+                            FemoralLengthCm = 7.3m,
+                            HeadCircumferenceCm = 33.5m,
                             HeightCm = 49.8m,
                             WeekNumber = 38,
                             WeightGrams = 3083m
@@ -1185,6 +1321,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 32,
+                            AbdominalCircumferenceCm = 34.5m,
+                            BiparietalDiameterCm = 9.5m,
+                            FemoralLengthCm = 7.5m,
+                            HeadCircumferenceCm = 34.0m,
                             HeightCm = 50.7m,
                             WeekNumber = 39,
                             WeightGrams = 3288m
@@ -1192,6 +1332,10 @@ namespace backend.Migrations
                         new
                         {
                             Id = 33,
+                            AbdominalCircumferenceCm = 35.4m,
+                            BiparietalDiameterCm = 9.7m,
+                            FemoralLengthCm = 7.6m,
+                            HeadCircumferenceCm = 34.4m,
                             HeightCm = 51.2m,
                             WeekNumber = 40,
                             WeightGrams = 3462m
@@ -1206,8 +1350,20 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal?>("AbdominalCircumferenceCm")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal?>("BiparietalDiameterCm")
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("FemoralLengthCm")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal?>("HeadCircumferenceCm")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("HeightCm")
                         .HasColumnType("decimal(10,2)");
@@ -1234,7 +1390,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3984),
+                            CreatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1048),
                             HeightCm = 25.5m,
                             ProfileId = 1,
                             Week = 12,
@@ -1243,7 +1399,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3986),
+                            CreatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1050),
                             HeightCm = 28.5m,
                             ProfileId = 1,
                             Week = 16,
@@ -1336,24 +1492,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MembershipPlans");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Basic plan with essential features for pregnancy tracking.",
-                            Duration = 999999999,
-                            PlanName = "Classic",
-                            Price = 0m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Premium plan with advanced features.(,\r\n) Reminder feature.(,\r\n) Share in comunity.",
-                            Duration = 9,
-                            PlanName = "VIP",
-                            Price = 599000m
-                        });
                 });
 
             modelBuilder.Entity("backend.Models.Message", b =>
@@ -1478,10 +1616,10 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "I'm excited to share my journey through the first trimester...",
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4028),
+                            CreatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1074),
                             Status = "published",
                             Title = "My First Pregnancy Experience",
-                            UpdatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(4026),
+                            UpdatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(1072),
                             UserId = 1
                         });
                 });
@@ -1576,14 +1714,14 @@ namespace backend.Migrations
                         new
                         {
                             Id = 3,
-                            Body = "It’s time for your anomaly scan! At this check-up, the doctor will detect any structural abnormalities in the fetus, such as cleft palate or cleft lip. Schedule your appointment to ensure all is progressing well.",
+                            Body = "It's time for your anomaly scan! At this check-up, the doctor will detect any structural abnormalities in the fetus, such as cleft palate or cleft lip. Schedule your appointment to ensure all is progressing well.",
                             Subject = "Reminder: Anomaly Scan at Week 16 to 18",
                             Week = 16
                         },
                         new
                         {
                             Id = 4,
-                            Body = "Your detailed ultrasound is due! The doctor will check for abnormalities in the lungs, heart, and other organs. They will check your baby’s weight, umbilical cord, and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from now until delivery.",
+                            Body = "Your detailed ultrasound is due! The doctor will check for abnormalities in the lungs, heart, and other organs. They will check your baby's weight, umbilical cord, and amniotic fluid levels. Weekly ultrasounds or check-ups are recommended from now until delivery.",
                             Subject = "Reminder: Detailed Ultrasound at Week 20 to 22",
                             Week = 20
                         },
@@ -1706,184 +1844,20 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3613),
-                            Email = "hongngaxg1602@gmail.com",
-                            FirstName = "Hong",
-                            Gender = "Female",
-                            LastName = "Nga",
+                            CreatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(660),
+                            Email = "1@gmail.com",
                             Password = "111111",
-                            Phone = "0817206673",
                             Status = "active",
                             UserType = "1"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3615),
-                            Email = "de180704ungmaithihongnga@gmail.com",
-                            FirstName = "Minh",
-                            Gender = "Female",
-                            LastName = "Hang",
-                            Password = "111111",
-                            Phone = "0355391605",
+                            CreatedAt = new DateTime(2025, 3, 26, 13, 15, 8, 823, DateTimeKind.Local).AddTicks(662),
+                            Email = "2@gmail.com",
+                            Password = "222222",
                             Status = "active",
-                            UserType = "3"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3618),
-                            Email = "maikha3035@gmail.com",
-                            FirstName = "Mai",
-                            Gender = "Female",
-                            LastName = "Kha",
-                            Password = "111111",
-                            Phone = "0788696006",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3620),
-                            Email = "mkha39784@gmail.com",
-                            FirstName = "Trong",
-                            Gender = "Female",
-                            LastName = "Khoi",
-                            Password = "111111",
-                            Phone = "0817206673",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3671),
-                            Email = "maikha3003@gmail.com",
-                            FirstName = "Duc",
-                            Gender = "Female",
-                            LastName = "Huy",
-                            Password = "111111",
-                            Phone = "0355391605",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3674),
-                            Email = "khaho1930@gmail.com",
-                            FirstName = "Khanh",
-                            Gender = "Female",
-                            LastName = "Ly",
-                            Password = "111111",
-                            Phone = "0788696006",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3677),
-                            Email = "khaho.300305@gmail.com",
-                            FirstName = "Minh",
-                            Gender = "Male",
-                            LastName = "Quoc",
-                            Password = "111111",
-                            Phone = "0817206673",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3679),
-                            Email = "nbkqua.k19.si.08@gmail.com",
-                            FirstName = "Ty",
-                            Gender = "Female",
-                            LastName = "Na",
-                            Password = "111111",
-                            Phone = "0355391605",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3682),
-                            Email = "mkdepgai@gmail.com",
-                            FirstName = "Duy",
-                            Gender = "Female",
-                            LastName = "Khang",
-                            Password = "111111",
-                            Phone = "0788696006",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3684),
-                            Email = "ngaxd0301@gmail.com",
-                            FirstName = "Thanh",
-                            Gender = "Female",
-                            LastName = "Trung",
-                            Password = "111111",
-                            Phone = "0817206673",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3687),
-                            Email = "tranthingoctram142@gmail.com",
-                            FirstName = "Chi",
-                            Gender = "Male",
-                            LastName = "Vy",
-                            Password = "111111",
-                            Phone = "0355391605",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3689),
-                            Email = "nguyenphamminhanh@gmail.com",
-                            FirstName = "Duc",
-                            Gender = "Male",
-                            LastName = "Nhat",
-                            Password = "111111",
-                            Phone = "0788696006",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3692),
-                            Email = "giabaongo1@gmail.com",
-                            FirstName = "Ngo",
-                            Gender = "Male",
-                            LastName = "Gia Bao",
-                            Password = "111111",
-                            Phone = "0915900915",
-                            Status = "active",
-                            UserType = "1"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedAt = new DateTime(2025, 3, 20, 1, 34, 28, 520, DateTimeKind.Local).AddTicks(3694),
-                            Email = "ngaumthde1807042fpt.edu.vn",
-                            FirstName = "Fregnancy",
-                            Gender = "Male",
-                            LastName = "System",
-                            Password = "111111",
-                            Phone = "0915900915",
-                            Status = "active",
-                            UserType = "4"
+                            UserType = "5"
                         });
                 });
 
