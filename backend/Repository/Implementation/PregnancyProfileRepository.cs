@@ -74,11 +74,33 @@ namespace backend.Repository.Implementation
 
             if (profile == null) return null;
 
-            // Only update non-null properties
+            // Update properties based on what was provided
+            if (!string.IsNullOrEmpty(profileDto.Name))
+                profile.Name = profileDto.Name;
+            
             if (profileDto.ConceptionDate.HasValue)
+            {
+                // Validate conception date
+                if (profileDto.ConceptionDate.Value > DateTime.Now)
+                    throw new ArgumentException("Conception date cannot be in the future");
+                    
                 profile.ConceptionDate = profileDto.ConceptionDate.Value;
+            }
+            
             if (profileDto.DueDate.HasValue)
+            {
+                // Validate due date
+                if (profileDto.DueDate.Value < DateTime.Now)
+                    throw new ArgumentException("Due date cannot be in the past");
+                    
+                // Validation for due date should be approximately 40 weeks after conception
+                if (profileDto.ConceptionDate.HasValue && 
+                    (profileDto.DueDate.Value - profileDto.ConceptionDate.Value).TotalDays < 250 ||
+                    (profileDto.DueDate.Value - profileDto.ConceptionDate.Value).TotalDays > 310)
+                    throw new ArgumentException("Due date should be approximately 40 weeks (280 days) after conception date");
+                    
                 profile.DueDate = profileDto.DueDate.Value;
+            }
 
             await _context.SaveChangesAsync();
             return _mapper.Map<PregnancyProfileDto>(profile);
