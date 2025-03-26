@@ -92,8 +92,8 @@ namespace backend.Mapper
 
             CreateMap<CreatePregnancyProfileDto, PregnancyProfile>()
                 .ForMember(dest => dest.ConceptionDate, opt => opt.Ignore());
-            CreateMap<UpdatePregnancyProfileDto, PregnancyProfile>();
-
+            CreateMap<UpdatePregnancyProfileDto, PregnancyProfile>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             // FetalGrowthStandard mappings
             CreateMap<FetalGrowthStandard, FetalGrowthStandardDto>();
             CreateMap<CreateFetalGrowthStandardDto, FetalGrowthStandard>();

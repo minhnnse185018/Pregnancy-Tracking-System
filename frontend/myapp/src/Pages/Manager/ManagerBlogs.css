@@ -253,7 +253,7 @@
   border: none;
   font-size: 16px;
   cursor: pointer;
-  padding: 2px;
+  padding: 50px 50px 0 0;
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -269,6 +269,7 @@
 
 .delete-comment-btn:hover {
   background-color: #fff2f0;
+  padding: 50px 50px 0 0;
 }
 
 /* Modal styling */

@@ -10,6 +10,12 @@ namespace backend.Models
         public decimal WeightGrams { get; set; }
         public decimal HeightCm { get; set; }
         
+        // Added new properties for additional measurements
+        public decimal? BiparietalDiameterCm { get; set; }
+        public decimal? FemoralLengthCm { get; set; }
+        public decimal? HeadCircumferenceCm { get; set; }
+        public decimal? AbdominalCircumferenceCm { get; set; }
+        
         // Removed MeasurementDate
         
         public string? Notes { get; set; }
