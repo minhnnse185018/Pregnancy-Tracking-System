@@ -14,44 +14,44 @@ namespace backend.Services.Implementation
             _repository = repository;
         }
 
-        public async Task AddAsync(GrowthAlert alert)
-        {
-            await _repository.AddAsync(alert);
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            _repository.DeleteAsync(id);
-        }
-
-        public async Task<IEnumerable<GrowthAlertDto>> GetAllAsync()
+        public async Task<IEnumerable<GrowthAlert>> GetAllAlertsAsync()
         {
             return await _repository.GetAllAsync();
         }
 
-        public async Task<GrowthAlertDto> GetByIdAsync(int id)
+        public async Task<GrowthAlert> GetAlertByIdAsync(int id)
         {
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task<GrowthAlertDto> GetByMeasurementIdAsync(int measurementId)
+        public async Task<IEnumerable<GrowthAlert>> GetAlertsByMeasurementIdAsync(int measurementId)
         {
             return await _repository.GetByMeasurementIdAsync(measurementId);
         }
 
-        public async Task<IEnumerable<GrowthAlertDto>> GetByUserIdAsync(int userId)
+        public async Task<IEnumerable<GrowthAlert>> GetAlertsByUserIdAsync(int userId)
         {
             return await _repository.GetByUserIdAsync(userId);
         }
 
-        public async Task<List<GrowthAlertDto>> GetGrowthAlertsByProfileId(int profileId)
+        public async Task<IEnumerable<GrowthAlertDto>> GetAlertsByUserIdWithWeekAsync(int userId)
         {
-            return await _repository.GetGrowthAlertsByProfileId(profileId);
+            return await _repository.GetByUserIdWithWeekAsync(userId);
         }
 
-        public async Task UpdateAsync(GrowthAlert alert)
+        public async Task CreateAlertAsync(GrowthAlert alert)
+        {
+            await _repository.AddAsync(alert);
+        }
+
+        public async Task UpdateAlertAsync(GrowthAlert alert)
         {
             await _repository.UpdateAsync(alert);
+        }
+
+        public async Task DeleteAlertAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
         }
     }
 }

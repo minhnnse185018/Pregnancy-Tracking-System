@@ -8,8 +8,13 @@ namespace backend.Dtos.FetalGrowth
         public decimal WeightGrams { get; set; }
         public decimal HeightCm { get; set; }
         
-        // Removed MeasurementDate
-        public int Week { get; set; } // Added Week property
+        // Added new properties for additional measurements
+        public decimal? BiparietalDiameterCm { get; set; }
+        public decimal? FemoralLengthCm { get; set; }
+        public decimal? HeadCircumferenceCm { get; set; }
+        public decimal? AbdominalCircumferenceCm { get; set; }
+        
+        public int Week { get; set; }
         
         public string? Notes { get; set; }
     }
