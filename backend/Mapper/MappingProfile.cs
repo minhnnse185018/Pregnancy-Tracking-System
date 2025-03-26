@@ -18,6 +18,7 @@ using backend.Dtos.FetalStandard;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using backend.Dtos.Payment;
 using backend.Dtos.GrowthAlerts;
+using backend.Dtos.Notifications;
 
 namespace backend.Mapper
 {
@@ -121,6 +122,10 @@ namespace backend.Mapper
 
             CreateMap<Payment,PaymentResponseDto>().ReverseMap();
             CreateMap<GrowthAlert, GrowthAlertDto>().ReverseMap();
+
+            // Add Notification mappings
+            CreateMap<Notification, NotificationDto>();
+            CreateMap<NotificationDto, Notification>();
         }
     }
 }

@@ -1,6 +1,7 @@
 using backend.Dtos.Posts;
 using backend.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
+using backend.Services.Interface;
 
 namespace backend.Controllers
 {
@@ -9,10 +10,14 @@ namespace backend.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
+        private readonly INotificationService _notificationService;
 
-        public PostController(IPostRepository postRepository)
+        public PostController(
+            IPostRepository postRepository,
+            INotificationService notificationService)
         {
             _postRepository = postRepository;
+            _notificationService = notificationService;
         }
 
         [HttpGet("GetAll")]
@@ -53,8 +58,24 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(int id)
         {
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null) return NotFound();
+
+            // Store post information before deletion
+            int postOwnerId = post.UserId;
+            string postTitle = post.Title;
+
             var result = await _postRepository.DeletePostAsync(id);
-            return result >0? Ok() : NotFound();
+            if (result <= 0) return NotFound();
+
+            // Create notification for post owner
+            await _notificationService.CreateNotificationAsync(
+                postOwnerId,
+                $"Your post \"{postTitle}\" is deleted by Admin because of violation",
+                id
+            );
+
+            return Ok();
         }
 
         [HttpGet("search")]
