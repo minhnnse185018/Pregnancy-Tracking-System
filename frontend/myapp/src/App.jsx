@@ -107,16 +107,13 @@ function App() {
               }
             />
           </Route>
-          <Route
-            path="/blog/:id"
-            element={
-              <>
-                <Navbarr />
-                <BlogDetailsPage />
-                <Footer />
-              </>
-            }
-          />
+          <Route path="/blog/:id" element={
+            <>
+            <Navbarr />
+            <BlogDetailsPage />
+            <Footer />
+            </>
+            } />
           <Route
             path="/contact"
             element={
