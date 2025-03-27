@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import AboutUs from "./components/Customer/AboutUs/AboutUs";
 import { AuthProvider } from "./components/Customer/AuthContext";
+import BlogDetailsPage from "./components/Customer/BlogPage/BlogDetailsPage";
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import BookAppointment from "./components/Customer/BookAppointment/BookAppointment";
 import MedicalAppointments from "./components/Customer/BookAppointment/viewAppointment";
@@ -35,8 +36,7 @@ import ManagerPrivateRoute from "./components/PrivateRoute/ManagerPrivateRoute";
 import AdminLayout from "./Layouts/Admin/AdminLayout";
 import DoctorLayout from "./Layouts/Doctor/DoctorLayout";
 import ManagerLayout from "./Layouts/Manager/ManagerLayout";
-import AdminSalon from "./Pages/Admin/AdminBlog";
-import AdminPersonnel from "./Pages/Admin/AdminPersonnel";
+import AdminMemberPlan from "./Pages/Admin/AdminMemberPlan";
 import AdminProfilePage from "./Pages/Admin/AdminProfilePage";
 import ManageCustomer from "./Pages/Admin/ManagerCustomer";
 import DoctorChat from "./Pages/Doctor/DoctorChat";
@@ -107,6 +107,16 @@ function App() {
             />
           </Route>
           <Route
+            path="/blog/:id"
+            element={
+              <>
+                <Navbarr />
+                <BlogDetailsPage />
+                <Footer />
+              </>
+            }
+          />
+          <Route
             path="/contact"
             element={
               <>
@@ -160,6 +170,7 @@ function App() {
               }
             />
           </Route>
+
           <Route
             path="/health-tips"
             element={
@@ -272,9 +283,8 @@ function App() {
           <Route path="/admin" element={<AdminPrivateRoute />}>
             <Route path="" element={<AdminLayout />}>
               <Route path="admin-profile" element={<AdminProfilePage />} />
-              <Route path="admin-personnel" element={<AdminPersonnel />} />
-              <Route path="admin-salon" element={<AdminSalon />} />
               <Route path="admin-customer" element={<ManageCustomer />} />
+              <Route path="admin-memberplan" element={<AdminMemberPlan />} />
             </Route>
           </Route>
           {/* DASHBOARD DOCTOR */}

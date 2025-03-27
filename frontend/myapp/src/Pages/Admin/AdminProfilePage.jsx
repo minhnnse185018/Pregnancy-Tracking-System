@@ -1,5 +1,6 @@
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Container,
@@ -7,55 +8,56 @@ import {
   Snackbar,
   TextField,
   Typography,
-} from '@mui/material';
-import axios from 'axios';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
-import * as Yup from 'yup';
+} from "@mui/material";
+import axios from "axios";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import * as Yup from "yup";
 
 const AdminProfilePage = () => {
-  const [isEditing, setIsEditing] = useState(false); // State to manage edit mode
+  const [isEditing, setIsEditing] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [profile, setProfile] = useState({
-    name: '',
-    email: '',
-    phone: '',
+    name: "",
+    email: "",
+    phone: "",
+    avatar: "https://via.placeholder.com/150", // Fixed avatar
   });
-  const [fullUserData, setFullUserData] = useState(null); // Lưu toàn bộ dữ liệu từ API để sử dụng khi update
+  const [fullUserData, setFullUserData] = useState(null);
 
-  const accountID = sessionStorage.getItem('userID');
+  const accountID = sessionStorage.getItem("userID");
 
-  // Lấy dữ liệu profile từ API
   useEffect(() => {
     const fetchProfileData = async () => {
-      if (accountID) {
-        try {
-          const response = await axios.get(
-            `http://localhost:5254/api/Users/GetById/${accountID}`
-          );
-          const data = response.data;
-          const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'No Name Available';
-          setProfile({
-            name: fullName,
-            email: data.email || 'No Email Available',
-            phone: data.phone || 'No Phone Available',
-          });
-          setFullUserData(data); // Lưu toàn bộ dữ liệu từ API
-        } catch (error) {
-          console.error('Error fetching profile data:', error);
-          setSnackbarMessage('Failed to fetch profile data.');
-          setSnackbarSeverity('error');
-          setSnackbarOpen(true);
-        }
-      } else {
-        setSnackbarMessage('User ID not found in session storage.');
-        setSnackbarSeverity('error');
+      if (!accountID) {
+        setSnackbarMessage("User ID not found in session storage.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        return;
+      }
+      try {
+        const { data } = await axios.get(
+          `http://localhost:5254/api/Users/GetById/${accountID}`
+        );
+        const fullName =
+          `${data.firstName || ""} ${data.lastName || ""}`.trim() ||
+          "No Name Available";
+        setProfile({
+          name: fullName,
+          email: data.email || "No Email Available",
+          phone: data.phone || "No Phone Available",
+          avatar: "https://via.placeholder.com/150", // Fixed avatar
+        });
+        setFullUserData(data);
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+        setSnackbarMessage("Failed to fetch profile data.");
+        setSnackbarSeverity("error");
         setSnackbarOpen(true);
       }
     };
-
     fetchProfileData();
   }, [accountID]);
 
@@ -63,113 +65,163 @@ const AdminProfilePage = () => {
     setSnackbarOpen(false);
   };
 
-  const validationSchema = Yup.object().shape({
+  const validationSchema = Yup.object({
     name: Yup.string()
-      .matches(/^[A-Za-z\s]+$/, 'Name can only contain letters and spaces')
-      .required('Name is required'),
+      .matches(/^[A-Za-z\s]+$/, "Name can only contain letters and spaces")
+      .required("Name is required"),
     phone: Yup.string()
-      .matches(/^[0-9]+$/, 'Phone must contain only numbers')
-      .required('Phone is required'),
+      .matches(/^[0-9]+$/, "Phone must contain only numbers")
+      .required("Phone is required"),
   });
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const [firstName, ...lastNameArr] = values.name.split(' ');
-      const lastName = lastNameArr.join(' ');
+      const [firstName, ...lastNameArr] = values.name.split(" ");
+      const lastName = lastNameArr.join(" ");
 
-      // Tạo dữ liệu để gửi lên API, dựa trên cấu trúc bảng Users
       const updatedData = {
-        id: parseInt(accountID), // Id là số nguyên
-        email: profile.email, // Email không thay đổi
-        password: fullUserData?.password, // Lấy từ dữ liệu gốc (bắt buộc)
-        userType: fullUserData?.userType, // Lấy từ dữ liệu gốc (bắt buộc)
-        firstName: firstName || '',
-        lastName: lastName || '',
+        id: parseInt(accountID),
+        email: profile.email,
+        password: fullUserData?.password,
+        userType: fullUserData?.userType,
+        firstName: firstName || "",
+        lastName: lastName || "",
         gender: fullUserData?.gender || null,
         dateOfBirth: fullUserData?.dateOfBirth || null,
         phone: values.phone,
-        status: fullUserData?.status || 'active', // Lấy từ dữ liệu gốc (bắt buộc)
-        createdAt: fullUserData?.createdAt || new Date().toISOString(), // Lấy từ dữ liệu gốc (bắt buộc)
+        status: fullUserData?.status || "active",
+        createdAt: fullUserData?.createdAt || new Date().toISOString(),
         resetToken: fullUserData?.resetToken || null,
         resetTokenExpiration: fullUserData?.resetTokenExpiration || null,
+        avatar: profile.avatar, // Fixed avatar
       };
 
-      // Gọi API để cập nhật thông tin
-      const response = await axios.put(
+      const { status } = await axios.put(
         `http://localhost:5254/api/Users/Update/${accountID}`,
         updatedData,
-        {
-          headers: {
-            'Content-Type': 'application/json-patch+json',
-          },
-        }
+        { headers: { "Content-Type": "application/json" } }
       );
 
-      if (response.status === 200) {
-        setSnackbarMessage('Profile updated successfully!');
-        setSnackbarSeverity('success');
+      if (status === 200) {
+        setSnackbarMessage("Profile updated successfully!");
+        setSnackbarSeverity("success");
         setSnackbarOpen(true);
-        setProfile((prev) => ({ ...prev, ...values }));
-        setFullUserData({ ...fullUserData, ...updatedData });
-        setIsEditing(false); // Exit edit mode after saving
+        setProfile((prev) => ({
+          ...prev,
+          name: values.name,
+          phone: values.phone,
+        }));
+        setFullUserData((prev) => ({
+          ...prev,
+          firstName: firstName,
+          lastName: lastName,
+          phone: values.phone,
+        }));
+        setIsEditing(false);
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
-      if (error.response) {
-        console.log('Server response:', error.response.data);
-        setSnackbarMessage(
-          `Failed to update profile: ${error.response.data.message || 'Bad Request'}`
-        );
-      } else {
-        setSnackbarMessage('Failed to update profile.');
-      }
-      setSnackbarSeverity('error');
+      console.error("Error updating profile:", error);
+      setSnackbarMessage(
+        error.response
+          ? `Failed to update profile: ${
+              error.response.data.message || "Bad Request"
+            }`
+          : "Failed to update profile."
+      );
+      setSnackbarSeverity("error");
       setSnackbarOpen(true);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleEditToggle = () => {
-    setIsEditing((prev) => !prev);
+  const commonStyles = {
+    textField: {
+      "& .MuiOutlinedInput-root": {
+        borderRadius: "8px",
+        "&:hover fieldset": { borderColor: "#f8bbd0" },
+        "&.Mui-focused fieldset": { borderColor: "#f8bbd0" },
+      },
+    },
+    button: {
+      backgroundColor: "#f8bbd0",
+      "&:hover": { backgroundColor: "#f06292" },
+      borderRadius: "12px",
+      padding: "8px 20px",
+      textTransform: "none",
+      fontWeight: "bold",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+      color: "#333",
+    },
+    cancelButton: {
+      color: "#f44336",
+      borderColor: "#f44336",
+      borderRadius: "12px",
+      "&:hover": { borderColor: "#d32f2f", backgroundColor: "#ffebee" },
+    },
   };
 
   return (
     <Box
       sx={{
-        backgroundColor: '#f7f7f7',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
+        backgroundColor: "#fce4ec",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         padding: 4,
+        fontFamily: "Roboto, sans-serif",
       }}
     >
-      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 2 }}>
+      <Container maxWidth="sm">
         <Paper
-          elevation={3}
-          sx={{ borderRadius: '8px', textAlign: 'center', padding: 3, mt: -1 }}
+          sx={{
+            borderRadius: "12px",
+            textAlign: "center",
+            padding: 3,
+            backgroundColor: "#fff",
+            border: "1px solid #f8bbd0",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          }}
         >
           <Typography
             variant="h5"
-            component="h2"
-            sx={{ mt: 2, fontWeight: 'bold' }}
+            sx={{
+              mt: 2,
+              fontWeight: "bold",
+              color: "#f06292",
+              textAlign: "center",
+              textTransform: "uppercase",
+              borderBottom: "2px solid #f8bbd0",
+              paddingBottom: "8px",
+            }}
           >
-            {profile.name}
+            User Profile
           </Typography>
+
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+            <Avatar
+              src={profile.avatar}
+              alt="Profile Avatar"
+              sx={{ width: 100, height: 100, border: "2px solid #f8bbd0" }}
+            />
+          </Box>
 
           {!isEditing ? (
             <>
-              <Typography variant="body1" color="textSecondary">
+              <Typography variant="h6" sx={{ mt: 2, color: "#333" }}>
+                {profile.name}
+              </Typography>
+              <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
                 Phone: {profile.phone}
               </Typography>
-              <Typography variant="body1" color="textSecondary">
+              <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
                 Email: {profile.email}
               </Typography>
               <Button
                 variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-                onClick={handleEditToggle}
+                sx={{ mt: 2, ...commonStyles.button }}
+                onClick={() => setIsEditing(true)}
               >
                 Edit Profile
               </Button>
@@ -191,11 +243,12 @@ const AdminProfilePage = () => {
                       label="Name"
                       variant="outlined"
                       margin="dense"
+                      sx={commonStyles.textField}
                     />
                     <ErrorMessage
                       name="name"
                       component="div"
-                      style={{ color: 'red' }}
+                      style={{ color: "red" }}
                     />
                   </Box>
                   <Box mt={2}>
@@ -206,15 +259,17 @@ const AdminProfilePage = () => {
                       label="Phone"
                       variant="outlined"
                       margin="dense"
+                      sx={commonStyles.textField}
                     />
                     <ErrorMessage
                       name="phone"
                       component="div"
-                      style={{ color: 'red' }}
+                      style={{ color: "red" }}
                     />
                   </Box>
                   <Box mt={2}>
-                    <TextField
+                    <Field
+                      as={TextField}
                       fullWidth
                       name="email"
                       label="Email"
@@ -222,25 +277,33 @@ const AdminProfilePage = () => {
                       margin="dense"
                       value={profile.email}
                       disabled
+                      sx={commonStyles.textField}
                     />
                   </Box>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    sx={{ mt: 2 }}
-                    disabled={isSubmitting}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      justifyContent: "center",
+                      mt: 2,
+                    }}
                   >
-                    Save Changes
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    sx={{ mt: 2, ml: 2 }}
-                    onClick={handleEditToggle}
-                  >
-                    Cancel
-                  </Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{ ...commonStyles.button }}
+                      disabled={isSubmitting}
+                    >
+                      Save Changes
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      sx={commonStyles.cancelButton}
+                      onClick={() => setIsEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
                 </Form>
               )}
             </Formik>
@@ -252,12 +315,12 @@ const AdminProfilePage = () => {
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }} // Moved to top-right
       >
         <Alert
           onClose={handleSnackbarClose}
           severity={snackbarSeverity}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {snackbarMessage}
         </Alert>

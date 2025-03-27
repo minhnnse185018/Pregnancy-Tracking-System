@@ -1,24 +1,24 @@
+import React, { useState, useEffect } from "react";
 import {
-  BarChart2,
-  Calendar,
-  DollarSign,
-  PieChart as PieChartIcon,
-} from "lucide-react";
-import React, { useEffect, useState } from "react";
-import {
-  Bar,
   BarChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Line,
+  Bar,
   LineChart,
-  Pie,
-  PieChart,
-  Tooltip,
+  Line,
   XAxis,
   YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
+import {
+  Calendar,
+  DollarSign,
+  BarChart2,
+  PieChart as PieChartIcon,
+} from "lucide-react";
 import "./ManagerRevenuePage.css";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
@@ -203,6 +203,7 @@ const RevenueAnalytics = () => {
                 dataKey="amount"
                 stroke="rgba(46, 204, 113, 0.9)"
                 name="Revenue"
+                
               />
               <Line
                 yAxisId="right"

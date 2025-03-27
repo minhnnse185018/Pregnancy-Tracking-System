@@ -19,8 +19,8 @@ const AdminSidebar = () => {
           </Link>
         </li> */}
         <li style={listItemStyle}>
-          <Link to="admin-salon" style={linkStyle}>
-            <StoreIcon /> Manage Service
+          <Link to="admin-memberplan" style={linkStyle}>
+            <StoreIcon /> Manage Membership Plans
           </Link>
         </li>
         <li style={listItemStyle}>
