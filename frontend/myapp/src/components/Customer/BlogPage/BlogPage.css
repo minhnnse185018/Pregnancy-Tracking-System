@@ -574,12 +574,14 @@
 .post-image-container {
   margin: 10px 0;
   text-align: center;
+  background-shadow:rgb(0, 0, 0);
 }
 
 .post-image {
   max-width: 100%;
   max-height: 400px;
-  border-radius: 4px;
+  border-radius: 8px;
+  
 }
 
 /* Modal styling improvements */

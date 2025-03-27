@@ -51,6 +51,7 @@ import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
+import BlogDetailsPage from "./components/Customer/BlogPage/BlogDetailsPage";
 function App() {
   return (
     <div>
@@ -106,6 +107,16 @@ function App() {
               }
             />
           </Route>
+          <Route
+            path="/blog/:id"
+            element={
+              <>
+                <Navbarr />
+                <BlogDetailsPage />
+                <Footer />
+              </>
+            }
+          />
           <Route
             path="/contact"
             element={
