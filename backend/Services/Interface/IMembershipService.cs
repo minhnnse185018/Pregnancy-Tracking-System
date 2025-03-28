@@ -9,5 +9,6 @@ namespace backend.Services.Interface
         Task<List<MembershipDto>> GetMembershipsByUserIdAsync(int userId);
         Task<bool> IsMembershipActiveAsync(int userId);
         Task CleanupExpiredMembershipsAsync();
+        Task<MembershipDto> UpgradeMembershipAsync(int userId, int newPlanId); 
     }
 }

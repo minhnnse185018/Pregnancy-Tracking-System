@@ -10,20 +10,40 @@ namespace backend.Services.Implementation
     {
         private readonly IMembershipRepository _membershipRepository;
         private readonly IMembershipPlanRepository _planRepository;
+        private readonly IPaymentRepository _paymentRepository; // Thêm để lưu Payment
         private readonly IMapper _mapper;
 
         public MembershipService(
             IMembershipRepository membershipRepository,
             IMembershipPlanRepository planRepository,
+            IPaymentRepository paymentRepository,
             IMapper mapper)
         {
             _membershipRepository = membershipRepository;
             _planRepository = planRepository;
+            _paymentRepository = paymentRepository;
             _mapper = mapper;
         }
 
         public async Task<MembershipDto> CreatePendingMembershipAsync(CreateMembershipDto membershipDto)
         {
+            // Kiểm tra xem người dùng có membership đang hoạt động không
+            var isActive = await IsMembershipActiveAsync(membershipDto.UserId);
+            if (isActive)
+            {
+                var currentMemberships = await _membershipRepository.GetMembershipsByUserIdAsync(membershipDto.UserId);
+                var currentMembership = currentMemberships.First();
+                var currentPlan = await _planRepository.GetPlanByIdAsync(currentMembership.PlanId);
+                var newPlan = await _planRepository.GetPlanByIdAsync(membershipDto.PlanId);
+
+                if (currentPlan == null || newPlan == null)
+                    throw new Exception("Current or new plan not found");
+
+                // Không cho phép mua gói thấp hơn hoặc cùng gói
+                if (newPlan.Price <= currentPlan.Price)
+                    throw new Exception("You cannot purchase this plan or a lower plan while your current plan is active.");
+            }
+
             var plan = await _planRepository.GetPlanByIdAsync(membershipDto.PlanId);
             if (plan == null)
                 throw new Exception("Membership plan not found");
@@ -65,6 +85,7 @@ namespace backend.Services.Implementation
         {
             return await _membershipRepository.IsMembershipActiveAsync(userId);
         }
+
         public async Task CleanupExpiredMembershipsAsync()
         {
             var memberships = await _membershipRepository.GetAllMembershipsAsync();
@@ -72,8 +93,60 @@ namespace backend.Services.Implementation
 
             foreach (var membership in expiredMemberships)
             {
-                await _membershipRepository.DeleteMembershipAsync(membership.Id);
+                // Đổi Status thành "Expired"
+                await _membershipRepository.UpdateMembershipAsync(membership.Id, "Expired");
             }
+        }
+
+        public async Task<MembershipDto> UpgradeMembershipAsync(int userId, int newPlanId)
+        {
+            // Kiểm tra membership hiện tại
+            var currentMemberships = await _membershipRepository.GetMembershipsByUserIdAsync(userId);
+            if (currentMemberships == null || !currentMemberships.Any())
+                throw new Exception("No active membership found to upgrade.");
+
+            var currentMembership = currentMemberships.First();
+            var currentPlan = await _planRepository.GetPlanByIdAsync(currentMembership.PlanId);
+            var newPlan = await _planRepository.GetPlanByIdAsync(newPlanId);
+
+            if (currentPlan == null || newPlan == null)
+                throw new Exception("Current or new plan not found");
+
+            // Không cho phép nâng cấp lên gói thấp hơn hoặc cùng gói
+            if (newPlan.Price <= currentPlan.Price)
+                throw new Exception("You can only upgrade to a higher plan.");
+
+            // Hủy gói hiện tại
+            await _membershipRepository.UpdateMembershipAsync(currentMembership.Id, "Cancelled");
+
+            // Tính số tiền cần thanh toán (hiệu số)
+            var amountToPay = newPlan.Price - currentPlan.Price;
+
+            // Tạo membership mới
+            var newMembershipDto = new CreateMembershipDto
+            {
+                UserId = userId,
+                PlanId = newPlanId,
+                StartDate = DateTime.UtcNow
+            };
+
+            var newMembership = await CreatePendingMembershipAsync(newMembershipDto);
+
+            // Tạo Payment với số tiền là hiệu số
+            var payment = new Payment
+            {
+                MembershipId = newMembership.Id,
+                Amount = amountToPay,
+                PaymentDescription = $"Upgrade from {currentPlan.PlanName} to {newPlan.PlanName}",
+                PaymentMethod = "VnPay",
+                PaymentStatus = "Pending",
+                PaymentDate = DateTime.UtcNow
+            };
+
+            // Lưu Payment
+            await _paymentRepository.SavePaymentAsync(payment);
+
+            return newMembership;
         }
     }
 }

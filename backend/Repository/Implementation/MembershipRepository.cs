@@ -57,7 +57,7 @@ namespace backend.Repository.Implementation
 
                 var membership = _mapper.Map<Membership>(membershipDto);
                 membership.EndDate = membershipDto.StartDate.AddMonths(plan.Duration);
-                membership.Status = "Pending"; // ??i th�nh Pending thay v� Active
+                membership.Status = "Pending";
                 membership.CreatedAt = DateTime.UtcNow;
 
                 await _context.Memberships.AddAsync(membership);
@@ -111,7 +111,6 @@ namespace backend.Repository.Implementation
                 .AnyAsync(m => m.UserId == userId && m.Status == "Active" && m.EndDate > DateTime.UtcNow);
         }
 
-        // Th�m c�c ph??ng th?c m?i
         public async Task<Membership> AddAsync(Membership membership)
         {
             _context.Memberships.Add(membership);

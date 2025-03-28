@@ -297,6 +297,34 @@ namespace backend.Data
                 }
             );
 
+            // Seed data cho MembershipPlan
+            modelBuilder.Entity<MembershipPlan>().HasData(
+                new MembershipPlan
+                {
+                    Id = 1,
+                    PlanName = "3 Months",
+                    Description = "Full access to system features for 3 months",
+                    Price = 399000m, // 399,000 VND
+                    Duration = 3 // 3 tháng
+                },
+                new MembershipPlan
+                {
+                    Id = 2,
+                    PlanName = "6 Months",
+                    Description = "Full access to system features for 6 months",
+                    Price = 599000m, // 599,000 VND
+                    Duration = 6 // 6 tháng
+                },
+                new MembershipPlan
+                {
+                    Id = 3,
+                    PlanName = "12 Months",
+                    Description = "Full access to system features for 12 months",
+                    Price = 799000m, // 799,000 VND
+                    Duration = 12 // 12 tháng
+                }
+            );
+
             // Seed Fetal Growth Standards Data
             modelBuilder.Entity<FetalGrowthStandard>().HasData(
                 // Tuần 1-7 không có dữ liệu BPD, FL, HC, AC trong bảng

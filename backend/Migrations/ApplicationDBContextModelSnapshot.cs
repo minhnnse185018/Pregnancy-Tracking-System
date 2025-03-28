@@ -92,7 +92,7 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "Thank you for sharing your experience! It's very helpful.",
-                            CreatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2139),
+                            CreatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5280),
                             PostId = 1,
                             UserId = 2
                         },
@@ -100,7 +100,7 @@ namespace backend.Migrations
                         {
                             Id = 2,
                             Content = "I'm glad you found it helpful! Feel free to ask any questions.",
-                            CreatedAt = new DateTime(2025, 3, 26, 14, 1, 5, 663, DateTimeKind.Local).AddTicks(2141),
+                            CreatedAt = new DateTime(2025, 3, 29, 1, 12, 30, 725, DateTimeKind.Local).AddTicks(5284),
                             PostId = 1,
                             UserId = 1
                         });
@@ -143,800 +143,800 @@ namespace backend.Migrations
                             Id = 1,
                             Answer = "It's a software that helps pregnant women track their baby's development, manage appointments, receive alerts, and share experiences.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2384),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5544),
                             DisplayOrder = 1,
                             Question = "What is the pregnancy tracking system?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2381)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5539)
                         },
                         new
                         {
                             Id = 2,
                             Answer = "Pregnant women, family members, or anyone interested in pregnancy can sign up and use it.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2386),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5546),
                             DisplayOrder = 2,
                             Question = "Who can use this system?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2385)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5545)
                         },
                         new
                         {
                             Id = 3,
                             Answer = "Register as a member, choose a membership plan, and make a payment to activate features.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2388),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5548),
                             DisplayOrder = 3,
                             Question = "How do I start using the system?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2387)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5547)
                         },
                         new
                         {
                             Id = 4,
                             Answer = "Currently, there's a web version; a mobile app is under development and will launch soon.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2390),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5550),
                             DisplayOrder = 4,
                             Question = "Is there a mobile app for the system?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2389)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5549)
                         },
                         new
                         {
                             Id = 5,
                             Answer = "It currently supports Vietnamese; English will be added in the future.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2391),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5552),
                             DisplayOrder = 5,
                             Question = "Does the system support multiple languages?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2390)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5551)
                         },
                         new
                         {
                             Id = 6,
                             Answer = "Yes, you get a 7-day free trial with the Basic plan before purchasing.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2393),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5553),
                             DisplayOrder = 6,
                             Question = "Can I try it for free?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2392)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5552)
                         },
                         new
                         {
                             Id = 7,
                             Answer = "Yes, we use data encryption to protect your personal information.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2394),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5555),
                             DisplayOrder = 7,
                             Question = "Is the system secure?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2393)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5554)
                         },
                         new
                         {
                             Id = 8,
                             Answer = "Not directly yet, but you can schedule appointments with doctors through it.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2396),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5556),
                             DisplayOrder = 8,
                             Question = "Does the system connect with doctors?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2395)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5556)
                         },
                         new
                         {
                             Id = 9,
                             Answer = "A team of pregnancy experts and technology professionals created this software.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2397),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5558),
                             DisplayOrder = 9,
                             Question = "Who developed this system?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2396)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5557)
                         },
                         new
                         {
                             Id = 10,
                             Answer = "Yes, we periodically update features and information.",
                             Category = "System Introduction",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2399),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5560),
                             DisplayOrder = 10,
                             Question = "Is the system updated regularly?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2398)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5559)
                         },
                         new
                         {
                             Id = 11,
                             Answer = "Basic, Advanced, and Premium plans with different pricing and features. Check details on the 'Plans' page.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2400),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5561),
                             DisplayOrder = 1,
                             Question = "What membership plans are available?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2399)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5561)
                         },
                         new
                         {
                             Id = 12,
                             Answer = "Log in, go to 'Account Management,' select a new plan, and complete the payment.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2402),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5563),
                             DisplayOrder = 2,
                             Question = "How do I upgrade my membership plan?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2401)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5562)
                         },
                         new
                         {
                             Id = 13,
                             Answer = "Yes, you can get a refund within 7 days if no features have been used.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2404),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5565),
                             DisplayOrder = 3,
                             Question = "Can I get a refund if I'm not satisfied?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2403)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5564)
                         },
                         new
                         {
                             Id = 14,
                             Answer = "Basic tracking, appointment scheduling, and key milestone reminders.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2405),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5566),
                             DisplayOrder = 4,
                             Question = "What features does the Basic plan include?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2405)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5566)
                         },
                         new
                         {
                             Id = 15,
                             Answer = "The Premium plan includes detailed charts, community sharing, and 24/7 support.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2406),
+                            CreatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5567),
                             DisplayOrder = 5,
                             Question = "How does the Premium plan differ from the Advanced plan?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2406)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5567)
                         },
                         new
                         {
                             Id = 16,
                             Answer = "Yes, you can upgrade or downgrade anytime; fees are adjusted based on remaining time.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2408),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5569),
                             DisplayOrder = 6,
                             Question = "Can I switch plans mid-term?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2407)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5568)
                         },
                         new
                         {
                             Id = 17,
                             Answer = "Yes, periodic discounts are available—check the 'Promotions' page.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2410),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5572),
                             DisplayOrder = 7,
                             Question = "Are there discounts on membership plans?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2409)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5571)
                         },
                         new
                         {
                             Id = 18,
                             Answer = "Payments are monthly or yearly, depending on your chosen plan.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2411),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5574),
                             DisplayOrder = 8,
                             Question = "How often do I need to pay for the plan?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2410)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5573)
                         },
                         new
                         {
                             Id = 19,
                             Answer = "Not yet, but we're working on adding this to the Premium plan.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2413),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5575),
                             DisplayOrder = 9,
                             Question = "Do membership plans include doctor consultations?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2412)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5574)
                         },
                         new
                         {
                             Id = 20,
                             Answer = "Go to 'Account Management' to view your active plan details.",
                             Category = "Membership Plans",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2415),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5577),
                             DisplayOrder = 10,
                             Question = "How do I check my current membership plan?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2414)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5576)
                         },
                         new
                         {
                             Id = 21,
                             Answer = "Visit the homepage, click 'Register,' fill in your details, and confirm via email.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2416),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5578),
                             DisplayOrder = 1,
                             Question = "How do I register as a member?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2416)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5578)
                         },
                         new
                         {
                             Id = 22,
                             Answer = "Bank cards, e-wallets (Momo, ZaloPay), and bank transfers.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2418),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5580),
                             DisplayOrder = 2,
                             Question = "What payment methods are accepted?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2417)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5579)
                         },
                         new
                         {
                             Id = 23,
                             Answer = "Your account is activated immediately after successful payment.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2420),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5582),
                             DisplayOrder = 3,
                             Question = "How long after payment is my account activated?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2419)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5582)
                         },
                         new
                         {
                             Id = 24,
                             Answer = "Click 'Forgot Password' on the login page and receive a reset link via email.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2421),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5584),
                             DisplayOrder = 4,
                             Question = "What if I forget my password?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2420)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5583)
                         },
                         new
                         {
                             Id = 25,
                             Answer = "Yes, we use SSL encryption to protect payment information.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2423),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5587),
                             DisplayOrder = 5,
                             Question = "Is payment secure?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2422)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5586)
                         },
                         new
                         {
                             Id = 26,
                             Answer = "Yes, enter their email when making the payment for the plan.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2424),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5589),
                             DisplayOrder = 6,
                             Question = "Can I pay for someone else's account?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2423)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5588)
                         },
                         new
                         {
                             Id = 27,
                             Answer = "It's not mandatory but recommended for notifications.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2426),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5590),
                             DisplayOrder = 7,
                             Question = "Is a phone number required for registration?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2425)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5589)
                         },
                         new
                         {
                             Id = 28,
                             Answer = "Check your Spam folder or contact support.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2427),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5592),
                             DisplayOrder = 8,
                             Question = "What if I don't receive a confirmation email?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2426)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5591)
                         },
                         new
                         {
                             Id = 29,
                             Answer = "No, each email is linked to a single account.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2429),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5593),
                             DisplayOrder = 9,
                             Question = "Can I use one email for multiple accounts?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2428)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5592)
                         },
                         new
                         {
                             Id = 30,
                             Answer = "Check your internet connection or contact your bank, then try again.",
                             Category = "Registration and Payment",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2430),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5595),
                             DisplayOrder = 10,
                             Question = "What if my payment fails?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2429)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5594)
                         },
                         new
                         {
                             Id = 31,
                             Answer = "Go to 'Pregnancy Tracking,' enter data from ultrasounds or measurements.",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2432),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5596),
                             DisplayOrder = 1,
                             Question = "How do I update my baby's weight and height?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2431)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5596)
                         },
                         new
                         {
                             Id = 32,
                             Answer = "The system automatically creates a chart based on the data you input by week.",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2434),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5598),
                             DisplayOrder = 2,
                             Question = "How is the growth chart generated?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2433)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5597)
                         },
                         new
                         {
                             Id = 33,
                             Answer = "Yes, charts and history are available in 'Pregnancy Tracking.'",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2435),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5599),
                             DisplayOrder = 3,
                             Question = "Can I view past growth records?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2435)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5599)
                         },
                         new
                         {
                             Id = 34,
                             Answer = "Based on WHO standards for weight and height by pregnancy week.",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2437),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5603),
                             DisplayOrder = 4,
                             Question = "What measurements are considered normal?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2436)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5600)
                         },
                         new
                         {
                             Id = 35,
                             Answer = "You can edit or delete entries in the input history section.",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2438),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5604),
                             DisplayOrder = 5,
                             Question = "What if I enter incorrect data?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2438)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5604)
                         },
                         new
                         {
                             Id = 36,
                             Answer = "Currently, only one baby is supported; multi-baby tracking is coming soon.",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2440),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5606),
                             DisplayOrder = 6,
                             Question = "Can I track multiple babies at once?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2439)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5605)
                         },
                         new
                         {
                             Id = 37,
                             Answer = "Yes, download it as a PDF or image from the 'Chart' section.",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2441),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5609),
                             DisplayOrder = 7,
                             Question = "Can I download the growth chart?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2441)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5608)
                         },
                         new
                         {
                             Id = 38,
                             Answer = "You can input manual measurements or skip if unavailable.",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2443),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5610),
                             DisplayOrder = 8,
                             Question = "What if I don't have ultrasound data?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2442)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5609)
                         },
                         new
                         {
                             Id = 39,
                             Answer = "Not yet, but we're developing this feature.",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2444),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5612),
                             DisplayOrder = 9,
                             Question = "Does the system predict growth?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2444)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5611)
                         },
                         new
                         {
                             Id = 40,
                             Answer = "Yes, you can add notes when entering data for detailed tracking.",
                             Category = "Tracking Baby's Growth",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2446),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5613),
                             DisplayOrder = 10,
                             Question = "Can I add notes to growth data?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2445)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5613)
                         },
                         new
                         {
                             Id = 41,
                             Answer = "If measurements fall below standards, you'll get an email or app notification.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2447),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5615),
                             DisplayOrder = 1,
                             Question = "How does the system alert me about abnormalities?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2447)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5614)
                         },
                         new
                         {
                             Id = 42,
                             Answer = "Prenatal checkups, tests, vaccinations, and key milestones 7 hours in advance.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2449),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5618),
                             DisplayOrder = 2,
                             Question = "What reminders will I receive?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2448)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5617)
                         },
                         new
                         {
                             Id = 43,
                             Answer = "Yes, customize or disable them in 'Settings.'",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2450),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5619),
                             DisplayOrder = 3,
                             Question = "Can I turn off alerts?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2450)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5618)
                         },
                         new
                         {
                             Id = 44,
                             Answer = "Currently only via email; SMS will be added to the Premium plan later.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2452),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5621),
                             DisplayOrder = 4,
                             Question = "Are reminders sent via SMS?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2451)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5620)
                         },
                         new
                         {
                             Id = 45,
                             Answer = "Check your Spam folder or contact support to verify settings.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2453),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5622),
                             DisplayOrder = 5,
                             Question = "What if I don't receive reminders?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2453)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5621)
                         },
                         new
                         {
                             Id = 46,
                             Answer = "Yes, create them in the 'Appointments' section.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2455),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5624),
                             DisplayOrder = 6,
                             Question = "Can I add custom reminders?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2454)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5623)
                         },
                         new
                         {
                             Id = 47,
                             Answer = "Yes, they specify which measurement is abnormal and suggest actions.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2456),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5625),
                             DisplayOrder = 7,
                             Question = "Are alerts detailed?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2456)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5625)
                         },
                         new
                         {
                             Id = 48,
                             Answer = "Default is 7 hours; you can adjust this in settings.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2458),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5627),
                             DisplayOrder = 8,
                             Question = "How far in advance are reminders sent?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2457)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5626)
                         },
                         new
                         {
                             Id = 49,
                             Answer = "Currently only via email; app support will come after launch.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2460),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5629),
                             DisplayOrder = 9,
                             Question = "Can I get reminders through the app?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2459)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5628)
                         },
                         new
                         {
                             Id = 50,
                             Answer = "Yes, view alert history in the 'Notifications' section.",
                             Category = "Alerts and Reminders",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2462),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5630),
                             DisplayOrder = 10,
                             Question = "Are alerts saved?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2461)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5629)
                         },
                         new
                         {
                             Id = 51,
                             Answer = "Go to 'Appointments,' pick a date and time, enter doctor details, and confirm.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2463),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5632),
                             DisplayOrder = 1,
                             Question = "How do I schedule an appointment with a doctor?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2462)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5631)
                         },
                         new
                         {
                             Id = 52,
                             Answer = "Yes, go to the appointment list, select it, and update the details.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2465),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5633),
                             DisplayOrder = 2,
                             Question = "Can I edit an appointment?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2464)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5632)
                         },
                         new
                         {
                             Id = 53,
                             Answer = "You'll receive a cancellation email, and it's removed from the system.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2466),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5635),
                             DisplayOrder = 3,
                             Question = "What happens if I cancel an appointment?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2465)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5634)
                         },
                         new
                         {
                             Id = 54,
                             Answer = "Yes, enter their details when creating the appointment.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2468),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5636),
                             DisplayOrder = 4,
                             Question = "Can I book an appointment for someone else?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2467)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5636)
                         },
                         new
                         {
                             Id = 55,
                             Answer = "Not yet, but this feature will be added soon.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2469),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5638),
                             DisplayOrder = 5,
                             Question = "Does it sync with Google Calendar?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2468)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5637)
                         },
                         new
                         {
                             Id = 56,
                             Answer = "The system sends a reminder 7 hours beforehand so you won't miss it.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2471),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5639),
                             DisplayOrder = 6,
                             Question = "What if I forget an appointment?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2470)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5639)
                         },
                         new
                         {
                             Id = 57,
                             Answer = "Yes, old appointments are listed in the 'Appointments' section.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2472),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5641),
                             DisplayOrder = 7,
                             Question = "Can I view past appointments?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2471)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5640)
                         },
                         new
                         {
                             Id = 58,
                             Answer = "Yes, as long as the times don't overlap to avoid conflicts.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2474),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5643),
                             DisplayOrder = 8,
                             Question = "Can I book multiple appointments at once?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2473)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5642)
                         },
                         new
                         {
                             Id = 59,
                             Answer = "Yes, you'll get an email confirmation right after booking.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2475),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5645),
                             DisplayOrder = 9,
                             Question = "Do appointments come with a confirmation?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2474)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5643)
                         },
                         new
                         {
                             Id = 60,
                             Answer = "Yes, add notes when creating or editing an appointment.",
                             Category = "Appointment Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2477),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5647),
                             DisplayOrder = 10,
                             Question = "Can I add notes to appointments?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2476)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5646)
                         },
                         new
                         {
                             Id = 61,
                             Answer = "Go to 'Share,' select the chart, add a note, and post it to the community.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2478),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5648),
                             DisplayOrder = 1,
                             Question = "How do I share my baby's growth chart?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2478)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5648)
                         },
                         new
                         {
                             Id = 62,
                             Answer = "Yes, comment directly under other members' posts.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2480),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5650),
                             DisplayOrder = 2,
                             Question = "Can I comment on others' experiences?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2479)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5649)
                         },
                         new
                         {
                             Id = 63,
                             Answer = "Visit the 'Blog' section on the homepage to read posts.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2481),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5652),
                             DisplayOrder = 3,
                             Question = "How do I view the experience-sharing blog?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2481)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5651)
                         },
                         new
                         {
                             Id = 64,
                             Answer = "Yes, go to your post list and choose to delete.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2483),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5653),
                             DisplayOrder = 4,
                             Question = "Can I delete my shared posts?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2482)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5652)
                         },
                         new
                         {
                             Id = 65,
                             Answer = "Yes, but you can set them visible only to system members.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2484),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5655),
                             DisplayOrder = 5,
                             Question = "Are shared posts public?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2483)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5654)
                         },
                         new
                         {
                             Id = 66,
                             Answer = "Currently only charts and text are supported; photos will be added later.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2486),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5656),
                             DisplayOrder = 6,
                             Question = "Can I upload photos to the community?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2485)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5655)
                         },
                         new
                         {
                             Id = 67,
                             Answer = "Yes, new posts are added weekly by the community and experts.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2487),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5658),
                             DisplayOrder = 7,
                             Question = "Is the blog updated regularly?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2486)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5657)
                         },
                         new
                         {
                             Id = 68,
                             Answer = "Yes, the blog has filters for topics like nutrition and health.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2489),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5659),
                             DisplayOrder = 8,
                             Question = "Can I search posts by topic?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2488)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5659)
                         },
                         new
                         {
                             Id = 69,
                             Answer = "Yes, inappropriate content is removed by administrators.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2490),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5661),
                             DisplayOrder = 9,
                             Question = "Are shared posts moderated?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2490)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5660)
                         },
                         new
                         {
                             Id = 70,
                             Answer = "Not yet, but this feature is in development.",
                             Category = "Sharing Experiences",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2492),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5662),
                             DisplayOrder = 10,
                             Question = "Can I follow other members?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2491)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5662)
                         },
                         new
                         {
                             Id = 71,
                             Answer = "Call the hotline at 123-456-789 or email support@pregnancytrack.com.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2494),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5664),
                             DisplayOrder = 1,
                             Question = "Where can I contact support?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2493)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5663)
                         },
                         new
                         {
                             Id = 72,
                             Answer = "Log in, go to 'Account Management' to view and edit your info.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2495),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5740),
                             DisplayOrder = 2,
                             Question = "How do I view my member profile?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2494)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5739)
                         },
                         new
                         {
                             Id = 73,
                             Answer = "They provide an overview of your pregnancy, appointments, and growth reports.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2496),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5742),
                             DisplayOrder = 3,
                             Question = "What are the dashboard and reports for?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2496)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5741)
                         },
                         new
                         {
                             Id = 74,
                             Answer = "Yes, contact support to request permanent account deletion.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2498),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5744),
                             DisplayOrder = 4,
                             Question = "Can I delete my account?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2497)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5743)
                         },
                         new
                         {
                             Id = 75,
                             Answer = "Yes, your data is encrypted and accessible only to you.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2500),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5745),
                             DisplayOrder = 5,
                             Question = "Is my profile secure?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2499)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5744)
                         },
                         new
                         {
                             Id = 76,
                             Answer = "Yes for Premium members; other plans get support during business hours.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2501),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5747),
                             DisplayOrder = 6,
                             Question = "Is support available 24/7?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2500)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5746)
                         },
                         new
                         {
                             Id = 77,
                             Answer = "Yes, update it in 'Account Management.'",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2548),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5748),
                             DisplayOrder = 7,
                             Question = "Can I change my account email?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2547)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5748)
                         },
                         new
                         {
                             Id = 78,
                             Answer = "Yes, export them as PDFs from the 'Dashboard' section.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2550),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5750),
                             DisplayOrder = 8,
                             Question = "Can I export reports?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2549)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5749)
                         },
                         new
                         {
                             Id = 79,
                             Answer = "Data is kept for up to 5 years after your account expires.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2551),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5752),
                             DisplayOrder = 9,
                             Question = "How long is my data stored?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2550)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5751)
                         },
                         new
                         {
                             Id = 80,
                             Answer = "Not yet, but you can schedule appointments with doctors.",
                             Category = "Support and Management",
-                            CreatedAt = new DateTime(2025, 3, 26, 6, 1, 5, 663, DateTimeKind.Utc).AddTicks(2553),
+                            CreatedAt = new DateTime(2025, 3, 28, 17, 12, 30, 725, DateTimeKind.Utc).AddTicks(5753),
                             DisplayOrder = 10,
                             Question = "Can I contact a doctor through the system?",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2552)
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5753)
                         });
                 });
 
@@ -1387,7 +1387,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2091),
+                            CreatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5148),
                             HeightCm = 25.5m,
                             ProfileId = 1,
                             Week = 12,
@@ -1396,7 +1396,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2092),
+                            CreatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5151),
                             HeightCm = 28.5m,
                             ProfileId = 1,
                             Week = 16,
@@ -1489,6 +1489,32 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MembershipPlans");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Full access to system features for 3 months",
+                            Duration = 3,
+                            PlanName = "3 Months",
+                            Price = 399000m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Full access to system features for 6 months",
+                            Duration = 6,
+                            PlanName = "6 Months",
+                            Price = 599000m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Full access to system features for 12 months",
+                            Duration = 12,
+                            PlanName = "12 Months",
+                            Price = 799000m
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.Message", b =>
@@ -1613,10 +1639,10 @@ namespace backend.Migrations
                         {
                             Id = 1,
                             Content = "I'm excited to share my journey through the first trimester...",
-                            CreatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2117),
+                            CreatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5172),
                             Status = "published",
                             Title = "My First Pregnancy Experience",
-                            UpdatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(2114),
+                            UpdatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(5171),
                             UserId = 1
                         });
                 });
@@ -1841,7 +1867,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(1824),
+                            CreatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(4890),
                             Email = "1@gmail.com",
                             Password = "111111",
                             Status = "active",
@@ -1850,7 +1876,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 3, 26, 13, 1, 5, 663, DateTimeKind.Local).AddTicks(1828),
+                            CreatedAt = new DateTime(2025, 3, 29, 0, 12, 30, 725, DateTimeKind.Local).AddTicks(4896),
                             Email = "2@gmail.com",
                             Password = "222222",
                             Status = "active",
