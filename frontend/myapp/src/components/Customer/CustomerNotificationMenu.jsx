@@ -59,21 +59,22 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
   // Fetch alerts and notifications
   const fetchData = useCallback(async () => {
     try {
-      const userId = sessionStorage.getItem("userID");
       const token = sessionStorage.getItem("token");
+      const userId = sessionStorage.getItem("userID");
 
-      if (!userId || !token) {
-        setError("Please log in to view notifications.");
+      if (!token || !userId) {
+        setError("Authentication token not found. Please log in again.");
         setLoading(false);
         return;
       }
 
       const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5254";
+      const alertsUrl = `${apiUrl}/api/GrowthAlert/${userId}/week`; // Updated to use userId
+      const notificationsUrl = `${apiUrl}/api/Notification/user/${userId}`;
+
       const [alertsResponse, notificationsResponse] = await Promise.all([
-        axios.get(`${apiUrl}/api/GrowthAlert/${userId}/week`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${apiUrl}/api/Notification/user/${userId}`, {
+        axios.get(alertsUrl, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(notificationsUrl, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -90,7 +91,9 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
         (alert) => !viewedIds.includes(`alert-${alert.id}`)
       );
       const unreadNotifications = sortedNotifications.filter(
-        (n) => !n.isRead && !viewedIds.includes(`notification-${n.id}`)
+        (notification) =>
+          !notification.isRead &&
+          !viewedIds.includes(`notification-${notification.id}`)
       );
 
       setUnreadCount(unreadAlerts.length + unreadNotifications.length);
@@ -102,7 +105,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
         setError("Session expired. Please log in again.");
         window.location.href = "/login";
       } else {
-        setError("Failed to load notifications.");
+        setError("Failed to load notifications. Please try again later.");
       }
       setAlerts([]);
       setNotifications([]);
@@ -242,9 +245,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {item.itemType === "alert"
-                    ? `Growth Alert for Profile ID: ${item.profileId}`
-                    : "Notification"}
+                  {item.itemType === "alert" ? "Growth Alert" : "Notification"}
                 </Typography>
                 <Typography
                   sx={{
@@ -267,11 +268,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     textAlign: "right",
                   }}
                 >
-                  {item.itemType === "alert"
-                    ? `Week ${item.week} - ${new Date(
-                        item.createdAt
-                      ).toLocaleString()}`
-                    : new Date(item.createdAt).toLocaleString()}
+                  {new Date(item.createdAt).toLocaleString()}
                 </Typography>
               </MenuItem>
               {index < allItems.length - 1 && <Divider />}
@@ -279,7 +276,9 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
           ))
         ) : (
           <MenuItem onClick={handleClose}>
-            <Typography textAlign="center">No notifications found.</Typography>
+            <Typography textAlign="center">
+              No notifications found!!!
+            </Typography>
           </MenuItem>
         )}
       </Menu>
@@ -301,27 +300,19 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
               gutterBottom
               textAlign="center"
             >
-              {selectedItem.itemType === "alert"
-                ? `Growth Alert for Profile ID: ${selectedItem.profileId}`
+              {selectedItem.type === "alert"
+                ? "Growth Alert"
                 : "💡💡💡 Notification 💡💡💡"}
             </Typography>
-            {selectedItem.itemType === "alert" && (
-              <Typography
-                sx={{ fontSize: "0.875rem", color: "#757575", mb: 2 }}
-              >
-                Week {selectedItem.week} -{" "}
-                {new Date(selectedItem.createdAt).toLocaleString()}
-              </Typography>
-            )}
             <Typography
               id="alert-modal-description"
               sx={{ mt: 2, overflowWrap: "break-word" }}
             >
-              {selectedItem.itemType === "alert"
+              {selectedItem.type === "alert"
                 ? selectedItem.alertMessage
                 : selectedItem.message}
             </Typography>
-            {selectedItem.itemType === "notification" &&
+            {selectedItem.type === "notification" &&
               selectedItem.relatedEntityId && (
                 <Button
                   onClick={() => {
