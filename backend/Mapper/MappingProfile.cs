@@ -28,6 +28,8 @@ namespace backend.Mapper
         {
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
+            CreateMap<User, UserDtoManager>();
+            CreateMap<UserDtoManager, User>();
             CreateMap<AppointmentDto, Appointment>();
             CreateMap<Appointment, AppointmentDto>();
 
