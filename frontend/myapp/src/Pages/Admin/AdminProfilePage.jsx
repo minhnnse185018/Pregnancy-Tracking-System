@@ -16,54 +16,60 @@ import * as Yup from "yup";
 
 const AdminProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const [profile, setProfile] = useState({
     name: "",
     email: "",
     phone: "",
-    avatar: "https://via.placeholder.com/150", // Fixed avatar
+    avatar: "https://via.placeholder.com/150",
   });
-  const [fullUserData, setFullUserData] = useState(null);
-
   const accountID = sessionStorage.getItem("userID");
 
   useEffect(() => {
     const fetchProfileData = async () => {
       if (!accountID) {
-        setSnackbarMessage("User ID not found in session storage.");
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
+        setSnackbar({
+          open: true,
+          message: "User ID not found. Please log in.",
+          severity: "error",
+        });
         return;
       }
       try {
         const { data } = await axios.get(
-          `http://localhost:5254/api/Users/GetById/${accountID}`
+          `http://localhost:5254/api/Users/GetById/${accountID}`,
+          {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+          }
         );
         const fullName =
-          `${data.firstName || ""} ${data.lastName || ""}`.trim() ||
-          "No Name Available";
+          `${data.firstName || ""} ${data.lastName || ""}`.trim() || "No Name";
         setProfile({
           name: fullName,
-          email: data.email || "No Email Available",
-          phone: data.phone || "No Phone Available",
-          avatar: "https://via.placeholder.com/150", // Fixed avatar
+          email: data.email || "No Email",
+          phone: data.phone || "No Phone",
+          avatar: data.avatar || "https://via.placeholder.com/150",
         });
-        setFullUserData(data);
       } catch (error) {
-        console.error("Error fetching profile data:", error);
-        setSnackbarMessage("Failed to fetch profile data.");
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
+        console.error("Error fetching profile:", error);
+        setSnackbar({
+          open: true,
+          message: "Failed to fetch profile data.",
+          severity: "error",
+        });
       }
     };
     fetchProfileData();
   }, [accountID]);
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+  const handleSnackbarClose = () =>
+    setSnackbar((prev) => ({ ...prev, open: false }));
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -78,58 +84,45 @@ const AdminProfilePage = () => {
     try {
       const [firstName, ...lastNameArr] = values.name.split(" ");
       const lastName = lastNameArr.join(" ");
-
       const updatedData = {
         id: parseInt(accountID),
-        email: profile.email,
-        password: fullUserData?.password,
-        userType: fullUserData?.userType,
         firstName: firstName || "",
         lastName: lastName || "",
-        gender: fullUserData?.gender || null,
-        dateOfBirth: fullUserData?.dateOfBirth || null,
+        email: profile.email,
         phone: values.phone,
-        status: fullUserData?.status || "active",
-        createdAt: fullUserData?.createdAt || new Date().toISOString(),
-        resetToken: fullUserData?.resetToken || null,
-        resetTokenExpiration: fullUserData?.resetTokenExpiration || null,
-        avatar: profile.avatar, // Fixed avatar
+        avatar: profile.avatar,
       };
 
       const { status } = await axios.put(
         `http://localhost:5254/api/Users/Update/${accountID}`,
         updatedData,
-        { headers: { "Content-Type": "application/json" } }
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
       );
 
       if (status === 200) {
-        setSnackbarMessage("Profile updated successfully!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
         setProfile((prev) => ({
           ...prev,
           name: values.name,
           phone: values.phone,
         }));
-        setFullUserData((prev) => ({
-          ...prev,
-          firstName: firstName,
-          lastName: lastName,
-          phone: values.phone,
-        }));
+        setSnackbar({
+          open: true,
+          message: "Profile updated successfully!",
+          severity: "success",
+        });
         setIsEditing(false);
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      setSnackbarMessage(
-        error.response
-          ? `Failed to update profile: ${
-              error.response.data.message || "Bad Request"
-            }`
-          : "Failed to update profile."
-      );
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+      setSnackbar({
+        open: true,
+        message: "Failed to update profile.",
+        severity: "error",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -150,8 +143,6 @@ const AdminProfilePage = () => {
       padding: "8px 20px",
       textTransform: "none",
       fontWeight: "bold",
-      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-      color: "#333",
     },
     cancelButton: {
       color: "#f44336",
@@ -167,10 +158,7 @@ const AdminProfilePage = () => {
         backgroundColor: "#fce4ec",
         minHeight: "100vh",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         padding: 4,
-        fontFamily: "Roboto, sans-serif",
       }}
     >
       <Container maxWidth="sm">
@@ -179,9 +167,7 @@ const AdminProfilePage = () => {
             borderRadius: "12px",
             textAlign: "center",
             padding: 3,
-            backgroundColor: "#fff",
-            border: "1px solid #f8bbd0",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            boxShadow: 3,
           }}
         >
           <Typography
@@ -190,22 +176,23 @@ const AdminProfilePage = () => {
               mt: 2,
               fontWeight: "bold",
               color: "#f06292",
-              textAlign: "center",
-              textTransform: "uppercase",
               borderBottom: "2px solid #f8bbd0",
-              paddingBottom: "8px",
             }}
           >
-            User Profile
+            Admin Profile
           </Typography>
 
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-            <Avatar
-              src={profile.avatar}
-              alt="Profile Avatar"
-              sx={{ width: 100, height: 100, border: "2px solid #f8bbd0" }}
-            />
-          </Box>
+          <Avatar
+            src={profile.avatar}
+            alt="Profile Avatar"
+            sx={{
+              width: 100,
+              height: 100,
+              mx: "auto",
+              mt: 2,
+              border: "2px solid #f8bbd0",
+            }}
+          />
 
           {!isEditing ? (
             <>
@@ -231,55 +218,46 @@ const AdminProfilePage = () => {
               initialValues={{ name: profile.name, phone: profile.phone }}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
-              enableReinitialize
             >
               {({ isSubmitting }) => (
                 <Form>
-                  <Box mt={2}>
-                    <Field
-                      as={TextField}
-                      fullWidth
-                      name="name"
-                      label="Name"
-                      variant="outlined"
-                      margin="dense"
-                      sx={commonStyles.textField}
-                    />
-                    <ErrorMessage
-                      name="name"
-                      component="div"
-                      style={{ color: "red" }}
-                    />
-                  </Box>
-                  <Box mt={2}>
-                    <Field
-                      as={TextField}
-                      fullWidth
-                      name="phone"
-                      label="Phone"
-                      variant="outlined"
-                      margin="dense"
-                      sx={commonStyles.textField}
-                    />
-                    <ErrorMessage
-                      name="phone"
-                      component="div"
-                      style={{ color: "red" }}
-                    />
-                  </Box>
-                  <Box mt={2}>
-                    <Field
-                      as={TextField}
-                      fullWidth
-                      name="email"
-                      label="Email"
-                      variant="outlined"
-                      margin="dense"
-                      value={profile.email}
-                      disabled
-                      sx={commonStyles.textField}
-                    />
-                  </Box>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    name="name"
+                    label="Name"
+                    variant="outlined"
+                    margin="dense"
+                    sx={commonStyles.textField}
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    style={{ color: "red" }}
+                  />
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    name="phone"
+                    label="Phone"
+                    variant="outlined"
+                    margin="dense"
+                    sx={commonStyles.textField}
+                  />
+                  <ErrorMessage
+                    name="phone"
+                    component="div"
+                    style={{ color: "red" }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    value={profile.email}
+                    disabled
+                    variant="outlined"
+                    margin="dense"
+                    sx={commonStyles.textField}
+                  />
                   <Box
                     sx={{
                       display: "flex",
@@ -291,10 +269,10 @@ const AdminProfilePage = () => {
                     <Button
                       type="submit"
                       variant="contained"
-                      sx={{ ...commonStyles.button }}
+                      sx={commonStyles.button}
                       disabled={isSubmitting}
                     >
-                      Save Changes
+                      Save
                     </Button>
                     <Button
                       variant="outlined"
@@ -312,17 +290,13 @@ const AdminProfilePage = () => {
       </Container>
 
       <Snackbar
-        open={snackbarOpen}
+        open={snackbar.open}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }} // Moved to top-right
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </Box>

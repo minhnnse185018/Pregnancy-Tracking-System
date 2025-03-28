@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import "./BlogPage.css";
 import CommentModal from "./CommentModal";
 
@@ -12,37 +12,27 @@ function CommunityPosts() {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const [showComments, setShowComments] = useState(false);
-
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
   const [newPostImage, setNewPostImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [uploadingPost, setUploadingPost] = useState(false);
-  
-  // Toast state
+
   const [toasts, setToasts] = useState([]);
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
-  // Show toast notification function
   const showToast = (message, type = "success", icon = "✅") => {
     const id = Date.now();
-    const newToast = {
-      id,
-      message,
-      type,
-      icon
-    };
-
-    setToasts(prev => [...prev, newToast]);
-    
-    // Auto hide toast after 3 seconds
-    setTimeout(() => {
-      setToasts(prev => prev.filter(toast => toast.id !== id));
-    }, 3000);
+    const newToast = { id, message, type, icon };
+    setToasts((prev) => [...prev, newToast]);
+    setTimeout(
+      () => setToasts((prev) => prev.filter((toast) => toast.id !== id)),
+      3000
+    );
   };
 
   const fetchPosts = async () => {
@@ -89,12 +79,10 @@ function CommunityPosts() {
     }
   };
 
-  // Image handling functions - simplified like in code 1
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setNewPostImage(file);
-      // Create a preview URL for the image
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -105,39 +93,25 @@ function CommunityPosts() {
       showToast("You are not logged in. Please log in first!", "warning", "⚠️");
       return;
     }
-    if (!newPostTitle.trim()) {
-      showToast("Post title cannot be empty!", "warning", "⚠️");
-      return;
-    }
-    if (!newPostContent.trim()) {
-      showToast("Post content cannot be empty!", "warning", "⚠️");
+    if (!newPostTitle.trim() || !newPostContent.trim()) {
+      showToast("Post title and content cannot be empty!", "warning", "⚠️");
       return;
     }
 
     try {
       setUploadingPost(true);
-      
-      // Create FormData object to send the file and other post data
       const formData = new FormData();
-      formData.append('userId', userId);
-      formData.append('title', newPostTitle);
-      formData.append('content', newPostContent);
-      
-      // Add the image file if it exists - simplified approach like in code 1
-      if (newPostImage) {
-        formData.append('image', newPostImage);
-      }
-      
-      // Send the formData to your backend API
-      const response = await axios.post("http://localhost:5254/api/Post", formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      formData.append("userId", userId);
+      formData.append("title", newPostTitle);
+      formData.append("content", newPostContent);
+      if (newPostImage) formData.append("image", newPostImage);
+
+      await axios.post("http://localhost:5254/api/Post", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      
+
       showToast("Post created successfully!", "success", "✍️");
       setShowCreatePostModal(false);
-      // Reset form fields
       setNewPostTitle("");
       setNewPostContent("");
       setNewPostImage(null);
@@ -151,7 +125,27 @@ function CommunityPosts() {
     }
   };
 
-  // Clear image preview and file
+  const handleDeletePost = async (postId) => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      showToast("You are not logged in. Please log in first!", "warning", "⚠️");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to delete this post?")) {
+      try {
+        await axios.delete(`http://localhost:5254/api/Post/${postId}`, {
+          headers: { "Content-Type": "application/json" },
+        });
+        showToast("Post deleted successfully!", "success", "🗑️");
+        fetchPosts();
+      } catch (error) {
+        console.error("Error deleting post:", error);
+        showToast("Failed to delete post. Please try again.", "error", "❌");
+      }
+    }
+  };
+
   const handleRemoveImage = () => {
     setNewPostImage(null);
     setImagePreview(null);
@@ -162,23 +156,22 @@ function CommunityPosts() {
 
   return (
     <div className="community-container pregnant-theme">
-      {/* Toast Container */}
       <div className="toast-container">
-        {toasts.map(toast => (
+        {toasts.map((toast) => (
           <div key={toast.id} className={`custom-toast ${toast.type}`}>
             <div className="toast-header">
               <span className="toast-icon">{toast.icon}</span>
               <span className="toast-title">Notification</span>
-              <button 
-                className="toast-close" 
-                onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}
+              <button
+                className="toast-close"
+                onClick={() =>
+                  setToasts((prev) => prev.filter((t) => t.id !== toast.id))
+                }
               >
                 ×
               </button>
             </div>
-            <div className="toast-body">
-              {toast.message}
-            </div>
+            <div className="toast-body">{toast.message}</div>
           </div>
         ))}
       </div>
@@ -209,14 +202,11 @@ function CommunityPosts() {
                   </div>
                 </div>
                 <p className="post-text">Content: {post.content}</p>
-                
-                {/* Display post image if available */}
                 {post.image && (
                   <div className="post-image-container">
                     <img src={post.image} alt="Post" className="post-image" />
                   </div>
                 )}
-                
                 <div className="post-stats">
                   <span className="post-time">
                     Created At: {new Date(post.createdAt).toLocaleDateString()}
@@ -231,9 +221,17 @@ function CommunityPosts() {
                     >
                       💬 View Comments ({post.commentCount})
                     </button>
+                    {String(post.userId) ===
+                      String(sessionStorage.getItem("userID")) && (
+                      <button
+                        onClick={() => handleDeletePost(post.id)}
+                        className="delete-post-btn"
+                      >
+                        🗑️ Delete
+                      </button>
+                    )}
                   </div>
                 </div>
-
                 {showComments && selectedPost?.id === post.id && (
                   <div className="comments-section">
                     <h3>Comments</h3>
@@ -278,8 +276,7 @@ function CommunityPosts() {
         setCommentText={setCommentText}
         handleAddComment={handleAddComment}
       />
-      
-      {/* Create Post Modal - Simplified like in code 1 */}
+
       {showCreatePostModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -297,8 +294,6 @@ function CommunityPosts() {
               onChange={(e) => setNewPostContent(e.target.value)}
               className="post-textarea"
             />
-            
-            {/* Image upload section - simplified like in code 1 */}
             <div className="image-upload-section">
               <input
                 type="file"
@@ -306,12 +301,14 @@ function CommunityPosts() {
                 onChange={handleImageChange}
                 className="image-upload-input"
               />
-              
-              {/* Image preview */}
               {imagePreview && (
                 <div className="image-preview-container">
-                  <img src={imagePreview} alt="Preview" className="image-preview" style={{ width: "300px" }} />
-                  <button 
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="image-preview"
+                  />
+                  <button
                     onClick={handleRemoveImage}
                     className="remove-image-btn"
                   >
@@ -320,16 +317,15 @@ function CommunityPosts() {
                 </div>
               )}
             </div>
-            
             <div className="modal-actions">
-              <button 
+              <button
                 onClick={handleCreatePost}
                 disabled={uploadingPost}
                 className="create-btn"
               >
                 {uploadingPost ? "Creating..." : "Create Post"}
               </button>
-              <button 
+              <button
                 onClick={() => {
                   setShowCreatePostModal(false);
                   setNewPostTitle("");

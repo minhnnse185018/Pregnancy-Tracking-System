@@ -26,6 +26,7 @@ namespace backend.Mapper
         {
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
+            CreateMap<User, UserDtoManager>().ReverseMap();
             CreateMap<AppointmentDto, Appointment>();
             CreateMap<Appointment, AppointmentDto>();
 
@@ -118,7 +119,7 @@ namespace backend.Mapper
             CreateMap<UpdateMembershipPlanDto, MembershipPlan>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<Payment,PaymentResponseDto>().ReverseMap();
+            CreateMap<Payment, PaymentResponseDto>().ReverseMap();
         }
     }
 }

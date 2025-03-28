@@ -704,3 +704,18 @@
   border-color: #1890ff;
   background-color: #f0f8ff;
 }
+/* Add to BlogPage.css if not already present */
+.delete-post-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s;
+}
+
+.delete-post-btn:hover {
+  background-color: #c0392b;
+}

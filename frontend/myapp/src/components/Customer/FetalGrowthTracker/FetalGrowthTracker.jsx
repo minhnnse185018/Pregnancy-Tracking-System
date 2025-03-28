@@ -7,13 +7,20 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react"; // Added useRef
 import { Bar } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./FetalGrowthTracker.css";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 function FetalGrowthTracker() {
   const [gestationalAge, setGestationalAge] = useState("");
@@ -24,6 +31,7 @@ function FetalGrowthTracker() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEditData, setCurrentEditData] = useState(null);
   const navigate = useNavigate();
+  const chartRef = useRef(null); // Ref to access the chart instance
 
   useEffect(() => {
     checkAuthentication();
@@ -45,7 +53,9 @@ function FetalGrowthTracker() {
       return;
     }
 
-    fetch(`http://localhost:5254/api/PregnancyProfile/GetProfilesByUserId/${userId}`)
+    fetch(
+      `http://localhost:5254/api/PregnancyProfile/GetProfilesByUserId/${userId}`
+    )
       .then((response) => {
         if (!response.ok) throw new Error("Failed to fetch profiles");
         return response.json();
@@ -64,14 +74,18 @@ function FetalGrowthTracker() {
   }
 
   function fetchFetalData(profileId) {
-    fetch(`http://localhost:5254/api/FetalMeasurement/GetGrowthByProfile/${profileId}`)
+    fetch(
+      `http://localhost:5254/api/FetalMeasurement/GetGrowthByProfile/${profileId}`
+    )
       .then((response) => {
         if (!response.ok) return [];
         return response.json();
       })
       .then((data) => {
         const profile = userProfiles.find((p) => p.id === profileId);
-        const conceptionDate = profile ? new Date(profile.conceptionDate) : null;
+        const conceptionDate = profile
+          ? new Date(profile.conceptionDate)
+          : null;
         const mappedData = (data || []).map((item) => {
           let weeks = item.week || "N/A";
           if (weeks === "N/A" && conceptionDate && item.measureDate) {
@@ -207,8 +221,27 @@ function FetalGrowthTracker() {
     }
   }
 
+  // Function to download the chart as an image
+  const downloadChart = () => {
+    const chart = chartRef.current;
+    if (chart) {
+      const link = document.createElement("a");
+      link.download = `Fetal_Growth_Chart_${selectedProfile?.id || "Guest"}_${
+        new Date().toISOString().split("T")[0]
+      }.png`;
+      link.href = chart.toBase64Image();
+      link.click();
+      toast.success("Chart downloaded successfully!");
+    } else {
+      toast.error("Chart not available for download.");
+    }
+  };
+
   const chartData = {
-    labels: fetalData.length > 0 ? fetalData.map((data) => `Week ${data.weeks || "N/A"}`) : [],
+    labels:
+      fetalData.length > 0
+        ? fetalData.map((data) => `Week ${data.weeks || "N/A"}`)
+        : [],
     datasets: [
       {
         label: "Length (cm)",
@@ -298,7 +331,9 @@ function FetalGrowthTracker() {
     return (
       <div className="tracker-container">
         <h1 className="tracker-title">Fetal Growth Tracker</h1>
-        <p className="guest-note">Enter gestational age to preview growth (not saved).</p>
+        <p className="guest-note">
+          Enter gestational age to preview growth (not saved).
+        </p>
         <div className="input-group">
           <label htmlFor="gestationalAge">Gestational Age (weeks):</label>
           <input
@@ -314,18 +349,26 @@ function FetalGrowthTracker() {
           <>
             {renderFetalDataTable()}
             <div className="chart-wrapper">
-              <Bar data={chartData} options={chartOptions} />
+              <Bar data={chartData} options={chartOptions} ref={chartRef} />
               <div className="chart-description">
                 <p className="trend">Trending up this month</p>
-                <p className="details">Showing growth data for the entered gestational age</p>
+                <p className="details">
+                  Showing growth data for the entered gestational age
+                </p>
+                <button className="download-button" onClick={downloadChart}>
+                  Download Chart
+                </button>
               </div>
             </div>
           </>
         ) : (
-          <p>No fetal growth data available. Enter a gestational age to preview.</p>
+          <p>
+            No fetal growth data available. Enter a gestational age to preview.
+          </p>
         )}
         <p className="login-prompt">
-          <button onClick={() => navigate("/login")}>Log in</button> to save and manage data!
+          <button onClick={() => navigate("/login")}>Log in</button> to save and
+          manage data!
         </p>
       </div>
     );
@@ -370,15 +413,23 @@ function FetalGrowthTracker() {
           <>
             {renderFetalDataTable()}
             <div className="chart-wrapper">
-              <Bar data={chartData} options={chartOptions} />
+              <Bar data={chartData} options={chartOptions} ref={chartRef} />
               <div className="chart-description">
                 <p className="trend">Trending up this month</p>
-                <p className="details">Showing growth data for the selected profile</p>
+                <p className="details">
+                  Showing growth data for the selected profile
+                </p>
+                <button className="download-button" onClick={downloadChart}>
+                  Download Chart
+                </button>
               </div>
             </div>
           </>
         ) : (
-          <p>No fetal growth data available for this profile. Add data to get started.</p>
+          <p>
+            No fetal growth data available for this profile. Add data to get
+            started.
+          </p>
         )}
         {isModalOpen && (
           <FetalDataForm
@@ -427,7 +478,9 @@ function FetalGrowthTracker() {
                 {isAuthenticated && (
                   <td>
                     <button onClick={() => handleOpenModal(data)}>Edit</button>
-                    <button onClick={() => handleDeleteFetalData(data.id)}>Delete</button>
+                    <button onClick={() => handleDeleteFetalData(data.id)}>
+                      Delete
+                    </button>
                   </td>
                 )}
               </tr>
@@ -442,7 +495,10 @@ function FetalGrowthTracker() {
     <div className="app-wrapper">
       <header className="app-header">
         <div className="logo">
-          <span role="img" aria-label="mom-and-baby">🤰</span> MOM & BABY
+          <span role="img" aria-label="mom-and-baby">
+            🤰
+          </span>{" "}
+          MOM & BABY
         </div>
         <nav className="nav-menu">
           <a href="/">Home</a>
@@ -464,10 +520,16 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
   const [weeks, setWeeks] = useState(data?.weeks || "");
   const [length, setLength] = useState(data?.length || "");
   const [weight, setWeight] = useState(data?.weight || "");
-  const [biparietalDiameter, setBiparietalDiameter] = useState(data?.biparietalDiameter || "");
+  const [biparietalDiameter, setBiparietalDiameter] = useState(
+    data?.biparietalDiameter || ""
+  );
   const [femoralLength, setFemoralLength] = useState(data?.femoralLength || "");
-  const [headCircumference, setHeadCircumference] = useState(data?.headCircumference || "");
-  const [abdominalCircumference, setAbdominalCircumference] = useState(data?.abdominalCircumference || "");
+  const [headCircumference, setHeadCircumference] = useState(
+    data?.headCircumference || ""
+  );
+  const [abdominalCircumference, setAbdominalCircumference] = useState(
+    data?.abdominalCircumference || ""
+  );
   const [notes, setNotes] = useState(data?.notes || "");
 
   const handleSubmit = (e) => {
