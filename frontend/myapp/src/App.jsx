@@ -45,12 +45,11 @@ import DoctorProfile from "./Pages/Doctor/DoctorProfile";
 import ManagerAppointments from "./Pages/Manager/ManagerAppointments";
 import ManagerBlogs from "./Pages/Manager/ManagerBlogs";
 import ManagerFAQs from "./Pages/Manager/ManagerFAQs";
-import ManagerPayroll from "./Pages/Manager/ManagerPayroll";
 import ManagerProfilePage from "./Pages/Manager/ManagerProfilePage";
+import ManagerReminders from "./Pages/Manager/ManagerReminders";
 import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
-import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
 function App() {
   return (
     <div>
@@ -302,11 +301,7 @@ function App() {
               <Route path="manager-profile" element={<ManagerProfilePage />} />
               <Route path="manager-faq" element={<ManagerFAQs />} />
               <Route path="manager-revenue" element={<ManageRevenuePage />} />
-              <Route path="manager-payroll" element={<ManagerPayroll />} />
-              <Route
-                path="manager-transaction"
-                element={<ManagerTransaction />}
-              />
+              <Route path="manager-reminders" element={<ManagerReminders />} />
               <Route path="manager-blog" element={<ManagerBlogs />} />
               <Route
                 path="view-appointments"

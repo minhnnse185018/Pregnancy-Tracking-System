@@ -37,8 +37,8 @@ const ManagerSidebar = () => {
           </Link>
         </li>
         <li style={listItemStyle}>
-          <Link to="manager-payroll" style={linkStyle}>
-            <PaymentIcon /> Manage Payroll
+          <Link to="manager-reminders" style={linkStyle}>
+            <PaymentIcon /> Manage reminders
           </Link>
         </li>
         <li style={listItemStyle}>

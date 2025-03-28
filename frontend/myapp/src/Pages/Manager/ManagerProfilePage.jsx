@@ -1,11 +1,9 @@
-import EditIcon from "@mui/icons-material/Edit";
 import {
   Alert,
   Avatar,
   Box,
   Button,
   Container,
-  IconButton,
   Paper,
   Snackbar,
   TextField,
@@ -27,6 +25,7 @@ const ManagerProfilePage = () => {
     phone: "",
     profileImage: "https://via.placeholder.com/150", // Default image
   });
+  const [fullUserData, setFullUserData] = useState(null); // Store full user data for update
   const accountID = sessionStorage.getItem("userID");
 
   useEffect(() => {
@@ -39,15 +38,24 @@ const ManagerProfilePage = () => {
       }
       try {
         const response = await axios.get(
-          `http://localhost:8080/user/profile/${accountID}`
+          `http://localhost:5254/api/Users/GetById/${accountID}`,
+          {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+          }
         );
-        const { name, email, phone, profileImage } = response.data;
+        const data = response.data;
+        const fullName =
+          `${data.firstName || ""} ${data.lastName || ""}`.trim() ||
+          "No Name Available";
         setProfile({
-          name: name || "No Name Available",
-          email: email || "No Email Available",
-          phone: phone || "No Phone Available",
-          profileImage: profileImage || "https://via.placeholder.com/150",
+          name: fullName,
+          email: data.email || "No Email Available",
+          phone: data.phone || "No Phone Available",
+          profileImage: data.avatar || "https://via.placeholder.com/150",
         });
+        setFullUserData(data); // Store full user data for update
       } catch (error) {
         console.error("Error fetching profile data:", error);
         setSnackbarMessage("Failed to fetch profile data.");
@@ -57,34 +65,6 @@ const ManagerProfilePage = () => {
     };
     fetchProfileData();
   }, [accountID]);
-
-  const handleProfileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-      try {
-        const response = await axios.post(
-          `http://localhost:8080/user/image/profile/${accountID}`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
-        const imageUrl = response.data.imageUrl;
-        setProfile((prevProfile) => ({
-          ...prevProfile,
-          profileImage: imageUrl,
-        }));
-        setSnackbarMessage("Profile image uploaded successfully!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
-      } catch (error) {
-        console.error("Error uploading profile image:", error);
-        setSnackbarMessage("Failed to upload profile image.");
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
-      }
-    }
-  };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -101,18 +81,60 @@ const ManagerProfilePage = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      await axios.put(
-        `http://localhost:8080/user/update-profile/${accountID}`,
-        values
+      const [firstName, ...lastNameArr] = values.name.split(" ");
+      const lastName = lastNameArr.join(" ");
+
+      // Construct the updated data object based on the API's expected structure
+      const updatedData = {
+        id: parseInt(accountID),
+        firstName: firstName || "",
+        lastName: lastName || "",
+        email: profile.email,
+        phone: values.phone,
+        avatar: profile.profileImage,
+        password: fullUserData?.password || "",
+        userType: fullUserData?.userType || "Manager",
+        gender: fullUserData?.gender || null,
+        dateOfBirth: fullUserData?.dateOfBirth || null,
+        status: fullUserData?.status || "active",
+        createdAt: fullUserData?.createdAt || new Date().toISOString(),
+        resetToken: fullUserData?.resetToken || null,
+        resetTokenExpiration: fullUserData?.resetTokenExpiration || null,
+      };
+
+      const response = await axios.put(
+        `http://localhost:5254/api/Users/Update/${accountID}`,
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
-      setSnackbarMessage("Profile updated successfully!");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-      setProfile((prev) => ({ ...prev, ...values }));
-      setIsEditing(false);
+
+      if (response.status === 200) {
+        setProfile((prev) => ({
+          ...prev,
+          name: values.name,
+          phone: values.phone,
+        }));
+        setFullUserData((prev) => ({
+          ...prev,
+          firstName,
+          lastName,
+          phone: values.phone,
+        }));
+        setSnackbarMessage("Profile updated successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        setIsEditing(false);
+      }
     } catch (error) {
       console.error("Error updating profile:", error);
-      setSnackbarMessage("Failed to update profile.");
+      setSnackbarMessage(
+        error.response?.data?.message || "Failed to update profile."
+      );
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     } finally {
@@ -190,24 +212,6 @@ const ManagerProfilePage = () => {
               alt="Profile Avatar"
               sx={{ width: 100, height: 100, border: "2px solid #f8bbd0" }}
             />
-            <IconButton
-              color="primary"
-              component="label"
-              sx={{
-                position: "absolute",
-                transform: "translate(40px, 40px)",
-                backgroundColor: "#f8bbd0",
-                "&:hover": { backgroundColor: "#f06292" },
-              }}
-            >
-              <EditIcon />
-              <input
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handleProfileUpload}
-              />
-            </IconButton>
           </Box>
 
           {!isEditing ? (
@@ -318,7 +322,7 @@ const ManagerProfilePage = () => {
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }} // Top-right positioning
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <Alert
           onClose={handleSnackbarClose}
