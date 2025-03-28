@@ -346,39 +346,41 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
               variant="h6"
               component="h2"
               gutterBottom
-              textAlign={"center"}
+              textAlign="center"
             >
-              {selectedItem.type === "alert"
-                ? "Growth Alert"
-                : "💡💡💡Notification💡💡💡"}
+              {selectedItem.itemType === "alert"
+                ? `Growth Alert for Profile ID: ${selectedItem.profileId}`
+                : "💡💡💡 Notification 💡💡💡"}
             </Typography>
+            {selectedItem.itemType === "alert" && (
+              <Typography
+                sx={{ fontSize: "0.875rem", color: "#757575", mb: 2 }}
+              >
+                Week {selectedItem.week} -{" "}
+                {new Date(selectedItem.createdAt).toLocaleString()}
+              </Typography>
+            )}
             <Typography
               id="alert-modal-description"
-              sx={{
-                mt: 2,
-                overflowWrap: "break-word",
-              }}
+              sx={{ mt: 2, overflowWrap: "break-word" }}
             >
-              {selectedItem.type === "alert"
+              {selectedItem.itemType === "alert"
                 ? selectedItem.alertMessage
                 : selectedItem.message}
             </Typography>
-            {selectedItem.type === "notification" &&
+            {selectedItem.itemType === "notification" &&
               selectedItem.relatedEntityId && (
                 <Button
                   onClick={() => {
                     handleCloseModal();
-                    // Navigate to the related blog post
                     window.location.href = `/blog/${selectedItem.relatedEntityId}`;
                   }}
                   variant="contained"
                   sx={{
                     mt: 3,
                     mr: 2,
-                    backgroundColor: "#FF69B4", // Warm pink color
-                    "&:hover": {
-                      backgroundColor: "#FF1493", // Darker pink on hover
-                    },
+                    backgroundColor: "#FF69B4",
+                    "&:hover": { backgroundColor: "#FF1493" },
                   }}
                 >
                   View Blog
@@ -390,10 +392,8 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
               sx={{
                 mt: 3,
                 float: "right",
-                backgroundColor: "#FF69B4", // Warm pink color
-                "&:hover": {
-                  backgroundColor: "#FF1493", // Darker pink on hover
-                },
+                backgroundColor: "#FF69B4",
+                "&:hover": { backgroundColor: "#FF1493" },
               }}
             >
               Close

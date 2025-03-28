@@ -1,33 +1,43 @@
-/* Reset cơ bản */
+/* Reset and Base Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
-/* Wrapper toàn bộ ứng dụng */
+body {
+  background-color: #f9f5f8; /* Soft pink background */
+  color: #333;
+}
+
+/* App Wrapper */
 .app-wrapper {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #f9e9ec, #e8d9f1); /* Gradient pastel */
 }
 
-/* Header */
+/* Header Styles */
 .app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 40px;
-  background: #fff;
+  padding: 20px 40px;
+  background-color: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .logo {
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
   font-weight: 600;
-  color: #ff8c94; /* Hồng phấn */
+  color: #ff8c94; /* Soft pink for the logo */
+}
+
+.logo span {
+  margin-right: 8px;
 }
 
 .nav-menu {
@@ -37,123 +47,159 @@
 
 .nav-menu a {
   text-decoration: none;
-  font-size: 14px;
-  color: #5c4b7d; /* Tím đậm */
+  color: #5c4b7d; /* Muted purple for links */
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .nav-menu a:hover {
   color: #ff8c94;
 }
 
-/* Main content */
+/* Main Content */
 main {
   flex: 1;
-  padding: 20px;
+  padding: 40px;
 }
 
-/* Container chính */
+/* Tracker Container */
 .tracker-container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* Tiêu đề */
 .tracker-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: #5c4b7d;
-  text-align: center;
+  font-size: 2rem;
+  color: #ff8c94;
   margin-bottom: 20px;
+  text-align: center;
 }
 
-/* Nhóm input */
+/* Input Group */
 .input-group {
   margin-bottom: 20px;
 }
 
 .input-group label {
   display: block;
-  font-size: 16px;
-  color: #7a638f;
+  font-size: 0.9rem;
+  color: #5c4b7d;
   margin-bottom: 8px;
 }
 
-.input-group input,
-.input-group select {
+.input-group select,
+.input-group input {
   width: 100%;
   padding: 10px;
-  font-size: 14px;
-  border: 1px solid #d4c4e2;
+  border: 1px solid #e0dede;
   border-radius: 8px;
-  background-color: #fff;
-  outline: none;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #f9f5f8;
   transition: border-color 0.3s ease;
 }
 
-.input-group input:focus,
-.input-group select:focus {
-  border-color: #b493d3;
+.input-group select:focus,
+.input-group input:focus {
+  outline: none;
+  border-color: #ff8c94;
 }
 
-/* Ghi chú cho guest */
-.guest-note,
-.chart-description .details,
-.login-prompt {
-  font-size: 14px;
-  color: #8c759e;
+/* Guest View */
+.guest-note {
+  font-size: 0.9rem;
+  color: #757575;
   text-align: center;
-  margin: 15px 0;
+  margin-bottom: 20px;
 }
 
-/* Nút trong login prompt */
+.login-prompt {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #757575;
+}
+
 .login-prompt button {
   background: none;
   border: none;
   color: #ff8c94;
   font-weight: 600;
   cursor: pointer;
-  text-decoration: underline;
+  transition: color 0.3s ease;
 }
 
-/* Bảng dữ liệu */
+.login-prompt button:hover {
+  color: #ff6f7a;
+}
+
+/* Create Profile Button */
+.create-profile-button {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 24px;
+  background-color: #ff8c94;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-profile-button:hover {
+  background-color: #ff6f7a;
+}
+
+/* Table Wrapper (for horizontal scrolling) */
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 30px;
+}
+
+/* Fetal Data Table (Compact) */
 .fetal-data-table {
   width: 100%;
+  min-width: 900px; /* Reduced min-width to make table more compact */
   border-collapse: collapse;
-  margin: 20px 0;
-  background-color: #fff;
-  border-radius: 10px;
-  overflow: hidden;
 }
 
 .fetal-data-table th,
 .fetal-data-table td {
-  padding: 15px;
-  text-align: center;
-  font-size: 16px;
-  color: #5c4b7d;
+  padding: 6px 8px; /* Reduced padding for compactness */
+  text-align: left;
+  font-size: 0.8rem; /* Smaller font size */
 }
 
 .fetal-data-table th {
-  background-color: #f5e1e6;
+  background-color: #f9f5f8;
+  color: #5c4b7d;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .fetal-data-table td {
-  border-bottom: 1px solid #e8d9f1;
+  border-bottom: 1px solid #e0dede;
+  color: #333;
+  white-space: nowrap;
+}
+
+.fetal-data-table tr:hover {
+  background-color: rgba(255, 140, 148, 0.05);
 }
 
 .fetal-data-table button {
-  padding: 6px 12px;
-  margin: 0 5px;
+  padding: 4px 8px; /* Smaller buttons */
+  margin-right: 4px; /* Reduced margin */
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
+  font-size: 0.75rem; /* Smaller font size */
   cursor: pointer;
-  font-size: 12px;
   transition: background-color 0.3s ease;
 }
 
@@ -162,73 +208,95 @@ main {
   color: #fff;
 }
 
+.fetal-data-table button:first-child:hover {
+  background-color: #a07cc5;
+}
+
 .fetal-data-table button:last-child {
-  background-color: #ff8c94;
+  background-color: #ff6f7a;
   color: #fff;
 }
 
-.fetal-data-table button:hover {
-  opacity: 0.9;
+.fetal-data-table button:last-child:hover {
+  background-color: #ff4f5a;
 }
 
-/* Chart */
+/* Chart Wrapper */
 .chart-wrapper {
-  background-color: #fff5f7; /* Màu trắng ánh hồng */
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-top: 30px;
 }
 
-/* Mô tả bên dưới biểu đồ */
 .chart-description {
-  text-align: left;
   margin-top: 10px;
-  color: #5c4b7d;
-  font-size: 14px;
+  text-align: center;
 }
 
 .chart-description .trend {
-  font-weight: 600;
+  font-size: 0.9rem;
   color: #ff8c94;
-}
-
-.chart-description .trend::after {
-  content: "↑";
-  margin-left: 5px;
+  font-weight: 600;
 }
 
 .chart-description .details {
-  font-size: 12px;
-  color: #8c759e;
-  text-align: left;
+  font-size: 0.8rem;
+  color: #757575;
 }
 
-/* Form thêm/sửa dữ liệu */
-.form-container,
+/* Form Container */
+.form-container {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f9f5f8;
+  border-radius: 12px;
+}
+
+.form-container h2 {
+  font-size: 1.5rem;
+  color: #ff8c94;
+  margin-bottom: 20px;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Container */
 .modal-container {
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  margin: 20px 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 400px;
+  background-color: #fff5f8;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-.form-container h2,
 .modal-container h2 {
-  font-size: 18px;
-  color: #5c4b7d;
-  margin-bottom: 10px;
+  font-size: 1.3rem;
+  color: #ff8c94;
+  margin-bottom: 15px;
 }
 
+/* Form Group */
 .form-group {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .form-group label {
   display: block;
-  font-size: 14px;
-  color: #7a638f;
+  font-size: 0.9rem;
+  color: #5c4b7d;
   margin-bottom: 5px;
 }
 
@@ -236,113 +304,59 @@ main {
 .form-group textarea {
   width: 100%;
   padding: 8px;
-  font-size: 14px;
-  border: 1px solid #d4c4e2;
-  border-radius: 5px;
+  border: 1px solid #e0dede;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
   outline: none;
+  border-color: #ff8c94;
 }
 
 .form-group textarea {
-  resize: vertical;
-  min-height: 60px;
+  min-height: 80px;
+  resize: none;
 }
 
+/* Form Actions (Updated for Save and Cancel) */
 .form-actions {
   display: flex;
-  justify-content: flex-end;
   gap: 10px;
-  margin-top: 10px;
+  justify-content: flex-end;
+  flex-direction: row-reverse; /* Reverse order to put Cancel on the right */
 }
 
-.save-button,
-.cancel-button {
-  padding: 6px 12px;
+.form-actions .cancel-button,
+.form-actions .save-button {
+  flex: 1; /* Equal width for both buttons */
+  padding: 8px 0; /* Equal padding for consistent height */
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
+  font-size: 0.9rem;
   cursor: pointer;
-  font-size: 14px;
+  transition: background-color 0.3s ease;
+  text-align: center;
 }
 
-.save-button {
-  background-color: #b493d3;
-  color: #fff;
+.form-actions .cancel-button {
+  background-color: #e0dede;
+  color: #333;
 }
 
-.cancel-button {
-  background-color: #e8d9f1;
-  color: #5c4b7d;
+.form-actions .cancel-button:hover {
+  background-color: #d0caca;
 }
 
-.save-button:hover,
-.cancel-button:hover {
-  opacity: 0.9;
-}
-
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-container {
-  max-width: 400px;
-  width: 90%;
-}
-
-/* Nút tạo profile */
-.create-profile-button {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
+.form-actions .save-button {
   background-color: #ff8c94;
   color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
 }
 
-.create-profile-button:hover {
-  background-color: #f76c74;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .tracker-container {
-    margin: 10px;
-    padding: 10px;
-  }
-
-  .tracker-title {
-    font-size: 24px;
-  }
-
-  .fetal-data-table th,
-  .fetal-data-table td {
-    font-size: 14px;
-    padding: 10px;
-  }
-
-  .form-group input,
-  .form-group textarea {
-    font-size: 12px;
-  }
-
-  .app-header {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .nav-menu {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+.form-actions .save-button:hover {
+  background-color: #ff6f7a;
 }
