@@ -17,11 +17,7 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: {
-    xs: "90%",
-    sm: "70%",
-    md: "50%",
-  },
+  width: { xs: "90%", sm: "70%", md: "50%" },
   maxWidth: "600px",
   maxHeight: "80vh",
   bgcolor: "background.paper",
@@ -45,111 +41,141 @@ const menuStyle = {
 
 function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
   const [alerts, setAlerts] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedAlert, setSelectedAlert] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [openModal, setOpenModal] = useState(false);
-  const [viewedAlertIds, setViewedAlertIds] = useState(() => {
-    // Load viewed alert IDs from sessionStorage on mount
-    const stored = sessionStorage.getItem("viewedAlertIds");
+  const [viewedIds, setViewedIds] = useState(() => {
+    const stored = sessionStorage.getItem("viewedIds");
     return stored ? JSON.parse(stored) : [];
   });
 
-  // Save viewedAlertIds to sessionStorage whenever it changes
+  // Save viewedIds to sessionStorage whenever it changes
   useEffect(() => {
-    sessionStorage.setItem("viewedAlertIds", JSON.stringify(viewedAlertIds));
-  }, [viewedAlertIds]);
+    sessionStorage.setItem("viewedIds", JSON.stringify(viewedIds));
+  }, [viewedIds]);
 
-  // Fetch alerts using the userId
-  const fetchAlerts = useCallback(async () => {
+  // Fetch alerts and notifications
+  const fetchData = useCallback(async () => {
     try {
-      // Get the userId and token from sessionStorage
       const userId = sessionStorage.getItem("userID");
       const token = sessionStorage.getItem("token");
 
-      if (!userId) {
-        setError("User ID not found. Please log in again.");
+      if (!userId || !token) {
+        setError("Please log in to view notifications.");
         setLoading(false);
         return;
       }
 
-      if (!token) {
-        setError("Authentication token not found. Please log in again.");
-        setLoading(false);
-        return;
-      }
-
-      // Construct the API URL
       const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5254";
-      const url = `${apiUrl}/api/GrowthAlert/${userId}/week`; // Using GET /api/GrowthAlert/{userId}/week
+      const [alertsResponse, notificationsResponse] = await Promise.all([
+        axios.get(`${apiUrl}/api/GrowthAlert/${userId}/week`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${apiUrl}/api/Notification/user/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
 
-      // Make the API request
-      const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      // Sort alerts by ID in descending order (newest first)
-      const sortedAlerts = response.data.sort((a, b) => b.id - a.id);
-      setAlerts(sortedAlerts);
-
-      // Calculate unread count (alerts that haven't been viewed)
-      const unreadAlerts = sortedAlerts.filter(
-        (alert) => !viewedAlertIds.includes(alert.id)
+      const sortedAlerts = alertsResponse.data.sort((a, b) => b.id - a.id);
+      const sortedNotifications = notificationsResponse.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
-      setUnreadCount(unreadAlerts.length);
+
+      setAlerts(sortedAlerts);
+      setNotifications(sortedNotifications);
+
+      const unreadAlerts = sortedAlerts.filter(
+        (alert) => !viewedIds.includes(`alert-${alert.id}`)
+      );
+      const unreadNotifications = sortedNotifications.filter(
+        (n) => !n.isRead && !viewedIds.includes(`notification-${n.id}`)
+      );
+
+      setUnreadCount(unreadAlerts.length + unreadNotifications.length);
       setError(null);
     } catch (error) {
       if (error.response?.status === 404) {
-        setError("No recent alerts found.");
+        setError("No recent notifications found.");
       } else if (error.response?.status === 401) {
         setError("Session expired. Please log in again.");
         window.location.href = "/login";
       } else {
-        setError("Failed to load alerts. Please try again later.");
+        setError("Failed to load notifications.");
       }
       setAlerts([]);
-      setUnreadCount(0); // Reset unread count on error
+      setNotifications([]);
+      setUnreadCount(0);
     } finally {
       setLoading(false);
     }
-  }, [setUnreadCount, viewedAlertIds]);
+  }, [setUnreadCount, viewedIds]);
 
-  // Fetch alerts when the component mounts or when setUnreadCount changes
+  // Fetch data on mount and poll every 30 seconds
   useEffect(() => {
-    fetchAlerts();
-    const interval = setInterval(fetchAlerts, 30000); // Poll every 30 seconds
-    return () => clearInterval(interval); // Clean up the interval on unmount
-  }, [fetchAlerts]);
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
-  // Mark alerts as viewed when the menu is opened
+  // Mark items as viewed and update backend when menu opens
   useEffect(() => {
-    if (anchorEl && alerts.length > 0) {
-      // When the menu is opened, mark all current alerts as viewed
-      const newViewedAlertIds = [
-        ...new Set([...viewedAlertIds, ...alerts.map((alert) => alert.id)]),
+    if (anchorEl && (alerts.length > 0 || notifications.length > 0)) {
+      const alertIds = alerts.map((alert) => `alert-${alert.id}`);
+      const notificationIds = notifications.map((n) => `notification-${n.id}`);
+      const newViewedIds = [
+        ...new Set([...viewedIds, ...alertIds, ...notificationIds]),
       ];
-      setViewedAlertIds(newViewedAlertIds);
-      setUnreadCount(0); // Set unread count to 0 since all alerts are now viewed
-    }
-  }, [anchorEl, alerts, setUnreadCount]);
+      setViewedIds(newViewedIds);
+      setUnreadCount(0);
 
-  // Handle opening the modal when an alert is clicked
-  const handleOpenModal = (alert) => {
-    setSelectedAlert(alert);
+      const markNotificationsAsRead = async () => {
+        try {
+          const token = sessionStorage.getItem("token");
+          const apiUrl =
+            process.env.REACT_APP_API_URL || "http://localhost:5254";
+          const unreadNotifications = notifications.filter((n) => !n.isRead);
+
+          if (unreadNotifications.length > 0) {
+            await axios.put(
+              `${apiUrl}/api/Notification/markAsRead`,
+              unreadNotifications.map((n) => n.id),
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+          }
+        } catch (error) {
+          console.error("Failed to mark notifications as read:", error);
+        }
+      };
+      markNotificationsAsRead();
+    }
+  }, [anchorEl, alerts, notifications, setUnreadCount]);
+
+  // Handle opening modal
+  const handleOpenModal = (item, type) => {
+    setSelectedItem({ ...item, type });
     setOpenModal(true);
     handleClose();
   };
 
-  // Handle closing the modal
+  // Handle closing modal
   const handleCloseModal = () => {
     setOpenModal(false);
-    setSelectedAlert(null);
+    setSelectedItem(null);
   };
 
+  // Combine and sort alerts and notifications
+  const allItems = [
+    ...alerts.map((alert) => ({ ...alert, itemType: "alert" })),
+    ...notifications.map((notification) => ({
+      ...notification,
+      itemType: "notification",
+    })),
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
   // Render loading state
-  if (loading) {
-    return <CircularProgress />;
-  }
+  if (loading) return <CircularProgress />;
 
   // Render error state
   if (error) {
@@ -158,22 +184,20 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
         sx={menuStyle}
         id="menu-notification"
         anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
         <MenuItem onClick={handleClose}>
           <Typography
             textAlign="center"
-            color={error === "No recent alerts found." ? "textSecondary" : "error"}
+            color={
+              error === "No recent notifications found."
+                ? "textSecondary"
+                : "error"
+            }
           >
             {error}
           </Typography>
@@ -182,39 +206,31 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
     );
   }
 
-  // Render the menu with alerts
+  // Render menu with alerts and notifications
   return (
     <div>
       <Menu
         sx={menuStyle}
         id="menu-notification"
         anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {alerts.length > 0 ? (
-          alerts.map((alert, index) => (
-            <Box key={alert.id}>
+        {allItems.length > 0 ? (
+          allItems.map((item, index) => (
+            <Box key={`${item.itemType}-${item.id}`}>
               <MenuItem
-                onClick={() => handleOpenModal(alert)}
+                onClick={() => handleOpenModal(item, item.itemType)}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "flex-start",
                   padding: "12px 16px",
                   width: "100%",
-                  "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.04)",
-                  },
+                  "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
                 }}
               >
                 <Typography
@@ -226,7 +242,9 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  Growth Alert for Profile ID: {alert.profileId}
+                  {item.itemType === "alert"
+                    ? `Growth Alert for Profile ID: ${item.profileId}`
+                    : "Notification"}
                 </Typography>
                 <Typography
                   sx={{
@@ -238,7 +256,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {alert.alertMessage}
+                  {item.itemType === "alert" ? item.alertMessage : item.message}
                 </Typography>
                 <Typography
                   sx={{
@@ -249,21 +267,25 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                     textAlign: "right",
                   }}
                 >
-                  Week {alert.week} - {new Date(alert.createdAt).toLocaleString()}
+                  {item.itemType === "alert"
+                    ? `Week ${item.week} - ${new Date(
+                        item.createdAt
+                      ).toLocaleString()}`
+                    : new Date(item.createdAt).toLocaleString()}
                 </Typography>
               </MenuItem>
-              {index < alerts.length - 1 && <Divider />}
+              {index < allItems.length - 1 && <Divider />}
             </Box>
           ))
         ) : (
           <MenuItem onClick={handleClose}>
-            <Typography textAlign="center">No alerts</Typography>
+            <Typography textAlign="center">No notifications found.</Typography>
           </MenuItem>
         )}
       </Menu>
 
-      {/* Modal to display the full alert message */}
-      {selectedAlert && (
+      {/* Modal to display full item details */}
+      {selectedItem && (
         <Modal
           open={openModal}
           onClose={handleCloseModal}
@@ -277,32 +299,55 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
               variant="h6"
               component="h2"
               gutterBottom
+              textAlign="center"
             >
-              Growth Alert for Profile ID: {selectedAlert.profileId}
+              {selectedItem.itemType === "alert"
+                ? `Growth Alert for Profile ID: ${selectedItem.profileId}`
+                : "💡💡💡 Notification 💡💡💡"}
             </Typography>
-            <Typography
-              sx={{
-                fontSize: "0.875rem",
-                color: "#757575",
-                mb: 2,
-              }}
-            >
-              Week {selectedAlert.week} -{" "}
-              {new Date(selectedAlert.createdAt).toLocaleString()}
-            </Typography>
+            {selectedItem.itemType === "alert" && (
+              <Typography
+                sx={{ fontSize: "0.875rem", color: "#757575", mb: 2 }}
+              >
+                Week {selectedItem.week} -{" "}
+                {new Date(selectedItem.createdAt).toLocaleString()}
+              </Typography>
+            )}
             <Typography
               id="alert-modal-description"
-              sx={{
-                mt: 2,
-                overflowWrap: "break-word",
-              }}
+              sx={{ mt: 2, overflowWrap: "break-word" }}
             >
-              {selectedAlert.alertMessage}
+              {selectedItem.itemType === "alert"
+                ? selectedItem.alertMessage
+                : selectedItem.message}
             </Typography>
+            {selectedItem.itemType === "notification" &&
+              selectedItem.relatedEntityId && (
+                <Button
+                  onClick={() => {
+                    handleCloseModal();
+                    window.location.href = `/blog/${selectedItem.relatedEntityId}`;
+                  }}
+                  variant="contained"
+                  sx={{
+                    mt: 3,
+                    mr: 2,
+                    backgroundColor: "#FF69B4",
+                    "&:hover": { backgroundColor: "#FF1493" },
+                  }}
+                >
+                  View Blog
+                </Button>
+              )}
             <Button
               onClick={handleCloseModal}
               variant="contained"
-              sx={{ mt: 3, float: "right" }}
+              sx={{
+                mt: 3,
+                float: "right",
+                backgroundColor: "#FF69B4",
+                "&:hover": { backgroundColor: "#FF1493" },
+              }}
             >
               Close
             </Button>
