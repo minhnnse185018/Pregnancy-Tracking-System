@@ -22,7 +22,7 @@ namespace backend.Repository.Interface
         Task<bool> Register(RegisterRequest register);
         Task<bool> ForgotPasswordAsync(string email);
         Task<bool> ForgotPasswordRequestAsync(ForgotPasswordRequestDto forgotPasswordRequestDto);
-        Task<bool> ChangePasswordAsync(ChangePasswordRequestDto changePasswordRequestDto);
+        Task<bool> ChangePasswordAsync(ChangePasswordRequestDto changePasswordRequestDto );
 
         Task<bool> ResetPasswordRequest(ResetPasswordRequestDto resetPasswordRequestDto);
         Task<bool> VerifyRegistration(string email, string token);

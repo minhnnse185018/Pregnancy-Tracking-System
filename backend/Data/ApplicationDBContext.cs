@@ -29,6 +29,8 @@ namespace backend.Data
         public DbSet<Message> Messages { get; set; }
         public DbSet<ScheduledEmail> ScheduledEmails { get; set; }
         public DbSet<Reminder> Reminders { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -111,9 +113,24 @@ namespace backend.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-
-
-            
+            // Notification configuration
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Message)
+                    .IsRequired()
+                    .HasMaxLength(500);
+                    
+                entity.Property(e => e.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.IsRead)
+                    .HasDefaultValue(false);
+                    
+                entity.HasOne(n => n.User)
+                    .WithMany(u => u.Notifications) // Add a collection property to User if you want bidirectional navigation
+                    .HasForeignKey(n => n.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             // FetalGrowthStandard configuration
             modelBuilder.Entity<FetalGrowthStandard>(entity =>
@@ -205,24 +222,21 @@ namespace backend.Data
             // Seed Data
             // 1. Users
             modelBuilder.Entity<User>().HasData(
-                new User
-                {
-                    Id = 1,
-                    Email = "1@gmail.com",
-                    Password = "111111",
-                    UserType = "1",
-                    Status = "active",
-                    CreatedAt = DateTime.Now
-                },
-                new User
-                {
-                    Id = 2,
-                    Email = "2@gmail.com",
-                    Password = "222222",
-                    UserType = "5",
-                    Status = "active",
-                    CreatedAt = DateTime.Now
-                }
+                new User { Id = 1, Email = "hongngaxg1602@gmail.com", Password = "111111", UserType = "1", FirstName = "Hong", LastName = "Nga", Phone = "0817206673", Status = "active",Gender = "Female", CreatedAt = DateTime.Now },
+                new User { Id = 2, Email = "de180704ungmaithihongnga@gmail.com", Password = "111111", UserType = "3", FirstName = "Minh", LastName = "Hang", Phone = "0355391605", Status = "active", Gender = "Female", CreatedAt = DateTime.Now },
+                new User { Id = 3, Email = "maikha3035@gmail.com", Password = "111111", UserType = "1", FirstName = "Mai", LastName = "Kha", Phone = "0788696006", Status = "active", Gender = "Female", CreatedAt = DateTime.Now },
+                new User { Id = 4, Email = "mkha39784@gmail.com", Password = "111111", UserType = "1", FirstName = "Trong", LastName = "Khoi", Phone = "0817206673", Status = "active", Gender = "Female", CreatedAt = DateTime.Now },
+                new User { Id = 5, Email = "maikha3003@gmail.com", Password = "111111", UserType = "1", FirstName = "Duc", LastName = "Huy", Phone = "0355391605", Status = "active", Gender = "Female", CreatedAt = DateTime.Now },
+                new User { Id = 6, Email = "khaho1930@gmail.com", Password = "111111", UserType = "1", FirstName = "Khanh", LastName = "Ly", Phone = "0788696006", Status = "active", Gender = "Female", CreatedAt = DateTime.Now },
+                new User { Id = 7, Email = "khaho.300305@gmail.com", Password = "111111", UserType = "1", FirstName = "Minh", LastName = "Quoc", Phone = "0817206673", Status = "active", Gender = "Male", CreatedAt = DateTime.Now },
+                new User { Id = 8, Email = "nbkqua.k19.si.08@gmail.com", Password = "111111", UserType = "1", FirstName = "Ty", LastName = "Na", Phone = "0355391605", Status = "active", Gender = "Female", CreatedAt = DateTime.Now },
+                new User { Id = 9, Email = "mkdepgai@gmail.com", Password = "111111", UserType = "1", FirstName = "Duy", LastName = "Khang", Phone = "0788696006", Status = "active", Gender = "Female", CreatedAt = DateTime.Now },
+                new User { Id = 10, Email = "ngaxd0301@gmail.com", Password = "111111", UserType = "1", FirstName = "Thanh", LastName = "Trung", Phone = "0817206673", Status = "active", Gender = "Female", CreatedAt = DateTime.Now },
+                new User { Id = 11, Email = "tranthingoctram142@gmail.com", Password = "111111", UserType = "1", FirstName = "Chi", LastName = "Vy", Phone = "0355391605", Status = "active", Gender = "Male", CreatedAt = DateTime.Now },
+                new User { Id = 12, Email = "nguyenphamminhanh@gmail.com", Password = "111111", UserType = "1", FirstName = "Duc", LastName = "Nhat", Phone = "0788696006", Status = "active", Gender = "Male", CreatedAt = DateTime.Now },
+                new User { Id = 13, Email = "giabaongo1@gmail.com", Password = "111111", UserType = "1", FirstName = "Ngo", LastName = "Gia Bao", Phone = "0915900915", Status = "active", Gender = "Male", CreatedAt = DateTime.Now },
+                new User { Id = 14, Email = "ngaumthde1807042fpt.edu.vn", Password = "111111", UserType = "4", FirstName = "Fregnancy", LastName = "System", Phone = "0915900915", Status = "active", Gender = "Male", CreatedAt = DateTime.Now }
+
             );
 
             // 2. Pregnancy Profiles

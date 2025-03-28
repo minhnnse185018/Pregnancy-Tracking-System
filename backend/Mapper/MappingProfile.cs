@@ -17,6 +17,8 @@ using backend.Dtos.PregnancyProfiles;
 using backend.Dtos.FetalStandard;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using backend.Dtos.Payment;
+using backend.Dtos.GrowthAlerts;
+using backend.Dtos.Notifications;
 
 namespace backend.Mapper
 {
@@ -26,7 +28,8 @@ namespace backend.Mapper
         {
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
-            CreateMap<User, UserDtoManager>().ReverseMap();
+            CreateMap<User, UserDtoManager>();
+            CreateMap<UserDtoManager, User>();
             CreateMap<AppointmentDto, Appointment>();
             CreateMap<Appointment, AppointmentDto>();
 
@@ -119,7 +122,12 @@ namespace backend.Mapper
             CreateMap<UpdateMembershipPlanDto, MembershipPlan>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<Payment, PaymentResponseDto>().ReverseMap();
+            CreateMap<Payment,PaymentResponseDto>().ReverseMap();
+            CreateMap<GrowthAlert, GrowthAlertDto>().ReverseMap();
+
+            // Add Notification mappings
+            CreateMap<Notification, NotificationDto>();
+            CreateMap<NotificationDto, Notification>();
         }
     }
 }
