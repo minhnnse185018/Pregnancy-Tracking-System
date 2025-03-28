@@ -10,7 +10,7 @@ namespace backend.Services.Implementation
     {
         private readonly IMembershipRepository _membershipRepository;
         private readonly IMembershipPlanRepository _planRepository;
-        private readonly IPaymentRepository _paymentRepository; // Thêm để lưu Payment
+        private readonly IPaymentRepository _paymentRepository;
         private readonly IMapper _mapper;
 
         public MembershipService(
@@ -27,7 +27,20 @@ namespace backend.Services.Implementation
 
         public async Task<MembershipDto> CreatePendingMembershipAsync(CreateMembershipDto membershipDto)
         {
-            // Kiểm tra xem người dùng có membership đang hoạt động không
+            // Kiểm tra tất cả membership của người dùng
+            var allMemberships = await _membershipRepository.GetAllMembershipsAsync();
+            var userMemberships = allMemberships.Where(m => m.UserId == membershipDto.UserId).ToList();
+
+            // Kiểm tra và cập nhật trạng thái nếu có membership hết hạn
+            foreach (var existingMembership in userMemberships) 
+            {
+                if (existingMembership.Status == "Active" && existingMembership.EndDate <= DateTime.UtcNow)
+                {
+                    await _membershipRepository.UpdateMembershipAsync(existingMembership.Id, "Expired");
+                }
+            }
+
+            // Kiểm tra lại xem người dùng có membership đang hoạt động không
             var isActive = await IsMembershipActiveAsync(membershipDto.UserId);
             if (isActive)
             {
@@ -48,7 +61,7 @@ namespace backend.Services.Implementation
             if (plan == null)
                 throw new Exception("Membership plan not found");
 
-            var membership = new Membership
+            var membership = new Membership 
             {
                 UserId = membershipDto.UserId,
                 PlanId = membershipDto.PlanId,
@@ -93,14 +106,12 @@ namespace backend.Services.Implementation
 
             foreach (var membership in expiredMemberships)
             {
-                // Đổi Status thành "Expired"
                 await _membershipRepository.UpdateMembershipAsync(membership.Id, "Expired");
             }
         }
 
         public async Task<MembershipDto> UpgradeMembershipAsync(int userId, int newPlanId)
         {
-            // Kiểm tra membership hiện tại
             var currentMemberships = await _membershipRepository.GetMembershipsByUserIdAsync(userId);
             if (currentMemberships == null || !currentMemberships.Any())
                 throw new Exception("No active membership found to upgrade.");
@@ -112,27 +123,22 @@ namespace backend.Services.Implementation
             if (currentPlan == null || newPlan == null)
                 throw new Exception("Current or new plan not found");
 
-            // Không cho phép nâng cấp lên gói thấp hơn hoặc cùng gói
             if (newPlan.Price <= currentPlan.Price)
                 throw new Exception("You can only upgrade to a higher plan.");
 
-            // Hủy gói hiện tại
             await _membershipRepository.UpdateMembershipAsync(currentMembership.Id, "Cancelled");
 
-            // Tính số tiền cần thanh toán (hiệu số)
             var amountToPay = newPlan.Price - currentPlan.Price;
 
-            // Tạo membership mới
             var newMembershipDto = new CreateMembershipDto
             {
                 UserId = userId,
                 PlanId = newPlanId,
-                StartDate = DateTime.UtcNow
+                StartDate = currentMembership.StartDate
             };
 
             var newMembership = await CreatePendingMembershipAsync(newMembershipDto);
 
-            // Tạo Payment với số tiền là hiệu số
             var payment = new Payment
             {
                 MembershipId = newMembership.Id,
@@ -143,7 +149,6 @@ namespace backend.Services.Implementation
                 PaymentDate = DateTime.UtcNow
             };
 
-            // Lưu Payment
             await _paymentRepository.SavePaymentAsync(payment);
 
             return newMembership;
