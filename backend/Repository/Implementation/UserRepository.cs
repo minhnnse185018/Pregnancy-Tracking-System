@@ -91,7 +91,7 @@ namespace backend.Repository.Implementation
             return _mapper.Map<List<UserDto>>(users);
         }
 
-        public async Task<List<UserDto>> GetFilteredUsersAsync(string? role = null, string? status = null)
+        public async Task<List<UserDtoManager>> GetFilteredUsersAsync(string? role = null, string? status = null)
         {
             var query = _context.Users.AsQueryable();
 
@@ -112,7 +112,7 @@ namespace backend.Repository.Implementation
                 .OrderBy(u => u.FirstName)
                 .ToListAsync();
 
-            return _mapper.Map<List<UserDto>>(users);
+            return _mapper.Map<List<UserDtoManager>>(users);
         }
 
         public async Task<UserDto?> GetUserByIdAsync(int id)

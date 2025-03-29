@@ -1,6 +1,7 @@
 using backend.Dtos.Memberships;
 using backend.Repository.Interface;
 using backend.Services.Implementation;
+using backend.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -42,6 +43,20 @@ namespace backend.Controllers
         {
             var isActive = await _membershipService.IsMembershipActiveAsync(userId);
             return Ok(new { IsActive = isActive });
+        }
+
+        [HttpPost("upgrade")]
+        public async Task<IActionResult> UpgradeMembership([FromBody] UpgradeMembershipDto upgradeDto)
+        {
+            try
+            {
+                var membership = await _membershipService.UpgradeMembershipAsync(upgradeDto.UserId, upgradeDto.NewPlanId);
+                return Ok(new { Membership = membership, Message = "Please proceed to payment to activate the new plan." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
     }
 } 

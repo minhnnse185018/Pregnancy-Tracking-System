@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using backend.Data;
 using backend.Dtos.Payment;
 using backend.Models;
 using backend.Repository.Interface;
@@ -8,11 +9,13 @@ namespace backend.Repository.Implementation
 {
     public class PaymentRepository : IPaymentRepository
     {
+        private readonly ApplicationDBContext _context;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public PaymentRepository(IConfiguration configuration, IMapper mapper)
+        public PaymentRepository(ApplicationDBContext context, IConfiguration configuration, IMapper mapper)
         {
+            _context = context;
             _configuration = configuration;
             _mapper = mapper;
         }
@@ -44,13 +47,19 @@ namespace backend.Repository.Implementation
             return paymentUrl;
         }
 
-
         public Payment PaymentExecute(IQueryCollection collections)
         {
             var pay = new VnPayLibrary();
             var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
             var result = _mapper.Map<Payment>(response);
             return result;
+        }
+
+        public async Task<Payment> SavePaymentAsync(Payment payment)
+        {
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+            return payment;
         }
     }
 }

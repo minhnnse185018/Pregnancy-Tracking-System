@@ -30,7 +30,6 @@ namespace backend.Data
         public DbSet<ScheduledEmail> ScheduledEmails { get; set; }
         public DbSet<Reminder> Reminders { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -113,24 +112,9 @@ namespace backend.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // Notification configuration
-            modelBuilder.Entity<Notification>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Message)
-                    .IsRequired()
-                    .HasMaxLength(500);
-                    
-                entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("GETDATE()");
-                entity.Property(e => e.IsRead)
-                    .HasDefaultValue(false);
-                    
-                entity.HasOne(n => n.User)
-                    .WithMany(u => u.Notifications) // Add a collection property to User if you want bidirectional navigation
-                    .HasForeignKey(n => n.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
+
+
+            
 
             // FetalGrowthStandard configuration
             modelBuilder.Entity<FetalGrowthStandard>(entity =>
@@ -218,7 +202,23 @@ namespace backend.Data
             {
                 entity.HasKey(e => e.Id);
             });
-
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Message)
+                    .IsRequired()
+                    .HasMaxLength(500);
+                    
+                entity.Property(e => e.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.IsRead)
+                    .HasDefaultValue(false);
+                    
+                entity.HasOne(n => n.User)
+                    .WithMany(u => u.Notifications) // Add a collection property to User if you want bidirectional navigation
+                    .HasForeignKey(n => n.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
             // Seed Data
             // 1. Users
             modelBuilder.Entity<User>().HasData(
@@ -310,6 +310,34 @@ namespace backend.Data
                     CreatedAt = DateTime.Now.AddHours(1)
                 }
             );
+
+            // Seed data cho MembershipPlan
+            modelBuilder.Entity<MembershipPlan>().HasData(
+                 new MembershipPlan
+                 {
+                     Id = 1,
+                     PlanName = "3 Months",
+                     Description = "Full access to system features for 3 months",
+                     Price = 399000m, // 399,000 VND
+                     Duration = 3 // 3 tháng
+                 },
+                 new MembershipPlan
+                 {
+                     Id = 2,
+                     PlanName = "6 Months",
+                     Description = "Full access to system features for 6 months",
+                     Price = 599000m, // 599,000 VND
+                     Duration = 6 // 6 tháng
+                 },
+                 new MembershipPlan
+                 {
+                     Id = 3,
+                     PlanName = "12 Months",
+                     Description = "Full access to system features for 12 months",
+                     Price = 799000m, // 799,000 VND
+                     Duration = 12 // 12 tháng
+                 }
+             );
 
             // Seed Fetal Growth Standards Data
             modelBuilder.Entity<FetalGrowthStandard>().HasData(
