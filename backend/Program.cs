@@ -69,6 +69,7 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IPregnancyProfileRepository, PregnancyProfileRepository>();
 builder.Services.AddScoped<IFetalGrowthStandardRepository, FetalGrowthStandardRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
+builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IMembershipPlanRepository, MembershipPlanRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>(); // Th�m d�ng n�y ?? kh?c ph?c l?i
 builder.Services.AddScoped<IFetalMeasurementRepository, FetalMeasurementRepository>();

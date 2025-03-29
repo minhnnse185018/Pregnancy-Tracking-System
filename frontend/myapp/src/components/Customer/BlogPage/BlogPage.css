@@ -141,7 +141,8 @@
 }
 
 .blog-card-title {
-  font-size: 20px;
+  font-size: 30px;
+  font-weight: 600;
   margin-bottom: 10px;
   line-height: 1.4;
 }
