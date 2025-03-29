@@ -1,17 +1,21 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import SendIcon from "@mui/icons-material/Send";
 import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   IconButton,
+  Menu,
+  MenuItem,
+  Modal,
   Paper,
   Snackbar,
   Table,
@@ -28,38 +32,382 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 
+// Styles for the modal in CustomerNotificationMenu
+const modalStyle = {
+  position: "fixed",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: { xs: "90%", sm: "70%", md: "50%" },
+  maxWidth: "600px",
+  maxHeight: "80vh",
+  bgcolor: "background.paper",
+  borderRadius: "8px",
+  boxShadow: 24,
+  p: 4,
+  overflowY: "auto",
+  zIndex: 1300,
+};
+
+// Styles for the menu in CustomerNotificationMenu
+const menuStyle = {
+  maxWidth: "350px",
+  maxHeight: "70vh",
+  "& .MuiMenu-paper": {
+    width: "100%",
+    maxWidth: "350px",
+    overflow: "auto",
+  },
+};
+
 // Utility function to calculate the current pregnancy week
 const calculatePregnancyWeek = (dueDate) => {
   const due = new Date(dueDate);
   const now = new Date();
   const daysPregnant = Math.floor((due - now) / (1000 * 60 * 60 * 24));
-  const weeksPregnant = Math.floor((280 - daysPregnant) / 7); // Assuming 280 days (40 weeks) for a full pregnancy
+  const weeksPregnant = Math.floor((280 - daysPregnant) / 7);
   return weeksPregnant >= 0 && weeksPregnant <= 40 ? weeksPregnant : null;
 };
 
-// CustomerNotificationMenu Component (Updated for Reminders)
-const CustomerNotificationMenu = ({ reminders }) => {
+// CustomerNotificationMenu Component
+function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
+  const [alerts, setAlerts] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [viewedIds, setViewedIds] = useState(() => {
+    const stored = sessionStorage.getItem("viewedIds");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem("viewedIds", JSON.stringify(viewedIds));
+  }, [viewedIds]);
+
+  const fetchData = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const userId = sessionStorage.getItem("userID");
+
+      if (!token || !userId) {
+        setError("Authentication token not found. Please log in again.");
+        setLoading(false);
+        return;
+      }
+
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5254";
+      const alertsUrl = `${apiUrl}/api/GrowthAlert/${userId}/week`;
+      const notificationsUrl = `${apiUrl}/api/Notification/user/${userId}`;
+
+      const [alertsResponse, notificationsResponse] = await Promise.all([
+        axios.get(alertsUrl, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(notificationsUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      const sortedAlerts = alertsResponse.data.sort((a, b) => b.id - a.id);
+      const sortedNotifications = notificationsResponse.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      setAlerts(sortedAlerts);
+      setNotifications(sortedNotifications);
+
+      const unreadAlerts = sortedAlerts.filter(
+        (alert) => !viewedIds.includes(`alert-${alert.id}`)
+      );
+      const unreadNotifications = sortedNotifications.filter(
+        (notification) =>
+          !notification.isRead &&
+          !viewedIds.includes(`notification-${notification.id}`)
+      );
+
+      setUnreadCount(unreadAlerts.length + unreadNotifications.length);
+      setError(null);
+    } catch (error) {
+      if (error.response?.status === 404) {
+        setError("No recent notifications found.");
+      } else if (error.response?.status === 401) {
+        setError("Session expired. Please log in again.");
+        window.location.href = "/login";
+      } else {
+        setError("Failed to load notifications. Please try again later.");
+      }
+      setAlerts([]);
+      setNotifications([]);
+      setUnreadCount(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (anchorEl && (alerts.length > 0 || notifications.length > 0)) {
+      const alertIds = alerts.map((alert) => `alert-${alert.id}`);
+      const notificationIds = notifications.map((n) => `notification-${n.id}`);
+      const newViewedIds = [
+        ...new Set([...viewedIds, ...alertIds, ...notificationIds]),
+      ];
+      setViewedIds(newViewedIds);
+      setUnreadCount(0);
+
+      const markNotificationsAsRead = async () => {
+        try {
+          const token = sessionStorage.getItem("token");
+          const apiUrl =
+            process.env.REACT_APP_API_URL || "http://localhost:5254";
+          const unreadNotifications = notifications.filter((n) => !n.isRead);
+
+          if (unreadNotifications.length > 0) {
+            await axios.put(
+              `${apiUrl}/api/Notification/markAsRead`,
+              unreadNotifications.map((n) => n.id),
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+          }
+        } catch (error) {
+          console.error("Failed to mark notifications as read:", error);
+        }
+      };
+      markNotificationsAsRead();
+    }
+  }, [anchorEl, alerts, notifications, setUnreadCount]);
+
+  const handleOpenModal = (item, type) => {
+    setSelectedItem({ ...item, type });
+    setOpenModal(true);
+    handleClose();
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedItem(null);
+  };
+
+  const allItems = [
+    ...alerts.map((alert) => ({ ...alert, itemType: "alert" })),
+    ...notifications.map((notification) => ({
+      ...notification,
+      itemType: "notification",
+    })),
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  if (loading) return <CircularProgress />;
+
+  if (error) {
+    return (
+      <Menu
+        sx={menuStyle}
+        id="menu-notification"
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        keepMounted
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>
+          <Typography
+            textAlign="center"
+            color={
+              error === "No recent notifications found."
+                ? "textSecondary"
+                : "error"
+            }
+          >
+            {error}
+          </Typography>
+        </MenuItem>
+      </Menu>
+    );
+  }
+
+  return (
+    <div>
+      <Menu
+        sx={menuStyle}
+        id="menu-notification"
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        keepMounted
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        {allItems.length > 0 ? (
+          allItems.map((item, index) => (
+            <Box key={`${item.itemType}-${item.id}`}>
+              <MenuItem
+                onClick={() => handleOpenModal(item, item.itemType)}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  padding: "12px 16px",
+                  width: "100%",
+                  "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+                }}
+              >
+                <Typography
+                  fontWeight="bold"
+                  sx={{
+                    width: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {item.itemType === "alert" ? "Growth Alert" : "Notification"}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: "0.875rem",
+                    color: "#757575",
+                    width: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {item.itemType === "alert" ? item.alertMessage : item.message}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: "0.75rem",
+                    color: "#9e9e9e",
+                    mt: 0.5,
+                    width: "100%",
+                    textAlign: "right",
+                  }}
+                >
+                  {new Date(item.createdAt).toLocaleString()}
+                </Typography>
+              </MenuItem>
+              {index < allItems.length - 1 && <Divider />}
+            </Box>
+          ))
+        ) : (
+          <MenuItem onClick={handleClose}>
+            <Typography textAlign="center">
+              No notifications found!!!
+            </Typography>
+          </MenuItem>
+        )}
+      </Menu>
+
+      {selectedItem && (
+        <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+          aria-labelledby="alert-modal-title"
+          aria-describedby="alert-modal-description"
+          disableScrollLock={true}
+        >
+          <Box sx={modalStyle}>
+            <Typography
+              id="alert-modal-title"
+              variant="h6"
+              component="h2"
+              gutterBottom
+              textAlign="center"
+            >
+              {selectedItem.type === "alert"
+                ? "Growth Alert"
+                : "💡💡💡 Notification 💡💡💡"}
+            </Typography>
+            <Typography
+              id="alert-modal-description"
+              sx={{ mt: 2, overflowWrap: "break-word" }}
+            >
+              {selectedItem.type === "alert"
+                ? selectedItem.alertMessage
+                : selectedItem.message}
+            </Typography>
+            {selectedItem.type === "notification" &&
+              selectedItem.relatedEntityId && (
+                <Button
+                  onClick={() => {
+                    handleCloseModal();
+                    window.location.href = `/blog/${selectedItem.relatedEntityId}`;
+                  }}
+                  variant="contained"
+                  sx={{
+                    mt: 3,
+                    mr: 2,
+                    backgroundColor: "#FF69B4",
+                    "&:hover": { backgroundColor: "#FF1493" },
+                  }}
+                >
+                  View Blog
+                </Button>
+              )}
+            <Button
+              onClick={handleCloseModal}
+              variant="contained"
+              sx={{
+                mt: 3,
+                float: "right",
+                backgroundColor: "#FF69B4",
+                "&:hover": { backgroundColor: "#FF1493" },
+              }}
+            >
+              Close
+            </Button>
+          </Box>
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+const ManagerReminders = () => {
+  const [reminders, setReminders] = useState([]);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editReminder, setEditReminder] = useState(null);
   const [pregnantUsers, setPregnantUsers] = useState([]);
+  const accountID = sessionStorage.getItem("userID");
 
-  // Fetch all pregnant users and their pregnancy details
+  // Fetch all reminders
+  const fetchReminders = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const response = await axios.get(`http://localhost:5254/api/reminder`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setReminders(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+      setSnackbar({
+        open: true,
+        message: error.response?.data?.message || "Failed to fetch reminders.",
+        severity: "error",
+      });
+    }
+  };
+
+  // Fetch all pregnant users
   const fetchPregnantUsers = async () => {
     try {
       const token = sessionStorage.getItem("token");
-      if (!token) {
-        setSnackbar({
-          open: true,
-          message: "Authentication token not found.",
-          severity: "error",
-        });
-        return;
-      }
-
-      // Hypothetical endpoint to fetch pregnant users
       const response = await axios.get(
         `http://localhost:5254/api/users/pregnant`,
         {
@@ -69,12 +417,15 @@ const CustomerNotificationMenu = ({ reminders }) => {
         }
       );
 
-      setPregnantUsers(response.data);
+      if (response.status === 200) {
+        setPregnantUsers(response.data);
+      }
     } catch (error) {
       console.error("Error fetching pregnant users:", error);
       setSnackbar({
         open: true,
-        message: "Failed to fetch pregnant users.",
+        message:
+          error.response?.data?.message || "Failed to fetch pregnant users.",
         severity: "error",
       });
     }
@@ -94,18 +445,20 @@ const CustomerNotificationMenu = ({ reminders }) => {
         isRead: false,
       };
 
-      await axios.post(notificationUrl, notificationPayload, {
+      const response = await axios.post(notificationUrl, notificationPayload, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
 
-      setSnackbar({
-        open: true,
-        message: `Notification sent to user ${userId}!`,
-        severity: "success",
-      });
+      if (response.status === 200 || response.status === 201) {
+        setSnackbar({
+          open: true,
+          message: `Notification sent to user ${userId}!`,
+          severity: "success",
+        });
+      }
     } catch (error) {
       console.error("Error sending notification:", error);
       setSnackbar({
@@ -118,78 +471,6 @@ const CustomerNotificationMenu = ({ reminders }) => {
 
   // Check reminders and send notifications
   useEffect(() => {
-    fetchPregnantUsers();
-    const interval = setInterval(() => {
-      fetchPregnantUsers();
-    }, 30000); // Poll every 30 seconds
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (pregnantUsers.length > 0 && reminders.length > 0) {
-      pregnantUsers.forEach((user) => {
-        const currentWeek = calculatePregnancyWeek(user.dueDate);
-        if (currentWeek !== null) {
-          const matchingReminders = reminders.filter(
-            (reminder) => reminder.week === currentWeek
-          );
-          matchingReminders.forEach((reminder) => {
-            sendNotification(user.id, reminder);
-          });
-        }
-      });
-    }
-  }, [pregnantUsers, reminders]);
-
-  const handleSnackbarClose = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
-  };
-
-  return (
-    <Snackbar
-      open={snackbar.open}
-      autoHideDuration={3000}
-      onClose={handleSnackbarClose}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-    >
-      <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
-        {snackbar.message}
-      </Alert>
-    </Snackbar>
-  );
-};
-
-const ManagerReminders = () => {
-  const [reminders, setReminders] = useState([]);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
-  const [openDialog, setOpenDialog] = useState(false);
-  const [editReminder, setEditReminder] = useState(null);
-  const accountID = sessionStorage.getItem("userID");
-
-  // Fetch all reminders
-  const fetchReminders = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5254/api/reminder`, {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
-      });
-      setReminders(response.data);
-    } catch (error) {
-      console.error("Error fetching reminders:", error);
-      setSnackbar({
-        open: true,
-        message: "Failed to fetch reminders.",
-        severity: "error",
-      });
-    }
-  };
-
-  useEffect(() => {
     if (!accountID) {
       setSnackbar({
         open: true,
@@ -198,8 +479,28 @@ const ManagerReminders = () => {
       });
       return;
     }
-    fetchReminders();
-    const interval = setInterval(fetchReminders, 30000); // Poll every 30 seconds
+
+    const fetchAndSend = async () => {
+      await fetchReminders();
+      await fetchPregnantUsers();
+
+      if (pregnantUsers.length > 0 && reminders.length > 0) {
+        pregnantUsers.forEach((user) => {
+          const currentWeek = calculatePregnancyWeek(user.dueDate);
+          if (currentWeek !== null) {
+            const matchingReminders = reminders.filter(
+              (reminder) => reminder.week === currentWeek
+            );
+            matchingReminders.forEach((reminder) => {
+              sendNotification(user.id, reminder);
+            });
+          }
+        });
+      }
+    };
+
+    fetchAndSend();
+    const interval = setInterval(fetchAndSend, 30000); // Poll every 30 seconds
     return () => clearInterval(interval);
   }, [accountID]);
 
@@ -253,7 +554,7 @@ const ManagerReminders = () => {
         }
       );
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         setReminders(
           reminders.map((reminder) =>
             reminder.id === values.id ? response.data : reminder
@@ -287,11 +588,12 @@ const ManagerReminders = () => {
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            "Content-Type": "application/json",
           },
         }
       );
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 204) {
         setReminders(reminders.filter((reminder) => reminder.id !== id));
         setSnackbar({
           open: true,
@@ -304,58 +606,6 @@ const ManagerReminders = () => {
       setSnackbar({
         open: true,
         message: error.response?.data?.message || "Failed to delete reminder.",
-        severity: "error",
-      });
-    }
-  };
-
-  // Handle sending a reminder manually to all users at the reminder's week
-  const handleSendReminder = async (reminder) => {
-    try {
-      const token = sessionStorage.getItem("token");
-      const response = await axios.get(
-        `http://localhost:5254/api/users/pregnant`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const pregnantUsers = response.data;
-      const matchingUsers = pregnantUsers.filter((user) => {
-        const currentWeek = calculatePregnancyWeek(user.dueDate);
-        return currentWeek === reminder.week;
-      });
-
-      for (const user of matchingUsers) {
-        await axios.post(
-          `http://localhost:5254/api/Notification`,
-          {
-            userId: user.id,
-            message: `Reminder: ${reminder.subject} - ${reminder.body}`,
-            createdAt: new Date().toISOString(),
-            isRead: false,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      }
-
-      setSnackbar({
-        open: true,
-        message: `Reminder sent to ${matchingUsers.length} users!`,
-        severity: "success",
-      });
-    } catch (error) {
-      console.error("Error sending reminder:", error);
-      setSnackbar({
-        open: true,
-        message: error.response?.data?.message || "Failed to send reminder.",
         severity: "error",
       });
     }
@@ -501,12 +751,6 @@ const ManagerReminders = () => {
                         >
                           <DeleteIcon />
                         </IconButton>
-                        <IconButton
-                          color="success"
-                          onClick={() => handleSendReminder(reminder)}
-                        >
-                          <SendIcon />
-                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))
@@ -618,7 +862,12 @@ const ManagerReminders = () => {
         </Formik>
       </Dialog>
 
-      <CustomerNotificationMenu reminders={reminders} />
+      {/* CustomerNotificationMenu integration */}
+      <CustomerNotificationMenu
+        anchorEl={null} // Set to null by default; manage visibility elsewhere if needed
+        handleClose={() => {}} // Placeholder
+        setUnreadCount={() => {}} // Placeholder
+      />
 
       <Snackbar
         open={snackbar.open}
