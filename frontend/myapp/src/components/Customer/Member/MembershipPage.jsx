@@ -1,6 +1,6 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import axios from "axios";
 import "./MembershipPage.css";
 
 function MembershipPage() {
@@ -56,7 +56,8 @@ function MembershipPage() {
 
   const hasPurchasedPlan = (planId) => {
     return userMemberships.some(
-      (membership) => membership.planId === planId && membership.status === "Active"
+      (membership) =>
+        membership.planId === planId && membership.status === "Active"
     );
   };
 
@@ -73,7 +74,7 @@ function MembershipPage() {
       alert("Please log in to proceed with the payment!");
       return;
     }
-    
+
     try {
       // Step 1: Create a pending membership
       const currentDate = new Date().toISOString();
@@ -82,34 +83,42 @@ function MembershipPage() {
         {
           userId: parseInt(userId),
           planId: plan.id,
-          startDate: currentDate
+          startDate: currentDate,
         }
       );
-      
+
       console.log("Membership created:", membershipResponse.data);
-      
+
       // Step 2: Create payment after membership is created
-      const membershipId = membershipResponse.data.id || membershipResponse.data.membershipId;
-      
+      const membershipId =
+        membershipResponse.data.id || membershipResponse.data.membershipId;
+
       if (!membershipId) {
-        console.error("Failed to get membership ID from response:", membershipResponse.data);
+        console.error(
+          "Failed to get membership ID from response:",
+          membershipResponse.data
+        );
         alert("Error creating membership. Please try again.");
         return;
       }
-      
+
       const paymentResponse = await axios.post(
         "http://localhost:5254/api/payment",
         {
           membershipId: membershipId,
           amount: plan.price,
-          paymentDescription: `Payment for ${plan.name}`
+          paymentDescription: `Payment for ${plan.name}`,
         }
       );
-      
+
       console.log("Payment response:", paymentResponse.data);
-      
+
       // Handle the payment URL response
-      if (paymentResponse.data && typeof paymentResponse.data === 'string' && paymentResponse.data.includes('vnpayment.vn')) {
+      if (
+        paymentResponse.data &&
+        typeof paymentResponse.data === "string" &&
+        paymentResponse.data.includes("vnpayment.vn")
+      ) {
         // If response.data is a URL string, use it directly
         window.location.href = paymentResponse.data;
       } else if (paymentResponse.data && paymentResponse.data.vnpayUrl) {
@@ -152,7 +161,7 @@ function MembershipPage() {
                   <li key={i}>{benefit}</li>
                 ))}
               </ul>
-              <Button 
+              <Button
                 onClick={() => handleJoinPlan(plan)}
                 disabled={hasPurchasedPlan(plan.id)}
                 variant={hasPurchasedPlan(plan.id) ? "success" : "primary"}

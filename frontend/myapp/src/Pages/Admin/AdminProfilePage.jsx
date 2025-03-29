@@ -1,5 +1,6 @@
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Container,
@@ -7,169 +8,227 @@ import {
   Snackbar,
   TextField,
   Typography,
-} from '@mui/material';
-import axios from 'axios';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
-import * as Yup from 'yup';
+} from "@mui/material";
+import axios from "axios";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import * as Yup from "yup";
 
 const AdminProfilePage = () => {
-  const [isEditing, setIsEditing] = useState(false); // State to manage edit mode
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const [profile, setProfile] = useState({
-    name: '',
-    email: '',
-    phone: '',
+  const [isEditing, setIsEditing] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
   });
-  const [fullUserData, setFullUserData] = useState(null); // Lưu toàn bộ dữ liệu từ API để sử dụng khi update
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    avatar: "https://via.placeholder.com/150",
+  });
+  const [fullUserData, setFullUserData] = useState(null); // Store full user data for update
+  const accountID = sessionStorage.getItem("userID");
 
-  const accountID = sessionStorage.getItem('userID');
-
-  // Lấy dữ liệu profile từ API
   useEffect(() => {
     const fetchProfileData = async () => {
-      if (accountID) {
-        try {
-          const response = await axios.get(
-            `http://localhost:5254/api/Users/GetById/${accountID}`
-          );
-          const data = response.data;
-          const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'No Name Available';
-          setProfile({
-            name: fullName,
-            email: data.email || 'No Email Available',
-            phone: data.phone || 'No Phone Available',
-          });
-          setFullUserData(data); // Lưu toàn bộ dữ liệu từ API
-        } catch (error) {
-          console.error('Error fetching profile data:', error);
-          setSnackbarMessage('Failed to fetch profile data.');
-          setSnackbarSeverity('error');
-          setSnackbarOpen(true);
-        }
-      } else {
-        setSnackbarMessage('User ID not found in session storage.');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
+      if (!accountID) {
+        setSnackbar({
+          open: true,
+          message: "User ID not found. Please log in.",
+          severity: "error",
+        });
+        return;
+      }
+      try {
+        const response = await axios.get(
+          `http://localhost:5254/api/Users/GetById/${accountID}`, // Fixed string interpolation
+          {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`, // Fixed string interpolation
+            },
+          }
+        );
+        const data = response.data;
+        const fullName =
+          `${data.firstName || ""} ${data.lastName || ""}`.trim() || "No Name";
+        setProfile({
+          name: fullName,
+          email: data.email || "No Email",
+          phone: data.phone || "No Phone",
+          avatar: data.avatar || "https://via.placeholder.com/150",
+        });
+        setFullUserData(data); // Store full user data for update
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setSnackbar({
+          open: true,
+          message: "Failed to fetch profile data.",
+          severity: "error",
+        });
       }
     };
-
     fetchProfileData();
   }, [accountID]);
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+  const handleSnackbarClose = () =>
+    setSnackbar((prev) => ({ ...prev, open: false }));
 
-  const validationSchema = Yup.object().shape({
+  const validationSchema = Yup.object({
     name: Yup.string()
-      .matches(/^[A-Za-z\s]+$/, 'Name can only contain letters and spaces')
-      .required('Name is required'),
+      .matches(/^[A-Za-z\s]+$/, "Name can only contain letters and spaces")
+      .required("Name is required"),
     phone: Yup.string()
-      .matches(/^[0-9]+$/, 'Phone must contain only numbers')
-      .required('Phone is required'),
+      .matches(/^[0-9]+$/, "Phone must contain only numbers")
+      .required("Phone is required"),
   });
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const [firstName, ...lastNameArr] = values.name.split(' ');
-      const lastName = lastNameArr.join(' ');
+      const [firstName, ...lastNameArr] = values.name.split(" ");
+      const lastName = lastNameArr.join(" ");
 
-      // Tạo dữ liệu để gửi lên API, dựa trên cấu trúc bảng Users
+      // Construct the updated data object based on the API's expected structure
       const updatedData = {
-        id: parseInt(accountID), // Id là số nguyên
-        email: profile.email, // Email không thay đổi
-        password: fullUserData?.password, // Lấy từ dữ liệu gốc (bắt buộc)
-        userType: fullUserData?.userType, // Lấy từ dữ liệu gốc (bắt buộc)
-        firstName: firstName || '',
-        lastName: lastName || '',
+        id: parseInt(accountID),
+        firstName: firstName || "",
+        lastName: lastName || "",
+        email: profile.email,
+        phone: values.phone,
+        avatar: profile.avatar,
+        password: fullUserData?.password || "", // Include required fields from fullUserData
+        userType: fullUserData?.userType || "Admin", // Adjust based on your backend
         gender: fullUserData?.gender || null,
         dateOfBirth: fullUserData?.dateOfBirth || null,
-        phone: values.phone,
-        status: fullUserData?.status || 'active', // Lấy từ dữ liệu gốc (bắt buộc)
-        createdAt: fullUserData?.createdAt || new Date().toISOString(), // Lấy từ dữ liệu gốc (bắt buộc)
+        status: fullUserData?.status || "active",
+        createdAt: fullUserData?.createdAt || new Date().toISOString(),
         resetToken: fullUserData?.resetToken || null,
         resetTokenExpiration: fullUserData?.resetTokenExpiration || null,
       };
 
-      // Gọi API để cập nhật thông tin
       const response = await axios.put(
-        `http://localhost:5254/api/Users/Update/${accountID}`,
+        `http://localhost:5254/api/Users/Update/${accountID}`, // Fixed string interpolation
         updatedData,
         {
           headers: {
-            'Content-Type': 'application/json-patch+json',
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`, // Fixed string interpolation
+            "Content-Type": "application/json",
           },
         }
       );
 
       if (response.status === 200) {
-        setSnackbarMessage('Profile updated successfully!');
-        setSnackbarSeverity('success');
-        setSnackbarOpen(true);
-        setProfile((prev) => ({ ...prev, ...values }));
-        setFullUserData({ ...fullUserData, ...updatedData });
-        setIsEditing(false); // Exit edit mode after saving
+        setProfile((prev) => ({
+          ...prev,
+          name: values.name,
+          phone: values.phone,
+        }));
+        setFullUserData((prev) => ({
+          ...prev,
+          firstName,
+          lastName,
+          phone: values.phone,
+        }));
+        setSnackbar({
+          open: true,
+          message: "Profile updated successfully!",
+          severity: "success",
+        });
+        setIsEditing(false);
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
-      if (error.response) {
-        console.log('Server response:', error.response.data);
-        setSnackbarMessage(
-          `Failed to update profile: ${error.response.data.message || 'Bad Request'}`
-        );
-      } else {
-        setSnackbarMessage('Failed to update profile.');
-      }
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
+      console.error("Error updating profile:", error);
+      setSnackbar({
+        open: true,
+        message: error.response?.data?.message || "Failed to update profile.",
+        severity: "error",
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleEditToggle = () => {
-    setIsEditing((prev) => !prev);
+  const commonStyles = {
+    textField: {
+      "& .MuiOutlinedInput-root": {
+        borderRadius: "8px",
+        "&:hover fieldset": { borderColor: "#f8bbd0" },
+        "&.Mui-focused fieldset": { borderColor: "#f8bbd0" },
+      },
+    },
+    button: {
+      backgroundColor: "#f8bbd0",
+      "&:hover": { backgroundColor: "#f06292" },
+      borderRadius: "12px",
+      padding: "8px 20px",
+      textTransform: "none",
+      fontWeight: "bold",
+    },
+    cancelButton: {
+      color: "#f44336",
+      borderColor: "#f44336",
+      borderRadius: "12px",
+      "&:hover": { borderColor: "#d32f2f", backgroundColor: "#ffebee" },
+    },
   };
 
   return (
     <Box
       sx={{
-        backgroundColor: '#f7f7f7',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
+        backgroundColor: "#fce4ec",
+        minHeight: "100vh",
+        display: "flex",
         padding: 4,
       }}
     >
-      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 2 }}>
+      <Container maxWidth="sm">
         <Paper
-          elevation={3}
-          sx={{ borderRadius: '8px', textAlign: 'center', padding: 3, mt: -1 }}
+          sx={{
+            borderRadius: "12px",
+            textAlign: "center",
+            padding: 3,
+            boxShadow: 3,
+          }}
         >
           <Typography
             variant="h5"
-            component="h2"
-            sx={{ mt: 2, fontWeight: 'bold' }}
+            sx={{
+              mt: 2,
+              fontWeight: "bold",
+              color: "#f06292",
+              borderBottom: "2px solid #f8bbd0",
+            }}
           >
-            {profile.name}
+            Admin Profile
           </Typography>
+
+          <Avatar
+            src={profile.avatar}
+            alt="Profile Avatar"
+            sx={{
+              width: 100,
+              height: 100,
+              mx: "auto",
+              mt: 2,
+              border: "2px solid #f8bbd0",
+            }}
+          />
 
           {!isEditing ? (
             <>
-              <Typography variant="body1" color="textSecondary">
+              <Typography variant="h6" sx={{ mt: 2, color: "#333" }}>
+                {profile.name}
+              </Typography>
+              <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
                 Phone: {profile.phone}
               </Typography>
-              <Typography variant="body1" color="textSecondary">
+              <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
                 Email: {profile.email}
               </Typography>
               <Button
                 variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-                onClick={handleEditToggle}
+                sx={{ mt: 2, ...commonStyles.button }}
+                onClick={() => setIsEditing(true)}
               >
                 Edit Profile
               </Button>
@@ -179,68 +238,70 @@ const AdminProfilePage = () => {
               initialValues={{ name: profile.name, phone: profile.phone }}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
-              enableReinitialize
             >
               {({ isSubmitting }) => (
                 <Form>
-                  <Box mt={2}>
-                    <Field
-                      as={TextField}
-                      fullWidth
-                      name="name"
-                      label="Name"
-                      variant="outlined"
-                      margin="dense"
-                    />
-                    <ErrorMessage
-                      name="name"
-                      component="div"
-                      style={{ color: 'red' }}
-                    />
-                  </Box>
-                  <Box mt={2}>
-                    <Field
-                      as={TextField}
-                      fullWidth
-                      name="phone"
-                      label="Phone"
-                      variant="outlined"
-                      margin="dense"
-                    />
-                    <ErrorMessage
-                      name="phone"
-                      component="div"
-                      style={{ color: 'red' }}
-                    />
-                  </Box>
-                  <Box mt={2}>
-                    <TextField
-                      fullWidth
-                      name="email"
-                      label="Email"
-                      variant="outlined"
-                      margin="dense"
-                      value={profile.email}
-                      disabled
-                    />
-                  </Box>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    sx={{ mt: 2 }}
-                    disabled={isSubmitting}
-                  >
-                    Save Changes
-                  </Button>
-                  <Button
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    name="name"
+                    label="Name"
                     variant="outlined"
-                    color="secondary"
-                    sx={{ mt: 2, ml: 2 }}
-                    onClick={handleEditToggle}
+                    margin="dense"
+                    sx={commonStyles.textField}
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    style={{ color: "red" }}
+                  />
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    name="phone"
+                    label="Phone"
+                    variant="outlined"
+                    margin="dense"
+                    sx={commonStyles.textField}
+                  />
+                  <ErrorMessage
+                    name="phone"
+                    component="div"
+                    style={{ color: "red" }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    value={profile.email}
+                    disabled
+                    variant="outlined"
+                    margin="dense"
+                    sx={commonStyles.textField}
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      justifyContent: "center",
+                      mt: 2,
+                    }}
                   >
-                    Cancel
-                  </Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={commonStyles.button}
+                      disabled={isSubmitting}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      sx={commonStyles.cancelButton}
+                      onClick={() => setIsEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
                 </Form>
               )}
             </Formik>
@@ -249,17 +310,13 @@ const AdminProfilePage = () => {
       </Container>
 
       <Snackbar
-        open={snackbarOpen}
+        open={snackbar.open}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
-        >
-          {snackbarMessage}
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </Box>

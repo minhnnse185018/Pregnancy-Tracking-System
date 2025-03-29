@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 // Styles for the modal
 const modalStyle = {
@@ -17,11 +17,7 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: {
-    xs: "90%",
-    sm: "70%",
-    md: "50%",
-  },
+  width: { xs: "90%", sm: "70%", md: "50%" },
   maxWidth: "600px",
   maxHeight: "80vh",
   bgcolor: "background.paper",
@@ -43,176 +39,146 @@ const menuStyle = {
   },
 };
 
-// ... existing code ...
-
 function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
-  const [alerts, setAlerts] = React.useState([]);
-  const [notifications, setNotifications] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
-  const [selectedItem, setSelectedItem] = React.useState(null);
-  const [openModal, setOpenModal] = React.useState(false);
-  const [viewedIds, setViewedIds] = React.useState(() => {
-    // Load viewed IDs from sessionStorage on mount
+  const [alerts, setAlerts] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [viewedIds, setViewedIds] = useState(() => {
     const stored = sessionStorage.getItem("viewedIds");
     return stored ? JSON.parse(stored) : [];
   });
 
   // Save viewedIds to sessionStorage whenever it changes
-  React.useEffect(() => {
+  useEffect(() => {
     sessionStorage.setItem("viewedIds", JSON.stringify(viewedIds));
   }, [viewedIds]);
 
-  // Fetch alerts and notifications when the component mounts or when setUnreadCount changes
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Get the token and user ID from sessionStorage
-        const token = sessionStorage.getItem("token");
-        const userId = sessionStorage.getItem("userID");
+  // Fetch alerts and notifications
+  const fetchData = useCallback(async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const userId = sessionStorage.getItem("userID");
 
-        if (!token || !userId) {
-          setError("Authentication token not found. Please log in again.");
-          setLoading(false);
-          return;
-        }
-
-        // Construct the API URLs
-        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5254";
-        const alertsUrl = `${apiUrl}/api/GrowthAlert/1/week`;
-        const notificationsUrl = `${apiUrl}/api/Notification/user/${userId}`;
-
-        // Make both API requests in parallel
-        const [alertsResponse, notificationsResponse] = await Promise.all([
-          axios.get(alertsUrl, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(notificationsUrl, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-
-        // Sort alerts by ID in descending order (newest first)
-        const sortedAlerts = alertsResponse.data.sort((a, b) => b.id - a.id);
-        setAlerts(sortedAlerts);
-
-        // Sort notifications by createdAt in descending order (newest first)
-        const sortedNotifications = notificationsResponse.data.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setNotifications(sortedNotifications);
-
-        // Calculate unread count (alerts and notifications that haven't been viewed)
-        const unreadAlerts = sortedAlerts.filter(
-          (alert) => !viewedIds.includes(`alert-${alert.id}`)
-        );
-
-        const unreadNotifications = sortedNotifications.filter(
-          (notification) =>
-            !notification.isRead &&
-            !viewedIds.includes(`notification-${notification.id}`)
-        );
-
-        setUnreadCount(unreadAlerts.length + unreadNotifications.length);
-        setError(null);
-      } catch (error) {
-        if (error.response?.status === 404) {
-          setError("No recent notifications found.");
-        } else if (error.response?.status === 401) {
-          setError("Session expired. Please log in again.");
-          window.location.href = "/login";
-        } else {
-          setError("Failed to load notifications. Please try again later.");
-        }
-        setAlerts([]);
-        setNotifications([]);
-        setUnreadCount(0); // Reset unread count on error
-      } finally {
+      if (!token || !userId) {
+        setError("Authentication token not found. Please log in again.");
         setLoading(false);
+        return;
       }
-    };
 
-    fetchData();
-    const interval = setInterval(fetchData, 30000); // Poll every 30 seconds
-    return () => clearInterval(interval); // Clean up the interval on unmount
-  }, [setUnreadCount]);
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5254";
+      const alertsUrl = `${apiUrl}/api/GrowthAlert/${userId}/week`; // Updated to use userId
+      const notificationsUrl = `${apiUrl}/api/Notification/user/${userId}`;
 
-  // Mark items as viewed when the menu is opened
-  React.useEffect(() => {
-    if (anchorEl && (alerts.length > 0 || notifications.length > 0)) {
-      // When the menu is opened, mark all current items as viewed
-      const alertIds = alerts.map((alert) => `alert-${alert.id}`);
-      const notificationIds = notifications.map(
-        (notification) => `notification-${notification.id}`
+      const [alertsResponse, notificationsResponse] = await Promise.all([
+        axios.get(alertsUrl, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(notificationsUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      const sortedAlerts = alertsResponse.data.sort((a, b) => b.id - a.id);
+      const sortedNotifications = notificationsResponse.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
 
+      setAlerts(sortedAlerts);
+      setNotifications(sortedNotifications);
+
+      const unreadAlerts = sortedAlerts.filter(
+        (alert) => !viewedIds.includes(`alert-${alert.id}`)
+      );
+      const unreadNotifications = sortedNotifications.filter(
+        (notification) =>
+          !notification.isRead &&
+          !viewedIds.includes(`notification-${notification.id}`)
+      );
+
+      setUnreadCount(unreadAlerts.length + unreadNotifications.length);
+      setError(null);
+    } catch (error) {
+      if (error.response?.status === 404) {
+        setError("No recent notifications found.");
+      } else if (error.response?.status === 401) {
+        setError("Session expired. Please log in again.");
+        window.location.href = "/login";
+      } else {
+        setError("Failed to load notifications. Please try again later.");
+      }
+      setAlerts([]);
+      setNotifications([]);
+      setUnreadCount(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [setUnreadCount, viewedIds]);
+
+  // Fetch data on mount and poll every 30 seconds
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
+
+  // Mark items as viewed and update backend when menu opens
+  useEffect(() => {
+    if (anchorEl && (alerts.length > 0 || notifications.length > 0)) {
+      const alertIds = alerts.map((alert) => `alert-${alert.id}`);
+      const notificationIds = notifications.map((n) => `notification-${n.id}`);
       const newViewedIds = [
         ...new Set([...viewedIds, ...alertIds, ...notificationIds]),
       ];
       setViewedIds(newViewedIds);
-      setUnreadCount(0); // Set unread count to 0 since all items are now viewed
+      setUnreadCount(0);
 
-      // Mark notifications as read in the backend
       const markNotificationsAsRead = async () => {
         try {
           const token = sessionStorage.getItem("token");
           const apiUrl =
             process.env.REACT_APP_API_URL || "http://localhost:5254";
-
-          // Get unread notifications
           const unreadNotifications = notifications.filter((n) => !n.isRead);
 
           if (unreadNotifications.length > 0) {
-            // Make API call to mark notifications as read
             await axios.put(
               `${apiUrl}/api/Notification/markAsRead`,
               unreadNotifications.map((n) => n.id),
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
+              { headers: { Authorization: `Bearer ${token}` } }
             );
           }
         } catch (error) {
           console.error("Failed to mark notifications as read:", error);
         }
       };
-
       markNotificationsAsRead();
     }
   }, [anchorEl, alerts, notifications, setUnreadCount]);
 
-  // Handle opening the modal when an item is clicked
+  // Handle opening modal
   const handleOpenModal = (item, type) => {
     setSelectedItem({ ...item, type });
     setOpenModal(true);
     handleClose();
   };
 
-  // Handle closing the modal
+  // Handle closing modal
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedItem(null);
   };
 
-  // Combine alerts and notifications for display
+  // Combine and sort alerts and notifications
   const allItems = [
     ...alerts.map((alert) => ({ ...alert, itemType: "alert" })),
     ...notifications.map((notification) => ({
       ...notification,
       itemType: "notification",
     })),
-  ].sort((a, b) => {
-    const dateA =
-      a.itemType === "alert" ? new Date(a.createdAt) : new Date(a.createdAt);
-    const dateB =
-      b.itemType === "alert" ? new Date(b.createdAt) : new Date(b.createdAt);
-    return dateB - dateA; // Sort by date, newest first
-  });
+  ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // Render loading state
-  if (loading) {
-    return <CircularProgress />;
-  }
+  if (loading) return <CircularProgress />;
 
   // Render error state
   if (error) {
@@ -221,15 +187,9 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
         sx={menuStyle}
         id="menu-notification"
         anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
@@ -249,22 +209,16 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
     );
   }
 
-  // Render the menu with alerts and notifications
+  // Render menu with alerts and notifications
   return (
     <div>
       <Menu
         sx={menuStyle}
         id="menu-notification"
         anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
@@ -279,9 +233,7 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
                   alignItems: "flex-start",
                   padding: "12px 16px",
                   width: "100%",
-                  "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.04)",
-                  },
+                  "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
                 }}
               >
                 <Typography
@@ -325,13 +277,13 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
         ) : (
           <MenuItem onClick={handleClose}>
             <Typography textAlign="center">
-              No notifications found !!!.
+              No notifications found!!!
             </Typography>
           </MenuItem>
         )}
       </Menu>
 
-      {/* Modal to display the full item message */}
+      {/* Modal to display full item details */}
       {selectedItem && (
         <Modal
           open={openModal}
@@ -348,27 +300,19 @@ function CustomerNotificationMenu({ anchorEl, handleClose, setUnreadCount }) {
               gutterBottom
               textAlign="center"
             >
-              {selectedItem.itemType === "alert"
-                ? `Growth Alert for Profile ID: ${selectedItem.profileId}`
+              {selectedItem.type === "alert"
+                ? "Growth Alert"
                 : "💡💡💡 Notification 💡💡💡"}
             </Typography>
-            {selectedItem.itemType === "alert" && (
-              <Typography
-                sx={{ fontSize: "0.875rem", color: "#757575", mb: 2 }}
-              >
-                Week {selectedItem.week} -{" "}
-                {new Date(selectedItem.createdAt).toLocaleString()}
-              </Typography>
-            )}
             <Typography
               id="alert-modal-description"
               sx={{ mt: 2, overflowWrap: "break-word" }}
             >
-              {selectedItem.itemType === "alert"
+              {selectedItem.type === "alert"
                 ? selectedItem.alertMessage
                 : selectedItem.message}
             </Typography>
-            {selectedItem.itemType === "notification" &&
+            {selectedItem.type === "notification" &&
               selectedItem.relatedEntityId && (
                 <Button
                   onClick={() => {
