@@ -263,7 +263,106 @@ function ManagerBlogs() {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div className="community-container pregnant-theme">
+    <div className="manager-blog-container">
+      {/* Header Section */}
+      <div className="manager-header">
+        <h1>Manage Blog Posts</h1>
+      </div>
+
+      {/* Search Section */}
+      <div className="search-section">
+        <input
+          type="text"
+          placeholder="Search posts..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+        <button onClick={handleSearchPost} className="search-button">
+          Search
+        </button>
+        <button
+          onClick={() => {
+            setSearchTerm("");
+            fetchPosts();
+          }}
+          className="reset-button"
+        >
+          Reset
+        </button>
+      </div>
+
+      {/* Posts List */}
+      <div className="posts-list">
+        {posts.length === 0 ? (
+          <p>No Posts Found.</p>
+        ) : (
+          posts.map((post) => (
+            <div key={post.id} className="post-item">
+              <div className="post-author">
+                Post by: <span>{post.userName}</span>
+              </div>
+              <div className="post-title">
+                Title: {post.title}
+              </div>
+              <div className="post-content">
+                Content: {post.content}
+              </div>
+              {post.image && (
+                <div className="post-image">
+                  <img src={post.image} alt="Post" />
+                </div>
+              )}
+              <div className="post-actions">
+                <button
+                  onClick={() => {
+                    setSelectedPost(post);
+                    setShowComments(!showComments);
+                  }}
+                  className="comments-button"
+                >
+                  💬 Comments ({post.commentCount})
+                </button>
+                <button
+                  onClick={() => handleDeleteBlog(post.id)}
+                  className="delete-button"
+                >
+                   Delete
+                </button>
+              </div>
+
+              {/* Comments Section */}
+              {showComments && selectedPost?.id === post.id && (
+                <div className="comments-section">
+                  <h3>Comments</h3>
+                  {post.comments && post.comments.length > 0 ? (
+                    post.comments.map((comment) => (
+                      <div key={comment.id} className="comment-item">
+                        <div className="comment-header">
+                          <span className="comment-author">{comment.userName}</span>
+                          <span className="comment-date">
+                            {new Date(comment.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="comment-content">{comment.content}</p>
+                        <button
+                          onClick={() => handleDeleteComment(comment.id)}
+                          className="delete-comment-button"
+                        >
+                          Delete Comment
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No comments yet.</p>
+                  )}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+
       {/* Toast Container */}
       <div className="toast-container">
         {toasts.map((toast) => (
@@ -285,154 +384,14 @@ function ManagerBlogs() {
         ))}
       </div>
 
-      <div className="posts-header">
-        <h1 className="posts-title">Manage Blog Posts</h1>
-      </div>
-
-      {/* Search Bar */}
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search posts..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-        <button onClick={handleSearchPost} className="search-btn">
-          Search
-        </button>
-        <button
-          onClick={() => {
-            setSearchTerm("");
-            fetchPosts();
-          }}
-          className="reset-btn"
-        >
-          Reset
-        </button>
-      </div>
-
-      {/* Create Post Button
-      <div className="action-buttons">
-        <button
-          onClick={() => {
-            setEditMode(false);
-            setNewPostTitle("");
-            setNewPostContent("");
-            setNewPostImage(null);
-            setImagePreview(null);
-            setShowCreatePostModal(true);
-          }}
-          className="create-post-btn"
-        >
-          Create New Post
-        </button>
-      </div> */}
-
-      <div className="posts-container">
-        {posts.length === 0 ? (
-          <p>No Posts Found.</p>
-        ) : (
-          posts.map((post) => (
-            <div key={post.id} className="post-card">
-              <div className="post-content">
-                <div className="post-user">
-                  <div className="post-info">
-                    <p className="post-metadata">
-                      Post by:{" "}
-                      <span className="author-name">{post.userName}</span>
-                    </p>
-                    <h2 className="post-title">Title: {post.title}</h2>
-                  </div>
-                </div>
-                <p className="post-text">Content: {post.content}</p>
-
-                {/* Display post image if available */}
-                {post.image && (
-                  <div className="post-image-container">
-                    <img src={post.image} alt="Post" className="post-image" />
-                  </div>
-                )}
-
-                <div className="post-stats">
-                  <span className="post-time">
-                    Created At: {new Date(post.createdAt).toLocaleDateString()}
-                  </span>
-                  <div className="interaction-stats">
-                    <button
-                      onClick={() => {
-                        setSelectedPost(post);
-                        setShowComments(!showComments);
-                      }}
-                      className="view-comments-btn"
-                    >
-                      💬 View Comments ({post.commentCount})
-                    </button>
-                    <button
-                      onClick={() => handleEditPost(post)}
-                      className="edit-post-btn"
-                    >
-                      ✏️ Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteBlog(post.id)}
-                      className="delete-post-btn"
-                    >
-                      🗑️ Delete
-                    </button>
-                  </div>
-                </div>
-
-                {showComments && selectedPost?.id === post.id && (
-                  <div className="comments-section">
-                    <h3>Comments</h3>
-                    {post.comments && post.comments.length > 0 ? (
-                      post.comments.map((comment) => (
-                        <div key={comment.id} className="comment">
-                          <div className="comment-header">
-                            <span className="comment-author">
-                              {comment.userName}
-                            </span>
-                            <span className="comment-date">
-                              {new Date(comment.createdAt).toLocaleDateString()}
-                            </span>
-                            <div className="comment-actions">
-                              <button
-                                onClick={() => handleEditComment(comment)}
-                                className="edit-comment-btn"
-                              >
-                                ✏️
-                              </button>
-                              <button
-                                onClick={() => handleDeleteComment(comment.id)}
-                                className="delete-comment-btn"
-                              >
-                                🗑️
-                              </button>
-                            </div>
-                          </div>
-                          <p className="comment-content">{comment.content}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <p>No comments yet.</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-
       {/* Create/Edit Post Modal with Scrollable Content */}
       {showCreatePostModal && (
         <div className="modal-overlay">
           <div className="modal-content scrollable-modal">
             <div className="modal-header">
               <h2>{editMode ? "Edit Post" : "Create New Post"}</h2>
-              <button 
-                className="modal-close-btn" 
+              <button
+                className="modal-close-btn"
                 onClick={() => setShowCreatePostModal(false)}
               >
                 ×
@@ -514,8 +473,8 @@ function ManagerBlogs() {
           <div className="modal-content scrollable-modal">
             <div className="modal-header">
               <h2>Edit Comment</h2>
-              <button 
-                className="modal-close-btn" 
+              <button
+                className="modal-close-btn"
                 onClick={() => {
                   setShowModal(false);
                   setCommentText("");

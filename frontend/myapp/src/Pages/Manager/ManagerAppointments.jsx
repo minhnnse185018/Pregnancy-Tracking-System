@@ -1,162 +1,276 @@
-import { Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, Box, Button, Modal, Divider } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Alert,
+  Box,
+  Container,
+  IconButton,
+  MenuItem,
+  Paper,
+  Select,
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-// Hàm render trạng thái
-const renderStatusChip = (status) => {
-  switch (status) {
-    case "Scheduled":
-      return <Chip label="Scheduled" sx={{ bgcolor: "#2196F3", color: "#fff" }} />;
-    case "Cancelled":
-      return <Chip label="Cancelled" sx={{ bgcolor: "#F44336", color: "#fff" }} />;
-    case "Completed":
-      return <Chip label="Completed" sx={{ bgcolor: "#4CAF50", color: "#fff" }} />;
-    default:
-      return <Chip label={status} sx={{ bgcolor: "#9E9E9E", color: "#fff" }} />;
-  }
-};
-
 const ManagerAppointments = () => {
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [openModal, setOpenModal] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const accountID = sessionStorage.getItem("userID");
 
-  // Gọi API để lấy danh sách cuộc hẹn
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`http://localhost:5254/api/appointments/all`);
-        setAppointments(response.data);
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách cuộc hẹn:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAppointments();
-  }, []);
-
-  const handleViewAppointment = (appointment) => {
-    setSelectedAppointment(appointment);
-    setOpenModal(true);
+  // Fetch all appointments
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5254/api/appointments`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
+      );
+      setAppointments(response.data);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      setSnackbar({
+        open: true,
+        message: "Failed to fetch appointments.",
+        severity: "error",
+      });
+    }
   };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    setSelectedAppointment(null);
+  useEffect(() => {
+    if (!accountID) {
+      setSnackbar({
+        open: true,
+        message: "User ID not found. Please log in.",
+        severity: "error",
+      });
+      return;
+    }
+    fetchAppointments();
+  }, [accountID]);
+
+  // Handle status update
+  const handleStatusUpdate = async (appointmentId, newStatus) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5254/api/appointments/update`,
+        { id: appointmentId, status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setAppointments((prev) =>
+          prev.map((appt) =>
+            appt.id === appointmentId ? { ...appt, status: newStatus } : appt
+          )
+        );
+        setSnackbar({
+          open: true,
+          message: "Appointment status updated successfully!",
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating appointment status:", error);
+      setSnackbar({
+        open: true,
+        message:
+          error.response?.data?.message ||
+          "Failed to update appointment status.",
+        severity: "error",
+      });
+    }
+  };
+
+  // Handle appointment deletion
+  const handleDelete = async (appointmentId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5254/api/appointments/delete/${appointmentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setAppointments((prev) =>
+          prev.filter((appt) => appt.id !== appointmentId)
+        );
+        setSnackbar({
+          open: true,
+          message: "Appointment deleted successfully!",
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+      setSnackbar({
+        open: true,
+        message:
+          error.response?.data?.message || "Failed to delete appointment.",
+        severity: "error",
+      });
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
+
+  const commonStyles = {
+    button: {
+      backgroundColor: "#f8bbd0",
+      "&:hover": { backgroundColor: "#f06292" },
+      borderRadius: "12px",
+      padding: "8px 20px",
+      textTransform: "none",
+      fontWeight: "bold",
+    },
+    tableHeader: {
+      backgroundColor: "#f8bbd0",
+      color: "#333",
+      fontWeight: "bold",
+    },
+    tableRow: {
+      "&:nth-of-type(odd)": {
+        backgroundColor: "#fce4ec",
+      },
+      "&:hover": {
+        backgroundColor: "#ffebee",
+      },
+    },
   };
 
   return (
-    <Box sx={{ padding: 4, backgroundColor: "#fff", minHeight: "100vh", color: "#333" }}>
-      <Typography variant="h4" fontWeight="bold" sx={{ mb: 2, color: "#4CAF50" }}>
-        Appointments Management
-      </Typography>
-
-      <TableContainer component={Paper} sx={{ padding: 2, backgroundColor: "#f5f5f5", borderRadius: "8px" }}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: "#4CAF50" }}>
-              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>ID</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Title</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Appointment Date</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Status</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Created At</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  <CircularProgress />
-                </TableCell>
-              </TableRow>
-            ) : appointments.length > 0 ? (
-              appointments.map((appointment) => (
-                <TableRow key={appointment.id}>
-                  <TableCell>{appointment.id}</TableCell>
-                  <TableCell>{appointment.title}</TableCell>
-                  <TableCell>{appointment.appointmentDate}</TableCell>
-                  <TableCell>{renderStatusChip(appointment.status)}</TableCell>
-                  <TableCell>{appointment.createdAt}</TableCell>
-                  <TableCell>
-                    <Button variant="contained" sx={{ backgroundColor: "#4CAF50" }} onClick={() => handleViewAppointment(appointment)}>
-                      View
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  No appointments available
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Modal xem chi tiết cuộc hẹn */}
-      <Modal open={openModal} onClose={handleCloseModal}>
-        <Box
+    <Box
+      sx={{
+        backgroundColor: "#fce4ec",
+        minHeight: "100vh",
+        display: "flex",
+        padding: 4,
+      }}
+    >
+      <Container maxWidth="lg">
+        <Paper
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-            outline: "none",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            borderRadius: "12px",
+            padding: 3,
+            boxShadow: 3,
           }}
         >
-          <Typography variant="h5" fontWeight="bold" sx={{ mb: 2, color: "#4CAF50", textAlign: "center" }}>
-            Appointment Details
+          <Typography
+            variant="h5"
+            sx={{
+              mt: 2,
+              fontWeight: "bold",
+              color: "#f06292",
+              textAlign: "center",
+              borderBottom: "2px solid #f8bbd0",
+              paddingBottom: "8px",
+              textTransform: "uppercase",
+            }}
+          >
+            Manage User Appointments
           </Typography>
-          <Divider sx={{ mb: 2, width: "100%" }} />
 
-          {selectedAppointment && (
-            <>
-              <Box sx={{ mb: 2, textAlign: "center" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Title:
-                </Typography>
-                <Typography>{selectedAppointment.title}</Typography>
-              </Box>
+          <TableContainer sx={{ mt: 3 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={commonStyles.tableHeader}>ID</TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>User ID</TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>Date</TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>Time</TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>Status</TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {appointments.length > 0 ? (
+                  appointments.map((appointment) => (
+                    <TableRow key={appointment.id} sx={commonStyles.tableRow}>
+                      <TableCell>{appointment.id}</TableCell>
+                      <TableCell>{appointment.userId}</TableCell>
+                      <TableCell>
+                        {new Date(appointment.date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>{appointment.time}</TableCell>
+                      <TableCell>
+                        <Select
+                          value={appointment.status}
+                          onChange={(e) =>
+                            handleStatusUpdate(appointment.id, e.target.value)
+                          }
+                          sx={{
+                            height: "40px",
+                            borderRadius: "8px",
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#f8bbd0",
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#f06292",
+                            },
+                          }}
+                        >
+                          <MenuItem value="Pending">Pending</MenuItem>
+                          <MenuItem value="Confirmed">Confirmed</MenuItem>
+                          <MenuItem value="Cancelled">Cancelled</MenuItem>
+                          <MenuItem value="Completed">Completed</MenuItem>
+                        </Select>
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDelete(appointment.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} align="center">
+                      <Typography>No appointments found.</Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Container>
 
-              <Box sx={{ mb: 2, textAlign: "center" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Description:
-                </Typography>
-                <Typography>{selectedAppointment.description || "No description provided"}</Typography>
-              </Box>
-
-              <Box sx={{ mb: 2, textAlign: "center" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Appointment Date:
-                </Typography>
-                <Typography>{selectedAppointment.appointmentDate}</Typography>
-              </Box>
-
-              <Box sx={{ textAlign: "center", mt: 4 }}>
-                <Button variant="contained" sx={{ backgroundColor: "#4CAF50", color: "#fff" }} onClick={handleCloseModal}>
-                  Close
-                </Button>
-              </Box>
-            </>
-          )}
-        </Box>
-      </Modal>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

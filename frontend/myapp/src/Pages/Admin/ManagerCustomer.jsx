@@ -1,252 +1,277 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Pagination,
   Paper,
-  Typography,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Pagination,
-  Modal,
-  TextField,
+  Typography,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
-const ManageCustomer = () => {
+const ManagerCustomer = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [customers, setCustomers] = useState([]); // Đảm bảo là mảng
+  const [users, setUsers] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const customersPerPage = 5;
-  const [newCustomer, setNewCustomer] = useState({
-    id: "",
-    status: "",
-  });
-  const [startDate, setStartDate] = useState(null); // Ngày bắt đầu cho lọc
-  const [endDate, setEndDate] = useState(null); // Ngày kết thúc cho lọc
+  const usersPerPage = 5;
+  const [selectedUser, setSelectedUser] = useState(null);
 
-  // Fetch dữ liệu khách hàng
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const customerResponse = await axios.get(
-          "http://localhost:8080/user/customers"
-        );
-        // Kiểm tra kết quả trả về có phải là một mảng hay không
-        if (Array.isArray(customerResponse.data)) {
-          setCustomers(customerResponse.data);
-        } else {
-          setCustomers([]); // Nếu không phải mảng, đặt thành mảng rỗng
-        }
-      } catch (error) {
-        console.error("Error fetching customer data:", error);
-        setCustomers([]); // Đặt thành mảng rỗng nếu có lỗi
-      }
-    };
+  // API base URL
+  const API_BASE_URL = "http://localhost:5254";
 
-    fetchCustomers();
-  }, []);
-
-  // Cập nhật trạng thái khách hàng
-  const updateCustomer = async () => {
+  // Fetch users with userRole 1 (Customer) and 2 (Doctor)
+  const fetchUsers = async () => {
     try {
-      const response = await axios.put(
-        `http://localhost:8080/user/update-status/${newCustomer.id}`,
-        null,
-        {
-          params: {
-            status: newCustomer.status,
-          },
-        }
+      // Gọi API cho userRole 1 (Customer)
+      const customerParams = {
+        role: 1,
+        status: statusFilter !== "All" ? statusFilter : undefined,
+      };
+      const customerResponse = await axios.get(
+        `${API_BASE_URL}/api/Users/FilterRSTs`,
+        { params: customerParams }
       );
-      if (response.status === 200) {
-        const customerResponse = await axios.get(
-          "http://localhost:8080/user/customers"
-        );
-        setCustomers(customerResponse.data);
-        handleClose();
-      }
+
+      // Gọi API cho userRole 2 (Doctor)
+      const doctorParams = {
+        role: 2,
+        status: statusFilter !== "All" ? statusFilter : undefined,
+      };
+      const doctorResponse = await axios.get(
+        `${API_BASE_URL}/api/Users/FilterRSTs`,
+        { params: doctorParams }
+      );
+
+      // Kết hợp danh sách Customer và Doctor
+      const combinedUsers = [
+        ...customerResponse.data.map((user) => ({ ...user, userRole: 1 })),
+        ...doctorResponse.data.map((user) => ({ ...user, userRole: 2 })),
+      ];
+
+      // Log dữ liệu để kiểm tra
+      console.log("Combined Users:", combinedUsers);
+
+      setUsers(combinedUsers);
     } catch (error) {
-      console.error("Error updating customer:", error);
+      console.error("Error fetching users:", error);
     }
   };
 
-  const handleOpenEditModal = () => setOpenEditModal(true);
-  const handleClose = () => {
-    setOpenEditModal(false);
-    setNewCustomer({
-      id: "",
-      status: "",
-    });
+  // Fetch users on component mount and when filters change
+  useEffect(() => {
+    fetchUsers();
+  }, [statusFilter]);
+
+  // Update user status
+  const updateUserStatus = async () => {
+    if (!selectedUser) return;
+
+    try {
+      const newStatus =
+        selectedUser.status === "active" ? "inactive" : "active";
+      const response = await axios.put(
+        `${API_BASE_URL}/api/Users/Update/${selectedUser.id}`,
+        { ...selectedUser, status: newStatus }
+      );
+      if (response.status === 200) {
+        fetchUsers(); // Refresh the list
+        handleClose();
+      }
+    } catch (error) {
+      console.error("Error updating user status:", error);
+    }
   };
 
-  // Tính tổng số trang sau khi lọc
-  const totalPages = Math.ceil(
-    customers.filter((customer) => {
-      const customerDate = new Date(customer.registerDate);
-      const isStatusMatch =
-        statusFilter === "All" || String(customer.status) === statusFilter;
-      const isDateInRange =
-        (!startDate || customerDate >= startDate) &&
-        (!endDate || customerDate <= endDate);
+  // Open/close edit modal
+  const handleOpenEditModal = (user) => {
+    setSelectedUser(user);
+    setOpenEditModal(true);
+  };
 
-      return isStatusMatch && isDateInRange;
-    }).length / customersPerPage
+  const handleClose = () => {
+    setOpenEditModal(false);
+    setSelectedUser(null);
+  };
+
+  // Pagination and filtering logic
+  const filteredUsers = users; // Đã lọc trực tiếp từ API
+
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * usersPerPage,
+    currentPage * usersPerPage
   );
-
-  // Lọc và phân trang danh sách khách hàng
-  const paginatedCustomers = customers
-    .filter((customer) => {
-      const customerDate = new Date(customer.registerDate);
-      const isStatusMatch =
-        statusFilter === "All" || String(customer.status) === statusFilter;
-      const isDateInRange =
-        (!startDate || customerDate >= startDate) &&
-        (!endDate || customerDate <= endDate);
-
-      return isStatusMatch && isDateInRange;
-    })
-    .slice(
-      (currentPage - 1) * customersPerPage,
-      currentPage * customersPerPage
-    );
 
   return (
     <Box
       sx={{
         padding: 4,
-        backgroundColor: "#fff",
+        backgroundColor: "#fce4ec", // Soft pink background
         minHeight: "100vh",
         color: "#333",
+        fontFamily: "Roboto, sans-serif",
       }}
     >
-      <Typography variant="h4" fontWeight="bold" sx={{ mb: 2 }}>
-        Manage Customer Account
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        sx={{
+          mb: 3,
+          color: "#f06292", // Darker pink for title
+          textAlign: "center",
+          textTransform: "uppercase",
+          borderBottom: "2px solid #f8bbd0", // Light pink border
+          paddingBottom: "8px",
+        }}
+      >
+        Manage Customer & Doctor Accounts
       </Typography>
-
-      {/* Phần lọc */}
       <Box sx={{ mb: 2, display: "flex", gap: 2 }}>
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel>Status</InputLabel>
+          <InputLabel sx={{ color: "#333" }}>Status</InputLabel>
           <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
+            sx={{
+              backgroundColor: "#fff",
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#ccc" },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#f8bbd0",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#f8bbd0",
+              },
+              borderRadius: "8px",
+            }}
           >
             <MenuItem value="All">All</MenuItem>
-            <MenuItem value="true">Active</MenuItem>
-            <MenuItem value="false">Inactive</MenuItem>
+            <MenuItem value="active">Active</MenuItem>
+            <MenuItem value="inactive">Inactive</MenuItem>
           </Select>
         </FormControl>
-
-        {/* Bộ lọc thời gian đăng ký */}
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Start Date"
-            value={startDate}
-            onChange={(newValue) => setStartDate(newValue)}
-            renderInput={(params) => <TextField {...params} />}
-          />
-          <DatePicker
-            label="End Date"
-            value={endDate}
-            onChange={(newValue) => setEndDate(newValue)}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </LocalizationProvider>
       </Box>
-
-      {/* Bảng khách hàng */}
-      <TableContainer component={Paper} sx={{ backgroundColor: "#f5f5f5" }}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: "#4caf50", color: "#fff" }}>
-              <TableCell sx={{ color: "#fff" }}>No</TableCell>
-              <TableCell sx={{ color: "#fff" }}>Name</TableCell>
-              <TableCell sx={{ color: "#fff" }}>Email</TableCell>
-              <TableCell sx={{ color: "#fff" }}>Register Date</TableCell>
-              <TableCell sx={{ color: "#fff" }}>Status</TableCell>
-              <TableCell sx={{ color: "#fff" }}>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedCustomers.map((customer, index) => (
-              <TableRow key={customer.id}>
-                <TableCell>
-                  {(currentPage - 1) * customersPerPage + index + 1}
+      <Paper
+        sx={{
+          padding: 3,
+          backgroundColor: "#fff",
+          borderRadius: "12px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          border: "1px solid #f8bbd0", // Light pink border
+        }}
+      >
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#f48fb1" }}>
+                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                  No
                 </TableCell>
-                <TableCell>{customer.name}</TableCell>
-                <TableCell>{customer.email}</TableCell>
-                <TableCell>
-                  {new Date(customer.registerDate).toLocaleDateString()}
+                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                  Name
                 </TableCell>
-                <TableCell
-                  sx={{
-                    color: customer.status ? "#4CAF50" : "#F44336",
-                  }}
-                >
-                  {customer.status ? "Active" : "Inactive"}
+                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                  Email
                 </TableCell>
-                <TableCell>
-                  {customer.status ? (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      sx={{ backgroundColor: "#F44336" }}
-                      onClick={() => {
-                        setNewCustomer({
-                          id: customer.id,
-                          status: false,
-                        });
-                        handleOpenEditModal();
-                      }}
-                    >
-                      Disable
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      sx={{ backgroundColor: "#4CAF50" }}
-                      onClick={() => {
-                        setNewCustomer({
-                          id: customer.id,
-                          status: true,
-                        });
-                        handleOpenEditModal();
-                      }}
-                    >
-                      Active
-                    </Button>
-                  )}
+                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                  Role
+                </TableCell>
+                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                  Created At
+                </TableCell>
+                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                  Status
+                </TableCell>
+                <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                  Action
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Phân trang */}
+            </TableHead>
+            <TableBody>
+              {paginatedUsers.map((user, index) => (
+                <TableRow
+                  key={user.id}
+                  sx={{ "&:hover": { backgroundColor: "#fce4ec" } }}
+                >
+                  <TableCell>
+                    {(currentPage - 1) * usersPerPage + index + 1}
+                  </TableCell>
+                  <TableCell>{`${user.firstName || "N/A"} ${
+                    user.lastName || "N/A"
+                  }`}</TableCell>
+                  <TableCell>{user.email || "N/A"}</TableCell>
+                  <TableCell>
+                    {user.userRole === 1 ? "Customer" : "Doctor"}
+                  </TableCell>
+                  <TableCell>
+                    {user.createdAt
+                      ? new Date(user.createdAt).toLocaleDateString()
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: user.status === "active" ? "#4caf50" : "#f44336",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {user.status === "active" ? "Active" : "Inactive"}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor:
+                          user.status === "active" ? "#f44336" : "#f8bbd0",
+                        "&:hover": {
+                          backgroundColor:
+                            user.status === "active" ? "#d32f2f" : "#f06292",
+                        },
+                        borderRadius: "12px",
+                        padding: "4px 12px",
+                        textTransform: "none",
+                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                        color: user.status === "active" ? "#fff" : "#333",
+                      }}
+                      onClick={() => handleOpenEditModal(user)}
+                    >
+                      {user.status === "active" ? "Disable" : "Enable"}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
       <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
         <Pagination
           count={totalPages}
           page={currentPage}
           onChange={(event, value) => setCurrentPage(value)}
-          color="primary"
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "#f06292",
+              "&.Mui-selected": {
+                backgroundColor: "#f8bbd0",
+                color: "#333",
+              },
+            },
+          }}
         />
       </Box>
 
-      {/* Modal chỉnh sửa */}
+      {/* Modal for enabling/disabling user */}
       <Modal open={openEditModal} onClose={handleClose}>
         <Box
           sx={{
@@ -255,30 +280,58 @@ const ManageCustomer = () => {
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: "background.paper",
-            borderRadius: 1,
-            boxShadow: 24,
+            bgcolor: "#fff",
+            borderRadius: "16px",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)",
             p: 4,
+            border: "2px solid #f8bbd0", // Light pink border
           }}
         >
-          <Typography variant="h6" mb={2}>
-            {newCustomer.status
-              ? "Activate this account?"
-              : "Deactivate this account?"}
+          <Typography
+            variant="h6"
+            component="h2"
+            sx={{
+              mb: 3,
+              color: "#f06292", // Darker pink for title
+              fontWeight: "bold",
+              textAlign: "center",
+              borderBottom: "1px dashed #f8bbd0", // Light pink dashed border
+              paddingBottom: "8px",
+            }}
+          >
+            {selectedUser?.status === "active"
+              ? "Are you sure you want to disable this account?"
+              : "Are you sure you want to activate this account?"}
           </Typography>
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
             <Button
               variant="outlined"
               onClick={handleClose}
-              sx={{ color: "#F44336", borderColor: "#F44336" }}
+              sx={{
+                color: "#f44336",
+                borderColor: "#f44336",
+                borderRadius: "12px",
+                "&:hover": {
+                  borderColor: "#d32f2f",
+                  backgroundColor: "#ffebee",
+                },
+              }}
             >
               No
             </Button>
             <Button
-              type="submit"
               variant="contained"
-              sx={{ bgcolor: "#4CAF50" }}
-              onClick={updateCustomer}
+              sx={{
+                backgroundColor: "#f8bbd0", // Light pink button
+                "&:hover": { backgroundColor: "#f06292" }, // Darker pink on hover
+                borderRadius: "12px",
+                padding: "8px 20px",
+                textTransform: "none",
+                fontWeight: "bold",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                color: "#333",
+              }}
+              onClick={updateUserStatus}
             >
               Yes
             </Button>
@@ -289,4 +342,4 @@ const ManageCustomer = () => {
   );
 };
 
-export default ManageCustomer;
+export default ManagerCustomer;

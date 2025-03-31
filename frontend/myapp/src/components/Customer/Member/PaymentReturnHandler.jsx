@@ -98,8 +98,8 @@ function PaymentReturnHandler() {
               <div className="success-icon">✓</div>
             </div>
             <h3 className="text-center text-success">Payment Successful!</h3>
-            <p>Thank you for your payment.</p>
-            <p>We also be in contact with more details shortly</p>
+            <p className="text-center">Thank you for your payment.</p>
+            <p className="text-center">We also be in contact with more details shortly</p>
           </>
         );
       case "failed":

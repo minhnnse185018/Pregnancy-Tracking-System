@@ -5,9 +5,10 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import AboutUs from "./components/Customer/AboutUs/AboutUs";
 import { AuthProvider } from "./components/Customer/AuthContext";
+import BlogDetailsPage from "./components/Customer/BlogPage/BlogDetailsPage";
 import BlogPage from "./components/Customer/BlogPage/BlogPage";
 import BookAppointment from "./components/Customer/BookAppointment/BookAppointment";
-import MedicalAppointments from "./components/Customer/BookAppointment/ViewAppointment";
+import MedicalAppointments from "./components/Customer/BookAppointment/viewAppointment";
 import Contact from "./components/Customer/Contact/Contact";
 import UserProfile from "./components/Customer/CustomerProfile/CustomerProfile";
 import FetalGrowthTracker from "./components/Customer/FetalGrowthTracker/FetalGrowthTracker";
@@ -35,8 +36,7 @@ import ManagerPrivateRoute from "./components/PrivateRoute/ManagerPrivateRoute";
 import AdminLayout from "./Layouts/Admin/AdminLayout";
 import DoctorLayout from "./Layouts/Doctor/DoctorLayout";
 import ManagerLayout from "./Layouts/Manager/ManagerLayout";
-import AdminSalon from "./Pages/Admin/AdminBlog";
-import AdminPersonnel from "./Pages/Admin/AdminPersonnel";
+import AdminMemberPlan from "./Pages/Admin/AdminMemberPlan";
 import AdminProfilePage from "./Pages/Admin/AdminProfilePage";
 import ManageCustomer from "./Pages/Admin/ManagerCustomer";
 import DoctorChat from "./Pages/Doctor/DoctorChat";
@@ -45,12 +45,11 @@ import DoctorProfile from "./Pages/Doctor/DoctorProfile";
 import ManagerAppointments from "./Pages/Manager/ManagerAppointments";
 import ManagerBlogs from "./Pages/Manager/ManagerBlogs";
 import ManagerFAQs from "./Pages/Manager/ManagerFAQs";
-import ManagerPayroll from "./Pages/Manager/ManagerPayroll";
 import ManagerProfilePage from "./Pages/Manager/ManagerProfilePage";
+import ManagerReminders from "./Pages/Manager/ManagerReminders";
 import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
 import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
-import ManagerTransaction from "./Pages/Manager/ManagerTransaction";
 function App() {
   return (
     <div>
@@ -80,32 +79,42 @@ function App() {
               </>
             }
           />
-          <Route  path="/appointment" element={<CustomerPrivateRoute />} >
+          <Route path="/appointment" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <CustomerMembershipRoute />
+                  <Navbarr />
+                  <BookAppointment />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
+          <Route path="/blog" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <CustomerMembershipRoute />
+                  <Navbarr />
+                  <BlogPage />
+                  <Footer />
+                </>
+              }
+            />
+          </Route>
           <Route
-            path=""
+            path="/blog/:id"
             element={
               <>
-                <CustomerMembershipRoute/>
                 <Navbarr />
-                <BookAppointment />
+                <BlogDetailsPage />
                 <Footer />
               </>
             }
           />
-          </Route>
-          <Route  path="/blog" element={<CustomerPrivateRoute />} >
-          <Route
-            path=""
-            element={
-              <>
-                <CustomerMembershipRoute/>
-                <Navbarr />
-                <BlogPage />
-                <Footer />
-              </>
-            }
-          />
-          </Route>
           <Route
             path="/contact"
             element={
@@ -116,17 +125,17 @@ function App() {
               </>
             }
           />
-          <Route  path="/membership" element={<CustomerPrivateRoute />} >
-          <Route
-            path=""
-            element={
-              <>
-                <Navbarr />
-                <MembershipPage />
-                <Footer />
-              </>
-            }
-          />
+          <Route path="/membership" element={<CustomerPrivateRoute />}>
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <MembershipPage />
+                  <Footer />
+                </>
+              }
+            />
           </Route>
           <Route
             path="/payment-success"
@@ -148,19 +157,19 @@ function App() {
               </>
             }
           />
-          <Route  path="/growth-tracker"  >
-          <Route
-            path=""
-            element={
-              <>
-                
-                <Navbarr />
-                <FetalGrowthTracker />
-                <Footer />
-              </>
-            }
-          />
+          <Route path="/growth-tracker">
+            <Route
+              path=""
+              element={
+                <>
+                  <Navbarr />
+                  <FetalGrowthTracker />
+                  <Footer />
+                </>
+              }
+            />
           </Route>
+
           <Route
             path="/health-tips"
             element={
@@ -184,7 +193,7 @@ function App() {
               }
             />
           </Route>
-          <Route path="/profilePregnancy" element={<CustomerPrivateRoute />} >
+          <Route path="/profilePregnancy" element={<CustomerPrivateRoute />}>
             <Route
               path=""
               element={
@@ -196,7 +205,10 @@ function App() {
               }
             />
           </Route>
-          <Route  path="/create-pregnancy-profile" element={<CustomerPrivateRoute />} >
+          <Route
+            path="/create-pregnancy-profile"
+            element={<CustomerPrivateRoute />}
+          >
             <Route
               path=""
               element={
@@ -270,9 +282,8 @@ function App() {
           <Route path="/admin" element={<AdminPrivateRoute />}>
             <Route path="" element={<AdminLayout />}>
               <Route path="admin-profile" element={<AdminProfilePage />} />
-              <Route path="admin-personnel" element={<AdminPersonnel />} />
-              <Route path="admin-salon" element={<AdminSalon />} />
               <Route path="admin-customer" element={<ManageCustomer />} />
+              <Route path="admin-memberplan" element={<AdminMemberPlan />} />
             </Route>
           </Route>
           {/* DASHBOARD DOCTOR */}
@@ -290,11 +301,7 @@ function App() {
               <Route path="manager-profile" element={<ManagerProfilePage />} />
               <Route path="manager-faq" element={<ManagerFAQs />} />
               <Route path="manager-revenue" element={<ManageRevenuePage />} />
-              <Route path="manager-payroll" element={<ManagerPayroll />} />
-              <Route
-                path="manager-transaction"
-                element={<ManagerTransaction />}
-              />
+              <Route path="manager-reminders" element={<ManagerReminders />} />
               <Route path="manager-blog" element={<ManagerBlogs />} />
               <Route
                 path="view-appointments"
