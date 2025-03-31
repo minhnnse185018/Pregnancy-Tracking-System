@@ -1,0 +1,64 @@
+/* Contact.css */
+
+.ftco-section {
+  padding: 4em 0;
+  position: relative;
+}
+
+.heading-section {
+  font-size: 30px;
+  color: #333;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
+
+.contact-wrap {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 50px;
+}
+
+.contactForm .form-group {
+  margin-bottom: 20px;
+}
+
+.contactForm .form-control {
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  padding: 10px 15px;
+  height: auto;
+  box-shadow: none;
+}
+
+.contactForm .form-control:focus {
+  border-color: #6dbe45;
+  box-shadow: none;
+}
+
+.contactForm .btn-primary {
+  background: #6dbe45;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: #fff;
+  transition: background 0.3s;
+}
+
+.contactForm .btn-primary:hover {
+  background: #5aa73a;
+}
+
+.info-wrap {
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .info-wrap {
+    margin-top: 20px;
+  }
+}
