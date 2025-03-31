@@ -1,0 +1,218 @@
+/* Navbar Styles */
+.ftco-navbar-light {
+  position: relative;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  background-color: #ffffff !important;
+  padding: 15px 0;
+}
+
+/* Brand container styles */
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 200px;
+}
+
+/* Logo styles */
+.navbar-logo {
+  width: 60px !important;
+  height: 60px !important;
+  object-fit: contain;
+  user-select: none;
+}
+
+/* Brand text styles */
+.brand-text-link {
+  text-decoration: none !important;
+  transition: opacity 0.3s ease;
+}
+
+.brand-text {
+  color: #333;
+  font-size: 26px;
+  font-weight: 700;
+  user-select: none;
+  transition: color 0.3s ease;
+}
+
+.brand-text-link:hover .brand-text {
+  color: #ff69b4;
+}
+
+/* Navigation center styles */
+.nav-center {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  gap: 10px;
+}
+
+.nav-link {
+  color: #555 !important;
+  font-size: 17px !important;
+  padding: 0.5rem 0.8rem !important;
+  font-weight: 600 !important;
+  position: relative;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.nav-link:hover {
+  color: #ff69b4 !important;
+}
+
+/* Auth section styles */
+.nav-auth {
+  min-width: 160px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Hamburger button styles */
+.navbar-toggler {
+  border: none;
+  color: #555 !important;
+  padding: 0.25rem 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  background-color: transparent;
+  cursor: pointer !important; /* Đảm bảo con trỏ tay */
+  z-index: 1001; /* Đặt trên các phần tử khác */
+  position: relative;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.navbar-toggler .fa-bars {
+  color: #555;
+  font-size: 24px;
+}
+
+/* Logout link styles */
+.logout-link {
+  color: #dc3545 !important;
+}
+
+.logout-link:hover {
+  color: #c82333 !important;
+}
+
+/* Center the navbar collapse */
+.navbar-collapse {
+  justify-content: space-between;
+  flex-grow: 2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .ftco-navbar-light {
+    padding: 10px 0;
+  }
+
+  .brand-container {
+    min-width: auto;
+  }
+
+  .navbar-logo {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .brand-text {
+    font-size: 24px;
+  }
+
+  .navbar-collapse {
+    background: #fff;
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none; /* Ẩn mặc định */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+
+  .navbar-collapse.show {
+    display: block; /* Hiển thị khi toggle */
+  }
+
+  .nav-link {
+    padding: 10px 15px !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+
+  .nav-link:last-child {
+    border-bottom: none;
+  }
+
+  .nav-center {
+    margin: 0;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-auth {
+    justify-content: center;
+    margin-top: 10px;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Animation for navbar on scroll */
+.ftco-navbar-light.scrolled {
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  background: #fff !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effects */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #ff69b4;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 50%;
+}
+
+/* Shadow effect */
+.shadow-sm {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Container adjustments */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Dropdown menu styles */
+.MuiMenuItem-root {
+  display: flex;
+  align-items: center;
+}
+
+.MuiListItemIcon-root {
+  min-width: 30px; /* Khoảng cách giữa icon và text */
+}

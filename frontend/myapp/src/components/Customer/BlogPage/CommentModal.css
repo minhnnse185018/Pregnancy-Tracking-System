@@ -1,0 +1,118 @@
+/* Baby Mom Theme for Comment Modal */
+
+/* Background overlay with a soft pattern */
+.modal-overlay {
+  margin-top: 20px;
+  
+}
+
+/* Modal content with baby theme colors */
+.modal-content {
+  background-color: #fff;
+  border: 2px solid #ffcad4;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(255, 182, 193, 0.3);
+}
+
+/* Modal title with baby theme */
+.modal-content h2 {
+  color: #f08080;
+  font-family: 'Comic Sans MS', 'Marker Felt', cursive;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.modal-content h2:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(to right, #ffcad4, #ffc8dd, #ffcad4);
+  border-radius: 3px;
+}
+
+/* Textarea with baby theme */
+.modal-content textarea {
+  border: 2px dashed #ffcad4;
+  background-color: #fff9fa;
+  transition: all 0.3s ease;
+}
+
+.modal-content textarea:focus {
+  border: 2px solid #ffcad4;
+  box-shadow: 0 0 0 4px rgba(255, 202, 212, 0.3);
+  background-color: #fff;
+}
+
+/* Placeholder styling */
+.modal-content textarea::placeholder {
+  color: #ffb6c1;
+  font-family: 'Comic Sans MS', 'Marker Felt', cursive;
+  opacity: 0.7;
+  font-size: 0.95rem;
+}
+
+/* Button styling */
+.submit-comment-btn {
+  background-color: #ffb6c1;
+  color: white;
+  font-family: 'Comic Sans MS', 'Marker Felt', cursive;
+  border-radius: 15px;
+}
+
+.submit-comment-btn:hover {
+  background-color: #f08080;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(240, 128, 128, 0.3);
+}
+
+.cancel-comment-btn {
+  background-color: #f0f0f0;
+  color: #f08080;
+  font-family: 'Comic Sans MS', 'Marker Felt', cursive;
+  border-radius: 15px;
+}
+
+.cancel-comment-btn:hover {
+  background-color: #e6e6e6;
+  color: #e57373;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Add some baby-themed decorative elements */
+.modal-content:before {
+  content: "👶";
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  font-size: 24px;
+  transform: rotate(-15deg);
+}
+
+.modal-content:after {
+  content: "🍼";
+  position: absolute;
+  top: -15px;
+  right: 20px;
+  font-size: 24px;
+  transform: rotate(15deg);
+}
+
+/* Make the animation more playful */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  70% {
+    transform: translateY(-10px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

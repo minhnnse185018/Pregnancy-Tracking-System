@@ -1,0 +1,388 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #fce4ec 0%, #fff 100%);
+  color: #333;
+}
+
+/* App Wrapper */
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: transparent; /* Ensure the wrapper doesn't override the global background */
+}
+
+/* Header Styles */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ff8c94; /* Soft pink for the logo */
+}
+
+.logo span {
+  margin-right: 8px;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: #5c4b7d; /* Muted purple for links */
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-menu a:hover {
+  color: #ff8c94;
+}
+
+/* Main Content */
+main {
+  flex: 1;
+  padding: 40px;
+  background: linear-gradient(135deg, #fce4ec 0%, #fff 100%); /* Ensure main doesn't override the global background */
+}
+
+/* Tracker Container */
+.tracker-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.tracker-title {
+  font-size: 2rem;
+  color: #ff8c94;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Input Group */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.9rem;
+  color: #5c4b7d;
+  margin-bottom: 8px;
+}
+
+.input-group select,
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e0dede;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #f9f5f8;
+  transition: border-color 0.3s ease;
+}
+
+.input-group select:focus,
+.input-group input:focus {
+  outline: none;
+  border-color: #ff8c94;
+}
+
+/* Guest View */
+.guest-note {
+  font-size: 0.9rem;
+  color: #757575;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-prompt {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #757575;
+}
+
+.login-prompt button {
+  background: none;
+  border: none;
+  color: #ff8c94;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.login-prompt button:hover {
+  color: #ff6f7a;
+}
+
+/* Create Profile Button */
+.create-profile-button {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 24px;
+  background-color: #ff8c94;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-profile-button:hover {
+  background-color: #ff6f7a;
+}
+
+/* Table Wrapper (for horizontal scrolling) */
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 30px;
+}
+
+/* Fetal Data Table (Compact) */
+.fetal-data-table {
+  width: 100%;
+  min-width: 900px; /* Reduced min-width to make table more compact */
+  border-collapse: collapse;
+}
+
+.fetal-data-table th,
+.fetal-data-table td {
+  padding: 6px 8px; /* Reduced padding for compactness */
+  text-align: left;
+  font-size: 0.8rem; /* Smaller font size */
+}
+
+.fetal-data-table th {
+  background-color: #f9f5f8;
+  color: #5c4b7d;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.fetal-data-table td {
+  border-bottom: 1px solid #e0dede;
+  color: #333;
+  white-space: nowrap;
+}
+
+.fetal-data-table tr:hover {
+  background-color: rgba(255, 140, 148, 0.05);
+}
+
+.fetal-data-table button {
+  padding: 4px 8px; /* Smaller buttons */
+  margin-right: 4px; /* Reduced margin */
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem; /* Smaller font size */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fetal-data-table button:first-child {
+  background-color: #b493d3;
+  color: #fff;
+}
+
+.fetal-data-table button:first-child:hover {
+  background-color: #a07cc5;
+}
+
+.fetal-data-table button:last-child {
+  background-color: #ff6f7a;
+  color: #fff;
+}
+
+.fetal-data-table button:last-child:hover {
+  background-color: #ff4f5a;
+}
+
+/* Chart Wrapper */
+.chart-wrapper {
+  margin-top: 30px;
+}
+
+.chart-description {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.chart-description .trend {
+  font-size: 0.9rem;
+  color: #ff8c94;
+  font-weight: 600;
+}
+
+.chart-description .details {
+  font-size: 0.8rem;
+  color: #757575;
+}
+
+/* Download Chart Button (Restyled) */
+.download-button {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #ff8c94; /* Match the app's primary color */
+  color: #fff;
+  border: none;
+  border-radius: 20px; /* Rounded corners */
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.download-button:hover {
+  background-color: #ff6f7a; /* Slightly darker shade on hover */
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.download-button:active {
+  transform: translateY(0); /* Reset lift on click */
+}
+
+/* Form Container */
+.form-container {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f9f5f8;
+  border-radius: 12px;
+}
+
+.form-container h2 {
+  font-size: 1.5rem;
+  color: #ff8c94;
+  margin-bottom: 20px;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Container */
+.modal-container {
+  width: 100%;
+  max-width: 400px;
+  background-color: #fff5f8;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-container h2 {
+  font-size: 1.3rem;
+  color: #ff8c94;
+  margin-bottom: 15px;
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  color: #5c4b7d;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e0dede;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #ff8c94;
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: none;
+}
+
+/* Form Actions (Updated for Save and Cancel) */
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-direction: row-reverse; /* Reverse order to put Cancel on the right */
+}
+
+.form-actions .cancel-button,
+.form-actions .save-button {
+  flex: 1; /* Equal width for both buttons */
+  padding: 8px 0; /* Equal padding for consistent height */
+  border: none;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+
+.form-actions .cancel-button {
+  background-color: #e0dede;
+  color: #333;
+}
+
+.form-actions .cancel-button:hover {
+  background-color: #d0caca;
+}
+
+.form-actions .save-button {
+  background-color: #ff8c94;
+  color: #fff;
+}
+
+.form-actions .save-button:hover {
+  background-color: #ff6f7a;
+}

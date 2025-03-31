@@ -1,102 +1,177 @@
-import React, { useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
-import './MembershipPage.css';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import "./MembershipPage.css";
 
 function MembershipPage() {
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [error, setError] = useState(null);
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userMemberships, setUserMemberships] = useState([]);
 
-  const handleClose = () => {
-    setShowSuccessModal(false);
-    setShowErrorModal(false);
+  useEffect(() => {
+    fetchMembershipPlans();
+    handleCheckMembershipPlan();
+  }, []);
+
+  const fetchMembershipPlans = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5254/api/MembershipPlan/GetAllPlans"
+      );
+      const formattedPlans = response.data.map((plan) => ({
+        id: plan.id,
+        name: plan.planName,
+        price: plan.price,
+        duration: `${plan.duration} months`,
+        benefits: plan.description
+          .split('",\r\n')
+          .map((desc) => desc.replace(/["\r\n]/g, "").trim())
+          .filter((desc) => desc !== ""),
+      }));
+      setPlans(formattedPlans);
+    } catch (err) {
+      setError("Failed to load membership plans");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handlePurchase = (cost) => {
-    const userBalance = 500000; // Example user balance, replace with actual balance check
+  const handleCheckMembershipPlan = async () => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      console.log("User not logged in");
+      return;
+    }
 
-    if (userBalance >= cost) {
-      setShowSuccessModal(true);
-    } else {
-      setShowErrorModal(true);
+    try {
+      const response = await axios.get(
+        `http://localhost:5254/api/Membership/user/${userId}`
+      );
+      setUserMemberships(response.data);
+    } catch (err) {
+      console.error("Failed to fetch user memberships:", err);
+    }
+  };
+
+  const hasPurchasedPlan = (planId) => {
+    return userMemberships.some(
+      (membership) =>
+        membership.planId === planId && membership.status === "Active"
+    );
+  };
+
+  const getButtonText = (planId) => {
+    if (hasPurchasedPlan(planId)) {
+      return "Currently Subscribed";
+    }
+    return "Join Now";
+  };
+
+  const handleJoinPlan = async (plan) => {
+    const userId = sessionStorage.getItem("userID");
+    if (!userId) {
+      alert("Please log in to proceed with the payment!");
+      return;
+    }
+
+    try {
+      // Step 1: Create a pending membership
+      const currentDate = new Date().toISOString();
+      const membershipResponse = await axios.post(
+        "http://localhost:5254/api/Membership/purchase",
+        {
+          userId: parseInt(userId),
+          planId: plan.id,
+          startDate: currentDate,
+        }
+      );
+
+      console.log("Membership created:", membershipResponse.data);
+
+      // Step 2: Create payment after membership is created
+      const membershipId =
+        membershipResponse.data.id || membershipResponse.data.membershipId;
+
+      if (!membershipId) {
+        console.error(
+          "Failed to get membership ID from response:",
+          membershipResponse.data
+        );
+        alert("Error creating membership. Please try again.");
+        return;
+      }
+
+      const paymentResponse = await axios.post(
+        "http://localhost:5254/api/payment",
+        {
+          membershipId: membershipId,
+          amount: plan.price,
+          paymentDescription: `Payment for ${plan.name}`,
+        }
+      );
+
+      console.log("Payment response:", paymentResponse.data);
+
+      // Handle the payment URL response
+      if (
+        paymentResponse.data &&
+        typeof paymentResponse.data === "string" &&
+        paymentResponse.data.includes("vnpayment.vn")
+      ) {
+        // If response.data is a URL string, use it directly
+        window.location.href = paymentResponse.data;
+      } else if (paymentResponse.data && paymentResponse.data.vnpayUrl) {
+        // If response.data is an object with vnpayUrl property
+        window.location.href = paymentResponse.data.vnpayUrl;
+      } else {
+        alert("Failed to get payment URL!");
+      }
+    } catch (error) {
+      console.error("Payment process error:", error);
+      alert("An error occurred during the payment process. Please try again!");
     }
   };
 
   return (
     <div className="membership-container">
-      <h1 className="membership-title">Chọn gói nâng cấp</h1>
-      <p className="membership-description">Để sử dụng đầy đủ các chức năng của diễn đàn, hãy chọn các gói dịch vụ phù hợp với bạn để có thể sử dụng đầy đủ các quyền lợi và chức năng của diễn đàn.</p>
-      
-      <div className="membership-plans">
-        <div className="membership-plan">
-          <h2>BABYCARE MEMBER</h2>
-          <p>38,000đ cho 1 tháng</p>
-          <ul>
-            <li>Được truy cập hơn 2,000 đề tài có ích</li>
-            <li>Hiển thị đầy đủ các link ẩn</li>
-            <li>Comment và chat không giới hạn</li>
-          </ul>
-          <Button onClick={() => handlePurchase(38000)}>Mua ngay</Button>
-        </div>
-        <div className="membership-plan">
-          <h2>BABYCARE VIP</h2>
-          <p>200,000đ cho 8 tháng</p>
-          <ul>
-            <li>Toàn quyền của gói Member</li>
-            <li>Không quảng cáo</li>
-            <li>Xem chủ đề mới nhất của diễn đàn</li>
-          </ul>
-          <Button onClick={() => handlePurchase(200000)}>Mua ngay</Button>
-        </div>
-        <div className="membership-plan">
-          <h2>BABYCARE NOVA</h2>
-          <p>650,000đ cho 4 năm</p>
-          <ul>
-            <li>Toàn quyền của gói VIP</li>
-            <li>Không quảng cáo</li>
-            <li>Xem chủ đề mới nhất của diễn đàn</li>
-            <li>Sử dụng chức năng đặt biệt</li>
-          </ul>
-          <Button onClick={() => handlePurchase(650000)}>Mua ngay</Button>
-        </div>
-      </div>
-      
-      <h3 className="payment-method-title">Phương thức thanh toán</h3>
-      <p className="payment-method-description">Bạn có thể nạp BABYCARE Point qua tài khoản ngân hàng hoặc quét mã QR code để nạp tiền.</p>
-      
-      <div className="payment-methods">
-        <p><strong>CHỦ TÀI KHOẢN:</strong> NGUYEN VAN A</p>
-        <p><strong>SỐ TK:</strong> babycare.com</p>
-        <p><strong>NGÂN HÀNG:</strong> MB</p>
-        <p><strong>NỘI DUNG CHUYỂN KHOẢN:</strong> NAP306046BABY</p>
-        <img src="images/QRCode.png" alt="QR Code" className="qr-code" />   
-        <p><strong>Mệnh giá BABYCARE Point:</strong> 1,000 Baby Point = 1,000 VND</p>
-      </div>
+      <h1 className="membership-title">Join the Journey with Mom and Baby</h1>
+      <p className="membership-description">
+        Choose a suitable membership plan to access exclusive materials, expert
+        advice, and connect with the mom community!
+      </p>
 
-      {/* Success Modal */}
-      <Modal show={showSuccessModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Thanh toán thành công</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Bạn đã mua thành công gói dịch vụ!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Đóng
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* Error Modal */}
-      <Modal show={showErrorModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Thanh toán thất bại</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Bạn không đủ số dư để mua gói dịch vụ này.</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Đóng
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="error-message">{error}</p>
+      ) : (
+        <div className="membership-plans">
+          {plans.map((plan) => (
+            <div key={plan.id} className="membership-plan">
+              <h2>{plan.name}</h2>
+              <p>
+                <strong>Price:</strong> {plan.price.toLocaleString()}đ
+              </p>
+              <p>
+                <strong>Duration:</strong> {plan.duration}
+              </p>
+              <ul>
+                {plan.benefits.map((benefit, i) => (
+                  <li key={i}>{benefit}</li>
+                ))}
+              </ul>
+              <Button
+                onClick={() => handleJoinPlan(plan)}
+                disabled={hasPurchasedPlan(plan.id)}
+                variant={hasPurchasedPlan(plan.id) ? "success" : "primary"}
+              >
+                {getButtonText(plan.id)}
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
