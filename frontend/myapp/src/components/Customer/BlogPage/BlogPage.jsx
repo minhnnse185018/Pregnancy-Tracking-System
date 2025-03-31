@@ -1,8 +1,8 @@
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
 import "./BlogPage.css";
 import CommentModal from "./CommentModal";
-
+import { Link } from "react-router-dom";
 function CommunityPosts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,6 +12,7 @@ function CommunityPosts() {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const [showComments, setShowComments] = useState(false);
+
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
@@ -19,20 +20,29 @@ function CommunityPosts() {
   const [imagePreview, setImagePreview] = useState(null);
   const [uploadingPost, setUploadingPost] = useState(false);
 
+  // Toast state
   const [toasts, setToasts] = useState([]);
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
+  // Show toast notification function
   const showToast = (message, type = "success", icon = "✅") => {
     const id = Date.now();
-    const newToast = { id, message, type, icon };
+    const newToast = {
+      id,
+      message,
+      type,
+      icon,
+    };
+
     setToasts((prev) => [...prev, newToast]);
-    setTimeout(
-      () => setToasts((prev) => prev.filter((toast) => toast.id !== id)),
-      3000
-    );
+
+    // Auto hide toast after 3 seconds
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 3000);
   };
 
   const fetchPosts = async () => {
@@ -79,10 +89,12 @@ function CommunityPosts() {
     }
   };
 
+  // Image handling functions - simplified like in code 1
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setNewPostImage(file);
+      // Create a preview URL for the image
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -93,25 +105,43 @@ function CommunityPosts() {
       showToast("You are not logged in. Please log in first!", "warning", "⚠️");
       return;
     }
-    if (!newPostTitle.trim() || !newPostContent.trim()) {
-      showToast("Post title and content cannot be empty!", "warning", "⚠️");
+    if (!newPostTitle.trim()) {
+      showToast("Post title cannot be empty!", "warning", "⚠️");
+      return;
+    }
+    if (!newPostContent.trim()) {
+      showToast("Post content cannot be empty!", "warning", "⚠️");
       return;
     }
 
     try {
       setUploadingPost(true);
+
+      // Create FormData object to send the file and other post data
       const formData = new FormData();
       formData.append("userId", userId);
       formData.append("title", newPostTitle);
       formData.append("content", newPostContent);
-      if (newPostImage) formData.append("image", newPostImage);
 
-      await axios.post("http://localhost:5254/api/Post", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // Add the image file if it exists - simplified approach like in code 1
+      if (newPostImage) {
+        formData.append("image", newPostImage);
+      }
+
+      // Send the formData to your backend API
+      const response = await axios.post(
+        "http://localhost:5254/api/Post",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       showToast("Post created successfully!", "success", "✍️");
       setShowCreatePostModal(false);
+      // Reset form fields
       setNewPostTitle("");
       setNewPostContent("");
       setNewPostImage(null);
@@ -125,27 +155,7 @@ function CommunityPosts() {
     }
   };
 
-  const handleDeletePost = async (postId) => {
-    const userId = sessionStorage.getItem("userID");
-    if (!userId) {
-      showToast("You are not logged in. Please log in first!", "warning", "⚠️");
-      return;
-    }
-
-    if (window.confirm("Are you sure you want to delete this post?")) {
-      try {
-        await axios.delete(`http://localhost:5254/api/Post/${postId}`, {
-          headers: { "Content-Type": "application/json" },
-        });
-        showToast("Post deleted successfully!", "success", "🗑️");
-        fetchPosts();
-      } catch (error) {
-        console.error("Error deleting post:", error);
-        showToast("Failed to delete post. Please try again.", "error", "❌");
-      }
-    }
-  };
-
+  // Clear image preview and file
   const handleRemoveImage = () => {
     setNewPostImage(null);
     setImagePreview(null);
@@ -155,120 +165,76 @@ function CommunityPosts() {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div className="community-container pregnant-theme">
-      <div className="toast-container">
-        {toasts.map((toast) => (
-          <div key={toast.id} className={`custom-toast ${toast.type}`}>
-            <div className="toast-header">
-              <span className="toast-icon">{toast.icon}</span>
-              <span className="toast-title">Notification</span>
-              <button
-                className="toast-close"
-                onClick={() =>
-                  setToasts((prev) => prev.filter((t) => t.id !== toast.id))
-                }
-              >
-                ×
-              </button>
-            </div>
-            <div className="toast-body">{toast.message}</div>
-          </div>
-        ))}
+    <div className="blog-container">
+      <div className="blog-header">
+        <h1 className="blog-title">Community Blog</h1>
+        <button
+          className="create-post-btn"
+          onClick={() => setShowCreatePostModal(true)}
+        >
+          <i className="fas fa-plus"></i> Create Post
+        </button>
       </div>
 
-      <div className="posts-header">
-        <h1 className="posts-title">Posts in my group</h1>
-      </div>
-      <button
-        onClick={() => setShowCreatePostModal(true)}
-        className="create-post-btn"
-      >
-        ✍️ Create New Post
-      </button>
-      <div className="posts-container">
-        {posts.length === 0 ? (
-          <p>No Posts Yet.</p>
-        ) : (
-          posts.map((post) => (
-            <div key={post.id} className="post-card">
-              <div className="post-content">
-                <div className="post-user">
-                  <div className="post-info">
-                    <p className="post-metadata">
-                      Post by:{" "}
-                      <span className="author-name">{post.userName}</span>
-                    </p>
-                    <h2 className="post-title">Title: {post.title}</h2>
-                  </div>
-                </div>
-                <p className="post-text">Content: {post.content}</p>
-                {post.image && (
-                  <div className="post-image-container">
-                    <img src={post.image} alt="Post" className="post-image" />
-                  </div>
+      {loading ? (
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <p>Loading posts...</p>
+        </div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
+      ) : (
+        <div className="blog-posts-grid">
+          {posts.length === 0 ? (
+            <div className="no-posts-message">
+              <p>No posts yet. Be the first to share something!</p>
+            </div>
+          ) : (
+            posts.map((post) => (
+              <div className="blog-card" key={post.id}>
+                {post.image ? (
+                  <Link to={`/blog/${post.id}`} className="blog-card-image">
+                    <img src={post.image} alt={post.title} />
+                  </Link>
+                ) : (
+                  <Link
+                    to={`/blog/${post.id}`}
+                    className="blog-card-placeholder"
+                  >
+                    <i className="far fa-image"></i>
+                  </Link>
                 )}
-                <div className="post-stats">
-                  <span className="post-time">
-                    Created At: {new Date(post.createdAt).toLocaleDateString()}
-                  </span>
-                  <div className="interaction-stats">
-                    <button
-                      onClick={() => {
-                        setSelectedPost(post);
-                        setShowComments(!showComments);
-                      }}
-                      className="view-comments-btn"
-                    >
-                      💬 View Comments ({post.commentCount})
-                    </button>
-                    {String(post.userId) ===
-                      String(sessionStorage.getItem("userID")) && (
-                      <button
-                        onClick={() => handleDeletePost(post.id)}
-                        className="delete-post-btn"
-                      >
-                        🗑️ Delete
-                      </button>
-                    )}
+                <div className="blog-card-content">
+                  <div className="blog-meta">
+                    <span className="blog-author">
+                      <i className="far fa-user"></i> {post.userName || "Admin"}
+                    </span>
+                    <span className="blog-date">
+                      <i className="far fa-calendar-alt"></i>{" "}
+                      {new Date(post.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
                   </div>
+                  <h3 className="blog-card-title">
+                    <Link to={`/blog/${post.id}`}>{post.title}</Link>
+                  </h3>
+                  <p className="blog-card-excerpt">
+                    {post.content.length > 120
+                      ? post.content.substring(0, 120) + "..."
+                      : post.content}
+                  </p>
+                  <Link to={`/blog/${post.id}`} className="read-more-link">
+                    readMore <i className="fas fa-arrow-right"></i>
+                  </Link>
                 </div>
-                {showComments && selectedPost?.id === post.id && (
-                  <div className="comments-section">
-                    <h3>Comments</h3>
-                    {post.comments && post.comments.length > 0 ? (
-                      post.comments.map((comment) => (
-                        <div key={comment.id} className="comment">
-                          <div className="comment-header">
-                            <span className="comment-author">
-                              {comment.userName}
-                            </span>
-                            <span className="comment-date">
-                              {new Date(comment.createdAt).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <p className="comment-content">{comment.content}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <p>No comments yet</p>
-                    )}
-                    <button
-                      onClick={() => {
-                        setShowModal(true);
-                        setSelectedPostId(post.id);
-                      }}
-                      className="add-comment-btn"
-                    >
-                      💬 Leave Comment
-                    </button>
-                  </div>
-                )}
               </div>
-            </div>
-          ))
-        )}
-      </div>
-
+            ))
+          )}
+        </div>
+      )}
       <CommentModal
         showModal={showModal}
         setShowModal={setShowModal}
@@ -277,6 +243,7 @@ function CommunityPosts() {
         handleAddComment={handleAddComment}
       />
 
+      {/* Create Post Modal - Simplified like in code 1 */}
       {showCreatePostModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -294,6 +261,8 @@ function CommunityPosts() {
               onChange={(e) => setNewPostContent(e.target.value)}
               className="post-textarea"
             />
+
+            {/* Image upload section - simplified like in code 1 */}
             <div className="image-upload-section">
               <input
                 type="file"
@@ -301,12 +270,15 @@ function CommunityPosts() {
                 onChange={handleImageChange}
                 className="image-upload-input"
               />
+
+              {/* Image preview */}
               {imagePreview && (
                 <div className="image-preview-container">
                   <img
                     src={imagePreview}
                     alt="Preview"
                     className="image-preview"
+                    style={{ width: "300px" }}
                   />
                   <button
                     onClick={handleRemoveImage}
@@ -317,6 +289,7 @@ function CommunityPosts() {
                 </div>
               )}
             </div>
+
             <div className="modal-actions">
               <button
                 onClick={handleCreatePost}

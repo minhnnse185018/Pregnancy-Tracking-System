@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   CardContent,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -16,6 +17,7 @@ import {
   InputLabel,
   MenuItem,
   Modal,
+  Paper,
   Select,
   Snackbar,
   TextField,
@@ -70,8 +72,12 @@ const ManagerFAQs = () => {
   // Lấy danh sách FAQ
   const fetchFAQs = async () => {
     try {
-      const response = await axios.get("http://localhost:5254/api/FAQ/GetAllFAQs");
-      const sortedFAQs = response.data.sort((a, b) => a.displayOrder - b.displayOrder);
+      const response = await axios.get(
+        "http://localhost:5254/api/FAQ/GetAllFAQs"
+      );
+      const sortedFAQs = response.data.sort(
+        (a, b) => a.displayOrder - b.displayOrder
+      );
       setFaqs(sortedFAQs);
     } catch (error) {
       console.error("Error fetching FAQs:", error);
@@ -91,7 +97,6 @@ const ManagerFAQs = () => {
   const handleSearch = async () => {
     try {
       if (searchKeyword.trim()) {
-        // Tìm kiếm theo câu hỏi hoặc danh mục
         const response = await axios.get(
           `http://localhost:5254/api/FAQ/GetFAQsByCategory/${searchKeyword}`
         );
@@ -112,7 +117,6 @@ const ManagerFAQs = () => {
 
     try {
       if (currentFAQ) {
-        // Cập nhật FAQ
         const faqId = parseInt(currentFAQ.id, 10);
         await axios.put(`http://localhost:5254/api/FAQ/UpdateFAQ/${faqId}`, {
           question,
@@ -122,7 +126,6 @@ const ManagerFAQs = () => {
         });
         showSnackbar("FAQ updated successfully!", "success");
       } else {
-        // Thêm FAQ mới
         await axios.post("http://localhost:5254/api/FAQ/CreateFAQ", {
           question,
           category,
@@ -174,7 +177,10 @@ const ManagerFAQs = () => {
       closeDeleteModal();
       showSnackbar("FAQ deleted successfully!", "success");
     } catch (error) {
-      console.error("Error deleting FAQ:", error.response?.data || error.message);
+      console.error(
+        "Error deleting FAQ:",
+        error.response?.data || error.message
+      );
       showSnackbar("Failed to delete FAQ.", "error");
     }
   };
@@ -185,263 +191,420 @@ const ManagerFAQs = () => {
       faq.category.toLowerCase().includes(searchKeyword.toLowerCase())
   );
 
-  return (
-    <Box sx={{ padding: 4, backgroundColor: "#fff", minHeight: "100vh" }}>
-      <Button
-        variant="contained"
-        sx={{
-          backgroundColor: "#4CAF50",
-          mb: 2,
-          "&:hover": { backgroundColor: "#388E3C" },
-        }}
-        onClick={handleOpen}
-      >
-        Add FAQ
-      </Button>
-      <TextField
-        fullWidth
-        label="Search FAQs by Question or Category"
-        variant="outlined"
-        value={searchKeyword}
-        onChange={handleSearchChange}
-        onKeyPress={(e) => {
-          if (e.key === "Enter") handleSearch();
-        }}
-        sx={{ mb: 2 }}
-      />
-      <Grid container spacing={2}>
-        {filteredFAQs.map((faq) => (
-          <Grid item xs={12} md={4} key={faq.id}>
-            <Card
-              sx={{
-                height: 250,
-                position: "relative",
-                overflow: "hidden",
-                borderRadius: 2,
-                boxShadow: 2,
-                transition: "transform 0.3s, box-shadow 0.3s",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: 5,
-                  cursor: "pointer",
-                },
-              }}
-            >
-              <CardContent
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  padding: 2,
-                  backgroundColor: "#f9f9f9",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#4CAF50",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {faq.question}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    mb: 1,
-                  }}
-                >
-                  {faq.answer}
-                </Typography>
-                <Typography variant="caption" color="textSecondary">
-                  Category: {faq.category}
-                </Typography>
-                <Typography variant="caption" color="textSecondary">
-                  Display Order: {faq.displayOrder}
-                </Typography>
-                <Box
-                  sx={{
-                    position: "absolute",
-                    bottom: 8,
-                    right: 8,
-                    display: "flex",
-                    gap: 1,
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    size="small"
-                    sx={{
-                      backgroundColor: "#4CAF50",
-                      "&:hover": { backgroundColor: "#388E3C" },
-                    }}
-                    onClick={() => handleEditFAQ(faq)}
-                  >
-                    Edit
-                  </Button>
-                  <IconButton
-                    color="error"
-                    onClick={() => openDeleteModal(faq)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+  const commonStyles = {
+    button: {
+      backgroundColor: "#f8bbd0",
+      "&:hover": { backgroundColor: "#f06292" },
+      borderRadius: "12px",
+      padding: "8px 20px",
+      textTransform: "none",
+      fontWeight: "bold",
+      color: "#fff",
+    },
+    card: {
+      height: 250,
+      position: "relative",
+      overflow: "hidden",
+      borderRadius: "12px",
+      boxShadow: 2,
+      transition: "transform 0.3s, box-shadow 0.3s",
+      "&:hover": {
+        transform: "translateY(-5px)",
+        boxShadow: 5,
+        cursor: "pointer",
+        backgroundColor: "#ffebee", // Hover effect similar to table row
+      },
+    },
+    cardContent: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      padding: 2,
+      backgroundColor: "#fce4ec", // Match table row background
+      height: "100%",
+    },
+  };
 
-      {/* Modal Thêm/Chỉnh sửa FAQ */}
-      <Modal open={open} onClose={handleClose}>
-        <Box
+  return (
+    <Box
+      sx={{
+        backgroundColor: "transparent", // Let global gradient show through
+        minHeight: "100vh",
+        display: "flex",
+        padding: 4,
+      }}
+    >
+      <Container maxWidth="lg">
+        <Paper
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 500,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
+            borderRadius: "12px",
+            padding: 3,
+            boxShadow: 3,
           }}
         >
-          <Typography variant="h6" mb={2}>
-            {currentFAQ ? "Edit FAQ" : "Add New FAQ"}
-          </Typography>
-          <Formik
-            initialValues={{
-              question: currentFAQ?.question || "",
-              category: currentFAQ?.category || "",
-              answer: currentFAQ?.answer || "",
-              displayOrder: currentFAQ?.displayOrder || 0,
+          <Typography
+            variant="h5"
+            sx={{
+              mt: 2,
+              fontWeight: "bold",
+              color: "#f06292",
+              textAlign: "center",
+              borderBottom: "2px solid #f8bbd0",
+              paddingBottom: "8px",
+              textTransform: "uppercase",
             }}
-            validationSchema={FAQSchema}
-            onSubmit={handleSaveFAQ}
           >
-            {({ isSubmitting, setFieldValue }) => (
-              <Form>
-                <Field
-                  as={TextField}
-                  fullWidth
-                  name="question"
-                  label="Question"
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-                <ErrorMessage
-                  name="question"
-                  component="div"
-                  style={{ color: "red" }}
-                />
+            Manage FAQs
+          </Typography>
 
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                  <InputLabel>Category</InputLabel>
-                  <Field
-                    as={Select}
-                    name="category"
-                    label="Category"
-                    onChange={(e) => setFieldValue("category", e.target.value)}
-                  >
-                    {categories.map((cat) => (
-                      <MenuItem key={cat} value={cat}>
-                        {cat}
-                      </MenuItem>
-                    ))}
-                  </Field>
-                  <ErrorMessage
-                    name="category"
-                    component="div"
-                    style={{ color: "red" }}
-                  />
-                </FormControl>
+          <Button
+            variant="contained"
+            sx={{
+              ...commonStyles.button,
+              mt: 2,
+              mb: 2,
+            }}
+            onClick={handleOpen}
+          >
+            Add FAQ
+          </Button>
 
-                <Field
-                  as={TextField}
-                  fullWidth
-                  name="answer"
-                  label="Answer"
-                  multiline
-                  rows={4}
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-                <ErrorMessage
-                  name="answer"
-                  component="div"
-                  style={{ color: "red" }}
-                />
+          <TextField
+            fullWidth
+            label="Search FAQs by Question or Category"
+            variant="outlined"
+            value={searchKeyword}
+            onChange={handleSearchChange}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
+            sx={{
+              mb: 2,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "12px",
+                "& fieldset": {
+                  borderColor: "#f8bbd0",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#f06292",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#f06292",
+                },
+              },
+            }}
+          />
 
-                <Field
-                  as={TextField}
-                  fullWidth
-                  name="displayOrder"
-                  label="Display Order"
-                  type="number"
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-                <ErrorMessage
-                  name="displayOrder"
-                  component="div"
-                  style={{ color: "red" }}
-                />
-
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{ mt: 2, backgroundColor: "#4CAF50" }}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Saving..." : "Save"}
-                </Button>
-              </Form>
+          <Grid container spacing={2} sx={{ mt: 3 }}>
+            {filteredFAQs.length > 0 ? (
+              filteredFAQs.map((faq) => (
+                <Grid item xs={12} md={4} key={faq.id}>
+                  <Card sx={commonStyles.card}>
+                    <CardContent sx={commonStyles.cardContent}>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: "bold",
+                          color: "#f06292", // Match title color
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {faq.question}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "normal",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: "vertical",
+                          mb: 1,
+                        }}
+                      >
+                        {faq.answer}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        Category: {faq.category}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        Display Order: {faq.displayOrder}
+                      </Typography>
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          bottom: 8,
+                          right: 8,
+                          display: "flex",
+                          gap: 1,
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          size="small"
+                          sx={{
+                            ...commonStyles.button,
+                            fontSize: "0.75rem",
+                            padding: "4px 10px",
+                          }}
+                          onClick={() => handleEditFAQ(faq)}
+                        >
+                          Edit
+                        </Button>
+                        <IconButton
+                          color="error"
+                          onClick={() => openDeleteModal(faq)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <Typography textAlign="center">No FAQs found.</Typography>
+              </Grid>
             )}
-          </Formik>
-        </Box>
-      </Modal>
+          </Grid>
 
-      {/* Dialog Xác nhận Xóa */}
-      <Dialog open={deleteModalOpen} onClose={closeDeleteModal}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this FAQ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDeleteModal} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteFAQ} color="error" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+          {/* Modal Thêm/Chỉnh sửa FAQ */}
+          <Modal open={open} onClose={handleClose}>
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 500,
+                bgcolor: "#fce4ec", // Match background color
+                boxShadow: 24,
+                p: 4,
+                borderRadius: "12px", // Match rounded corners
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                  color: "#f06292",
+                  textAlign: "center",
+                }}
+              >
+                {currentFAQ ? "Edit FAQ" : "Add New FAQ"}
+              </Typography>
+              <Formik
+                initialValues={{
+                  question: currentFAQ?.question || "",
+                  category: currentFAQ?.category || "",
+                  answer: currentFAQ?.answer || "",
+                  displayOrder: currentFAQ?.displayOrder || 0,
+                }}
+                validationSchema={FAQSchema}
+                onSubmit={handleSaveFAQ}
+              >
+                {({ isSubmitting, setFieldValue }) => (
+                  <Form>
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      name="question"
+                      label="Question"
+                      variant="outlined"
+                      sx={{
+                        mb: 2,
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px",
+                          "& fieldset": {
+                            borderColor: "#f8bbd0",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#f06292",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#f06292",
+                          },
+                        },
+                      }}
+                    />
+                    <ErrorMessage
+                      name="question"
+                      component="div"
+                      style={{ color: "red", fontSize: "0.875rem" }}
+                    />
 
-      {/* Snackbar Thông báo */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <InputLabel sx={{ color: "#f06292" }}>
+                        Category
+                      </InputLabel>
+                      <Field
+                        as={Select}
+                        name="category"
+                        label="Category"
+                        onChange={(e) =>
+                          setFieldValue("category", e.target.value)
+                        }
+                        sx={{
+                          borderRadius: "12px",
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#f8bbd0",
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#f06292",
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#f06292",
+                          },
+                        }}
+                      >
+                        {categories.map((cat) => (
+                          <MenuItem key={cat} value={cat}>
+                            {cat}
+                          </MenuItem>
+                        ))}
+                      </Field>
+                      <ErrorMessage
+                        name="category"
+                        component="div"
+                        style={{ color: "red", fontSize: "0.875rem" }}
+                      />
+                    </FormControl>
+
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      name="answer"
+                      label="Answer"
+                      multiline
+                      rows={4}
+                      variant="outlined"
+                      sx={{
+                        mb: 2,
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px",
+                          "& fieldset": {
+                            borderColor: "#f8bbd0",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#f06292",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#f06292",
+                          },
+                        },
+                      }}
+                    />
+                    <ErrorMessage
+                      name="answer"
+                      component="div"
+                      style={{ color: "red", fontSize: "0.875rem" }}
+                    />
+
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      name="displayOrder"
+                      label="Display Order"
+                      type="number"
+                      variant="outlined"
+                      sx={{
+                        mb: 2,
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px",
+                          "& fieldset": {
+                            borderColor: "#f8bbd0",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#f06292",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#f06292",
+                          },
+                        },
+                      }}
+                    />
+                    <ErrorMessage
+                      name="displayOrder"
+                      component="div"
+                      style={{ color: "red", fontSize: "0.875rem" }}
+                    />
+
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{
+                        ...commonStyles.button,
+                        mt: 2,
+                      }}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Saving..." : "Save"}
+                    </Button>
+                  </Form>
+                )}
+              </Formik>
+            </Box>
+          </Modal>
+
+          {/* Dialog Xác nhận Xóa */}
+          <Dialog open={deleteModalOpen} onClose={closeDeleteModal}>
+            <DialogTitle sx={{ color: "#f06292", textAlign: "center" }}>
+              Confirm Delete
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText sx={{ color: "#333" }}>
+                Are you sure you want to delete this FAQ?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={closeDeleteModal}
+                sx={{
+                  ...commonStyles.button,
+                  backgroundColor: "#e0dede",
+                  color: "#333",
+                  "&:hover": { backgroundColor: "#d0caca" },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDeleteFAQ}
+                sx={{
+                  ...commonStyles.button,
+                  backgroundColor: "#ff6f7a",
+                  "&:hover": { backgroundColor: "#ff4f5a" },
+                }}
+                autoFocus
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Snackbar Thông báo */}
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={3000}
+            onClose={() => setSnackbarOpen(false)}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <Alert
+              onClose={() => setSnackbarOpen(false)}
+              severity={snackbarSeverity}
+              sx={{ width: "100%" }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
+        </Paper>
+      </Container>
     </Box>
   );
 };

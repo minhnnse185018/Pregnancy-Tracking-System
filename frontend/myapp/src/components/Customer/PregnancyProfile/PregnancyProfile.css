@@ -4,8 +4,9 @@
   margin: 0 auto;
   padding: 20px;
   font-family: 'Nunito', 'Arial', sans-serif;
-  background-color: #fcf8ff;
+  background-color: #ffe2ff;
   position: relative;
+  border-radius: 20px;
 }
 
 .pregnancy-container::before {
@@ -20,6 +21,7 @@
   background-size: 100px;
   opacity: 0.1;
   z-index: -1;
+  border-radius: 20px;
 }
 
 .pregnancy-title {

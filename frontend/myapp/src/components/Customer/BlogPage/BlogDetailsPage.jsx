@@ -149,7 +149,7 @@ function BlogDetailsPage() {
       </div>
 
       <div className="posts-header">
-        <button onClick={handleGoBack} className="back-button">
+        <button onClick={handleGoBack} className="back-button" style={{textAlign: "center"}}>
           ← Back to Posts
         </button>
         <h1 className="posts-title">Post Details</h1>

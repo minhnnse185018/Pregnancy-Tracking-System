@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #f9f5f8; /* Soft pink background */
+  background: linear-gradient(135deg, #fce4ec 0%, #fff 100%);
   color: #333;
 }
 
@@ -16,6 +16,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: transparent; /* Ensure the wrapper doesn't override the global background */
 }
 
 /* Header Styles */
@@ -60,13 +61,14 @@ body {
 main {
   flex: 1;
   padding: 40px;
+  background: linear-gradient(135deg, #fce4ec 0%, #fff 100%); /* Ensure main doesn't override the global background */
 }
 
 /* Tracker Container */
 .tracker-container {
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #fff;
+  background: #fff;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -240,6 +242,30 @@ main {
 .chart-description .details {
   font-size: 0.8rem;
   color: #757575;
+}
+
+/* Download Chart Button (Restyled) */
+.download-button {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #ff8c94; /* Match the app's primary color */
+  color: #fff;
+  border: none;
+  border-radius: 20px; /* Rounded corners */
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.download-button:hover {
+  background-color: #ff6f7a; /* Slightly darker shade on hover */
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.download-button:active {
+  transform: translateY(0); /* Reset lift on click */
 }
 
 /* Form Container */
