@@ -48,7 +48,7 @@
 body {
   font-family: var(--font-family);
   color: var(--color-gray-800);
-  background-color: var(--color-primary-bg);
+  background: linear-gradient(135deg, #fce4ec 0%, #fff 100%) !important;
 }
 
 body.dark {
@@ -57,6 +57,8 @@ body.dark {
 }
 
 .app-container {
+  background: linear-gradient(135deg, #fce4ec 0%, #fff 100%);
+
   margin-top: 85px;
   position: relative;
   min-height: 100vh;
