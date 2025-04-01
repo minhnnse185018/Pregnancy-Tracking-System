@@ -17,6 +17,8 @@ const ViewAppointment = () => {
   });
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // New state for delete modal
+  const [appointmentToDelete, setAppointmentToDelete] = useState(null); // Track appointment to delete
   const [statusOptions] = useState(["Scheduled", "Reminded"]); // For display only
   const [currentPage, setCurrentPage] = useState(1);
   const appointmentsPerPage = 5;
@@ -160,30 +162,42 @@ const ViewAppointment = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this appointment?")) {
-      try {
-        const response = await axios.delete(
-          `http://localhost:5254/api/appointments/delete/${id}`,
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-        if (response.status === 200) {
-          toast.success("Appointment deleted successfully!");
-          fetchAppointments();
-          setShowViewModal(false);
-        } else {
-          toast.error("Unexpected response from server.");
+  const handleDeleteClick = (appointment) => {
+    setAppointmentToDelete(appointment);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!appointmentToDelete) return;
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:5254/api/appointments/delete/${appointmentToDelete.id}`,
+        {
+          headers: { "Content-Type": "application/json" },
         }
-      } catch (error) {
-        toast.error(
-          `Error deleting appointment: ${
-            error.response?.data?.message || error.message
-          }`
-        );
+      );
+      if (response.status === 200) {
+        toast.success("Appointment deleted successfully!");
+        fetchAppointments();
+        setShowViewModal(false);
+        setShowDeleteModal(false);
+        setAppointmentToDelete(null);
+      } else {
+        toast.error("Unexpected response from server.");
       }
+    } catch (error) {
+      toast.error(
+        `Error deleting appointment: ${
+          error.response?.data?.message || error.message
+        }`
+      );
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setAppointmentToDelete(null);
   };
 
   const indexOfLastAppointment = currentPage * appointmentsPerPage;
@@ -209,7 +223,7 @@ const ViewAppointment = () => {
             margin: 0 auto;
             margin-top: 100px;
             font-family: 'Georgia', serif;
-            background: #fff5f7;
+            background: transparent; /* Let global gradient show through */
             border-radius: 20px;
             box-shadow: 0 4px 15px rgba(240, 98, 146, 0.1);
           }
@@ -484,6 +498,57 @@ const ViewAppointment = () => {
           .va-cancel-btn:hover {
             background: #bbb;
           }
+
+          .va-delete-modal-content {
+            background: #fff7f9;
+            padding: 25px;
+            border-radius: 20px;
+            width: 400px;
+            box-shadow: 0 6px 20px rgba(240, 98, 146, 0.25);
+            border: 1px solid #f8bbd0;
+            text-align: center;
+          }
+
+          .va-delete-modal-content p {
+            color: #880e4f;
+            font-size: 18px;
+            margin-bottom: 20px;
+          }
+
+          .va-delete-modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+          }
+
+          .va-delete-modal-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+          }
+
+          .va-delete-modal-actions button:nth-child(1) {
+            background: #f06292;
+            color: #fff;
+          }
+
+          .va-delete-modal-actions button:nth-child(1):hover {
+            background: #d81b60;
+          }
+
+          .va-delete-modal-actions button:nth-child(2) {
+            background: #ccc;
+            color: #333;
+          }
+
+          .va-delete-modal-actions button:nth-child(2):hover {
+            background: #bbb;
+          }
         `}
       </style>
 
@@ -599,7 +664,7 @@ const ViewAppointment = () => {
               <button onClick={() => handleEditClick(selectedAppointment)}>
                 Edit
               </button>
-              <button onClick={() => handleDelete(selectedAppointment.id)}>
+              <button onClick={() => handleDeleteClick(selectedAppointment)}>
                 Delete
               </button>
               <button onClick={() => setShowViewModal(false)}>Close</button>
@@ -674,6 +739,18 @@ const ViewAppointment = () => {
                 Cancel
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <div className="va-modal">
+          <div className="va-delete-modal-content">
+            <p>Are you sure you want to delete?</p>
+            <div className="va-delete-modal-actions">
+              <button onClick={handleDeleteConfirm}>Delete</button>
+              <button onClick={handleDeleteCancel}>Cancel</button>
+            </div>
           </div>
         </div>
       )}
