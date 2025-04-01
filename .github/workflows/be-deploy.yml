@@ -1,4 +1,4 @@
-name: be-auto-deploy
+name: be-deploy
 on:
   push:
     branches:
