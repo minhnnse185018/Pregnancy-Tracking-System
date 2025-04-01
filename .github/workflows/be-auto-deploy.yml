@@ -1,17 +1,21 @@
 name: main-auto-build
+
 on:
   push:
     branches:
       - "main"
     paths:
       - "backend/**"
+  # Thêm workflow_dispatch nếu bạn muốn chạy thủ công
+  workflow_dispatch: {}
+
 jobs:
   build-check:
     runs-on: ubuntu-latest
     steps:
       - name: checking allow to build
         run: |
-          if [ ${{secrets.BUILD}} == ACTIVE ]
+          if [ ${{ secrets.BUILD }} == "ACTIVE" ]
           then
             echo '------------------- ready to deploy --------------------'
           else
@@ -35,16 +39,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
         id: buildx
+
       - name: Build and Push for Server
         uses: docker/build-push-action@v2
         id: docker_build_server
         with:
           context: ./back_end
           file: ./back_end/Dockerfile
-          builder: ${{steps.buildx.outputs.name}}
+          builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/pregnency-tracking-system:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/pregnancy-tracking-system:latest
+
       - name: Verify
         run: |
-          echo ${{steps.docker_build_server.outputs.digest}}
+          echo ${{ steps.docker_build_server.outputs.digest }}
           echo 'Build done, ready to deploy'
