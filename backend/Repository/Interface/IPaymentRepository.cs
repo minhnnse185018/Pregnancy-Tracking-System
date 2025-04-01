@@ -7,5 +7,6 @@ namespace backend.Repository.Interface
     {
         string CreatePaymentUrl(CreatePaymentDTO model, HttpContext context);
         Payment PaymentExecute(IQueryCollection collections);
+        Task<Payment> SavePaymentAsync(Payment payment);
     }
 }
