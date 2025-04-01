@@ -5,7 +5,6 @@ on:
       - "main"
     paths:
       - "backend/**"
-    workflow_dispatch:
 jobs:
   build-check:
     runs-on: ubuntu-latest
