@@ -68,3 +68,175 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+🌟 Introduction
+The Baby Growth Tracking System provides an intuitive interface for expectant mothers to monitor pregnancy progression and baby development. This application offers comprehensive tools for tracking growth milestones, managing healthcare appointments, and accessing expert advice throughout the pregnancy journey.
+
+✨ Features
+🤰 Pregnancy Tracking
+Pregnancy Profile: Create and update personal pregnancy information
+Due Date Tracking: Monitor important dates and milestones
+
+👶 Baby Development
+Growth Charts: Visualize baby's progress
+Weight and Height Tracking: Monitor growth patterns
+
+🏥 Healthcare Management
+Appointment Scheduler: Book and manage doctor visits
+Health Records: Access and store medical information
+
+💬 Community Support
+Pregnancy Forums: Connect with other mothers
+Health Tips: Access expert advice
+
+💎 Membership System
+Premium Membership: Access to exclusive content and features
+Subscription Management: Upgrade and manage your membership plans
+
+💳 VNPay Payment Integration
+Secure Payments: Process membership payments through VNPay sandbox
+Transaction Verification: Confirm successful payment transactions
+
+👤 User Management
+Customer Profile: Manage personal information
+Authentication: Secure login and registration system
+Contact Form: Easily get in touch with support team
+
+📞 Contact
+For support or inquiries, please contact:
+Email: support@babygrowthtracker.com
+Phone: +84 123 456 789
+
+🚀 Getting Started
+Prerequisites
+Node.js (v14.0.0 or later)
+npm (v6.0.0 or later)
+
+frontend/myapp/
+│
+├── public/                   # Static files
+│   ├── favicon.ico           # Site favicon
+│   ├── index.html            # Main HTML file
+│   ├── manifest.json         # Web app manifest
+│   ├── robots.txt            # Robots file
+│   └── assets/               # Static assets
+│       └── images/           # Image resources
+│
+├── src/                      # Source code
+│   ├── components/           # Reusable components
+│   │   ├── Customer/         # Customer-specific components
+│   │   │   ├── BookAppointment/
+│   │   │   │   ├── BookAppointment.jsx    # Schedule appointments
+│   │   │   │   ├── BookAppointment.css    # Appointment booking styles
+│   │   │   │   ├── viewAppointment.jsx    # View existing appointments
+│   │   │   │   └── viewAppointment.css    # Appointment viewing styles
+│   │   │   │
+│   │   │   ├── Contact/
+│   │   │   │   ├── Contact.jsx            # Contact form
+│   │   │   │   └── Contact.css            # Contact form styles
+│   │   │   │
+│   │   │   ├── CustomerProfile/
+│   │   │   │   ├── CustomerProfile.jsx    # User profile management
+│   │   │   │   ├── CustomerProfile.css    # Profile styles
+│   │   │   │   ├── handleUploadFile.jsx   # Profile image upload
+│   │   │   │   └── ProfileDetails.jsx     # User details display
+│   │   │   │
+│   │   │   ├── Login/
+│   │   │   │   ├── Login.jsx              # User login
+│   │   │   │   ├── Login.css              # Login styles
+│   │   │   │   ├── Register.jsx           # User registration
+│   │   │   │   ├── Register.css           # Registration styles
+│   │   │   │   ├── ForgotPassword.jsx     # Password recovery
+│   │   │   │   └── ResetPassword.jsx      # Password reset
+│   │   │   │
+│   │   │   ├── Payment/
+│   │   │   │   ├── VNPayCheckout.jsx      # VNPay payment gateway
+│   │   │   │   ├── PaymentCallback.jsx    # Payment verification
+│   │   │   │   └── PaymentHistory.jsx     # Transaction records
+│   │   │   │
+│   │   │   └── PregnancyProfile/
+│   │   │       ├── PregnancyProfile.jsx   # Pregnancy information
+│   │   │       ├── PregnancyTracker.jsx   # Weekly development tracking
+│   │   │       ├── MilestoneTracker.jsx   # Developmental milestones
+│   │   │       └── PregnancyProfile.css   # Pregnancy profile styles
+│   │   │
+│   │   ├── Common/           # Common UI components
+│   │   │   ├── Navbar/
+│   │   │   │   ├── Navbar.jsx           # Navigation component
+│   │   │   │   └── Navbar.css           # Navigation styles
+│   │   │   │
+│   │   │   ├── Footer/
+│   │   │   │   ├── Footer.jsx           # Footer component
+│   │   │   │   └── Footer.css           # Footer styles
+│   │   │   │
+│   │   │   ├── LoadingSpinner.jsx       # Loading animation
+│   │   │   ├── Button.jsx               # Reusable button component
+│   │   │   ├── Modal.jsx                # Modal dialog component
+│   │   │   └── ErrorBoundary.jsx        # Error handling component
+│   │   │
+│   │   └── Doctor/          # Doctor-specific components
+│   │       ├── DoctorProfile.jsx        # Doctor profile display
+│   │       ├── AppointmentManagement.jsx # Doctor appointment view
+│   │       └── PrescriptionForm.jsx     # Create prescriptions
+│   │
+│   ├── Pages/                # Page components
+│   │   ├── Home/
+│   │   │   ├── Home.jsx      # Landing page
+│   │   │   ├── Home.css      # Landing page styles
+│   │   │   ├── Features.jsx  # Features section
+│   │   │   └── Testimonials.jsx # User testimonials
+│   │   │
+│   │   ├── Manager/
+│   │   │   ├── ManagerDashboard.jsx     # Admin dashboard
+│   │   │   ├── ManagerBlogs.jsx         # Blog management
+│   │   │   ├── ManagerBlogs.css         # Blog styles
+│   │   │   ├── ManagerSchedule.jsx      # Schedule management
+│   │   │   ├── ManagerSchedule.css      # Schedule styles
+│   │   │   ├── UserManagement.jsx       # User account management
+│   │   │   └── Statistics.jsx           # System statistics
+│   │   │
+│   │   ├── Customer/
+│   │   │   ├── CustomerDashboard.jsx    # User dashboard
+│   │   │   ├── AppointmentPage.jsx      # Appointment management
+│   │   │   ├── MembershipPage.jsx       # Membership options
+│   │   │   └── ResourceCenter.jsx       # Educational resources
+│   │   │
+│   │   └── Error/
+│   │       ├── NotFound.jsx             # 404 page
+│   │       └── ServerError.jsx          # 500 page
+│   │
+│   ├── services/             # API services
+│   │   ├── authService.js    # Authentication service
+│   │   ├── appointmentService.js # Appointment service
+│   │   ├── profileService.js # Profile management
+│   │   ├── paymentService.js # Payment processing
+│   │   ├── pregnancyService.js # Pregnancy data
+│   │   └── api.js            # Base API configuration
+│   │
+│   ├── utils/                # Utility functions
+│   │   ├── dateUtils.js      # Date formatting utilities
+│   │   ├── validation.js     # Form validation helpers
+│   │   ├── formatter.js      # Text and number formatters
+│   │   └── localStorage.js   # Browser storage helpers
+│   │
+│   ├── contexts/             # React contexts
+│   │   ├── AuthContext.js    # Authentication context
+│   │   └── ThemeContext.js   # Theme management
+│   │
+│   ├── hooks/                # Custom React hooks
+│   │   ├── useAuth.js        # Authentication hook
+│   │   ├── useForm.js        # Form handling hook
+│   │   └── useApi.js         # API request hook
+│   │
+│   ├── App.js                # Main app component
+│   ├── App.css               # Main app styles
+│   ├── index.js              # Entry point
+│   ├── index.css             # Global styles
+│   └── routes.js             # Application routes
+│
+├── .env                      # Environment variables
+├── .env.development          # Development environment variables
+├── .env.production           # Production environment variables
+├── package.json              # Project dependencies
+├── package-lock.json         # Dependency lock file
+└── README.md                 # Documentation

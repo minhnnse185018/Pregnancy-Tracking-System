@@ -51,43 +51,15 @@
 .posts-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  margin-bottom: 20px;
-}
-
-.header-left {
-  flex: 0 0 auto;
-  margin-right: 30px;
-}
-
-.header-center {
-  flex: 1;
-}
-
-.title-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
 }
 
 .posts-title {
+  color: #ff69b4;
+  margin: 0 auto;
   font-size: 28px;
-  font-weight: 600;
-  color: #ff6b9b;
-  margin: 0 0 20px 0;
-  position: relative;
-}
-
-.posts-title:after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background-color: var(--primary-color);
+  text-align: center;
 }
 
 .post-detail-container {
@@ -392,7 +364,6 @@
 
   .posts-title {
     margin: 15px 0;
-    text-align: center;
   }
 
   .post-card.detail-view {

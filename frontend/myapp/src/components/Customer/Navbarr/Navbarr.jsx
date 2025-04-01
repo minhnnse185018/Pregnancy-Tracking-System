@@ -2,7 +2,15 @@ import EventIcon from "@mui/icons-material/Event";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import { Badge, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material";
+import {
+  Badge,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
@@ -267,7 +275,11 @@ export default function Navbarr() {
       <div className="container">
         <div className="brand-container">
           <Link className="brand-text-link" to="/">
-            <img className="navbar-logo" src="/images/logo.png" alt="MomCare Logo" />
+            <img
+              className="navbar-logo"
+              src="/images/logo.png"
+              alt="MomCare Logo"
+            />
             <span className="brand-text">Mom & Baby</span>
           </Link>
         </div>
@@ -284,17 +296,27 @@ export default function Navbarr() {
         </button>
 
         <div
-          className={`collapse navbar-collapse nav-center ${isMenuOpen ? "show" : ""}`}
+          className={`collapse navbar-collapse nav-center ${
+            isMenuOpen ? "show" : ""
+          }`}
           id="ftco-nav"
         >
           <ul className="navbar-nav">
             <li className="nav-item">
-              <Link to="/" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                to="/"
+                className="nav-link"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Home
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/about" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                to="/about"
+                className="nav-link"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 About Us
               </Link>
             </li>
@@ -315,32 +337,56 @@ export default function Navbarr() {
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
               >
-                <MenuItem onClick={() => { handleCloseServiceMenu(); setIsMenuOpen(false); }}>
+                <MenuItem
+                  onClick={() => {
+                    handleCloseServiceMenu();
+                    setIsMenuOpen(false);
+                  }}
+                >
                   <ListItemIcon>
                     <TrendingUpIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>
-                    <Link to="/growth-tracker" style={{ textDecoration: "none", color: "inherit" }}>
+                    <Link
+                      to="/growth-tracker"
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
                       Growth Tracker
                     </Link>
                   </ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => { handleCloseServiceMenu(); setIsMenuOpen(false); }}>
+                <MenuItem
+                  onClick={() => {
+                    handleCloseServiceMenu();
+                    setIsMenuOpen(false);
+                  }}
+                >
                   <ListItemIcon>
                     <EventIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>
-                    <Link to="/appointment" style={{ textDecoration: "none", color: "inherit" }}>
+                    <Link
+                      to="/appointment"
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
                       Book Appointment
                     </Link>
                   </ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => { handleCloseServiceMenu(); setIsMenuOpen(false); }}>
+                <MenuItem
+                  onClick={() => {
+                    handleCloseServiceMenu();
+                    setIsMenuOpen(false);
+                  }}
+                >
                   <ListItemIcon>
                     <HealthAndSafetyIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>
-                    <Link to="/health-tips" style={{ textDecoration: "none", color: "inherit" }}>
+                    <Link
+                      to="/health-tips"
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
                       Health Tips
                     </Link>
                   </ListItemText>
@@ -348,19 +394,31 @@ export default function Navbarr() {
               </Menu>
             </li>
             <li className="nav-item">
-              <Link to="/membership" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                to="/membership"
+                className="nav-link"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Member
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/blog" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                to="/blog"
+                className="nav-link"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Blog
               </Link>
-            </li>
+            {/* </li>
             <li className="nav-item">
-              <Link to="/contact" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                to="/contact"
+                className="nav-link"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Contact
-              </Link>
+              </Link> */}
             </li>
           </ul>
         </div>
@@ -370,8 +428,17 @@ export default function Navbarr() {
             <>
               <UserIconDropdown onClick={() => setIsMenuOpen(false)} />
               <Tooltip title="Open notifications">
-                <IconButton onClick={(e) => { handleOpenNotificationMenu(e); setIsMenuOpen(false); }}>
-                  <Badge color="error" variant="dot" invisible={unreadCount === 0}>
+                <IconButton
+                  onClick={(e) => {
+                    handleOpenNotificationMenu(e);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <Badge
+                    color="error"
+                    variant="dot"
+                    invisible={unreadCount === 0}
+                  >
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>

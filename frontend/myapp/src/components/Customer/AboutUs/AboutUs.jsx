@@ -7,7 +7,11 @@ const HeroSection = styled.section`
   width: 100%;
   height: 80vh;
   overflow: hidden;
-  background: linear-gradient(135deg, #fff0f5 0%, #fce4e8 100%); /* Gradient nhẹ nhàng */
+  background: linear-gradient(
+    135deg,
+    #fff0f5 0%,
+    #fce4e8 100%
+  ); /* Gradient nhẹ nhàng */
 `;
 
 const HeroBackground = styled.div`
@@ -17,7 +21,7 @@ const HeroBackground = styled.div`
   width: 100%;
   height: 100%;
   z-index: 1;
-  background-image: url('/images/swiper5.png'); /* Hình nền tĩnh từ Maincontent */
+  background-image: url("/images/swiper5.png"); /* Hình nền tĩnh từ Maincontent */
   background-size: cover;
   background-position: center;
   filter: brightness(0.85); /* Mờ nhẹ để nổi bật chữ */
@@ -34,15 +38,15 @@ const HeroContainer = styled.div`
 `;
 
 const HeroTitle = styled.h1`
-  color: #FF8989; /* Màu hồng mới */
+  color: #ff8989; /* Màu hồng mới */
   font-size: 3.5rem;
   text-shadow: 2px 2px 8px rgba(236, 219, 219, 0.6);
   margin-bottom: 20px;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 `;
 
 const HeroDescription = styled.p`
-  color: #FF8989; /* Màu hồng mới */
+  color: #ff8989; /* Màu hồng mới */
   font-size: 1.6rem;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
   max-width: 600px;
@@ -55,7 +59,7 @@ const ServicesSection = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  color: #FF8989; /* Màu hồng mới */
+  color: #ff8989; /* Màu hồng mới */
   font-size: 2.5rem;
   text-shadow: 2px 2px 6px rgba(11, 140, 196, 0.4);
   text-align: center;
@@ -66,7 +70,7 @@ const ServiceCard = styled.div`
   display: flex;
   align-items: center;
   padding: 20px;
-  background: linear-gradient(135deg, #fff0f5 0%, #fce4e8 100%); /* Gradient nhẹ */
+  background: linear-gradient(135deg, #fce4ec 0%, #fff 100%);
   border-radius: 15px;
   margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -84,7 +88,7 @@ const ServiceIcon = styled.img`
 `;
 
 const ServiceTitle = styled.h3`
-  color: #FF8989; /* Màu hồng mới */
+  color: #ff8989; /* Màu hồng mới */
   font-size: 1.6rem;
   margin-bottom: 10px;
 `;
@@ -95,7 +99,11 @@ const ServiceDescription = styled.p`
 `;
 
 const StatsSection = styled.section`
-  background: linear-gradient(135deg, #ffb6c1 0%, #f8c1cc 100%); /* Gradient hồng đậm */
+  background: linear-gradient(
+    135deg,
+    #ffb6c1 0%,
+    #f8c1cc 100%
+  ); /* Gradient hồng đậm */
   padding: 40px 0;
 `;
 
@@ -111,7 +119,7 @@ const StatNumber = styled.h2`
 `;
 
 const StatLabel = styled.p`
-  color: #FF8989; /* Màu hồng mới */
+  color: #ff8989; /* Màu hồng mới */
   font-size: 1.3rem;
 `;
 
@@ -125,7 +133,8 @@ const AboutUs = () => {
           <div>
             <HeroTitle>About Mom & Baby</HeroTitle>
             <HeroDescription>
-              We are your trusted companion, offering warm support and helpful information for your motherhood journey.
+              We are your trusted companion, offering warm support and helpful
+              information for your motherhood journey.
             </HeroDescription>
           </div>
         </HeroContainer>
@@ -139,22 +148,26 @@ const AboutUs = () => {
             {[
               {
                 title: "Knowledge Support",
-                description: "Scientific and up-to-date information on pregnancy, childbirth, and baby care.",
+                description:
+                  "Scientific and up-to-date information on pregnancy, childbirth, and baby care.",
                 image: "images/home-icon5.png",
               },
               {
                 title: "Pregnancy Tracking",
-                description: "Tools to monitor your baby’s growth and remind you of checkup schedules.",
+                description:
+                  "Tools to monitor your baby’s growth and remind you of checkup schedules.",
                 image: "images/home-icon3.png",
               },
               {
                 title: "Mom Community",
-                description: "Connect and share with other moms on your motherhood journey.",
+                description:
+                  "Connect and share with other moms on your motherhood journey.",
                 image: "images/home-icon1.png",
               },
               {
                 title: "Expert Advice",
-                description: "Support from experts on health, nutrition, and emotional well-being.",
+                description:
+                  "Support from experts on health, nutrition, and emotional well-being.",
                 image: "images/home-icon2.png",
               },
             ].map((service, index) => (
@@ -163,7 +176,9 @@ const AboutUs = () => {
                   <ServiceIcon src={service.image} alt={service.title} />
                   <div>
                     <ServiceTitle>{service.title}</ServiceTitle>
-                    <ServiceDescription>{service.description}</ServiceDescription>
+                    <ServiceDescription>
+                      {service.description}
+                    </ServiceDescription>
                   </div>
                 </ServiceCard>
               </div>
