@@ -43,7 +43,7 @@ jobs:
           file: ./back_end/Dockerfile
           builder: ${{steps.buildx.outputs.name}}
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/be-sep490-g61:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/pregnancy-tracking:latest
       - name: Verify
         run: |
           echo ${{steps.docker_build_server.outputs.digest}}
