@@ -44,8 +44,8 @@ jobs:
         uses: docker/build-push-action@v2
         id: docker_build_server
         with:
-          context: ./back_end
-          file: ./back_end/Dockerfile
+          context: ./backend
+          file: ./backend/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/pregnancy-tracking-system:latest
