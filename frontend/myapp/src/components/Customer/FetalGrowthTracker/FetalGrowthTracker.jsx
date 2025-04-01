@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   BarElement,
   CategoryScale,
@@ -7,10 +8,11 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import React, { useEffect, useRef, useState } from "react"; // Added useRef
+import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./FetalGrowthTracker.css";
 
 ChartJS.register(
@@ -30,8 +32,10 @@ function FetalGrowthTracker() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEditData, setCurrentEditData] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [dataToDelete, setDataToDelete] = useState(null);
   const navigate = useNavigate();
-  const chartRef = useRef(null); // Ref to access the chart instance
+  const chartRef = useRef(null);
 
   useEffect(() => {
     checkAuthentication();
@@ -45,7 +49,7 @@ function FetalGrowthTracker() {
     setIsAuthenticated(!!userId);
   }
 
-  function fetchUserProfiles() {
+  async function fetchUserProfiles() {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
       toast.error("Please log in to view your profiles.");
@@ -53,73 +57,77 @@ function FetalGrowthTracker() {
       return;
     }
 
-    fetch(
-      `http://localhost:5254/api/PregnancyProfile/GetProfilesByUserId/${userId}`
-    )
-      .then((response) => {
-        if (!response.ok) throw new Error("Failed to fetch profiles");
-        return response.json();
-      })
-      .then((data) => {
-        setUserProfiles(data);
-        if (data.length > 0) {
-          setSelectedProfile(data[0]);
-          fetchFetalData(data[0].id);
+    const token = sessionStorage.getItem("token");
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5254/api/PregnancyProfile/GetProfilesByUserId/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
         }
-      })
-      .catch((err) => {
-        console.error("Error fetching profiles:", err);
-        toast.error("Failed to load profiles.");
-      });
+      );
+      setUserProfiles(response.data);
+      if (response.data.length > 0) {
+        setSelectedProfile(response.data[0]);
+        fetchFetalData(response.data[0].id);
+      }
+    } catch (err) {
+      console.error("Error fetching profiles:", err);
+      toast.error("Failed to load profiles.");
+    }
   }
 
-  function fetchFetalData(profileId) {
-    fetch(
-      `http://localhost:5254/api/FetalMeasurement/GetGrowthByProfile/${profileId}`
-    )
-      .then((response) => {
-        if (!response.ok) return [];
-        return response.json();
-      })
-      .then((data) => {
-        const profile = userProfiles.find((p) => p.id === profileId);
-        const conceptionDate = profile
-          ? new Date(profile.conceptionDate)
-          : null;
-        const mappedData = (data || []).map((item) => {
-          let weeks = item.week || "N/A";
-          if (weeks === "N/A" && conceptionDate && item.measureDate) {
-            const measureDate = new Date(item.measureDate);
-            const diffTime = Math.abs(measureDate - conceptionDate);
-            const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
-            weeks = diffWeeks;
-          }
-          return {
-            id: item.id,
-            profileId: item.profileId,
-            weeks: weeks,
-            length: item.heightCm || 0,
-            weight: item.weightGrams || 0,
-            biparietalDiameter: item.biparietalDiameterCm || 0,
-            femoralLength: item.femoralLengthCm || 0,
-            headCircumference: item.headCircumferenceCm || 0,
-            abdominalCircumference: item.abdominalCircumferenceCm || 0,
-            notes: item.notes || "N/A",
-            measureDate: item.measureDate || item.createdAt,
-          };
-        });
-        const sortedData = mappedData.sort((a, b) => {
-          const weekA = parseInt(a.weeks) || 0;
-          const weekB = parseInt(b.weeks) || 0;
-          return weekA - weekB;
-        });
-        setFetalData(sortedData);
-      })
-      .catch((err) => {
-        console.error("Error fetching fetal data:", err);
-        toast.error("Failed to load fetal growth data.");
-        setFetalData([]);
+  async function fetchFetalData(profileId) {
+    const token = sessionStorage.getItem("token");
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5254/api/FetalMeasurement/GetGrowthByProfile/${profileId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      const profile = userProfiles.find((p) => p.id === profileId);
+      const conceptionDate = profile ? new Date(profile.conceptionDate) : null;
+      const mappedData = (response.data || []).map((item) => {
+        let weeks = item.week || "N/A";
+        if (weeks === "N/A" && conceptionDate && item.measureDate) {
+          const measureDate = new Date(item.measureDate);
+          const diffTime = Math.abs(measureDate - conceptionDate);
+          const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+          weeks = diffWeeks;
+        }
+        return {
+          id: item.id,
+          profileId: item.profileId,
+          weeks: weeks,
+          length: item.heightCm || 0,
+          weight: item.weightGrams || 0,
+          biparietalDiameter: item.biparietalDiameterCm || 0,
+          femoralLength: item.femoralLengthCm || 0,
+          headCircumference: item.headCircumferenceCm || 0,
+          abdominalCircumference: item.abdominalCircumferenceCm || 0,
+          notes: item.notes || "N/A",
+          measureDate: item.measureDate || item.createdAt,
+        };
       });
+      const sortedData = mappedData.sort((a, b) => {
+        const weekA = parseInt(a.weeks) || 0;
+        const weekB = parseInt(b.weeks) || 0;
+        return weekA - weekB;
+      });
+      setFetalData(sortedData);
+    } catch (err) {
+      console.error("Error fetching fetal data:", err);
+      toast.error("Failed to load fetal growth data.");
+      setFetalData([]);
+    }
   }
 
   function calculateGuestFetalData(weeks) {
@@ -164,64 +172,117 @@ function FetalGrowthTracker() {
   }
 
   async function handleSaveFetalData(updatedData) {
+    const requiredFields = [
+      "weeks",
+      "length",
+      "weight",
+      "biparietalDiameter",
+      "femoralLength",
+      "headCircumference",
+      "abdominalCircumference",
+    ];
+    for (const field of requiredFields) {
+      if (
+        updatedData[field] === undefined ||
+        updatedData[field] === null ||
+        isNaN(updatedData[field])
+      ) {
+        toast.error(`Please provide a valid value for ${field}.`);
+        return;
+      }
+    }
+
+    if (!selectedProfile?.id) {
+      toast.error("No pregnancy profile selected.");
+      return;
+    }
+
     const payload = {
       profileId: selectedProfile.id,
-      weightGrams: updatedData.weight,
-      heightCm: updatedData.length,
-      biparietalDiameterCm: updatedData.biparietalDiameter,
-      femoralLengthCm: updatedData.femoralLength,
-      headCircumferenceCm: updatedData.headCircumference,
-      abdominalCircumferenceCm: updatedData.abdominalCircumference,
-      notes: updatedData.notes,
-      week: updatedData.weeks,
+      weightGrams: parseFloat(updatedData.weight),
+      heightCm: parseFloat(updatedData.length),
+      biparietalDiameterCm: parseFloat(updatedData.biparietalDiameter),
+      femoralLengthCm: parseFloat(updatedData.femoralLength),
+      headCircumferenceCm: parseFloat(updatedData.headCircumference),
+      abdominalCircumferenceCm: parseFloat(updatedData.abdominalCircumference),
+      notes: updatedData.notes || "",
+      week: parseInt(updatedData.weeks, 10),
       measureDate: new Date().toISOString(),
     };
 
     const url = currentEditData
       ? `http://localhost:5254/api/FetalMeasurement/UpdateGrowth/${currentEditData.id}`
       : `http://localhost:5254/api/FetalMeasurement/CreateGrowth`;
-    const method = currentEditData ? "PUT" : "POST";
+    const method = currentEditData ? "put" : "post";
+
+    const token = sessionStorage.getItem("token");
 
     try {
-      const response = await fetch(url, {
+      const response = await axios({
         method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        url,
+        data: payload,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
       });
 
-      if (response.ok) {
-        toast.success(currentEditData ? "Data updated!" : "Data created!");
-        fetchFetalData(selectedProfile.id);
-        handleCloseModal();
-      } else {
-        throw new Error(`Failed to save data: ${response.status}`);
-      }
+      toast.success(currentEditData ? "Data updated!" : "Data created!");
+      fetchFetalData(selectedProfile.id);
+      handleCloseModal();
     } catch (err) {
-      console.error("Error saving fetal data:", err);
-      toast.error(`Failed to save data: ${err.message}`);
+      console.error(
+        "Error saving fetal data:",
+        err.response?.data || err.message
+      );
+      toast.error(
+        `Failed to save data: ${err.response?.data?.message || err.message}`
+      );
     }
   }
 
-  async function handleDeleteFetalData(id) {
+  function handleDeleteClick(data) {
+    setDataToDelete(data);
+    setShowDeleteModal(true);
+  }
+
+  async function handleDeleteConfirm() {
+    if (!dataToDelete?.id) return;
+
+    const token = sessionStorage.getItem("token");
+
     try {
-      const response = await fetch(
-        `http://localhost:5254/api/FetalMeasurement/DeleteGrowth/${id}`,
-        { method: "DELETE", headers: { "Content-Type": "application/json" } }
+      await axios.delete(
+        `http://localhost:5254/api/FetalMeasurement/DeleteGrowth/${dataToDelete.id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
       );
 
-      if (response.ok) {
-        toast.success("Data deleted!");
-        fetchFetalData(selectedProfile.id);
-      } else {
-        throw new Error(`Failed to delete data: ${response.status}`);
-      }
+      toast.success("Data deleted!");
+      fetchFetalData(selectedProfile.id);
+      setShowDeleteModal(false);
+      setDataToDelete(null);
     } catch (err) {
-      console.error("Error deleting fetal data:", err);
-      toast.error(`Failed to delete data: ${err.message}`);
+      console.error(
+        "Error deleting fetal data:",
+        err.response?.data || err.message
+      );
+      toast.error(
+        `Failed to delete data: ${err.response?.data?.message || err.message}`
+      );
     }
   }
 
-  // Function to download the chart as an image
+  function handleDeleteCancel() {
+    setShowDeleteModal(false);
+    setDataToDelete(null);
+  }
+
   const downloadChart = () => {
     const chart = chartRef.current;
     if (chart) {
@@ -301,8 +362,8 @@ function FetalGrowthTracker() {
         display: true,
         position: "top",
         labels: {
-          font: { family: "'Poppins', sans-serif", size: 12 },
-          color: "#5c4b7d",
+          font: { family: "'Georgia', serif", size: 12 },
+          color: "#f06292",
         },
       },
       title: { display: false },
@@ -316,10 +377,10 @@ function FetalGrowthTracker() {
       y: {
         display: true,
         grid: { display: false },
-        ticks: { color: "#5c4b7d", font: { family: "'Poppins', sans-serif" } },
+        ticks: { color: "#f06292", font: { family: "'Georgia', serif" } },
       },
       x: {
-        ticks: { color: "#5c4b7d", font: { family: "'Poppins', sans-serif" } },
+        ticks: { color: "#f06292", font: { family: "'Georgia', serif" } },
         grid: { display: false },
       },
     },
@@ -439,6 +500,17 @@ function FetalGrowthTracker() {
             isModal={true}
           />
         )}
+        {showDeleteModal && (
+          <div className="modal-overlay">
+            <div className="delete-modal-content">
+              <p>Are you sure you want to delete this data?</p>
+              <div className="delete-modal-actions">
+                <button onClick={handleDeleteConfirm}>Delete</button>
+                <button onClick={handleDeleteCancel}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -478,7 +550,7 @@ function FetalGrowthTracker() {
                 {isAuthenticated && (
                   <td>
                     <button onClick={() => handleOpenModal(data)}>Edit</button>
-                    <button onClick={() => handleDeleteFetalData(data.id)}>
+                    <button onClick={() => handleDeleteClick(data)}>
                       Delete
                     </button>
                   </td>
@@ -493,6 +565,7 @@ function FetalGrowthTracker() {
 
   return (
     <div className="app-wrapper">
+      <ToastContainer autoClose={1300} />
       <header className="app-header">
         <div className="logo">
           <span role="img" aria-label="mom-and-baby">
