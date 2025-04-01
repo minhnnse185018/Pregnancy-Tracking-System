@@ -1,4 +1,4 @@
-name: be-deploy
+name: be-auto-deploy
 on:
   push:
     branches:
@@ -43,7 +43,7 @@ jobs:
           file: ./back_end/Dockerfile
           builder: ${{steps.buildx.outputs.name}}
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/pregnancy-tracking:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/pregnency-tracking-system:latest
       - name: Verify
         run: |
           echo ${{steps.docker_build_server.outputs.digest}}
