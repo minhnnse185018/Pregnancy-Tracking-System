@@ -1,6 +1,7 @@
 import { Quiz } from "@mui/icons-material";
 import BarChartIcon from "@mui/icons-material/BarChart"; // Icon for Manage Revenue
 import DescriptionIcon from "@mui/icons-material/Description"; // Icon for Manage Blog
+import EventIcon from "@mui/icons-material/Event"; // Icon for View Appointments
 import GroupIcon from "@mui/icons-material/Group"; // Icon for Profile
 import PaymentIcon from "@mui/icons-material/Payment"; // Icon for Manage Payroll
 import React from "react";
@@ -40,11 +41,11 @@ const ManagerSidebar = () => {
             <PaymentIcon /> Manage reminders
           </Link>
         </li>
-        {/* <li style={listItemStyle}>
+        <li style={listItemStyle}>
           <Link to="view-appointments" style={linkStyle}>
             <EventIcon /> View Appointments
           </Link>
-        </li> */}
+        </li>
         {/* <li style={listItemStyle}>
           <Link to="manager-schedule" style={linkStyle}>
             <ScheduleIcon /> Manager Schedule

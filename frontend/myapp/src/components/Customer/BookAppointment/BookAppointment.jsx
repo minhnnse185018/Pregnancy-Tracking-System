@@ -41,12 +41,34 @@ const BookAppointment = () => {
       return;
     }
 
-    const selectedDateTime =
-      formData.appointmentDate && formData.selectedSlot
-        ? new Date(
-            `${formData.appointmentDate}T${formData.selectedSlot}:00`
-          ).toISOString()
-        : null;
+    // Fix date handling
+    let selectedDateTime = null;
+
+    try {
+      if (formData.appointmentDate && formData.selectedSlot) {
+        // Create a valid date string by combining date and time
+        const dateStr = formData.appointmentDate;
+        const timeStr = formData.selectedSlot;
+
+        // Parse the date and time separately
+        const [year, month, day] = dateStr.split("-").map(Number);
+        const [hours] = timeStr.split(":").map(Number);
+
+        // Create a new Date object with the parsed values
+        const date = new Date(year, month - 1, day, hours, 0, 0);
+
+        // Check if the date is valid
+        if (!isNaN(date.getTime())) {
+          selectedDateTime = date.toISOString();
+        } else {
+          throw new Error("Invalid date or time");
+        }
+      }
+    } catch (error) {
+      console.error("Date parsing error:", error);
+      toast.error("Invalid date or time selected. Please try again.");
+      return;
+    }
 
     if (!selectedDateTime) {
       toast.error("Please select both a date and a time slot.");

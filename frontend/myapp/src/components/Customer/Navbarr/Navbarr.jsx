@@ -410,16 +410,16 @@ export default function Navbarr() {
               >
                 Blog
               </Link>
-            </li>
-            {/* <li className="nav-item">
+            {/* </li>
+            <li className="nav-item">
               <Link
                 to="/contact"
                 className="nav-link"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
-              </Link>
-            </li> */}
+              </Link> */}
+            </li>
           </ul>
         </div>
 

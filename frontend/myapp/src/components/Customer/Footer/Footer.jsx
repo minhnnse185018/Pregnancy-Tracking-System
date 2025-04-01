@@ -115,33 +115,24 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/about" style={linkStyle}  onClick={scrollToTop}>
+                <Link to="/about" style={linkStyle} onClick={scrollToTop}>
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/services" style={linkStyle}  onClick={scrollToTop} >
+                <Link to="/services" style={linkStyle} onClick={scrollToTop}>
                   Services
                 </Link>
               </li>
               <li>
-                <Link to="/blog" style={linkStyle} onClick={scrollToTop} >
+                <Link to="/blog" style={linkStyle} onClick={scrollToTop}>
                   Blog
                 </Link>
               </li>
+
               <li>
-                <Link to="/contact" style={linkStyle} onClick={scrollToTop} >
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/health-tips" style={linkStyle} onClick={scrollToTop} >
+                <Link to="/health-tips" style={linkStyle} onClick={scrollToTop}>
                   FAQ
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacy" style={linkStyle} onClick={scrollToTop}>
-                  Privacy Policy
                 </Link>
               </li>
             </ul>
