@@ -411,7 +411,7 @@ export default function Navbarr() {
                 Blog
               </Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link
                 to="/contact"
                 className="nav-link"
@@ -419,7 +419,7 @@ export default function Navbarr() {
               >
                 Contact
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
 
