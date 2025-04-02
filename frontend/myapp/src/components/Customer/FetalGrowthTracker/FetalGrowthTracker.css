@@ -386,3 +386,65 @@ main {
 .form-actions .save-button:hover {
   background-color: #ff6f7a;
 }
+/* Modal overlay for delete confirmation */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Delete modal content */
+.delete-modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.delete-modal-content p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.delete-modal-actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.delete-modal-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.delete-modal-actions button:first-child {
+  background-color: #ff4d4d; /* Red for Delete */
+  color: #fff;
+}
+
+.delete-modal-actions button:first-child:hover {
+  background-color: #cc0000;
+}
+
+.delete-modal-actions button:last-child {
+  background-color: #ccc; /* Gray for Cancel */
+  color: #333;
+}
+
+.delete-modal-actions button:last-child:hover {
+  background-color: #999;
+}

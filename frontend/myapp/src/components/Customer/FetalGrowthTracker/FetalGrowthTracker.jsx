@@ -53,7 +53,7 @@ function FetalGrowthTracker() {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
       toast.error("Please log in to view your profiles.");
-      navigate("/login");
+      navigate("/customer-login");
       return;
     }
 
