@@ -458,12 +458,12 @@ function FetalGrowthTracker() {
           <label htmlFor="profileSelect">Select Pregnancy Profile:</label>
           <select
             id="profileSelect"
-            value={selectedProfile?.id || ""}
+            value={selectedProfile.id || ""}
             onChange={handleProfileChange}
           >
             {userProfiles.map((profile) => (
               <option key={profile.id} value={profile.id}>
-                {profile.name || `Profile ${profile.id}`} -{" "}
+                {profile.name || `Profile ${profile.id}`} 
                 {new Date(profile.conceptionDate).toLocaleDateString()}
               </option>
             ))}
