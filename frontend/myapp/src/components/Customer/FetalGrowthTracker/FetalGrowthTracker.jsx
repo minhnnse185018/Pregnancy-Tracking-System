@@ -148,9 +148,18 @@ function FetalGrowthTracker() {
 
   function handleProfileChange(e) {
     const profileId = e.target.value;
-    const profile = userProfiles.find((p) => p.id === profileId);
-    setSelectedProfile(profile);
-    fetchFetalData(profileId);
+    console.log("Selected profile ID:", profileId); // Add logging for debugging
+    
+    // Find the selected profile from userProfiles
+    const profile = userProfiles.find((p) => p.id === parseInt(profileId));
+    
+    if (profile) {
+      console.log("Found profile:", profile); // Add logging for debugging
+      setSelectedProfile(profile);
+      fetchFetalData(parseInt(profileId));
+    } else {
+      console.error("Profile not found for ID:", profileId);
+    }
   }
 
   function handleOpenModal(data = null) {
@@ -490,6 +499,25 @@ function FetalGrowthTracker() {
       </div>
     );
   }
+
+  const ProfileSelector = () => (
+    <div className="profile-selector">
+      <label htmlFor="profileSelect">Select Pregnancy Profile:</label>
+      <select
+        id="profileSelect"
+        value={selectedProfile?.id || ""}
+        onChange={handleProfileChange}
+        className="profile-select"
+      >
+        {userProfiles.map((profile) => (
+          <option key={profile.id} value={profile.id}>
+            {profile.name || `Profile ${profile.id}`} -{" "}
+            {new Date(profile.conceptionDate).toLocaleDateString()}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 
   return (
     <div className="app-wrapper">
