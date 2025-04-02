@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using backend.Dtos.Appointments;
+﻿using backend.Dtos.Appointments;
+using AutoMapper;
 using backend.Models;
 using backend.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
