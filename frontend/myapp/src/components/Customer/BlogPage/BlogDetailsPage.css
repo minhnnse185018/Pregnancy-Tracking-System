@@ -56,6 +56,7 @@
 }
 
 .posts-title {
+  margin-left: 350px !important;
   color: #ff69b4;
   margin: 0 auto;
   font-size: 28px;

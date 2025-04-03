@@ -149,10 +149,10 @@ function FetalGrowthTracker() {
   function handleProfileChange(e) {
     const profileId = e.target.value;
     console.log("Selected profile ID:", profileId); // Add logging for debugging
-    
+
     // Find the selected profile from userProfiles
     const profile = userProfiles.find((p) => p.id === parseInt(profileId));
-    
+
     if (profile) {
       console.log("Found profile:", profile); // Add logging for debugging
       setSelectedProfile(profile);

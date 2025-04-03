@@ -71,170 +71,115 @@ namespace backend.Repository.Implementation
         // Enhanced method to check growth standards and create alerts using percentiles
         private async Task GenerateGrowthAlertIfNeeded(FetalMeasurement measurement)
         {
-            // Get the growth standard for this week
-            var standard = await _context.FetalGrowthStandards
-                .FirstOrDefaultAsync(s => s.WeekNumber == measurement.Week);
-            
-            if (standard != null)
+            try
             {
-                // Standard deviation approximation (typically about 15% of the mean for fetal biometry)
+                // Get the growth standard for this week
+                var standard = await _context.FetalGrowthStandards
+                    .FirstOrDefaultAsync(s => s.WeekNumber == measurement.Week);
+                
+                if (standard == null) return;
+
+                // Prevent division by zero
+                if (standard.WeightGrams <= 0 || standard.HeightCm <= 0) return;
+
+                // Calculate standard deviations (15% of mean)
                 decimal weightSD = standard.WeightGrams * 0.15m;
                 decimal heightSD = standard.HeightCm * 0.15m;
-                
-                // Standard deviations for new measurements
                 decimal bpdSD = standard.BiparietalDiameterCm * 0.15m;
                 decimal flSD = standard.FemoralLengthCm * 0.15m;
                 decimal hcSD = standard.HeadCircumferenceCm * 0.15m;
                 decimal acSD = standard.AbdominalCircumferenceCm * 0.15m;
-                
-                // Calculate Z-scores
-                decimal weightZScore = (measurement.WeightGrams - standard.WeightGrams) / weightSD;
-                decimal heightZScore = (measurement.HeightCm - standard.HeightCm) / heightSD;
-                
-                // Z-scores for new measurements (only if measurement is provided)
-                decimal? bpdZScore = measurement.BiparietalDiameterCm.HasValue ? 
-                    (measurement.BiparietalDiameterCm.Value - standard.BiparietalDiameterCm) / bpdSD : null;
-                decimal? flZScore = measurement.FemoralLengthCm.HasValue ?
-                    (measurement.FemoralLengthCm.Value - standard.FemoralLengthCm) / flSD : null;
-                decimal? hcZScore = measurement.HeadCircumferenceCm.HasValue ?
-                    (measurement.HeadCircumferenceCm.Value - standard.HeadCircumferenceCm) / hcSD : null;
-                decimal? acZScore = measurement.AbdominalCircumferenceCm.HasValue ?
-                    (measurement.AbdominalCircumferenceCm.Value - standard.AbdominalCircumferenceCm) / acSD : null;
-                
-                // Calculate percentiles
-                double weightPercentile = ZScoreToPercentile(Convert.ToDouble(weightZScore));
-                double heightPercentile = ZScoreToPercentile(Convert.ToDouble(heightZScore));
-                
-                // Percentiles for new measurements
-                double? bpdPercentile = bpdZScore.HasValue ? ZScoreToPercentile(Convert.ToDouble(bpdZScore.Value)) : null;
-                double? flPercentile = flZScore.HasValue ? ZScoreToPercentile(Convert.ToDouble(flZScore.Value)) : null;
-                double? hcPercentile = hcZScore.HasValue ? ZScoreToPercentile(Convert.ToDouble(hcZScore.Value)) : null;
-                double? acPercentile = acZScore.HasValue ? ZScoreToPercentile(Convert.ToDouble(acZScore.Value)) : null;
-                
-                // Categorize measurements using English terms
-                string bpdCategory = bpdZScore.HasValue ? CategorizeByZScore(bpdZScore.Value) : "Not Measured";
-                
-                // Categorize femur length by specific thresholds - convert to English
-                string flCategory = "Not Measured";
-                if (measurement.FemoralLengthCm.HasValue)
+
+                // Build alert message
+                string alertMessage = "";
+                bool hasAbnormalMeasurement = false;
+
+                // Check weight
+                if (measurement.WeightGrams > 0)
                 {
-                    // Calculate FL thresholds
-                    decimal lowerLimit = standard.FemoralLengthCm - (2 * flSD);
-                    decimal upperLimit = standard.FemoralLengthCm + (2 * flSD);
-                    
-                    if (measurement.FemoralLengthCm.Value < lowerLimit)
-                        flCategory = "Growth restriction or bone abnormality";
-                    else if (measurement.FemoralLengthCm.Value > upperLimit)
-                        flCategory = "Larger than gestational age or genetic factors";
-                    else
-                        flCategory = "Normal";
+                    decimal weightZScore = (measurement.WeightGrams - standard.WeightGrams) / weightSD;
+                    if (Math.Abs((double)weightZScore) > 2)
+                    {
+                        alertMessage += $"Weight: {measurement.WeightGrams}g is {(weightZScore > 0 ? "above" : "below")} normal range. ";
+                        hasAbnormalMeasurement = true;
+                    }
                 }
-                
-                // Categorize head circumference with English terminology
-                string hcCategory = "Not Measured";
-                if (measurement.HeadCircumferenceCm.HasValue)
+
+                // Check height
+                if (measurement.HeightCm > 0)
                 {
-                    decimal lowerLimit = standard.HeadCircumferenceCm - (2 * hcSD);
-                    decimal upperLimit = standard.HeadCircumferenceCm + (2 * hcSD);
-                    
-                    if (measurement.HeadCircumferenceCm.Value < lowerLimit)
-                        hcCategory = "Microcephaly";
-                    else if (measurement.HeadCircumferenceCm.Value > upperLimit)
-                        hcCategory = "Macrocephaly or larger than gestational age";
-                    else
-                        hcCategory = "Normal";
+                    decimal heightZScore = (measurement.HeightCm - standard.HeightCm) / heightSD;
+                    if (Math.Abs((double)heightZScore) > 2)
+                    {
+                        alertMessage += $"Height: {measurement.HeightCm}cm is {(heightZScore > 0 ? "above" : "below")} normal range. ";
+                        hasAbnormalMeasurement = true;
+                    }
                 }
-                
-                // Categorize abdominal circumference with English terminology
-                string acCategory = "Not Measured";
-                if (measurement.AbdominalCircumferenceCm.HasValue)
+
+                // Check BPD
+                if (measurement.BiparietalDiameterCm.HasValue && measurement.BiparietalDiameterCm.Value > 0)
                 {
-                    decimal lowerLimit = standard.AbdominalCircumferenceCm - (2 * acSD);
-                    decimal upperLimit = standard.AbdominalCircumferenceCm + (2 * acSD);
-                    
-                    if (measurement.AbdominalCircumferenceCm.Value < lowerLimit)
-                        acCategory = "Intrauterine Growth Restriction (IUGR)";
-                    else if (measurement.AbdominalCircumferenceCm.Value > upperLimit)
-                        acCategory = "Macrosomia or polyhydramnios";
-                    else
-                        acCategory = "Normal";
+                    decimal bpdZScore = (measurement.BiparietalDiameterCm.Value - standard.BiparietalDiameterCm) / bpdSD;
+                    if (Math.Abs((double)bpdZScore) > 2)
+                    {
+                        alertMessage += $"Biparietal diameter: {measurement.BiparietalDiameterCm.Value}cm is {(bpdZScore > 0 ? "above" : "below")} normal range. ";
+                        hasAbnormalMeasurement = true;
+                    }
                 }
-                
-                // Categorize other measurements
-                string weightCategory = CategorizeByZScore(weightZScore);
-                string heightCategory = CategorizeByZScore(heightZScore);
-                
-                // Check if any measurement is outside normal range
-                bool hasAbnormalMeasurement = weightCategory != "Normal" || 
-                                             heightCategory != "Normal" ||
-                                             (bpdCategory != "Normal" && bpdCategory != "Not Measured") ||
-                                             (flCategory != "Normal" && flCategory != "Not Measured") ||
-                                             (hcCategory != "Normal" && hcCategory != "Not Measured") ||
-                                             (acCategory != "Normal" && acCategory != "Not Measured");
-                
-                // Only create alert if any measurement is outside normal range
+
+                // Check Femoral Length
+                if (measurement.FemoralLengthCm.HasValue && measurement.FemoralLengthCm.Value > 0)
+                {
+                    decimal flZScore = (measurement.FemoralLengthCm.Value - standard.FemoralLengthCm) / flSD;
+                    if (Math.Abs((double)flZScore) > 2)
+                    {
+                        alertMessage += $"Femoral length: {measurement.FemoralLengthCm.Value}cm is {(flZScore > 0 ? "above" : "below")} normal range. ";
+                        hasAbnormalMeasurement = true;
+                    }
+                }
+
+                // Check Head Circumference
+                if (measurement.HeadCircumferenceCm.HasValue && measurement.HeadCircumferenceCm.Value > 0)
+                {
+                    decimal hcZScore = (measurement.HeadCircumferenceCm.Value - standard.HeadCircumferenceCm) / hcSD;
+                    if (Math.Abs((double)hcZScore) > 2)
+                    {
+                        string condition = hcZScore > 0 ? "Macrocephaly" : "Microcephaly";
+                        alertMessage += $"Head circumference: {measurement.HeadCircumferenceCm.Value}cm indicates possible {condition}. ";
+                        hasAbnormalMeasurement = true;
+                    }
+                }
+
+                // Check Abdominal Circumference
+                if (measurement.AbdominalCircumferenceCm.HasValue && measurement.AbdominalCircumferenceCm.Value > 0)
+                {
+                    decimal acZScore = (measurement.AbdominalCircumferenceCm.Value - standard.AbdominalCircumferenceCm) / acSD;
+                    if (Math.Abs((double)acZScore) > 2)
+                    {
+                        string condition = acZScore > 0 ? "possible macrosomia" : "possible growth restriction";
+                        alertMessage += $"Abdominal circumference: {measurement.AbdominalCircumferenceCm.Value}cm indicates {condition}. ";
+                        hasAbnormalMeasurement = true;
+                    }
+                }
+
+                // Create alert if any measurements were abnormal
                 if (hasAbnormalMeasurement)
                 {
-                    // Create alert message with percentile information in English
-                    string alertMessage = "Growth assessment: ";
-                    
-                    if (weightCategory != "Normal")
-                    {
-                        alertMessage += $"Weight: {measurement.WeightGrams}g ({weightCategory}). ";
-                    }
-                    
-                    if (heightCategory != "Normal")
-                    {
-                        alertMessage += $"Height: {measurement.HeightCm}cm ({heightCategory}). ";
-                    }
-                    
-                    // Add alert message for BPD using Z-score criteria
-                    if (bpdCategory != "Normal" && bpdCategory != "Not Measured")
-                    {
-                        alertMessage += $"Biparietal diameter (BPD): {measurement.BiparietalDiameterCm}cm, Z-score = {bpdZScore:F2} ({bpdCategory}). ";
-                    }
-                    
-                    // Add alert message for FL using specific threshold criteria
-                    if (flCategory != "Normal" && flCategory != "Not Measured")
-                    {
-                        decimal lowerLimit = standard.FemoralLengthCm - (2 * flSD);
-                        decimal upperLimit = standard.FemoralLengthCm + (2 * flSD);
-                        
-                        alertMessage += $"Femur length (FL): {measurement.FemoralLengthCm}cm is outside normal range ({lowerLimit:F1}-{upperLimit:F1}cm). ";
-                        alertMessage += $"Assessment: {flCategory}. ";
-                    }
-                    
-                    // Add alert message for HC with specific diagnostic criteria
-                    if (hcCategory != "Normal" && hcCategory != "Not Measured")
-                    {
-                        decimal lowerLimit = standard.HeadCircumferenceCm - (2 * hcSD);
-                        decimal upperLimit = standard.HeadCircumferenceCm + (2 * hcSD);
-                        
-                        alertMessage += $"Head circumference (HC): {measurement.HeadCircumferenceCm}cm is outside normal range ({lowerLimit:F1}-{upperLimit:F1}cm). ";
-                        alertMessage += $"Assessment: {hcCategory}. ";
-                    }
-                    
-                    // Add alert message for AC with specific diagnostic criteria
-                    if (acCategory != "Normal" && acCategory != "Not Measured")
-                    {
-                        decimal lowerLimit = standard.AbdominalCircumferenceCm - (2 * acSD);
-                        decimal upperLimit = standard.AbdominalCircumferenceCm + (2 * acSD);
-                        
-                        alertMessage += $"Abdominal circumference (AC): {measurement.AbdominalCircumferenceCm}cm is outside normal range ({lowerLimit:F1}-{upperLimit:F1}cm). ";
-                        alertMessage += $"Assessment: {acCategory}. ";
-                    }
-                    
                     var alert = new GrowthAlert
                     {
                         MeasurementId = measurement.Id,
-                        AlertMessage = alertMessage,
+                        AlertMessage = $"Week {measurement.Week} measurements show: {alertMessage.TrimEnd()}",
                         CreatedAt = DateTime.Now
                     };
-                    
+
                     await _context.GrowthAlerts.AddAsync(alert);
                     await _context.SaveChangesAsync();
                 }
-                // If all measurements are normal, don't create any alert (no action needed)
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't throw - we don't want to fail the measurement creation
+                Console.WriteLine($"Error generating growth alert: {ex.Message}");
             }
         }
         

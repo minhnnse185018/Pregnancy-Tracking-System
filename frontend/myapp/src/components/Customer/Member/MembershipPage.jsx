@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import "./MembershipPage.css";
+import { toast } from "react-toastify";
 
 function MembershipPage() {
   const [error, setError] = useState(null);
@@ -129,7 +130,7 @@ function MembershipPage() {
       }
     } catch (error) {
       console.error("Payment process error:", error);
-      alert("An error occurred during the payment process. Please try again!");
+      toast.error("An error occurred during the payment process. Please try again!");
     }
   };
 
