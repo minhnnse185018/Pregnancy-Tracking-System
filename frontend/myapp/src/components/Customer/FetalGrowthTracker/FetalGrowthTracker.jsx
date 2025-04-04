@@ -1,14 +1,15 @@
 import {
-  BarElement,
   CategoryScale,
   Chart as ChartJS,
   Legend,
   LinearScale,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
 } from "chart.js";
 import React, { useEffect, useRef, useState } from "react"; // Added useRef
-import { Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./FetalGrowthTracker.css";
@@ -16,11 +17,14 @@ import "./FetalGrowthTracker.css";
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend
 );
+
+const TOTAL_WEEKS = 40; // Maximum weeks for pregnancy tracking
 
 function FetalGrowthTracker() {
   const [gestationalAge, setGestationalAge] = useState("");
@@ -30,6 +34,10 @@ function FetalGrowthTracker() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEditData, setCurrentEditData] = useState(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    show: false,
+    id: null,
+  });
   const navigate = useNavigate();
   const chartRef = useRef(null); // Ref to access the chart instance
 
@@ -172,6 +180,32 @@ function FetalGrowthTracker() {
     setCurrentEditData(null);
   }
 
+  function handleDeleteClick(id) {
+    setDeleteConfirmation({ show: true, id });
+  }
+
+  async function handleDeleteConfirm() {
+    const id = deleteConfirmation.id;
+    try {
+      const response = await fetch(
+        `http://localhost:5254/api/FetalMeasurement/DeleteGrowth/${id}`,
+        { method: "DELETE", headers: { "Content-Type": "application/json" } }
+      );
+
+      if (response.ok) {
+        toast.success("Data deleted successfully!");
+        fetchFetalData(selectedProfile.id);
+      } else {
+        throw new Error(`Failed to delete data: ${response.status}`);
+      }
+    } catch (err) {
+      console.error("Error deleting fetal data:", err);
+      toast.error(`Failed to delete data: ${err.message}`);
+    } finally {
+      setDeleteConfirmation({ show: false, id: null });
+    }
+  }
+
   async function handleSaveFetalData(updatedData) {
     const payload = {
       profileId: selectedProfile.id,
@@ -211,25 +245,6 @@ function FetalGrowthTracker() {
     }
   }
 
-  async function handleDeleteFetalData(id) {
-    try {
-      const response = await fetch(
-        `http://localhost:5254/api/FetalMeasurement/DeleteGrowth/${id}`,
-        { method: "DELETE", headers: { "Content-Type": "application/json" } }
-      );
-
-      if (response.ok) {
-        toast.success("Data deleted!");
-        fetchFetalData(selectedProfile.id);
-      } else {
-        throw new Error(`Failed to delete data: ${response.status}`);
-      }
-    } catch (err) {
-      console.error("Error deleting fetal data:", err);
-      toast.error(`Failed to delete data: ${err.message}`);
-    }
-  }
-
   // Function to download the chart as an image
   const downloadChart = () => {
     const chart = chartRef.current;
@@ -247,58 +262,61 @@ function FetalGrowthTracker() {
   };
 
   const chartData = {
-    labels:
-      fetalData.length > 0
-        ? fetalData.map((data) => `Week ${data.weeks || "N/A"}`)
-        : [],
+    labels: fetalData.map((data) => `Week ${data.weeks || "N/A"}`),
     datasets: [
       {
         label: "Length (cm)",
         data: fetalData.map((data) => data.length || 0),
-        backgroundColor: "rgba(255, 140, 148, 0.6)",
         borderColor: "rgba(255, 140, 148, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(255, 140, 148, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: "y",
       },
       {
         label: "Weight (g)",
         data: fetalData.map((data) => data.weight || 0),
-        backgroundColor: "rgba(180, 147, 211, 0.6)",
         borderColor: "rgba(180, 147, 211, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(180, 147, 211, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: "y1",
       },
       {
         label: "Biparietal Diameter (cm)",
         data: fetalData.map((data) => data.biparietalDiameter || 0),
-        backgroundColor: "rgba(100, 200, 150, 0.6)",
         borderColor: "rgba(100, 200, 150, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(100, 200, 150, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: "y",
       },
       {
         label: "Femoral Length (cm)",
         data: fetalData.map((data) => data.femoralLength || 0),
-        backgroundColor: "rgba(255, 200, 100, 0.6)",
         borderColor: "rgba(255, 200, 100, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(255, 200, 100, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: "y",
       },
       {
         label: "Head Circumference (cm)",
         data: fetalData.map((data) => data.headCircumference || 0),
-        backgroundColor: "rgba(150, 150, 255, 0.6)",
         borderColor: "rgba(150, 150, 255, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(150, 150, 255, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: "y",
       },
       {
         label: "Abdominal Circumference (cm)",
         data: fetalData.map((data) => data.abdominalCircumference || 0),
-        backgroundColor: "rgba(200, 100, 200, 0.6)",
         borderColor: "rgba(200, 100, 200, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(200, 100, 200, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: "y",
       },
     ],
   };
@@ -312,6 +330,7 @@ function FetalGrowthTracker() {
         labels: {
           font: { family: "'Poppins', sans-serif", size: 12 },
           color: "#5c4b7d",
+          usePointStyle: true,
         },
       },
       title: { display: false },
@@ -319,21 +338,88 @@ function FetalGrowthTracker() {
         backgroundColor: "rgba(0, 0, 0, 0.8)",
         titleColor: "#fff",
         bodyColor: "#fff",
+        mode: "index",
+        intersect: false,
+        callbacks: {
+          label: function (context) {
+            let label = context.dataset.label || "";
+            let value = context.parsed.y;
+
+            if (label) {
+              if (label.includes("Weight")) {
+                label += `: ${value.toFixed(1)}g`;
+              } else {
+                label += `: ${value.toFixed(1)}cm`;
+              }
+            }
+            return label;
+          },
+        },
+        padding: 10,
+        displayColors: true,
       },
     },
     scales: {
       y: {
+        type: "linear",
         display: true,
-        grid: { display: false },
-        ticks: { color: "#5c4b7d", font: { family: "'Poppins', sans-serif" } },
+        position: "left",
+        title: {
+          display: true,
+          text: "Measurements (cm)",
+          color: "#5c4b7d",
+        },
+        grid: {
+          color: "rgba(0, 0, 0, 0.1)",
+          drawBorder: false,
+        },
+        ticks: {
+          color: "#5c4b7d",
+          font: { family: "'Poppins', sans-serif" },
+        },
+      },
+      y1: {
+        type: "linear",
+        display: true,
+        position: "right",
+        title: {
+          display: true,
+          text: "Weight (g)",
+          color: "rgba(180, 147, 211, 1)",
+        },
+        grid: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          color: "rgba(180, 147, 211, 1)",
+          font: { family: "'Poppins', sans-serif" },
+        },
       },
       x: {
-        ticks: { color: "#5c4b7d", font: { family: "'Poppins', sans-serif" } },
-        grid: { display: false },
+        ticks: {
+          color: "#5c4b7d",
+          font: { family: "'Poppins', sans-serif" },
+        },
+        grid: {
+          color: "rgba(0, 0, 0, 0.1)",
+          drawBorder: false,
+        },
       },
     },
-    categoryPercentage: 0.8,
-    barPercentage: 0.6,
+    interaction: {
+      mode: "nearest",
+      axis: "x",
+      intersect: false,
+    },
+    elements: {
+      line: {
+        tension: 0.4,
+      },
+      point: {
+        radius: 4,
+        hoverRadius: 6,
+      },
+    },
   };
 
   function renderGuestView() {
@@ -351,22 +437,25 @@ function FetalGrowthTracker() {
             value={gestationalAge}
             onChange={handleGestationalAgeChange}
             min="1"
-            max="40"
+            max={TOTAL_WEEKS}
+            required
           />
         </div>
         {fetalData.length > 0 ? (
           <>
             {renderFetalDataTable()}
-            <div className="chart-wrapper">
-              <Bar data={chartData} options={chartOptions} ref={chartRef} />
-              <div className="chart-description">
-                <p className="trend">Trending up this month</p>
-                <p className="details">
-                  Showing growth data for the entered gestational age
-                </p>
-                <button className="download-button" onClick={downloadChart}>
-                  Download Chart
-                </button>
+            <div className="chart-container">
+              <div className="chart-wrapper">
+                <Line data={chartData} options={chartOptions} ref={chartRef} />
+                <div className="chart-description">
+                  <p className="trend">Trending up this month</p>
+                  <p className="details">
+                    Showing growth data for the entered gestational age
+                  </p>
+                  <button className="download-button" onClick={downloadChart}>
+                    Download Chart
+                  </button>
+                </div>
               </div>
             </div>
           </>
@@ -421,16 +510,18 @@ function FetalGrowthTracker() {
         {fetalData.length > 0 ? (
           <>
             {renderFetalDataTable()}
-            <div className="chart-wrapper">
-              <Bar data={chartData} options={chartOptions} ref={chartRef} />
-              <div className="chart-description">
-                <p className="trend">Trending up this month</p>
-                <p className="details">
-                  Showing growth data for the selected profile
-                </p>
-                <button className="download-button" onClick={downloadChart}>
-                  Download Chart
-                </button>
+            <div className="chart-container">
+              <div className="chart-wrapper">
+                <Line data={chartData} options={chartOptions} ref={chartRef} />
+                <div className="chart-description">
+                  <p className="trend">Trending up this month</p>
+                  <p className="details">
+                    Showing growth data for the selected profile
+                  </p>
+                  <button className="download-button" onClick={downloadChart}>
+                    Download Chart
+                  </button>
+                </div>
               </div>
             </div>
           </>
@@ -447,6 +538,61 @@ function FetalGrowthTracker() {
             onCancel={handleCloseModal}
             isModal={true}
           />
+        )}
+        {deleteConfirmation.show && (
+          <div className="modal-overlay">
+            <div
+              className="modal-container"
+              style={{
+                padding: "20px",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                textAlign: "center",
+              }}
+            >
+              <h3>Confirm Delete</h3>
+              <p>
+                Are you sure you want to delete this measurement? This action
+                cannot be undone.
+              </p>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  justifyContent: "center",
+                  marginTop: "20px",
+                }}
+              >
+                <button
+                  onClick={() =>
+                    setDeleteConfirmation({ show: false, id: null })
+                  }
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#f8bbd0",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#ff4444",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     );
@@ -487,7 +633,7 @@ function FetalGrowthTracker() {
                 {isAuthenticated && (
                   <td>
                     <button onClick={() => handleOpenModal(data)}>Edit</button>
-                    <button onClick={() => handleDeleteFetalData(data.id)}>
+                    <button onClick={() => handleDeleteClick(data.id)}>
                       Delete
                     </button>
                   </td>
@@ -593,7 +739,7 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
           value={weeks}
           onChange={(e) => setWeeks(e.target.value)}
           min="1"
-          max="40"
+          max={TOTAL_WEEKS}
           required
         />
       </div>
@@ -603,6 +749,7 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
           type="number"
           value={length}
           onChange={(e) => setLength(e.target.value)}
+          min={"0.1"}
           step="0.1"
           required
         />
@@ -613,45 +760,51 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
           type="number"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
+          min={"0.1"}
+          step="0.1"
           required
         />
       </div>
       <div className="form-group">
-        <label>Biparietal Diameter (cm):</label>
+        <label>Biparietal Diameter - BPD (cm):</label>
         <input
           type="number"
           value={biparietalDiameter}
           onChange={(e) => setBiparietalDiameter(e.target.value)}
+          min={"0.1"}
           step="0.1"
           required
         />
       </div>
       <div className="form-group">
-        <label>Femoral Length (cm):</label>
+        <label>Femoral Length - FL (cm):</label>
         <input
           type="number"
           value={femoralLength}
           onChange={(e) => setFemoralLength(e.target.value)}
+          min={"0.1"}
           step="0.1"
           required
         />
       </div>
       <div className="form-group">
-        <label>Head Circumference (cm):</label>
+        <label>Head Circumference - HC (cm):</label>
         <input
           type="number"
           value={headCircumference}
           onChange={(e) => setHeadCircumference(e.target.value)}
+          min={"0.1"}
           step="0.1"
           required
         />
       </div>
       <div className="form-group">
-        <label>Abdominal Circumference (cm):</label>
+        <label>Abdominal Circumference - AC (cm):</label>
         <input
           type="number"
           value={abdominalCircumference}
           onChange={(e) => setAbdominalCircumference(e.target.value)}
+          min={"0.1"}
           step="0.1"
           required
         />

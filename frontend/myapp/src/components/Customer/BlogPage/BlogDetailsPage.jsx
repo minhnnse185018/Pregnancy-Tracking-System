@@ -21,6 +21,24 @@ function BlogDetailsPage() {
     fetchPostDetails();
   }, [id]);
 
+  // Format date helper function
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    
+    // Check if it's the default date (0001-01-01)
+    if (date.getFullYear() === 1 || isNaN(date.getTime())) {
+      return "";
+    }
+    
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  };
+
   // Show toast notification function
   const showToast = (message, type = "success", icon = "✅") => {
     const id = Date.now();
@@ -52,6 +70,14 @@ function BlogDetailsPage() {
       const response = await axios.get(
         `http://localhost:5254/api/Post/GetPostById/${id}`
       );
+      
+      // Sort comments newest first if they exist
+      if (response.data.comments && response.data.comments.length > 0) {
+        response.data.comments.sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+      }
+      
       setPost(response.data);
     } catch (err) {
       console.error("Error fetching post details:", err);
@@ -80,10 +106,31 @@ function BlogDetailsPage() {
         postId: id,
         content: commentText,
       });
+      
+      // Create the new comment object with the format matching the API response
+      const newComment = {
+        id: response.data.id || Date.now(),
+        postId: parseInt(id),
+        userId: parseInt(userId),
+        content: commentText,
+        createdAt: new Date().toISOString(),
+        updatedAt: "0001-01-01T00:00:00",
+        userName: sessionStorage.getItem("userName") || "You"
+      };
+      
+      // Update the post with the new comment at the beginning
+      setPost(prevPost => {
+        if (!prevPost) return prevPost;
+        
+        return {
+          ...prevPost,
+          comments: [newComment, ...(prevPost.comments || [])]
+        };
+      });
+      
       showToast("Comment added successfully!", "success", "💬");
       setShowModal(false);
       setCommentText("");
-      fetchPostDetails(); // Refresh post to show new comment
     } catch (error) {
       console.error("Error adding comment:", error);
       showToast("Error adding comment. Please try again.", "error", "❌");
@@ -177,7 +224,7 @@ function BlogDetailsPage() {
 
             <div className="post-stats">
               <span className="post-time">
-                Created At: {new Date(post.createdAt).toLocaleDateString()}
+                Created: {formatDate(post.createdAt)}
               </span>
             </div>
 
@@ -201,7 +248,10 @@ function BlogDetailsPage() {
                           {comment.userName}
                         </span>
                         <span className="comment-date">
-                          {new Date(comment.createdAt).toLocaleDateString()}
+                          {formatDate(comment.createdAt)}
+                          {comment.updatedAt && comment.updatedAt !== "0001-01-01T00:00:00" && (
+                            <span className="edited-indicator"> (edited {formatDate(comment.updatedAt)})</span>
+                          )}
                         </span>
                       </div>
                       <p className="comment-content">{comment.content}</p>

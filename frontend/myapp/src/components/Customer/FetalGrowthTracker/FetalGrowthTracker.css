@@ -163,7 +163,12 @@ main {
   overflow-x: auto;
   margin-bottom: 30px;
 }
-
+.profile-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 50px;
+}
 /* Fetal Data Table (Compact) */
 .fetal-data-table {
   width: 100%;
@@ -385,4 +390,52 @@ main {
 
 .form-actions .save-button:hover {
   background-color: #ff6f7a;
+}
+/* Delete modal content */
+.delete-modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.delete-modal-content p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.delete-modal-actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.delete-modal-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.delete-modal-actions button:first-child {
+  background-color: #ff4d4d; /* Red for Delete */
+  color: #fff;
+}
+
+.delete-modal-actions button:first-child:hover {
+  background-color: #cc0000;
+}
+
+.delete-modal-actions button:last-child {
+  background-color: #ccc; /* Gray for Cancel */
+  color: #333;
+}
+
+.delete-modal-actions button:last-child:hover {
+  background-color: #999;
 }
