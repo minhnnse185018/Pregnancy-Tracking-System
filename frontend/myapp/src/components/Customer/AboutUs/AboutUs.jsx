@@ -192,9 +192,9 @@ const AboutUs = () => {
         <div className="container">
           <div className="row text-center">
             {[
-              { count: "100,000+", label: "Trusted Moms" },
-              { count: "50,000+", label: "Helpful Articles" },
-              { count: "200,000+", label: "Discussion Topics" },
+              { count: "1,000+", label: "Trusted Moms" },
+              { count: "5,000+", label: "Helpful Articles" },
+              { count: "2,000+", label: "Discussion Topics" },
               { count: "24/7", label: "Continuous Support" },
             ].map((stat, index) => (
               <div key={index} className="col-sm-3">

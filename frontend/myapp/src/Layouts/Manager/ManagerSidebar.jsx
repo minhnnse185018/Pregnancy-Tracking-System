@@ -3,6 +3,7 @@ import BarChartIcon from "@mui/icons-material/BarChart"; // Icon for Manage Reve
 import DescriptionIcon from "@mui/icons-material/Description"; // Icon for Manage Blog
 import GroupIcon from "@mui/icons-material/Group"; // Icon for Profile
 import PaymentIcon from "@mui/icons-material/Payment"; // Icon for Manage Payroll
+import { StoreIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -25,11 +26,11 @@ const ManagerSidebar = () => {
             <Quiz /> Manage FAQs
           </Link>
         </li>
-        {/* <li style={listItemStyle}>
-          <Link to="manager-services" style={linkStyle}>
-            <StoreIcon /> Manage Services
+        <li style={listItemStyle}>
+          <Link to="manager-fetalStandard" style={linkStyle}>
+            <StoreIcon /> Manage Fetal Standard
           </Link>
-        </li> */}
+        </li>
         <li style={listItemStyle}>
           <Link to="manager-blog" style={linkStyle}>
             <DescriptionIcon /> Manage Blog
@@ -40,16 +41,6 @@ const ManagerSidebar = () => {
             <PaymentIcon /> Manage reminders
           </Link>
         </li>
-        {/* <li style={listItemStyle}>
-          <Link to="view-appointments" style={linkStyle}>
-            <EventIcon /> View Appointments
-          </Link>
-        </li> */}
-        {/* <li style={listItemStyle}>
-          <Link to="manager-schedule" style={linkStyle}>
-            <ScheduleIcon /> Manager Schedule
-          </Link>
-        </li> */}
       </ul>
     </div>
   );
