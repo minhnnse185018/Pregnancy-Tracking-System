@@ -42,9 +42,9 @@ import ManageCustomer from "./Pages/Admin/ManagerCustomer";
 import DoctorChat from "./Pages/Doctor/DoctorChat";
 import DoctorGrowthAlert from "./Pages/Doctor/DoctorGrowthAlert";
 import DoctorProfile from "./Pages/Doctor/DoctorProfile";
-import ManagerAppointments from "./Pages/Manager/ManagerAppointments";
 import ManagerBlogs from "./Pages/Manager/ManagerBlogs";
 import ManagerFAQs from "./Pages/Manager/ManagerFAQs";
+import ManagerFetalStandard from "./Pages/Manager/ManagerFetalStandard";
 import ManagerProfilePage from "./Pages/Manager/ManagerProfilePage";
 import ManagerReminders from "./Pages/Manager/ManagerReminders";
 import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
@@ -304,8 +304,8 @@ function App() {
               <Route path="manager-reminders" element={<ManagerReminders />} />
               <Route path="manager-blog" element={<ManagerBlogs />} />
               <Route
-                path="view-appointments"
-                element={<ManagerAppointments />}
+                path="manager-fetalstandard"
+                element={<ManagerFetalStandard />}
               />
               <Route path="manager-schedule" element={<ManagerSchedule />} />
             </Route>

@@ -40,11 +40,11 @@ const ManagerSidebar = () => {
             <PaymentIcon /> Manage reminders
           </Link>
         </li>
-        {/* <li style={listItemStyle}>
-          <Link to="view-appointments" style={linkStyle}>
-            <EventIcon /> View Appointments
+        <li style={listItemStyle}>
+          <Link to="manager-fetalstandard" style={linkStyle}>
+            <DescriptionIcon /> View FetalStandard
           </Link>
-        </li> */}
+        </li>
         {/* <li style={listItemStyle}>
           <Link to="manager-schedule" style={linkStyle}>
             <ScheduleIcon /> Manager Schedule
