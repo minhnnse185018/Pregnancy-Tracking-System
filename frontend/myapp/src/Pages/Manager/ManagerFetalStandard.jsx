@@ -244,9 +244,9 @@ const ManagerFetalStandard = () => {
     weightGrams: Yup.number()
       .required("Weight is required")
       .min(0, "Weight must be a positive number"),
-    lengthCm: Yup.number()
-      .required("Length is required")
-      .min(0, "Length must be a positive number"),
+    heightCm: Yup.number()
+      .required("Height is required")
+      .min(0, "Height must be a positive number"),
     headCircumferenceCm: Yup.number()
       .required("Head circumference is required")
       .min(0, "Head circumference must be a positive number"),
@@ -315,7 +315,13 @@ const ManagerFetalStandard = () => {
                     Weight (grams)
                   </TableCell>
                   <TableCell sx={commonStyles.tableHeader}>
-                    Length (cm)
+                    Height (cm)
+                  </TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>
+                    Biparietal Diameter (cm)
+                  </TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>
+                    Femoral Length (cm)
                   </TableCell>
                   <TableCell sx={commonStyles.tableHeader}>
                     Head Circumference (cm)
@@ -333,7 +339,9 @@ const ManagerFetalStandard = () => {
                       <TableCell>{standard.id}</TableCell>
                       <TableCell>{standard.weekNumber}</TableCell>
                       <TableCell>{standard.weightGrams}</TableCell>
-                      <TableCell>{standard.lengthCm}</TableCell>
+                      <TableCell>{standard.heightCm}</TableCell>
+                      <TableCell>{standard.biparietalDiameterCm}</TableCell>
+                      <TableCell>{standard.femoralLengthCm}</TableCell>
                       <TableCell>{standard.headCircumferenceCm}</TableCell>
                       <TableCell>{standard.abdominalCircumferenceCm}</TableCell>
                       <TableCell>
@@ -377,7 +385,9 @@ const ManagerFetalStandard = () => {
             editStandard || {
               weekNumber: "",
               weightGrams: "",
-              lengthCm: "",
+              heightCm: "",
+              biparietalDiameterCm: "",
+              femoralLengthCm: "",
               headCircumferenceCm: "",
               abdominalCircumferenceCm: "",
             }
@@ -422,15 +432,45 @@ const ManagerFetalStandard = () => {
                 <Field
                   as={TextField}
                   fullWidth
-                  name="lengthCm"
-                  label="Length (cm)"
+                  name="heightCm"
+                  label="Height (cm)"
                   type="number"
                   variant="outlined"
                   margin="dense"
                   sx={commonStyles.textField}
                 />
                 <ErrorMessage
-                  name="lengthCm"
+                  name="heightCm"
+                  component="div"
+                  style={{ color: "red" }}
+                />
+                <Field
+                  as={TextField}
+                  fullWidth
+                  name="biparietalDiameterCm"
+                  label="Biparietal Diameter (cm)"
+                  type="number"
+                  variant="outlined"
+                  margin="dense"
+                  sx={commonStyles.textField}
+                />
+                <ErrorMessage
+                  name="biparietalDiameterCm"
+                  component="div"
+                  style={{ color: "red" }}
+                />
+                <Field
+                  as={TextField}
+                  fullWidth
+                  name="femoralLengthCm"
+                  label="Femoral Length (cm)"
+                  type="number"
+                  variant="outlined"
+                  margin="dense"
+                  sx={commonStyles.textField}
+                />
+                <ErrorMessage
+                  name="femoralLengthCm"
                   component="div"
                   style={{ color: "red" }}
                 />

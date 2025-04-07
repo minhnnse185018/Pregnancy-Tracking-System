@@ -686,8 +686,30 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
   );
   const [notes, setNotes] = useState(data?.notes || "");
 
+  const handleNumberInput = (value, setter) => {
+    const numValue = parseFloat(value);
+    if (numValue < 0) {
+      toast.error("Value cannot be negative");
+      setter("0");
+    } else {
+      setter(value);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Add validation for negative values
+    if (parseFloat(length) < 0 || 
+        parseFloat(weight) < 0 || 
+        parseFloat(biparietalDiameter) < 0 || 
+        parseFloat(femoralLength) < 0 || 
+        parseFloat(headCircumference) < 0 || 
+        parseFloat(abdominalCircumference) < 0) {
+      toast.error("Measurements cannot be negative!");
+      return;
+    }
+
     onSave({
       weeks: parseInt(weeks),
       length: parseFloat(length),
@@ -717,7 +739,7 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={weeks}
-          onChange={(e) => setWeeks(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setWeeks)}
           min="1"
           max={TOTAL_WEEKS}
           required
@@ -728,8 +750,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={length}
-          onChange={(e) => setLength(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setLength)}
           step="0.1"
+          min="0"
           required
         />
       </div>
@@ -738,7 +761,8 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={weight}
-          onChange={(e) => setWeight(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setWeight)}
+          min="0"
           required
         />
       </div>
@@ -747,8 +771,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={biparietalDiameter}
-          onChange={(e) => setBiparietalDiameter(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setBiparietalDiameter)}
           step="0.1"
+          min="0"
           required
         />
       </div>
@@ -757,8 +782,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={femoralLength}
-          onChange={(e) => setFemoralLength(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setFemoralLength)}
           step="0.1"
+          min="0"
           required
         />
       </div>
@@ -767,8 +793,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={headCircumference}
-          onChange={(e) => setHeadCircumference(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setHeadCircumference)}
           step="0.1"
+          min="0"
           required
         />
       </div>
@@ -777,8 +804,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={abdominalCircumference}
-          onChange={(e) => setAbdominalCircumference(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setAbdominalCircumference)}
           step="0.1"
+          min="0"
           required
         />
       </div>
