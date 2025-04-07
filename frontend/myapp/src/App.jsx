@@ -48,6 +48,7 @@ import ManagerFetalStandard from "./Pages/Manager/ManagerFetalStandard";
 import ManagerProfilePage from "./Pages/Manager/ManagerProfilePage";
 import ManagerReminders from "./Pages/Manager/ManagerReminders";
 import ManageRevenuePage from "./Pages/Manager/ManagerRevenuePage";
+import ManagerSchedule from "./Pages/Manager/ManagerSchedule";
 import ManagerServices from "./Pages/Manager/ManagerServices";
 function App() {
   return (
@@ -303,9 +304,10 @@ function App() {
               <Route path="manager-reminders" element={<ManagerReminders />} />
               <Route path="manager-blog" element={<ManagerBlogs />} />
               <Route
-                path="manager-fetalStandard"
+                path="manager-fetalstandard"
                 element={<ManagerFetalStandard />}
               />
+              <Route path="manager-schedule" element={<ManagerSchedule />} />
             </Route>
           </Route>
         </Routes>

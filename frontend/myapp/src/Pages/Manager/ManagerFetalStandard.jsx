@@ -1,184 +1,511 @@
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Paper,
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
-import React, { useEffect } from "react";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import * as Yup from "yup";
 
-const API_BASE_URL = "http://localhost:5254/api";
-function ManagerFetalStandard() {
-  const [fetalStandards, setFetalStandards] = React.useState([]);
-  const [formData, setFormData] = React.useState({
-    id: "",
-    week: "",
-    weight: "",
-    height: "",
-    biparietalDiameter: "",
-    headCircumference: "",
-    abdominalCircumference: "",
+// Common styles for the component
+const commonStyles = {
+  button: {
+    backgroundColor: "#f8bbd0",
+    "&:hover": { backgroundColor: "#f06292" },
+    borderRadius: "12px",
+    padding: "8px 20px",
+    textTransform: "none",
+    fontWeight: "bold",
+  },
+  tableHeader: {
+    backgroundColor: "#f8bbd0",
+    color: "#333",
+    fontWeight: "bold",
+  },
+  tableRow: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: "#fce4ec",
+    },
+    "&:hover": {
+      backgroundColor: "#ffebee",
+    },
+  },
+  textField: {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px",
+      "&:hover fieldset": { borderColor: "#f8bbd0" },
+      "&.Mui-focused fieldset": { borderColor: "#f8bbd0" },
+    },
+  },
+};
+
+const ManagerFetalStandard = () => {
+  const [standards, setStandards] = useState([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
   });
-  const [searchWeek, setSearchWeek] = React.useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editStandard, setEditStandard] = useState(null);
+  const accountID = sessionStorage.getItem("userID");
 
+  // Fetch all fetal growth standards
   const fetchStandards = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/FetalStandard`);
-      const data = await response.json();
-      setFetalStandards(data);
-    } catch (error) {
-      console.error("Error fetching fetal standards:", error);
-    }
-  };
-
-  const fetchStandardsById = async (id) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/FetalStandard/${id}`);
-      const data = await response.json();
-      setFormData(data);
-    } catch (error) {
-      console.error("Error fetching fetal standard:", error);
-    }
-  };
-
-  const fetchStandardsByWeek = async (week) => {
-    try {
+      const token = sessionStorage.getItem("token");
       const response = await axios.get(
-        `${API_BASE_URL}/FetalStandard/Week/${week}`
+        `http://localhost:5254/api/FetalGrowthStandard`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      const data = await response.json();
-      setFetalStandards(response.data);
+
+      if (response.status === 200) {
+        setStandards(response.data);
+      }
     } catch (error) {
-      console.error("Error fetching fetal standards by week:", error);
+      console.error("Error fetching fetal growth standards:", error);
+      setSnackbar({
+        open: true,
+        message:
+          error.response?.data?.message ||
+          "Failed to fetch fetal growth standards.",
+        severity: "error",
+      });
     }
   };
 
-  const createStandard = async () => {
+  // Fetch standards on component mount
+  useEffect(() => {
+    if (!accountID) {
+      setSnackbar({
+        open: true,
+        message: "User ID not found. Please log in.",
+        severity: "error",
+      });
+      return;
+    }
+
+    fetchStandards();
+  }, [accountID]);
+
+  // Handle creating a new fetal growth standard
+  const handleCreateStandard = async (values, { setSubmitting, resetForm }) => {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/FetalStandard`,
-        formData
+        `http://localhost:5254/api/FetalGrowthStandard`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
-      setFetalStandards([...fetalStandards, response.data]);
+
+      if (response.status === 200 || response.status === 201) {
+        setSnackbar({
+          open: true,
+          message: "Fetal growth standard created successfully!",
+          severity: "success",
+        });
+        setOpenDialog(false);
+        resetForm();
+        await fetchStandards(); // Fetch the updated list after creating
+      }
     } catch (error) {
-      console.error("Error creating fetal standard:", error);
+      console.error("Error creating fetal growth standard:", error);
+      setSnackbar({
+        open: true,
+        message:
+          error.response?.data?.message ||
+          "Failed to create fetal growth standard.",
+        severity: "error",
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const updateStandard = async (id) => {
+  // Handle updating a fetal growth standard
+  const handleUpdateStandard = async (values, { setSubmitting }) => {
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/FetalStandard/${id}`,
-        formData
+        `http://localhost:5254/api/FetalGrowthStandard/${values.id}`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
-      setFetalStandards(
-        fetalStandards.map((standard) =>
-          standard.id === id ? response.data : standard
-        )
-      );
+
+      if (response.status === 200 || response.status === 201) {
+        setSnackbar({
+          open: true,
+          message: "Fetal growth standard updated successfully!",
+          severity: "success",
+        });
+        setOpenDialog(false);
+        setEditStandard(null);
+        await fetchStandards(); // Fetch the updated list after updating
+      }
     } catch (error) {
-      console.error("Error updating fetal standard:", error);
+      console.error("Error updating fetal growth standard:", error);
+      setSnackbar({
+        open: true,
+        message:
+          error.response?.data?.message ||
+          "Failed to update fetal growth standard.",
+        severity: "error",
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const deleteStandard = async (id) => {
+  // Handle deleting a fetal growth standard
+  const handleDeleteStandard = async (id) => {
     try {
-      await axios.delete(`${API_BASE_URL}/FetalStandard/${id}`);
-      setFetalStandards(
-        fetalStandards.filter((standard) => standard.id !== id)
+      const response = await axios.delete(
+        `http://localhost:5254/api/FetalGrowthStandard/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
+
+      if (response.status === 200 || response.status === 204) {
+        setSnackbar({
+          open: true,
+          message: "Fetal growth standard deleted successfully!",
+          severity: "success",
+        });
+        await fetchStandards(); // Fetch the updated list after deleting
+      }
     } catch (error) {
-      console.error("Error deleting fetal standard:", error);
+      console.error("Error deleting fetal growth standard:", error);
+      setSnackbar({
+        open: true,
+        message:
+          error.response?.data?.message ||
+          "Failed to delete fetal growth standard.",
+        severity: "error",
+      });
     }
   };
 
-  useEffect(() => {
-    fetchStandards();
-  }, []);
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleOpenDialog = (standard = null) => {
+    setEditStandard(standard);
+    setOpenDialog(true);
   };
-  const handleSearchWeek = (e) => {
-    if (searchWeek) {
-      fetchStandardsByWeek(searchWeek);
-    } else {
-      fetchStandards();
-    }
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setEditStandard(null);
   };
+
+  // Validation schema for the form
+  const validationSchema = Yup.object({
+    weekNumber: Yup.number()
+      .required("Week number is required")
+      .min(1, "Week number must be at least 1")
+      .max(40, "Week number cannot exceed 40"),
+    weightGrams: Yup.number()
+      .required("Weight is required")
+      .min(0, "Weight must be a positive number"),
+    lengthCm: Yup.number()
+      .required("Length is required")
+      .min(0, "Length must be a positive number"),
+    headCircumferenceCm: Yup.number()
+      .required("Head circumference is required")
+      .min(0, "Head circumference must be a positive number"),
+    abdominalCircumferenceCm: Yup.number()
+      .required("Abdominal circumference is required")
+      .min(0, "Abdominal circumference must be a positive number"),
+  });
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Fetal Growth Standard Manager</h1>
+    <Box
+      sx={{
+        backgroundColor: "#fce4ec",
+        minHeight: "100vh",
+        display: "flex",
+        padding: 4,
+      }}
+    >
+      <Container maxWidth="lg">
+        <Paper
+          sx={{
+            borderRadius: "12px",
+            padding: 3,
+            boxShadow: 3,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                color: "#f06292",
+                textAlign: "center",
+                borderBottom: "2px solid #f8bbd0",
+                paddingBottom: "8px",
+                textTransform: "uppercase",
+              }}
+            >
+              Manage Fetal Growth Standards
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              sx={commonStyles.button}
+              onClick={() => handleOpenDialog()}
+            >
+              Add Standard
+            </Button>
+          </Box>
 
-      {/* Form để thêm mới hoặc cập nhật */}
-      <div style={{ marginBottom: "20px" }}>
-        <h2>{formData.id ? "Update Standard" : "Add New Standard"}</h2>
-        <input
-          type="text"
-          name="week"
-          placeholder="Week"
-          value={formData.week}
-          onChange={handleInputChange}
-          style={{ marginRight: "10px" }}
-        />
-        <input
-          type="text"
-          name="value"
-          placeholder="Value"
-          value={formData.value}
-          onChange={handleInputChange}
-          style={{ marginRight: "10px" }}
-        />
-        {formData.id ? (
-          <button onClick={() => updateStandard(formData.id)}>Update</button>
-        ) : (
-          <button onClick={createStandard}>Add</button>
-        )}
-      </div>
+          <TableContainer sx={{ mt: 3 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={commonStyles.tableHeader}>ID</TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>
+                    Week Number
+                  </TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>
+                    Weight (grams)
+                  </TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>
+                    Length (cm)
+                  </TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>
+                    Head Circumference (cm)
+                  </TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>
+                    Abdominal Circumference (cm)
+                  </TableCell>
+                  <TableCell sx={commonStyles.tableHeader}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {standards.length > 0 ? (
+                  standards.map((standard) => (
+                    <TableRow key={standard.id} sx={commonStyles.tableRow}>
+                      <TableCell>{standard.id}</TableCell>
+                      <TableCell>{standard.weekNumber}</TableCell>
+                      <TableCell>{standard.weightGrams}</TableCell>
+                      <TableCell>{standard.lengthCm}</TableCell>
+                      <TableCell>{standard.headCircumferenceCm}</TableCell>
+                      <TableCell>{standard.abdominalCircumferenceCm}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleOpenDialog(standard)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDeleteStandard(standard.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} align="center">
+                      <Typography>No fetal growth standards found.</Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Container>
 
-      {/* Tìm kiếm theo tuần */}
-      <div style={{ marginBottom: "20px" }}>
-        <h2>Search by Week</h2>
-        <input
-          type="text"
-          placeholder="Enter week"
-          value={searchWeek}
-          onChange={(e) => setSearchWeek(e.target.value)}
-          style={{ marginRight: "10px" }}
-        />
-        <button onClick={handleSearchWeek}>Search</button>
-      </div>
-
-      {/* Danh sách Fetal Growth Standards */}
-      <h2>Standards List</h2>
-      <table border="1" style={{ width: "100%", textAlign: "left" }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Week</th>
-            <th>Value</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {fetalStandards.map((standard) => (
-            <tr key={standard.id}>
-              <td>{standard.id}</td>
-              <td>{standard.week}</td>
-              <td>{standard.value}</td>
-              <td>
-                <button
-                  onClick={() => fetchStandardsById(standard.id)}
-                  style={{ marginRight: "10px" }}
+      {/* Dialog for creating/editing fetal growth standards */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>
+          {editStandard
+            ? "Edit Fetal Growth Standard"
+            : "Create Fetal Growth Standard"}
+        </DialogTitle>
+        <Formik
+          initialValues={
+            editStandard || {
+              weekNumber: "",
+              weightGrams: "",
+              lengthCm: "",
+              headCircumferenceCm: "",
+              abdominalCircumferenceCm: "",
+            }
+          }
+          validationSchema={validationSchema}
+          onSubmit={editStandard ? handleUpdateStandard : handleCreateStandard}
+          enableReinitialize
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <DialogContent>
+                <Field
+                  as={TextField}
+                  fullWidth
+                  name="weekNumber"
+                  label="Week Number"
+                  type="number"
+                  variant="outlined"
+                  margin="dense"
+                  sx={commonStyles.textField}
+                />
+                <ErrorMessage
+                  name="weekNumber"
+                  component="div"
+                  style={{ color: "red" }}
+                />
+                <Field
+                  as={TextField}
+                  fullWidth
+                  name="weightGrams"
+                  label="Weight (grams)"
+                  type="number"
+                  variant="outlined"
+                  margin="dense"
+                  sx={commonStyles.textField}
+                />
+                <ErrorMessage
+                  name="weightGrams"
+                  component="div"
+                  style={{ color: "red" }}
+                />
+                <Field
+                  as={TextField}
+                  fullWidth
+                  name="lengthCm"
+                  label="Length (cm)"
+                  type="number"
+                  variant="outlined"
+                  margin="dense"
+                  sx={commonStyles.textField}
+                />
+                <ErrorMessage
+                  name="lengthCm"
+                  component="div"
+                  style={{ color: "red" }}
+                />
+                <Field
+                  as={TextField}
+                  fullWidth
+                  name="headCircumferenceCm"
+                  label="Head Circumference (cm)"
+                  type="number"
+                  variant="outlined"
+                  margin="dense"
+                  sx={commonStyles.textField}
+                />
+                <ErrorMessage
+                  name="headCircumferenceCm"
+                  component="div"
+                  style={{ color: "red" }}
+                />
+                <Field
+                  as={TextField}
+                  fullWidth
+                  name="abdominalCircumferenceCm"
+                  label="Abdominal Circumference (cm)"
+                  type="number"
+                  variant="outlined"
+                  margin="dense"
+                  sx={commonStyles.textField}
+                />
+                <ErrorMessage
+                  name="abdominalCircumferenceCm"
+                  component="div"
+                  style={{ color: "red" }}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={handleCloseDialog}
+                  sx={{
+                    color: "#f44336",
+                    borderColor: "#f44336",
+                    borderRadius: "12px",
+                    "&:hover": {
+                      borderColor: "#d32f2f",
+                      backgroundColor: "#ffebee",
+                    },
+                  }}
                 >
-                  Edit
-                </button>
-                <button onClick={() => deleteStandard(standard.id)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={isSubmitting}
+                  sx={commonStyles.button}
+                >
+                  {editStandard ? "Update" : "Create"}
+                </Button>
+              </DialogActions>
+            </Form>
+          )}
+        </Formik>
+      </Dialog>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
-}
+};
 
 export default ManagerFetalStandard;
