@@ -39,7 +39,7 @@ const Contact = () => {
       const fetchUserData = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:8080/profile/customer/${userId}`
+            `http://localhost:5254/profile/customer/${userId}`
           );
           if (response.status === 200) {
             const { name, email, phone } = response.data;
@@ -83,7 +83,7 @@ const Contact = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/support-tickets/create",
+        "http://localhost:5254/support-tickets/create",
         formData
       );
       if (response.status === 200) {

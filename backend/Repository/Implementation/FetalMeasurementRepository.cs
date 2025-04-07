@@ -228,10 +228,25 @@ namespace backend.Repository.Implementation
 
             if (measurement == null) return null;
 
-            _mapper.Map(measurementDto, measurement);
-            // No need to call CalculateWeek
+            // Xóa các cảnh báo hiện có cho phép đo này
+            var existingAlerts = await _context.GrowthAlerts
+                .Where(a => a.MeasurementId == id)
+                .ToListAsync();
+            
+            if (existingAlerts.Any())
+            {
+                _context.GrowthAlerts.RemoveRange(existingAlerts);
+                await _context.SaveChangesAsync();
+            }
 
+            _mapper.Map(measurementDto, measurement);
+
+            // Lưu cập nhật phép đo
             await _context.SaveChangesAsync();
+
+            // Tạo cảnh báo tăng trưởng mới nếu cần
+            await GenerateGrowthAlertIfNeeded(measurement);
+
             return await GetMeasurementByIdAsync(id);
         }
 
@@ -240,7 +255,19 @@ namespace backend.Repository.Implementation
             var measurement = await _context.FetalMeasurements.FindAsync(id);
             if (measurement == null) return -1;
 
+            // Xóa các cảnh báo tăng trưởng liên quan trước
+            var alerts = await _context.GrowthAlerts
+                .Where(a => a.MeasurementId == id)
+                .ToListAsync();
+            
+            if (alerts.Any())
+            {
+                _context.GrowthAlerts.RemoveRange(alerts);
+            }
+
+            // Sau đó xóa phép đo
             _context.FetalMeasurements.Remove(measurement);
+            
             return await _context.SaveChangesAsync();
         }
 

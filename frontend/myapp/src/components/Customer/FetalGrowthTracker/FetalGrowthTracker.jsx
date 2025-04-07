@@ -1,28 +1,30 @@
-import axios from "axios";
 import {
-  BarElement,
   CategoryScale,
   Chart as ChartJS,
   Legend,
   LinearScale,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
 } from "chart.js";
-import React, { useEffect, useRef, useState } from "react";
-import { Bar } from "react-chartjs-2";
+import React, { useEffect, useRef, useState } from "react"; // Added useRef
+import { Line } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import "./FetalGrowthTracker.css";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend
 );
+
+const TOTAL_WEEKS = 40; // Maximum weeks for pregnancy tracking
 
 function FetalGrowthTracker() {
   const [gestationalAge, setGestationalAge] = useState("");
@@ -32,10 +34,9 @@ function FetalGrowthTracker() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEditData, setCurrentEditData] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [dataToDelete, setDataToDelete] = useState(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, id: null });
   const navigate = useNavigate();
-  const chartRef = useRef(null);
+  const chartRef = useRef(null); // Ref to access the chart instance
 
   useEffect(() => {
     checkAuthentication();
@@ -49,7 +50,7 @@ function FetalGrowthTracker() {
     setIsAuthenticated(!!userId);
   }
 
-  async function fetchUserProfiles() {
+  function fetchUserProfiles() {
     const userId = sessionStorage.getItem("userID");
     if (!userId) {
       toast.error("Please log in to view your profiles.");
@@ -57,77 +58,73 @@ function FetalGrowthTracker() {
       return;
     }
 
-    const token = sessionStorage.getItem("token");
-
-    try {
-      const response = await axios.get(
-        `http://localhost:5254/api/PregnancyProfile/GetProfilesByUserId/${userId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
-          },
+    fetch(
+      `http://localhost:5254/api/PregnancyProfile/GetProfilesByUserId/${userId}`
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch profiles");
+        return response.json();
+      })
+      .then((data) => {
+        setUserProfiles(data);
+        if (data.length > 0) {
+          setSelectedProfile(data[0]);
+          fetchFetalData(data[0].id);
         }
-      );
-      setUserProfiles(response.data);
-      if (response.data.length > 0) {
-        setSelectedProfile(response.data[0]);
-        fetchFetalData(response.data[0].id);
-      }
-    } catch (err) {
-      console.error("Error fetching profiles:", err);
-      toast.error("Failed to load profiles.");
-    }
+      })
+      .catch((err) => {
+        console.error("Error fetching profiles:", err);
+        toast.error("Failed to load profiles.");
+      });
   }
 
-  async function fetchFetalData(profileId) {
-    const token = sessionStorage.getItem("token");
-
-    try {
-      const response = await axios.get(
-        `http://localhost:5254/api/FetalMeasurement/GetGrowthByProfile/${profileId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-        }
-      );
-      const profile = userProfiles.find((p) => p.id === profileId);
-      const conceptionDate = profile ? new Date(profile.conceptionDate) : null;
-      const mappedData = (response.data || []).map((item) => {
-        let weeks = item.week || "N/A";
-        if (weeks === "N/A" && conceptionDate && item.measureDate) {
-          const measureDate = new Date(item.measureDate);
-          const diffTime = Math.abs(measureDate - conceptionDate);
-          const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
-          weeks = diffWeeks;
-        }
-        return {
-          id: item.id,
-          profileId: item.profileId,
-          weeks: weeks,
-          length: item.heightCm || 0,
-          weight: item.weightGrams || 0,
-          biparietalDiameter: item.biparietalDiameterCm || 0,
-          femoralLength: item.femoralLengthCm || 0,
-          headCircumference: item.headCircumferenceCm || 0,
-          abdominalCircumference: item.abdominalCircumferenceCm || 0,
-          notes: item.notes || "N/A",
-          measureDate: item.measureDate || item.createdAt,
-        };
+  function fetchFetalData(profileId) {
+    fetch(
+      `http://localhost:5254/api/FetalMeasurement/GetGrowthByProfile/${profileId}`
+    )
+      .then((response) => {
+        if (!response.ok) return [];
+        return response.json();
+      })
+      .then((data) => {
+        const profile = userProfiles.find((p) => p.id === profileId);
+        const conceptionDate = profile
+          ? new Date(profile.conceptionDate)
+          : null;
+        const mappedData = (data || []).map((item) => {
+          let weeks = item.week || "N/A";
+          if (weeks === "N/A" && conceptionDate && item.measureDate) {
+            const measureDate = new Date(item.measureDate);
+            const diffTime = Math.abs(measureDate - conceptionDate);
+            const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+            weeks = diffWeeks;
+          }
+          return {
+            id: item.id,
+            profileId: item.profileId,
+            weeks: weeks,
+            length: item.heightCm || 0,
+            weight: item.weightGrams || 0,
+            biparietalDiameter: item.biparietalDiameterCm || 0,
+            femoralLength: item.femoralLengthCm || 0,
+            headCircumference: item.headCircumferenceCm || 0,
+            abdominalCircumference: item.abdominalCircumferenceCm || 0,
+            notes: item.notes || "N/A",
+            measureDate: item.measureDate || item.createdAt,
+          };
+        });
+        const sortedData = mappedData.sort((a, b) => {
+          const weekA = parseInt(a.weeks) || 0;
+          const weekB = parseInt(b.weeks) || 0;
+          return weekA - weekB;
+        });
+        setFetalData(sortedData);
+      })
+      .catch((err) => {
+        console.error("Error fetching fetal data:", err);
+        toast.error("Failed to load fetal growth data.");
+        setFetalData([]);
       });
-      const sortedData = mappedData.sort((a, b) => {
-        const weekA = parseInt(a.weeks) || 0;
-        const weekB = parseInt(b.weeks) || 0;
-        return weekA - weekB;
-      });
-      setFetalData(sortedData);
-    } catch (err) {
-      console.error("Error fetching fetal data:", err);
-      toast.error("Failed to load fetal growth data.");
-      setFetalData([]);
-    }
   }
 
   function calculateGuestFetalData(weeks) {
@@ -156,9 +153,18 @@ function FetalGrowthTracker() {
 
   function handleProfileChange(e) {
     const profileId = e.target.value;
-    const profile = userProfiles.find((p) => p.id === profileId);
-    setSelectedProfile(profile);
-    fetchFetalData(profileId);
+    console.log("Selected profile ID:", profileId); // Add logging for debugging
+    
+    // Find the selected profile from userProfiles
+    const profile = userProfiles.find((p) => p.id === parseInt(profileId));
+    
+    if (profile) {
+      console.log("Found profile:", profile); // Add logging for debugging
+      setSelectedProfile(profile);
+      fetchFetalData(parseInt(profileId));
+    } else {
+      console.error("Profile not found for ID:", profileId);
+    }
   }
 
   function handleOpenModal(data = null) {
@@ -171,118 +177,72 @@ function FetalGrowthTracker() {
     setCurrentEditData(null);
   }
 
-  async function handleSaveFetalData(updatedData) {
-    const requiredFields = [
-      "weeks",
-      "length",
-      "weight",
-      "biparietalDiameter",
-      "femoralLength",
-      "headCircumference",
-      "abdominalCircumference",
-    ];
-    for (const field of requiredFields) {
-      if (
-        updatedData[field] === undefined ||
-        updatedData[field] === null ||
-        isNaN(updatedData[field])
-      ) {
-        toast.error(`Please provide a valid value for ${field}.`);
-        return;
+  function handleDeleteClick(id) {
+    setDeleteConfirmation({ show: true, id });
+  }
+
+  async function handleDeleteConfirm() {
+    const id = deleteConfirmation.id;
+    try {
+      const response = await fetch(
+        `http://localhost:5254/api/FetalMeasurement/DeleteGrowth/${id}`,
+        { method: "DELETE", headers: { "Content-Type": "application/json" } }
+      );
+
+      if (response.ok) {
+        toast.success("Data deleted successfully!");
+        fetchFetalData(selectedProfile.id);
+      } else {
+        throw new Error(`Failed to delete data: ${response.status}`);
       }
+    } catch (err) {
+      console.error("Error deleting fetal data:", err);
+      toast.error(`Failed to delete data: ${err.message}`);
+    } finally {
+      setDeleteConfirmation({ show: false, id: null });
     }
+  }
 
-    if (!selectedProfile?.id) {
-      toast.error("No pregnancy profile selected.");
-      return;
-    }
-
+  async function handleSaveFetalData(updatedData) {
     const payload = {
       profileId: selectedProfile.id,
-      weightGrams: parseFloat(updatedData.weight),
-      heightCm: parseFloat(updatedData.length),
-      biparietalDiameterCm: parseFloat(updatedData.biparietalDiameter),
-      femoralLengthCm: parseFloat(updatedData.femoralLength),
-      headCircumferenceCm: parseFloat(updatedData.headCircumference),
-      abdominalCircumferenceCm: parseFloat(updatedData.abdominalCircumference),
-      notes: updatedData.notes || "",
-      week: parseInt(updatedData.weeks, 10),
+      weightGrams: updatedData.weight,
+      heightCm: updatedData.length,
+      biparietalDiameterCm: updatedData.biparietalDiameter,
+      femoralLengthCm: updatedData.femoralLength,
+      headCircumferenceCm: updatedData.headCircumference,
+      abdominalCircumferenceCm: updatedData.abdominalCircumference,
+      notes: updatedData.notes,
+      week: updatedData.weeks,
       measureDate: new Date().toISOString(),
     };
 
     const url = currentEditData
       ? `http://localhost:5254/api/FetalMeasurement/UpdateGrowth/${currentEditData.id}`
       : `http://localhost:5254/api/FetalMeasurement/CreateGrowth`;
-    const method = currentEditData ? "put" : "post";
-
-    const token = sessionStorage.getItem("token");
+    const method = currentEditData ? "PUT" : "POST";
 
     try {
-      const response = await axios({
+      const response = await fetch(url, {
         method,
-        url,
-        data: payload,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
-      toast.success(currentEditData ? "Data updated!" : "Data created!");
-      fetchFetalData(selectedProfile.id);
-      handleCloseModal();
+      if (response.ok) {
+        toast.success(currentEditData ? "Data updated!" : "Data created!");
+        fetchFetalData(selectedProfile.id);
+        handleCloseModal();
+      } else {
+        throw new Error(`Failed to save data: ${response.status}`);
+      }
     } catch (err) {
-      console.error(
-        "Error saving fetal data:",
-        err.response?.data || err.message
-      );
-      toast.error(
-        `Failed to save data: ${err.response?.data?.message || err.message}`
-      );
+      console.error("Error saving fetal data:", err);
+      toast.error(`Failed to save data: ${err.message}`);
     }
   }
 
-  function handleDeleteClick(data) {
-    setDataToDelete(data);
-    setShowDeleteModal(true);
-  }
-
-  async function handleDeleteConfirm() {
-    if (!dataToDelete?.id) return;
-
-    const token = sessionStorage.getItem("token");
-
-    try {
-      await axios.delete(
-        `http://localhost:5254/api/FetalMeasurement/DeleteGrowth/${dataToDelete.id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-        }
-      );
-
-      toast.success("Data deleted!");
-      fetchFetalData(selectedProfile.id);
-      setShowDeleteModal(false);
-      setDataToDelete(null);
-    } catch (err) {
-      console.error(
-        "Error deleting fetal data:",
-        err.response?.data || err.message
-      );
-      toast.error(
-        `Failed to delete data: ${err.response?.data?.message || err.message}`
-      );
-    }
-  }
-
-  function handleDeleteCancel() {
-    setShowDeleteModal(false);
-    setDataToDelete(null);
-  }
-
+  // Function to download the chart as an image
   const downloadChart = () => {
     const chart = chartRef.current;
     if (chart) {
@@ -299,58 +259,61 @@ function FetalGrowthTracker() {
   };
 
   const chartData = {
-    labels:
-      fetalData.length > 0
-        ? fetalData.map((data) => `Week ${data.weeks || "N/A"}`)
-        : [],
+    labels: fetalData.map((data) => `Week ${data.weeks || "N/A"}`),
     datasets: [
       {
         label: "Length (cm)",
         data: fetalData.map((data) => data.length || 0),
-        backgroundColor: "rgba(255, 140, 148, 0.6)",
         borderColor: "rgba(255, 140, 148, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(255, 140, 148, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: 'y',
       },
       {
         label: "Weight (g)",
         data: fetalData.map((data) => data.weight || 0),
-        backgroundColor: "rgba(180, 147, 211, 0.6)",
         borderColor: "rgba(180, 147, 211, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(180, 147, 211, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: 'y1',
       },
       {
         label: "Biparietal Diameter (cm)",
         data: fetalData.map((data) => data.biparietalDiameter || 0),
-        backgroundColor: "rgba(100, 200, 150, 0.6)",
         borderColor: "rgba(100, 200, 150, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(100, 200, 150, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: 'y',
       },
       {
         label: "Femoral Length (cm)",
         data: fetalData.map((data) => data.femoralLength || 0),
-        backgroundColor: "rgba(255, 200, 100, 0.6)",
         borderColor: "rgba(255, 200, 100, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(255, 200, 100, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: 'y',
       },
       {
         label: "Head Circumference (cm)",
         data: fetalData.map((data) => data.headCircumference || 0),
-        backgroundColor: "rgba(150, 150, 255, 0.6)",
         borderColor: "rgba(150, 150, 255, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(150, 150, 255, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: 'y',
       },
       {
         label: "Abdominal Circumference (cm)",
         data: fetalData.map((data) => data.abdominalCircumference || 0),
-        backgroundColor: "rgba(200, 100, 200, 0.6)",
         borderColor: "rgba(200, 100, 200, 1)",
-        borderWidth: 1,
-        barThickness: 15,
+        backgroundColor: "rgba(200, 100, 200, 0.2)",
+        fill: true,
+        tension: 0.4,
+        yAxisID: 'y',
       },
     ],
   };
@@ -362,8 +325,9 @@ function FetalGrowthTracker() {
         display: true,
         position: "top",
         labels: {
-          font: { family: "'Georgia', serif", size: 12 },
-          color: "#f06292",
+          font: { family: "'Poppins', sans-serif", size: 12 },
+          color: "#5c4b7d",
+          usePointStyle: true,
         },
       },
       title: { display: false },
@@ -371,21 +335,88 @@ function FetalGrowthTracker() {
         backgroundColor: "rgba(0, 0, 0, 0.8)",
         titleColor: "#fff",
         bodyColor: "#fff",
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            let value = context.parsed.y;
+            
+            if (label) {
+              if (label.includes('Weight')) {
+                label += `: ${value.toFixed(1)}g`;
+              } else {
+                label += `: ${value.toFixed(1)}cm`;
+              }
+            }
+            return label;
+          }
+        },
+        padding: 10,
+        displayColors: true,
       },
     },
     scales: {
       y: {
+        type: 'linear',
         display: true,
-        grid: { display: false },
-        ticks: { color: "#f06292", font: { family: "'Georgia', serif" } },
+        position: 'left',
+        title: {
+          display: true,
+          text: 'Measurements (cm)',
+          color: "#5c4b7d",
+        },
+        grid: { 
+          color: "rgba(0, 0, 0, 0.1)",
+          drawBorder: false,
+        },
+        ticks: { 
+          color: "#5c4b7d", 
+          font: { family: "'Poppins', sans-serif" } 
+        },
+      },
+      y1: {
+        type: 'linear',
+        display: true,
+        position: 'right',
+        title: {
+          display: true,
+          text: 'Weight (g)',
+          color: "rgba(180, 147, 211, 1)",
+        },
+        grid: {
+          drawOnChartArea: false,
+        },
+        ticks: { 
+          color: "rgba(180, 147, 211, 1)", 
+          font: { family: "'Poppins', sans-serif" } 
+        },
       },
       x: {
-        ticks: { color: "#f06292", font: { family: "'Georgia', serif" } },
-        grid: { display: false },
+        ticks: { 
+          color: "#5c4b7d", 
+          font: { family: "'Poppins', sans-serif" } 
+        },
+        grid: { 
+          color: "rgba(0, 0, 0, 0.1)",
+          drawBorder: false,
+        },
       },
     },
-    categoryPercentage: 0.8,
-    barPercentage: 0.6,
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    },
+    elements: {
+      line: {
+        tension: 0.4
+      },
+      point: {
+        radius: 4,
+        hoverRadius: 6,
+      }
+    }
   };
 
   function renderGuestView() {
@@ -403,22 +434,25 @@ function FetalGrowthTracker() {
             value={gestationalAge}
             onChange={handleGestationalAgeChange}
             min="1"
-            max="40"
+            max={TOTAL_WEEKS}
+            required
           />
         </div>
         {fetalData.length > 0 ? (
           <>
             {renderFetalDataTable()}
-            <div className="chart-wrapper">
-              <Bar data={chartData} options={chartOptions} ref={chartRef} />
-              <div className="chart-description">
-                <p className="trend">Trending up this month</p>
-                <p className="details">
-                  Showing growth data for the entered gestational age
-                </p>
-                <button className="download-button" onClick={downloadChart}>
-                  Download Chart
-                </button>
+            <div className="chart-container">
+              <div className="chart-wrapper">
+                <Line data={chartData} options={chartOptions} ref={chartRef} />
+                <div className="chart-description">
+                  <p className="trend">Trending up this month</p>
+                  <p className="details">
+                    Showing growth data for the entered gestational age
+                  </p>
+                  <button className="download-button" onClick={downloadChart}>
+                    Download Chart
+                  </button>
+                </div>
               </div>
             </div>
           </>
@@ -473,16 +507,18 @@ function FetalGrowthTracker() {
         {fetalData.length > 0 ? (
           <>
             {renderFetalDataTable()}
-            <div className="chart-wrapper">
-              <Bar data={chartData} options={chartOptions} ref={chartRef} />
-              <div className="chart-description">
-                <p className="trend">Trending up this month</p>
-                <p className="details">
-                  Showing growth data for the selected profile
-                </p>
-                <button className="download-button" onClick={downloadChart}>
-                  Download Chart
-                </button>
+            <div className="chart-container">
+              <div className="chart-wrapper">
+                <Line data={chartData} options={chartOptions} ref={chartRef} />
+                <div className="chart-description">
+                  <p className="trend">Trending up this month</p>
+                  <p className="details">
+                    Showing growth data for the selected profile
+                  </p>
+                  <button className="download-button" onClick={downloadChart}>
+                    Download Chart
+                  </button>
+                </div>
               </div>
             </div>
           </>
@@ -500,13 +536,42 @@ function FetalGrowthTracker() {
             isModal={true}
           />
         )}
-        {showDeleteModal && (
+        {deleteConfirmation.show && (
           <div className="modal-overlay">
-            <div className="delete-modal-content">
-              <p>Are you sure you want to delete this data?</p>
-              <div className="delete-modal-actions">
-                <button onClick={handleDeleteConfirm}>Delete</button>
-                <button onClick={handleDeleteCancel}>Cancel</button>
+            <div className="modal-container" style={{
+              padding: '20px',
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              textAlign: 'center'
+            }}>
+              <h3>Confirm Delete</h3>
+              <p>Are you sure you want to delete this measurement? This action cannot be undone.</p>
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '20px' }}>
+                <button
+                  onClick={() => setDeleteConfirmation({ show: false, id: null })}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#f8bbd0',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#ff4444',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>
@@ -550,9 +615,7 @@ function FetalGrowthTracker() {
                 {isAuthenticated && (
                   <td>
                     <button onClick={() => handleOpenModal(data)}>Edit</button>
-                    <button onClick={() => handleDeleteClick(data)}>
-                      Delete
-                    </button>
+                    <button onClick={() => handleDeleteClick(data.id)}>Delete</button>
                   </td>
                 )}
               </tr>
@@ -563,9 +626,27 @@ function FetalGrowthTracker() {
     );
   }
 
+  const ProfileSelector = () => (
+    <div className="profile-selector">
+      <label htmlFor="profileSelect">Select Pregnancy Profile:</label>
+      <select
+        id="profileSelect"
+        value={selectedProfile?.id || ""}
+        onChange={handleProfileChange}
+        className="profile-select"
+      >
+        {userProfiles.map((profile) => (
+          <option key={profile.id} value={profile.id}>
+            {profile.name || `Profile ${profile.id}`} -{" "}
+            {new Date(profile.conceptionDate).toLocaleDateString()}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+
   return (
     <div className="app-wrapper">
-      <ToastContainer autoClose={1300} />
       <header className="app-header">
         <div className="logo">
           <span role="img" aria-label="mom-and-baby">
@@ -605,8 +686,30 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
   );
   const [notes, setNotes] = useState(data?.notes || "");
 
+  const handleNumberInput = (value, setter) => {
+    const numValue = parseFloat(value);
+    if (numValue < 0) {
+      toast.error("Value cannot be negative");
+      setter("0");
+    } else {
+      setter(value);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Add validation for negative values
+    if (parseFloat(length) < 0 || 
+        parseFloat(weight) < 0 || 
+        parseFloat(biparietalDiameter) < 0 || 
+        parseFloat(femoralLength) < 0 || 
+        parseFloat(headCircumference) < 0 || 
+        parseFloat(abdominalCircumference) < 0) {
+      toast.error("Measurements cannot be negative!");
+      return;
+    }
+
     onSave({
       weeks: parseInt(weeks),
       length: parseFloat(length),
@@ -636,9 +739,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={weeks}
-          onChange={(e) => setWeeks(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setWeeks)}
           min="1"
-          max="40"
+          max={TOTAL_WEEKS}
           required
         />
       </div>
@@ -647,8 +750,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={length}
-          onChange={(e) => setLength(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setLength)}
           step="0.1"
+          min="0"
           required
         />
       </div>
@@ -657,7 +761,8 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={weight}
-          onChange={(e) => setWeight(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setWeight)}
+          min="0"
           required
         />
       </div>
@@ -666,8 +771,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={biparietalDiameter}
-          onChange={(e) => setBiparietalDiameter(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setBiparietalDiameter)}
           step="0.1"
+          min="0"
           required
         />
       </div>
@@ -676,8 +782,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={femoralLength}
-          onChange={(e) => setFemoralLength(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setFemoralLength)}
           step="0.1"
+          min="0"
           required
         />
       </div>
@@ -686,8 +793,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={headCircumference}
-          onChange={(e) => setHeadCircumference(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setHeadCircumference)}
           step="0.1"
+          min="0"
           required
         />
       </div>
@@ -696,8 +804,9 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         <input
           type="number"
           value={abdominalCircumference}
-          onChange={(e) => setAbdominalCircumference(e.target.value)}
+          onChange={(e) => handleNumberInput(e.target.value, setAbdominalCircumference)}
           step="0.1"
+          min="0"
           required
         />
       </div>

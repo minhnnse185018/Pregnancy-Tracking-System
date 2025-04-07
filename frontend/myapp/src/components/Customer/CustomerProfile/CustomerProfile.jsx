@@ -92,14 +92,21 @@ const UserProfile = () => {
         errorMsg = "Gender must be Male, Female, or Other.";
       }
     } else if (name === "dateOfBirth") {
-      const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+      const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
       if (!datePattern.test(value)) {
-        errorMsg = "Date of Birth must be in YYYY-MM-DD format.";
+        errorMsg = "Date must be in YYYY/MM/DD format";
       } else {
-        const enteredDate = new Date(value);
+        const [year, month, day] = value.split('/');
+        const inputDate = new Date(year, month - 1, day);
         const today = new Date();
-        if (enteredDate > today) {
-          errorMsg = "Date of Birth cannot be in the future.";
+        const minDate = new Date('1954-01-01');
+
+        if (inputDate > today) {
+          errorMsg = "Date of Birth cannot be in the future";
+        } else if (inputDate < minDate) {
+          errorMsg = "Date of Birth cannot be earlier than 1954";
+        } else if (isNaN(inputDate.getTime())) {
+          errorMsg = "Please enter a valid date";
         }
       }
     }
@@ -161,6 +168,11 @@ const UserProfile = () => {
     } else {
       setIsEditing(true);
     }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    return dateString.split('T')[0].replace(/-/g, '/');
   };
 
   return (
@@ -297,14 +309,15 @@ const UserProfile = () => {
 
         <div style={{ marginBottom: "20px" }}>
           <label style={{ fontSize: "16px", color: "#FF8989" }}>
-            Date of Birth:
+            Date of Birth: (1954 - Present)
           </label>
           <input
             type="text"
             name="dateOfBirth"
-            value={user.dateOfBirth}
+            value={formatDate(user.dateOfBirth)}
             onChange={handleInputChange}
             disabled={!isEditing}
+            placeholder="YYYY/MM/DD"
             style={{
               width: "100%",
               padding: "12px",
@@ -312,7 +325,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.dateOfBirth ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: "#fff", // Luôn là trắng
+              backgroundColor: "#fff",
               outline: "none",
             }}
           />

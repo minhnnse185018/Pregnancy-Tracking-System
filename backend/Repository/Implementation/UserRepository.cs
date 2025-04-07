@@ -168,8 +168,21 @@ namespace backend.Repository.Implementation
 
                 // Send verification email
                 var verificationLink = $"http://localhost:3000/verify-account?token={Uri.EscapeDataString(verificationToken)}&email={Uri.EscapeDataString(register.Email)}";
-                var subject = "Account Verification(Valid for 2 hours)";
-                var body = $"Please click the link below to verify your account:\n\n{verificationLink}";
+                var subject = "Account Verification - Pregnancy Tracking System";
+                var body = $@"
+<html>
+<body style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
+    <div style='max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+        <h1 style='color: #ff69b4; text-align: center;'>Welcome to Pregnancy Tracking System!</h1>
+        <p style='font-size: 16px; line-height: 1.5;'>Thank you for registering with us. To complete your registration, please verify your account by clicking the button below:</p>
+        <div style='text-align: center; margin: 30px 0;'>
+            <a href='{verificationLink}' style='background-color: #ff69b4; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Verify Account</a>
+        </div>
+        <p style='font-size: 14px; color: #666;'>This verification link will expire in 2 hours.</p>
+        <p style='font-size: 14px; color: #666;'>If you didn't create an account, please ignore this email.</p>
+    </div>
+</body>
+</html>";
                 
                 await _emailService.SendEmailAsync(register.Email, subject, body);
                 
@@ -227,7 +240,20 @@ namespace backend.Repository.Implementation
             string newPassword = GenerateRandomPassword(6);
             user.Password = newPassword;
             await _context.SaveChangesAsync();
-            await _emailService.SendEmailAsync(user.Email, "Password Reset", $"Your new password is: {newPassword}");
+            await _emailService.SendEmailAsync(user.Email, "Your New Password - Pregnancy Tracking System", $@"
+<html>
+<body style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
+    <div style='max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+        <h1 style='color: #ff69b4; text-align: center;'>Password Reset</h1>
+        <p style='font-size: 16px; line-height: 1.5;'>Your password has been reset. Here's your new password:</p>
+        <div style='text-align: center; margin: 30px 0; padding: 15px; background-color: #f8f8f8; border-radius: 5px;'>
+            <code style='font-size: 20px; font-weight: bold; color: #ff69b4;'>{newPassword}</code>
+        </div>
+        <p style='font-size: 14px; color: #666;'>For security reasons, please change this password after logging in.</p>
+        <p style='font-size: 14px; color: #666;'>If you didn't request a password reset, please contact support immediately.</p>
+    </div>
+</body>
+</html>");
             return true;
         }
 
@@ -260,8 +286,21 @@ namespace backend.Repository.Implementation
              user.ResetTokenExpired = DateTime.UtcNow.AddMinutes(10);
              await _context.SaveChangesAsync();
              var resetlink= $"http://localhost:3000/reset-password?token={Uri.EscapeDataString(resetToken)}&email={Uri.EscapeDataString(forgotPasswordRequestDto.Email)}";
-             var subject = "Password Reset Request(Valid for 10 minutes)";
-             var body = $"Click the link below to reset your password:\n\n{resetlink}";
+             var subject = "Password Reset Request - Pregnancy Tracking System";
+             var body = $@"
+<html>
+<body style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
+    <div style='max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+        <h1 style='color: #ff69b4; text-align: center;'>Reset Your Password</h1>
+        <p style='font-size: 16px; line-height: 1.5;'>We received a request to reset your password. Click the button below to create a new password:</p>
+        <div style='text-align: center; margin: 30px 0;'>
+            <a href='{resetlink}' style='background-color: #ff69b4; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Reset Password</a>
+        </div>
+        <p style='font-size: 14px; color: #666;'>This link will expire in 10 minutes.</p>
+        <p style='font-size: 14px; color: #666;'>If you didn't request a password reset, please ignore this email.</p>
+    </div>
+</body>
+</html>";
              
              await _emailService.SendEmailAsync(user.Email, subject, body);
              return true;

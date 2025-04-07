@@ -120,7 +120,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/services" style={linkStyle} onClick={scrollToTop}>
+                <Link to="/growth-tracker" style={linkStyle} onClick={scrollToTop}>
                   Services
                 </Link>
               </li>
@@ -170,20 +170,20 @@ const Footer = () => {
               </li>
               <li style={listItemStyle}>
                 <span className="icon fas fa-phone" style={iconStyle}></span>{" "}
-                +84 702 290 548
+                1900 888 999
               </li>
               <li style={listItemStyle}>
                 <span
                   className="icon fas fa-paper-plane"
                   style={iconStyle}
                 ></span>{" "}
-                babycenter8386@gmail.com
+                mombabycaretracking@gmail.com
               </li>
               <li style={listItemStyle}>
                 <span className="icon fas fa-clock" style={iconStyle}></span>{" "}
                 Open: 9 AM - 6 PM
               </li>
-            </ul>
+            </ul> 
           </div>
         </div>
 
