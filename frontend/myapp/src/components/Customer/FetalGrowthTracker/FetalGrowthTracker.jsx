@@ -103,7 +103,7 @@ function FetalGrowthTracker() {
             id: item.id,
             profileId: item.profileId,
             weeks: weeks,
-            length: item.heightCm || 0,
+            height: item.heightCm || 0,
             weight: item.weightGrams || 0,
             biparietalDiameter: item.biparietalDiameterCm || 0,
             femoralLength: item.femoralLengthCm || 0,
@@ -131,7 +131,7 @@ function FetalGrowthTracker() {
     const data = [
       {
         weeks,
-        length: (weeks * 0.5).toFixed(1),
+        height: (weeks * 0.5).toFixed(1),
         weight: (weeks * 10).toFixed(0),
         biparietalDiameter: (weeks * 0.2).toFixed(1),
         femoralLength: (weeks * 0.1).toFixed(1),
@@ -207,7 +207,7 @@ function FetalGrowthTracker() {
     const payload = {
       profileId: selectedProfile.id,
       weightGrams: updatedData.weight,
-      heightCm: updatedData.length,
+      heightCm: updatedData.height,
       biparietalDiameterCm: updatedData.biparietalDiameter,
       femoralLengthCm: updatedData.femoralLength,
       headCircumferenceCm: updatedData.headCircumference,
@@ -262,8 +262,8 @@ function FetalGrowthTracker() {
     labels: fetalData.map((data) => `Week ${data.weeks || "N/A"}`),
     datasets: [
       {
-        label: "Length (cm)",
-        data: fetalData.map((data) => data.length || 0),
+        label: "Height (cm)",
+        data: fetalData.map((data) => data.height || 0),
         borderColor: "rgba(255, 140, 148, 1)",
         backgroundColor: "rgba(255, 140, 148, 0.2)",
         fill: true,
@@ -591,7 +591,7 @@ function FetalGrowthTracker() {
           <thead>
             <tr>
               <th>Weeks</th>
-              <th>Length (cm)</th>
+              <th>Height (cm)</th>
               <th>Weight (g)</th>
               <th>Biparietal Diameter (cm)</th>
               <th>Femoral Length (cm)</th>
@@ -605,7 +605,7 @@ function FetalGrowthTracker() {
             {fetalData.map((data) => (
               <tr key={data.id || data.weeks || Math.random()}>
                 <td>{data.weeks || "N/A"}</td>
-                <td>{data.length || "N/A"}</td>
+                <td>{data.height || "N/A"}</td>
                 <td>{data.weight || "N/A"}</td>
                 <td>{data.biparietalDiameter || "N/A"}</td>
                 <td>{data.femoralLength || "N/A"}</td>
@@ -672,7 +672,7 @@ function FetalGrowthTracker() {
 
 function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
   const [weeks, setWeeks] = useState(data?.weeks || "");
-  const [length, setLength] = useState(data?.length || "");
+  const [height, setHeight] = useState(data?.height || "");
   const [weight, setWeight] = useState(data?.weight || "");
   const [biparietalDiameter, setBiparietalDiameter] = useState(
     data?.biparietalDiameter || ""
@@ -700,7 +700,7 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
     e.preventDefault();
 
     // Add validation for negative values
-    if (parseFloat(length) < 0 || 
+    if (parseFloat(height) < 0 || 
         parseFloat(weight) < 0 || 
         parseFloat(biparietalDiameter) < 0 || 
         parseFloat(femoralLength) < 0 || 
@@ -712,7 +712,7 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
 
     onSave({
       weeks: parseInt(weeks),
-      length: parseFloat(length),
+      height: parseFloat(height),
       weight: parseFloat(weight),
       biparietalDiameter: parseFloat(biparietalDiameter),
       femoralLength: parseFloat(femoralLength),
@@ -722,7 +722,7 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
     });
     if (!isModal) {
       setWeeks("");
-      setLength("");
+      setHeight("");
       setWeight("");
       setBiparietalDiameter("");
       setFemoralLength("");
@@ -746,11 +746,11 @@ function FetalDataForm({ data, onSave, onCancel, isModal = false }) {
         />
       </div>
       <div className="form-group">
-        <label>Length (cm):</label>
+        <label>Height (cm):</label>
         <input
           type="number"
-          value={length}
-          onChange={(e) => handleNumberInput(e.target.value, setLength)}
+          value={height}
+          onChange={(e) => handleNumberInput(e.target.value, setHeight)}
           step="0.1"
           min="0"
           required
