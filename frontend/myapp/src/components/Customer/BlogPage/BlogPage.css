@@ -1,17 +1,16 @@
 /* Reset và thiết lập chung */
 :root {
-  --primary-color: #a64ffc;
-  --primary-light: #f5eeff;
+  --primary-color: #000000;
+  --primary-light: #bbfff7;
   --text-color: #333;
   --gray: #666;
-  --light-gray: #f7f7f7;
+  --light-gray: #000000;
   --border-radius: 30px;
   --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 /* Container */
 .blog-container {
-  
   max-width: 1200px;
   margin: 0 auto;
   margin-top: 100px;
@@ -24,7 +23,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--primary-light);
+  background-color: #ffdfdf;
   padding: 20px 30px;
   border-radius: var(--border-radius);
   margin-bottom: 30px;
@@ -33,7 +32,8 @@
 .blog-title {
   font-size: 28px;
   font-weight: 600;
-  color: #ff6b9b;
+  color: #000000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   position: relative;
 }
@@ -50,7 +50,7 @@
 
 .create-post-btn {
   background-color: var(--primary-color);
-  color: white;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 25px;
   padding: 10px 20px;
@@ -64,7 +64,7 @@
 }
 
 .create-post-btn:hover {
-  background-color: #8941d8;
+  background-color: #000000;
   transform: translateY(-2px);
 }
 

@@ -172,7 +172,7 @@ function CommunityPosts() {
           className="create-post-btn"
           onClick={() => setShowCreatePostModal(true)}
         >
-          <i className="fas fa-plus"></i> Create Post
+           Create Post
         </button>
       </div>
 

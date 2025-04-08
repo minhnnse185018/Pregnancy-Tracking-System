@@ -23,6 +23,42 @@ import "./ManagerRevenuePage.css";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
+// Add this CSS block at the top of your component or in the CSS file
+const chartStyles = `
+  .recharts-legend-wrapper {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .recharts-legend-item {
+    padding: 4px 8px;
+  }
+  
+  .recharts-legend-item-text {
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  /* Custom colors for pie chart cells */
+  .cell-0 { fill: #0088FE; }
+  .cell-1 { fill: #00C49F; }
+  .cell-2 { fill: #FFBB28; }
+  .cell-3 { fill: #FF8042; }
+  .cell-4 { fill: #8884d8; }
+  .cell-5 { fill: #82ca9d; }
+  .cell-6 { fill: #ffc658; }
+  
+  /* Hover effect for legend items */
+  .recharts-legend-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+`;
+
 const RevenueAnalytics = () => {
   const [activeTab, setActiveTab] = useState("summary");
   const [startDate, setStartDate] = useState("01/01/2023");
@@ -122,6 +158,9 @@ const RevenueAnalytics = () => {
 
   return (
     <div className="container">
+      {/* Add the style tag to inject the CSS */}
+      <style>{chartStyles}</style>
+      
       <div className="card">
         <div className="tabs">
           {tabs.map((tab) => (
