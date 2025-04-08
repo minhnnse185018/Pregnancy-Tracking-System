@@ -369,7 +369,7 @@ export default function Navbarr() {
                       to="/appointment"
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
-                      Book Appointment
+                      Remind Appointment
                     </Link>
                   </ListItemText>
                 </MenuItem>

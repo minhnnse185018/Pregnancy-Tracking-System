@@ -162,6 +162,7 @@ function App() {
               path=""
               element={
                 <>
+                  <CustomerMembershipRoute/>
                   <Navbarr />
                   <FetalGrowthTracker />
                   <Footer />
