@@ -92,12 +92,10 @@ const UserProfile = () => {
         errorMsg = "Gender must be Male, Female, or Other.";
       }
     } else if (name === "dateOfBirth") {
-      const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
-      if (!datePattern.test(value)) {
-        errorMsg = "Date must be in YYYY/MM/DD format";
+      if (!value) {
+        errorMsg = "Date of Birth is required";
       } else {
-        const [year, month, day] = value.split('/');
-        const inputDate = new Date(year, month - 1, day);
+        const inputDate = new Date(value);
         const today = new Date();
         const minDate = new Date('1954-01-01');
 
@@ -127,6 +125,11 @@ const UserProfile = () => {
 
   const toggleEditMode = async () => {
     if (isEditing) {
+      if (!validateForm()) {
+        showToast("Please fix the errors in the form", "error");
+        return;
+      }
+      
       if (JSON.stringify(user) !== JSON.stringify(initialUser)) {
         try {
           const userId = sessionStorage.getItem("userID");
@@ -170,9 +173,82 @@ const UserProfile = () => {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDateForDisplay = (dateString) => {
     if (!dateString) return '';
-    return dateString.split('T')[0].replace(/-/g, '/');
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}/${month}/${day}`;
+  };
+  
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!user.firstName || user.firstName.trim() === '') {
+      newErrors.firstName = 'First Name is required';
+    }
+    
+    if (!user.lastName || user.lastName.trim() === '') {
+      newErrors.lastName = 'Last Name is required';
+    }
+    
+    if (!user.email || !user.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      newErrors.email = 'Valid email is required';
+    }
+    
+    if (!user.phone || !user.phone.match(/^\d{10,11}$/)) {
+      newErrors.phone = 'Valid phone number is required (10-11 digits)';
+    }
+    
+    if (!user.gender || user.gender.trim() === '') {
+      newErrors.gender = 'Gender selection is required';
+    }
+    
+    if (!user.dateOfBirth) {
+      newErrors.dateOfBirth = 'Date of birth is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  const showToast = (message, type = "success", icon = "✅") => {
+    if (type === "success") {
+      toast.success(message);
+    } else if (type === "error") {
+      toast.error(message);
+    } else if (type === "warning") {
+      toast.warning(message);
+    } else {
+      toast.info(message);
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    if (!validateForm()) {
+      showToast("Please fix the errors in the form", "error");
+      return;
+    }
+    
+    // ... existing save changes code ...
   };
 
   return (
@@ -187,7 +263,7 @@ const UserProfile = () => {
           margin: "auto",
           marginTop: "150px",
           marginBottom: "150px",
-          background: "linear-gradient(135deg, #fff0f5 0%, #fce4e8 100%)", // Gradient đồng nhất
+          background: "linear-gradient(135deg, #fff0f5 0%, #fce4e8 100%)",
           boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
         }}
       >
@@ -195,7 +271,7 @@ const UserProfile = () => {
           style={{
             fontSize: "24px",
             fontWeight: "bold",
-            color: "#FF8989", // Màu hồng chính
+            color: "#FF8989",
             marginBottom: "20px",
             textAlign: "center",
           }}
@@ -218,7 +294,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.firstName ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: "#fff", // Luôn là trắng
+              backgroundColor: "#fff",
               outline: "none",
             }}
           />
@@ -244,7 +320,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.lastName ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: "#fff", // Luôn là trắng
+              backgroundColor: "#fff",
               outline: "none",
             }}
           />
@@ -270,7 +346,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.email ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: "#fff", // Luôn là trắng
+              backgroundColor: "#fff",
               outline: "none",
             }}
           />
@@ -283,8 +359,7 @@ const UserProfile = () => {
 
         <div style={{ marginBottom: "20px" }}>
           <label style={{ fontSize: "16px", color: "#FF8989" }}>Gender:</label>
-          <input
-            type="text"
+          <select
             name="gender"
             value={user.gender}
             onChange={handleInputChange}
@@ -296,10 +371,15 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.gender ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: "#fff", // Luôn là trắng
+              backgroundColor: "#fff",
               outline: "none",
             }}
-          />
+          >
+            <option value="">Select Gender</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+          </select>
           {errors.gender && (
             <span style={{ color: "red", fontSize: "14px" }}>
               {errors.gender}
@@ -312,12 +392,13 @@ const UserProfile = () => {
             Date of Birth: (1954 - Present)
           </label>
           <input
-            type="text"
+            type="date"
             name="dateOfBirth"
-            value={formatDate(user.dateOfBirth)}
+            value={formatDateForInput(user.dateOfBirth)}
             onChange={handleInputChange}
             disabled={!isEditing}
-            placeholder="YYYY/MM/DD"
+            min="1954-01-01"
+            max={new Date().toISOString().split('T')[0]}
             style={{
               width: "100%",
               padding: "12px",
@@ -351,7 +432,7 @@ const UserProfile = () => {
               margin: "8px 0",
               borderRadius: "8px",
               border: errors.phone ? "2px solid red" : "2px solid #ccc",
-              backgroundColor: "#fff", // Luôn là trắng
+              backgroundColor: "#fff",
               outline: "none",
             }}
           />
@@ -370,7 +451,7 @@ const UserProfile = () => {
             fontSize: "18px",
             fontWeight: "bold",
             color: "#fff",
-            backgroundColor: "#FF8989", // Màu hồng chính
+            backgroundColor: "#FF8989",
             border: "none",
             borderRadius: "8px",
             cursor: "pointer",
