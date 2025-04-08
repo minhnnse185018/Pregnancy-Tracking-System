@@ -107,30 +107,12 @@ function BlogDetailsPage() {
         content: commentText,
       });
       
-      // Create the new comment object with the format matching the API response
-      const newComment = {
-        id: response.data.id || Date.now(),
-        postId: parseInt(id),
-        userId: parseInt(userId),
-        content: commentText,
-        createdAt: new Date().toISOString(),
-        updatedAt: "0001-01-01T00:00:00",
-        userName: sessionStorage.getItem("userName") || "You"
-      };
-      
-      // Update the post with the new comment at the beginning
-      setPost(prevPost => {
-        if (!prevPost) return prevPost;
-        
-        return {
-          ...prevPost,
-          comments: [newComment, ...(prevPost.comments || [])]
-        };
-      });
-      
       showToast("Comment added successfully!", "success", "💬");
       setShowModal(false);
       setCommentText("");
+      
+      // Refresh the page to get the latest data including the new comment
+      window.location.reload();
     } catch (error) {
       console.error("Error adding comment:", error);
       showToast("Error adding comment. Please try again.", "error", "❌");
