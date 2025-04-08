@@ -113,12 +113,20 @@ namespace backend.Repository.Implementation
 
         public async Task<int> DeletePostAsync(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _context.Posts
+                .Include(p => p.Comments)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (post == null) return -1;
+
+            if (post.Comments != null && post.Comments.Any())
+            {
+                _context.Comments.RemoveRange(post.Comments);
+            }
 
             _context.Posts.Remove(post);
             
-            return await _context.SaveChangesAsync();;
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<List<PostDto>?> SearchPostsAsync(string searchTerm)

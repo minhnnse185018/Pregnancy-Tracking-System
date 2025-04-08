@@ -53,10 +53,25 @@ namespace backend.Repository.Implementation
 
         public async Task<FetalMeasurementDto> CreateMeasurementAsync(CreateFetalMeasurementDto measurementDto)
         {
-            var measurement = _mapper.Map<FetalMeasurement>(measurementDto);
+            // First get the pregnancy profile to check conception date
+            var profile = await _context.PregnancyProfiles
+                .FirstOrDefaultAsync(p => p.Id == measurementDto.ProfileId);
             
-            // No need to load profile to calculate week
-            // Week is now directly set in the DTO
+            if (profile == null)
+            {
+                throw new ArgumentException("Profile not found");
+            }
+
+            // Calculate current week of pregnancy
+            int currentWeek = (int)Math.Floor((DateTime.Now - profile.ConceptionDate).TotalDays / 7);
+
+            // Validate that the measurement week doesn't exceed current pregnancy week
+            if (measurementDto.Week > currentWeek)
+            {
+                throw new ArgumentException($"Measurement week cannot exceed current pregnancy week ({currentWeek})");
+            }
+
+            var measurement = _mapper.Map<FetalMeasurement>(measurementDto);
             measurement.CreatedAt = DateTime.Now;
 
             await _context.FetalMeasurements.AddAsync(measurement);
@@ -228,7 +243,16 @@ namespace backend.Repository.Implementation
 
             if (measurement == null) return null;
 
-            // Xóa các cảnh báo hiện có cho phép đo này
+            // Calculate current week of pregnancy
+            int currentWeek = (int)Math.Floor((DateTime.Now - measurement.Profile.ConceptionDate).TotalDays / 7);
+
+            // Validate that the measurement week doesn't exceed current pregnancy week
+            if (measurementDto.Week > currentWeek)
+            {
+                throw new ArgumentException($"Measurement week cannot exceed current pregnancy week ({currentWeek})");
+            }
+
+            // Delete existing alerts for this measurement
             var existingAlerts = await _context.GrowthAlerts
                 .Where(a => a.MeasurementId == id)
                 .ToListAsync();
@@ -241,10 +265,10 @@ namespace backend.Repository.Implementation
 
             _mapper.Map(measurementDto, measurement);
 
-            // Lưu cập nhật phép đo
+            // Save measurement updates
             await _context.SaveChangesAsync();
 
-            // Tạo cảnh báo tăng trưởng mới nếu cần
+            // Generate new growth alerts if needed
             await GenerateGrowthAlertIfNeeded(measurement);
 
             return await GetMeasurementByIdAsync(id);
