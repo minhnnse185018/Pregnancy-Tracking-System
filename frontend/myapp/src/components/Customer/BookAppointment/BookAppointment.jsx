@@ -41,7 +41,6 @@ const BookAppointment = () => {
       return;
     }
 
-    // Fix date handling
     let selectedDateTime = null;
 
     try {
@@ -54,12 +53,19 @@ const BookAppointment = () => {
         const [year, month, day] = dateStr.split("-").map(Number);
         const [hours] = timeStr.split(":").map(Number);
 
-        // Create a new Date object with the parsed values
-        const date = new Date(year, month - 1, day, hours, 0, 0);
+        // Create a new Date object with the parsed values and adjust for timezone
+        const date = new Date();
+        date.setFullYear(year);
+        date.setMonth(month - 1);
+        date.setDate(day);
+        date.setHours(hours, 0, 0, 0);
 
         // Check if the date is valid
         if (!isNaN(date.getTime())) {
-          selectedDateTime = date.toISOString();
+          // Create ISO string and preserve the local time
+          const offset = date.getTimezoneOffset();
+          const adjustedDate = new Date(date.getTime() - (offset * 60 * 1000));
+          selectedDateTime = adjustedDate.toISOString();
         } else {
           throw new Error("Invalid date or time");
         }
@@ -139,7 +145,7 @@ const BookAppointment = () => {
           alt="Baby Icon"
           className="ba-baby-icon"
         />
-        <div className="ba-title">Book a Doctor's Appointment</div>
+        <div className="ba-title">Reminder Appointment</div>
       </div>
       <div className="ba-content">
         <div className="ba-form">
@@ -192,11 +198,11 @@ const BookAppointment = () => {
                 rows="4"
               />
             </div>
-            <button type="submit">Book Appointment</button>
+            <button type="submit">Create</button>
           </form>
           {showRedirectButton && (
             <button className="ba-redirect-btn" onClick={handleRedirectToView}>
-              View Your Appointments
+              View Your Reminder
             </button>
           )}
         </div>

@@ -43,7 +43,7 @@ const UserIconDropdown = () => {
     >
       <Link to="#" className="nav-link" id="userDropdown">
         <img
-          src="images/user.png"
+          src="/images/user.png"
           alt="User"
           style={{
             width: "25px",

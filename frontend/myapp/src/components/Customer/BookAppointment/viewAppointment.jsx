@@ -558,7 +558,7 @@ const ViewAppointment = () => {
           alt="Baby Icon"
           className="va-baby-icon"
         />
-        <div className="va-title">Your Prenatal Appointments</div>
+        <div className="va-title">Your Appointments</div>
       </div>
       <div className="va-content">
         <div className="va-list">
